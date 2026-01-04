@@ -367,16 +367,13 @@
                                 <div className="w-full lg:w-5/12">
                                     <div className="relative mb-8">
                                         <div className="aspect-[4/5] bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 relative group shadow-2xl">
+                                            {/* Updated CEO Image with requested URL */}
                                             <img 
-                                                src="https://via.placeholder.com/500x600?text=CEO+Photo" // Fallback URL
+                                                src="https://imgnews.pstatic.net/image/008/2014/09/22/2014083100074203563_1_99_20140922053106.jpg?type=w86" 
                                                 alt="CEO Park Jung-ju" 
                                                 className="w-full h-full object-cover object-top transition-all duration-700 hover:scale-105" 
-                                                onError={(e) => {
-                                                    e.target.onerror = null; 
-                                                    e.target.src="https://via.placeholder.com/500x600?text=CEO+Photo"
-                                                }}
+                                                onError={(e) => {e.target.onerror = null; e.target.src="https://via.placeholder.com/500x600?text=CEO+Photo"}}
                                             />
-                                            {/* Note: In a real environment, replace the src with: "http://googleusercontent.com/image_generation_content/11" or your uploaded image URL. I'm using a placeholder here for stability. */}
                                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80"></div>
                                             <div className="absolute bottom-0 left-0 w-full p-8">
                                                 <h3 className="text-3xl font-bold mb-1 text-white">{t.ceo.name}</h3>
