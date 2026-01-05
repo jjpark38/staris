@@ -188,11 +188,18 @@
                             { title: 'Blockchain Integration', subtitle: '연동 및 인프라 기술', desc: '기존 게임이나 플랫폼에 블록체인을 연동합니다. 지갑 연결, 스마트 컨트랙트 배포 등 복잡한 기술을 해결해 드립니다.', list: ['WEB3 지갑 연동', '스마트 컨트랙트 개발', '이종 체인 간 브릿지'] }
                         ]
                     },
-                    portfolio: { tag: 'Selected Works', title: 'Portfolio Highlights', video1_title: 'God Sword (갓검) Action RPG', video1_desc: '스타리즈 기술력으로 완성된 화려한 액션과 타격감. 갓검(God Sword) 플레이 영상입니다.', video2_title: 'Guardians League Netmarble', video2_desc: '구글 인기 1위, 매출 17위 달성. 넷마블을 통해 서비스된 전설적인 모바일 AOS 게임.' },
+                    portfolio: { 
+                        tag: 'Selected Works', 
+                        title: 'Portfolio Highlights', 
+                        video1_title: 'God Sword (갓검) Action RPG', 
+                        video1_desc: '스타리즈 기술력으로 완성된 화려한 액션과 타격감. 갓검(God Sword) 플레이 영상입니다.', 
+                        video2_title: 'Guardians League Netmarble', 
+                        video2_desc: '구글 인기 1위, 매출 17위 달성. 넷마블을 통해 서비스된 전설적인 모바일 AOS 게임.' 
+                    },
                     contact: { title: 'Start a Win-Win Partnership', desc: '단순한 외주를 넘어, 서로의 비즈니스를 성장시킬 파트너십 제안은 언제나 환영합니다.', winwin_title: 'Open for Proposals', winwin_desc: '귀사의 아이디어와 스타리즈의 기술력이 만나면 불가능은 없습니다. \n공동 사업, 기술 제휴, 프로젝트 협업 등 어떤 형태의 제안도 귀담아듣겠습니다.', address: '강원도 춘천시 소양고개길 50, 3층', btn: '제안서 보내기' }
                 },
                 en: {
-                    nav: { home: 'Home', about: 'About', vision: 'Vision', ceo: 'CEO', cto: 'CTO', tech: 'Technology', business: 'Business', portfolio: 'Portfolio', contact: 'Contact' },
+                    nav: { home: 'Home', about: 'About', vision: 'Vision', ceo: 'CEO', tech: 'Technology', business: 'Business', portfolio: 'Portfolio', contact: 'Contact' },
                     hero: { badge: 'Technology Heritage Since 2007', title1: 'Convergence of', title2: 'Blockchain & P2E Games', desc: 'Expertise in Crypto Listing combined with P2E Game Development.\nSTARIS leads your business to the center of the digital asset ecosystem.', btn_tech: 'View Technology', btn_contact: 'Contact Us' },
                     vision: {
                         tag: 'Our Independence & Goal', title: 'Beyond Investment, Towards Global', subtitle: 'Self-Sustaining Tech Company, STARIS', desc: 'We no longer rely on external investments.\nWe pioneer our own future with proven SI development capabilities, fueling our games\' global expansion.',
@@ -213,15 +220,6 @@
                             { media: 'MoneyToday', date: '2014.05', title: "18 Years of Persistence: The Dream of Korea's App Star", link: '#' },
                             { media: 'Inven', date: '2014.04', title: "CEO Park: How to Survive as a Game Developer in Korea", link: '#' },
                             { media: 'G-Star', date: '2023', title: "Outlook on Blockchain and Metaverse Game Market" }
-                        ]
-                    },
-                    cto: {
-                        tag: 'CTO Leadership', title: 'Master of Architecture', name: 'CTO Lee Yong-jun', role: 'Chief Technology Officer', 
-                        desc: "From the heart of Korea's telecom networks in 1996 to modern blockchain exchanges.\nRobust system design handling massive traffic comes only from experience.",
-                        highlights: [
-                            { icon: 'Server', title: '26-Year Veteran', desc: 'Living witness of mission-critical systems, from KTF/SKT telecom networks to financial SI.' },
-                            { icon: 'ShieldCheck', title: 'Exchange Architecture', desc: 'Led the development of crypto exchanges like Bitcmon, designing financial security standards (ISO) and high-volume matching engines.' },
-                            { icon: 'Cpu', title: 'Full-Stack Leadership', desc: 'Leading the R&D center with deep technical expertise spanning C/C++, Java, and Blockchain.' }
                         ]
                     },
                     about: {
@@ -254,7 +252,7 @@
             };
 
             const t = content[lang];
-            const navLinks = [{ name: t.nav.home, href: '#home' }, { name: t.nav.vision, href: '#vision' }, { name: t.nav.about, href: '#about' }, { name: t.nav.ceo, href: '#ceo' }, { name: t.nav.cto, href: '#cto' }, { name: t.nav.tech, href: '#tech' }, { name: t.nav.business, href: '#business' }, { name: t.nav.portfolio, href: '#portfolio' }, { name: t.nav.contact, href: '#contact' }];
+            const navLinks = [{ name: t.nav.home, href: '#home' }, { name: t.nav.vision, href: '#vision' }, { name: t.nav.about, href: '#about' }, { name: t.nav.ceo, href: '#ceo' }, { name: t.nav.tech, href: '#tech' }, { name: t.nav.business, href: '#business' }, { name: t.nav.portfolio, href: '#portfolio' }, { name: t.nav.contact, href: '#contact' }];
 
             return (
                 <div className="font-sans text-slate-800 bg-slate-50 min-h-screen selection:bg-blue-500 selection:text-white">
@@ -474,14 +472,6 @@
                                                 }}
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent opacity-60"></div>
-                                            <div className="absolute bottom-0 left-0 w-full p-8">
-                                                <h3 className="text-3xl font-bold mb-1 text-white">{t.cto.name}</h3>
-                                                <p className="text-blue-300 font-bold tracking-wider text-sm mb-4">{t.cto.role}</p>
-                                                <div className="flex gap-2">
-                                                    <span className="px-2 py-1 bg-black/30 backdrop-blur-md rounded text-xs font-bold text-white border border-white/20">26+ Years Exp</span>
-                                                    <span className="px-2 py-1 bg-black/30 backdrop-blur-md rounded text-xs font-bold text-white border border-white/20">System Architect</span>
-                                                </div>
-                                            </div>
                                         </div>
                                         <div className="absolute -top-4 -left-4 w-24 h-24 bg-blue-600/10 rounded-full blur-2xl"></div>
                                         <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-cyan-600/10 rounded-full blur-3xl"></div>
