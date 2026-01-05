@@ -85,7 +85,10 @@
             Target: (props) => <Icon {...props} path={<><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></>} />,
             RefreshCw: (props) => <Icon {...props} path={<><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></>} />,
             Handshake: (props) => <Icon {...props} path={<><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></>} />,
-            Lightbulb: (props) => <Icon {...props} path={<><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></>} />
+            Lightbulb: (props) => <Icon {...props} path={<><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></>} />,
+            Server: (props) => <Icon {...props} path={<><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></>} />,
+            ShieldCheck: (props) => <Icon {...props} path={<><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></>} />,
+            Cpu: (props) => <Icon {...props} path={<><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></>} />
         };
 
         const StarisHomepage = () => {
@@ -129,7 +132,7 @@
 
             const content = {
                 ko: {
-                    nav: { home: '홈', about: '소개', vision: '비전', ceo: 'CEO', tech: '핵심기술', business: '사업분야', portfolio: '포트폴리오', contact: '문의하기' },
+                    nav: { home: '홈', about: '소개', vision: '비전', ceo: 'CEO', cto: 'CTO', tech: '핵심기술', business: '사업분야', portfolio: '포트폴리오', contact: '문의하기' },
                     hero: { badge: '2007년부터 이어온 기술적 유산', title1: '블록체인 기술과', title2: 'P2E 게임의 완벽한 결합', desc: '가상화폐 거래소 상장 노하우와 검증된 게임 개발 기술력.\nSTARIS는 블록체인 생태계와 콘텐츠를 연결하는 통합 솔루션을 제공합니다.', btn_tech: '보유 기술 보기', btn_contact: '문의하기' },
                     vision: {
                         tag: 'Our Independence & Goal', title: 'Beyond Investment, Towards Global', subtitle: '자생하는 기술 기업, 스타리즈', desc: '스타리즈는 더 이상 외부 투자에 의존하지 않습니다.\n우리는 검증된 SI 개발 역량으로 스스로 미래를 개척하며, 그 힘으로 우리의 게임을 전 세계에 알립니다.',
@@ -150,6 +153,15 @@
                             { media: '머니투데이', date: '2014.05', title: "끈기 하나로 18년만에 만들다, '대한민국 앱스타의 꿈'", link: 'https://n.news.naver.com/article/008/0003335055' },
                             { media: 'Inven', date: '2014.04', title: "박정주 대표의 '한국에서 게임 개발자로 살아가는 방법'", link: 'https://m.inven.co.kr/webzine/wznews.php?idx=107869' },
                             { media: 'G-Star', date: '2023', title: "블록체인과 메타버스, 차세대 게임 시장을 조망하다" }
+                        ]
+                    },
+                    cto: {
+                        tag: 'CTO Leadership', title: 'Master of Architecture', name: 'CTO 이용준', role: 'Chief Technology Officer', 
+                        desc: "1996년부터 26년간, 대한민국 통신망의 심장부에서 블록체인 거래소까지.\n대규모 트래픽을 처리하는 견고한 시스템 설계는 오직 경험에서 나옵니다.",
+                        highlights: [
+                            { icon: 'Server', title: '26년차 베테랑', desc: 'KTF/SKT 통신망 관리 시스템부터 금융권 SI까지, 실패가 용납되지 않는 미션 크리티컬 시스템 개발의 산증인.' },
+                            { icon: 'ShieldCheck', title: '거래소 구축 총괄', desc: '빗크몬(Bitcmon) 등 가상자산 거래소 개발을 총괄하며 금융 보안 규격(ISO)과 대용량 매칭 엔진을 설계.' },
+                            { icon: 'Cpu', title: '풀스택 리더십', desc: 'C/C++, Java, Blockchain을 아우르는 깊이 있는 기술력으로 스타리즈의 R&D 센터를 이끕니다.' }
                         ]
                     },
                     about: {
@@ -176,18 +188,11 @@
                             { title: 'Blockchain Integration', subtitle: '연동 및 인프라 기술', desc: '기존 게임이나 플랫폼에 블록체인을 연동합니다. 지갑 연결, 스마트 컨트랙트 배포 등 복잡한 기술을 해결해 드립니다.', list: ['WEB3 지갑 연동', '스마트 컨트랙트 개발', '이종 체인 간 브릿지'] }
                         ]
                     },
-                    portfolio: { 
-                        tag: 'Selected Works', 
-                        title: 'Portfolio Highlights', 
-                        video1_title: 'God Sword (갓검) Action RPG', 
-                        video1_desc: '스타리즈 기술력으로 완성된 화려한 액션과 타격감. 갓검(God Sword) 플레이 영상입니다.', 
-                        video2_title: 'Guardians League Netmarble', 
-                        video2_desc: '구글 인기 1위, 매출 17위 달성. 넷마블을 통해 서비스된 전설적인 모바일 AOS 게임.' 
-                    },
+                    portfolio: { tag: 'Selected Works', title: 'Portfolio Highlights', video1_title: 'God Sword (갓검) Action RPG', video1_desc: '스타리즈 기술력으로 완성된 화려한 액션과 타격감. 갓검(God Sword) 플레이 영상입니다.', video2_title: 'Guardians League Netmarble', video2_desc: '구글 인기 1위, 매출 17위 달성. 넷마블을 통해 서비스된 전설적인 모바일 AOS 게임.' },
                     contact: { title: 'Start a Win-Win Partnership', desc: '단순한 외주를 넘어, 서로의 비즈니스를 성장시킬 파트너십 제안은 언제나 환영합니다.', winwin_title: 'Open for Proposals', winwin_desc: '귀사의 아이디어와 스타리즈의 기술력이 만나면 불가능은 없습니다. \n공동 사업, 기술 제휴, 프로젝트 협업 등 어떤 형태의 제안도 귀담아듣겠습니다.', address: '강원도 춘천시 소양고개길 50, 3층', btn: '제안서 보내기' }
                 },
                 en: {
-                    nav: { home: 'Home', about: 'About', vision: 'Vision', ceo: 'CEO', tech: 'Technology', business: 'Business', portfolio: 'Portfolio', contact: 'Contact' },
+                    nav: { home: 'Home', about: 'About', vision: 'Vision', ceo: 'CEO', cto: 'CTO', tech: 'Technology', business: 'Business', portfolio: 'Portfolio', contact: 'Contact' },
                     hero: { badge: 'Technology Heritage Since 2007', title1: 'Convergence of', title2: 'Blockchain & P2E Games', desc: 'Expertise in Crypto Listing combined with P2E Game Development.\nSTARIS leads your business to the center of the digital asset ecosystem.', btn_tech: 'View Technology', btn_contact: 'Contact Us' },
                     vision: {
                         tag: 'Our Independence & Goal', title: 'Beyond Investment, Towards Global', subtitle: 'Self-Sustaining Tech Company, STARIS', desc: 'We no longer rely on external investments.\nWe pioneer our own future with proven SI development capabilities, fueling our games\' global expansion.',
@@ -208,6 +213,15 @@
                             { media: 'MoneyToday', date: '2014.05', title: "18 Years of Persistence: The Dream of Korea's App Star", link: '#' },
                             { media: 'Inven', date: '2014.04', title: "CEO Park: How to Survive as a Game Developer in Korea", link: '#' },
                             { media: 'G-Star', date: '2023', title: "Outlook on Blockchain and Metaverse Game Market" }
+                        ]
+                    },
+                    cto: {
+                        tag: 'CTO Leadership', title: 'Master of Architecture', name: 'CTO Lee Yong-jun', role: 'Chief Technology Officer', 
+                        desc: "From the heart of Korea's telecom networks in 1996 to modern blockchain exchanges.\nRobust system design handling massive traffic comes only from experience.",
+                        highlights: [
+                            { icon: 'Server', title: '26-Year Veteran', desc: 'Living witness of mission-critical systems, from KTF/SKT telecom networks to financial SI.' },
+                            { icon: 'ShieldCheck', title: 'Exchange Architecture', desc: 'Led the development of crypto exchanges like Bitcmon, designing financial security standards (ISO) and high-volume matching engines.' },
+                            { icon: 'Cpu', title: 'Full-Stack Leadership', desc: 'Leading the R&D center with deep technical expertise spanning C/C++, Java, and Blockchain.' }
                         ]
                     },
                     about: {
@@ -240,7 +254,7 @@
             };
 
             const t = content[lang];
-            const navLinks = [{ name: t.nav.home, href: '#home' }, { name: t.nav.vision, href: '#vision' }, { name: t.nav.about, href: '#about' }, { name: t.nav.ceo, href: '#ceo' }, { name: t.nav.tech, href: '#tech' }, { name: t.nav.business, href: '#business' }, { name: t.nav.portfolio, href: '#portfolio' }, { name: t.nav.contact, href: '#contact' }];
+            const navLinks = [{ name: t.nav.home, href: '#home' }, { name: t.nav.vision, href: '#vision' }, { name: t.nav.about, href: '#about' }, { name: t.nav.ceo, href: '#ceo' }, { name: t.nav.cto, href: '#cto' }, { name: t.nav.tech, href: '#tech' }, { name: t.nav.business, href: '#business' }, { name: t.nav.portfolio, href: '#portfolio' }, { name: t.nav.contact, href: '#contact' }];
 
             return (
                 <div className="font-sans text-slate-800 bg-slate-50 min-h-screen selection:bg-blue-500 selection:text-white">
@@ -434,6 +448,67 @@
                                                 </a>
                                             ))}
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* CTO Section - Added based on resume */}
+                    <section id="cto" className="py-24 bg-white relative">
+                        <div className="container mx-auto px-6 relative z-10">
+                             <div className="flex flex-col lg:flex-row-reverse gap-16 items-start">
+                                <div className="w-full lg:w-5/12">
+                                    <div className="relative mb-8">
+                                        <div className="aspect-[4/5] bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 relative group shadow-xl">
+                                            {/* Updated CTO Image with requested URL */}
+                                             <img 
+                                                src="https://lh3.googleusercontent.com/gg-dl/ABS2GSnqJvCsGrq6z5vFLXDRDo-f6I4n85At-u5G0_oc_ICv6ev9qacHf0dr2fyFmbwoFkVt-pVqyyVAZ_bzfRv7tifjLJAqsvOLBjQ_W5TlBjUe4otZPrM2tLVzRiT25IXlSSXWSu5D5WtLtaFMYVKsPq4XVfG8lXN5g7B830FZXDSnK_AgGQ=s1024-rj" 
+                                                alt="CTO Lee Yong-jun" 
+                                                className="w-full h-full object-cover object-top transition-all duration-700 hover:scale-105" 
+                                                onError={(e) => {e.target.onerror = null; e.target.src="https://via.placeholder.com/500x600?text=CTO+Photo"}}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent opacity-60"></div>
+                                            <div className="absolute bottom-0 left-0 w-full p-8">
+                                                <h3 className="text-3xl font-bold mb-1 text-white">{t.cto.name}</h3>
+                                                <p className="text-blue-300 font-bold tracking-wider text-sm mb-4">{t.cto.role}</p>
+                                                <div className="flex gap-2">
+                                                    <span className="px-2 py-1 bg-black/30 backdrop-blur-md rounded text-xs font-bold text-white border border-white/20">26+ Years Exp</span>
+                                                    <span className="px-2 py-1 bg-black/30 backdrop-blur-md rounded text-xs font-bold text-white border border-white/20">System Architect</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="absolute -top-4 -left-4 w-24 h-24 bg-blue-600/10 rounded-full blur-2xl"></div>
+                                        <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-cyan-600/10 rounded-full blur-3xl"></div>
+                                    </div>
+                                </div>
+                                
+                                <div className="w-full lg:w-7/12 pt-4">
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className="h-[2px] w-12 bg-blue-600"></div>
+                                        <span className="text-blue-600 font-bold tracking-widest uppercase">{t.cto.tag}</span>
+                                    </div>
+                                    
+                                    <h2 className="text-3xl md:text-5xl font-bold mb-8 leading-tight text-slate-900">{t.cto.title}</h2>
+                                    
+                                    <p className="text-lg text-slate-600 leading-relaxed whitespace-pre-line mb-10 border-l-4 border-blue-500 pl-6">
+                                        {t.cto.desc}
+                                    </p>
+
+                                    <div className="space-y-6">
+                                        {t.cto.highlights.map((item, idx) => (
+                                            <div key={idx} className="flex gap-4 items-start p-4 rounded-xl hover:bg-slate-50 transition-colors">
+                                                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0">
+                                                    {item.icon === 'Server' && <Icons.Server size={24} />}
+                                                    {item.icon === 'ShieldCheck' && <Icons.ShieldCheck size={24} />}
+                                                    {item.icon === 'Cpu' && <Icons.Cpu size={24} />}
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-xl font-bold text-slate-800 mb-2">{item.title}</h4>
+                                                    <p className="text-slate-500 leading-relaxed text-sm">{item.desc}</p>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
