@@ -226,6 +226,8 @@
                 }, (error) => {
                     console.error("Listener Error:", error);
                     setLoading(false);
+                    // Even if permission denied here, we handle gracefully.
+                    // But if public read is allowed, this might work fine.
                     if (error.code === 'permission-denied') {
                         setErrorMsg("Permission Denied: Check Firebase Rules.");
                         setStatus("Error: Permission Denied.");
@@ -269,11 +271,17 @@
                                 }
                             } else {
                                 setStatus("Signing in anonymously...");
-                                signInAnonymously(auth).catch(e => {
-                                    console.error("Auth Error:", e);
-                                    setErrorMsg("Auth Failed: " + e.message);
-                                    setStatus("Error: Auth Failed.");
-                                    setLoading(false);
+                                signInAnonymously(auth).then(() => {
+                                    // Success handled by onAuthStateChanged
+                                }).catch(e => {
+                                    // CRITICAL FIX: If auth fails (e.g. configuration-not-found), still try to load data as guest
+                                    console.warn("Auth failed, falling back to guest mode:", e);
+                                    setStatus("Auth missing. Trying guest access...");
+                                    setErrorMsg(null); // Clear auth error to show UI
+                                    
+                                    if (!unsubscribeSnapshot) {
+                                        unsubscribeSnapshot = setupRealtimeListener();
+                                    }
                                 });
                             }
                         });
