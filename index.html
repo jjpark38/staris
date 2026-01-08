@@ -160,12 +160,22 @@
                 
                 // Using onSnapshot for real-time updates
                 const unsubscribe = onSnapshot(postsRef, (snapshot) => {
-                    const loadedPosts = snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data()
-                    }));
-                    // Sort in memory by date desc (Safe sort)
-                    loadedPosts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                    const loadedPosts = snapshot.docs.map(doc => {
+                        const data = doc.data();
+                        return {
+                            id: doc.id,
+                            ...data,
+                            // Ensure createdAt is sortable even if missing or weird format
+                            createdAt: data.createdAt ? data.createdAt : 0
+                        };
+                    });
+                    
+                    // Sort safely (handle non-numbers gracefully)
+                    loadedPosts.sort((a, b) => {
+                        const timeA = Number(a.createdAt) || 0;
+                        const timeB = Number(b.createdAt) || 0;
+                        return timeB - timeA;
+                    });
                     
                     setPosts(loadedPosts);
                     setLoading(false);
@@ -185,11 +195,18 @@
             // Initialize Firebase and Auth
             useEffect(() => {
                 let unsubscribeSnapshot = null;
+                let retryCount = 0;
 
                 const initFirebase = async () => {
                     // Safety check: Wait for firebase modules to load
                     if (!window.firebaseModules) {
-                        setTimeout(initFirebase, 200);
+                        if (retryCount < 10) {
+                            retryCount++;
+                            setTimeout(initFirebase, 500); // Wait 0.5s and try again
+                        } else {
+                            setErrorMsg("Failed to load Firebase libraries. Please refresh.");
+                            setLoading(false);
+                        }
                         return;
                     }
 
@@ -201,8 +218,12 @@
                             setUser(u);
                             if (u) {
                                 // User is signed in, fetch posts
-                                if (unsubscribeSnapshot) unsubscribeSnapshot();
-                                unsubscribeSnapshot = fetchPosts();
+                                if (unsubscribeSnapshot) {
+                                    // Already listening, do nothing or re-subscribe if needed
+                                    // Usually onAuthStateChanged fires once initially
+                                } else {
+                                    unsubscribeSnapshot = fetchPosts();
+                                }
                             } else {
                                 // User is signed out, try to sign in
                                 signInAnonymously(auth).catch(e => {
@@ -224,7 +245,9 @@
 
                 // Cleanup
                 return () => {
-                    if (unsubscribeSnapshot) unsubscribeSnapshot();
+                    if (unsubscribeSnapshot && typeof unsubscribeSnapshot === 'function') {
+                        unsubscribeSnapshot();
+                    }
                 };
             }, []);
 
@@ -262,9 +285,9 @@
             };
 
             const formatDate = (timestamp) => {
-                if (!timestamp) return '';
+                if (!timestamp) return '-';
                 const date = new Date(timestamp);
-                return date.toLocaleDateString();
+                return isNaN(date.getTime()) ? '-' : date.toLocaleDateString();
             };
 
             return (
@@ -323,14 +346,14 @@
                                 {loading ? (
                                     <div className="flex flex-col justify-center items-center h-64">
                                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-                                        <p className="text-slate-500">Connecting to Firebase...</p>
+                                        <p className="text-slate-500">Loading posts...</p>
                                     </div>
                                 ) : errorMsg ? (
                                     <div className="flex flex-col justify-center items-center h-64 text-center">
                                         <div className="bg-red-50 text-red-600 p-4 rounded-xl border border-red-100 max-w-lg">
-                                            <p className="font-bold mb-2">Connection Error</p>
+                                            <p className="font-bold mb-2">Error Loading Board</p>
                                             <p>{errorMsg}</p>
-                                            <p className="text-xs mt-2 text-red-400">Please check your internet connection or Firebase Console Rules.</p>
+                                            <p className="text-xs mt-2 text-red-400">Please check Firebase Rules or your internet connection.</p>
                                         </div>
                                     </div>
                                 ) : (
@@ -350,9 +373,10 @@
                                                         {posts.length === 0 ? (
                                                             <tr>
                                                                 <td colSpan="4" className="py-12 text-center text-slate-400">
-                                                                    No posts found in 'board_posts' collection.
-                                                                    <br/>
-                                                                    <span className="text-xs text-slate-300 mt-2 block">If you submitted a post, check Firebase permissions.</span>
+                                                                    No posts found in 'board_posts'.<br/>
+                                                                    <span className="text-xs text-slate-300 mt-2 block">
+                                                                        Write the first post! (Status: Connected)
+                                                                    </span>
                                                                 </td>
                                                             </tr>
                                                         ) : (
