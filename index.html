@@ -15,13 +15,12 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (Stable Version 10.7.1) -->
     <script type="module">
-        // Import specific versions to ensure compatibility
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -214,7 +213,13 @@
                     setView('list');
                 } catch (error) {
                     console.error("Error adding post:", error);
-                    alert("Failed to post. Please try again.");
+                    
+                    // Specific error message for Permission Denied (common in new projects)
+                    if (error.code === 'permission-denied') {
+                        alert("Error: Permission Denied.\nPlease check your Firebase Console > Firestore Database > Rules.\n(Make sure rules allow read/write for testing).");
+                    } else {
+                        alert("Failed to post. Check console for details.");
+                    }
                 }
             };
 
