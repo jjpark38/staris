@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STARIS - Blockchain & SI Technology Leader</title>
     
+    <!-- ==========================================
+         Marketing & SEO Meta Tags (Updated)
+         ========================================== -->
+    <meta name="description" content="STARIS - 넷마블 인기 1위 개발진이 만드는 최상의 SI 솔루션, 웹/앱 개발 전문">
+    <meta name="keywords" content="SI개발, 웹개발, 앱개발, 게임개발, STARIS, 스타리스">
+    <meta name="author" content="STARIS Corp.">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook / KakaoTalk -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.staris.io/"> <!-- 실제 도메인으로 변경 권장 -->
+    <meta property="og:title" content="STARIS - 기술의 별이 되다">
+    <meta property="og:description" content="당신의 아이디어를 현실로. 최고의 기술 파트너 STARIS입니다.">
+    <!-- 배경 이미지를 대표 썸네일로 사용 -->
+    <meta property="og:image" content="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200&auto=format&fit=crop">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.staris.io/">
+    <meta property="twitter:title" content="STARIS - 기술의 별이 되다">
+    <meta property="twitter:description" content="당신의 아이디어를 현실로. 최고의 기술 파트너 STARIS입니다.">
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200&auto=format&fit=crop">
+    
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -226,8 +249,6 @@
                 }, (error) => {
                     console.error("Listener Error:", error);
                     setLoading(false);
-                    // Even if permission denied here, we handle gracefully.
-                    // But if public read is allowed, this might work fine.
                     if (error.code === 'permission-denied') {
                         setErrorMsg("Permission Denied: Check Firebase Rules.");
                         setStatus("Error: Permission Denied.");
@@ -582,11 +603,8 @@
                 const subject = `[STARIS 문의] ${formData.type} - ${formData.name}`;
                 const body = `Name: ${formData.name}\nPhone: ${formData.phone}\nEmail: ${formData.email}\nType: ${formData.type}\n\nMessage:\n${formData.message}`;
                 
-                // Force use of Gmail web interface for better PC compatibility
-                // Format: https://mail.google.com/mail/?view=cm&fs=1&to={EMAIL}&su={SUBJECT}&body={BODY}
                 const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=numjou@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                 
-                // Open in a new tab
                 window.open(gmailLink, '_blank');
             };
 
@@ -622,64 +640,6 @@
                             { icon: 'Server', title: '26년차 베테랑', desc: 'KTF/SKT 통신망 관리 시스템부터 금융권 SI까지, 실패가 용납되지 않는 미션 크리티컬 시스템 개발의 산증인.' },
                             { icon: 'ShieldCheck', title: '거래소 구축 총괄', desc: '빗크몬(Bitcmon) 등 가상자산 거래소 개발을 총괄하며 금융 보안 규격(ISO)과 대용량 매칭 엔진을 설계.' },
                             { icon: 'Cpu', title: '풀스택 리더십', desc: 'C/C++, Java, Blockchain을 아우르는 깊이 있는 기술력으로 스타리즈의 R&D 센터를 이끕니다.' }
-                        ]
-                    },
-                    about: {
-                        tag: 'The Spectrum of Excellence', title_pre: 'RGB to ', title_post: 'White.', subtitle: '17 Years of Perfect Teamwork.', desc: 'Since forming the SnowFamily team in 2007, our history continues. Diverse experts (RGB) come together to create one perfect light (White).',
-                        items: [
-                            { title: 'Since 2007 Heritage', desc: 'Top-grossing game development teamwork (Guardians League, NOx, etc.)' },
-                            { title: 'Blockchain Integration', desc: 'Advanced technology for P2E games & Exchange integration' },
-                            { title: 'Crypto Listing Support', desc: 'Technical support for successful coin listing and tokenomics' }
-                        ]
-                    },
-                    tech: {
-                        tag: 'Core Technology', title: 'Proprietary R&D Capabilities', desc: '게임 엔진 기술을 블록체인에 접목하여 압도적인 퍼포먼스를 냅니다.',
-                        items: [
-                            { title: 'P2E Middleware', desc: '게임 데이터와 블록체인 지갑을 실시간으로 동기화하는 미들웨어 기술.' },
-                            { title: 'Level Design Editor', desc: '메타버스 환경 구축을 위한 자체 맵 에디터 및 최적화 툴.' },
-                            { title: 'High-Traffic Server', desc: '대규모 트래픽 처리가 가능한 게임 서버 아키텍처 및 이펙트 매니저.' }
-                        ]
-                    },
-                    business: {
-                        tag: 'Our Business', title: '블록체인과 게임의 융합', desc: '단순한 개발을 넘어, 상장부터 P2E 생태계 구축까지 원스톱 서비스를 제공합니다.',
-                        cards: [
-                            { title: 'Crypto Exchange & Listing', subtitle: '거래소 구축 및 상장 지원', desc: '빗크몬 등 실제 거래소 구축 경험을 바탕으로, 코인 상장(Listing)에 필요한 기술적 요구사항을 완벽하게 지원합니다.', list: ['거래소 구축 솔루션', '코인 상장 기술 지원', 'KYC/AML 보안 시스템'] },
-                            { title: 'P2E Game Development', subtitle: '블록체인 게임 개발', desc: '17년 게임 개발 역량을 P2E에 접목했습니다. 재미있는 게임에 토크노믹스를 입혀 지속 가능한 생태계를 만듭니다.', list: ['RPG/캐주얼 P2E 게임', 'NFT 민팅 시스템', '인게임 토큰 경제 설계'] },
-                            { title: 'Blockchain Integration', subtitle: '연동 및 인프라 기술', desc: '기존 게임이나 플랫폼에 블록체인을 연동합니다. 지갑 연결, 스마트 컨트랙트 배포 등 복잡한 기술을 해결해 드립니다.', list: ['WEB3 지갑 연동', '스마트 컨트랙트 개발', '이종 체인 간 브릿지'] }
-                        ]
-                    },
-                    portfolio: { 
-                        tag: 'Selected Works', 
-                        title: 'Portfolio Highlights', 
-                        video1_title: 'God Sword (갓검) Action RPG', 
-                        video1_desc: '스타리즈 기술력으로 완성된 화려한 액션과 타격감. 갓검(God Sword) 플레이 영상입니다.', 
-                        video2_title: 'Guardians League Netmarble', 
-                        video2_desc: '구글 인기 1위, 매출 17위 달성. 넷마블을 통해 서비스된 전설적인 모바일 AOS 게임.' 
-                    },
-                    contact: { title: 'Start a Win-Win Partnership', desc: '단순한 외주를 넘어, 서로의 비즈니스를 성장시킬 파트너십 제안은 언제나 환영합니다.', winwin_title: 'Open for Proposals', winwin_desc: '귀사의 아이디어와 스타리즈의 기술력이 만나면 불가능은 없습니다. \n공동 사업, 기술 제휴, 프로젝트 협업 등 어떤 형태의 제안도 귀담아듣겠습니다.', address: '강원도 춘천시 소양고개길 50, 3층', btn: '제안서 보내기' }
-                },
-                en: {
-                    nav: { home: 'Home', about: 'About', vision: 'Vision', ceo: 'CEO', cto: 'CTO', tech: 'Technology', business: 'Business', portfolio: 'Portfolio', board: 'Board', contact: 'Contact' },
-                    hero: { badge: 'Technology Heritage Since 2007', title1: 'Convergence of', title2: 'Blockchain & P2E Games', desc: 'Expertise in Crypto Listing combined with P2E Game Development.\nSTARIS leads your business to the center of the digital asset ecosystem.', btn_tech: 'View Technology', btn_contact: 'Contact Us' },
-                    vision: {
-                        tag: 'Our Independence & Goal', title: 'Beyond Investment, Towards Global', subtitle: 'Self-Sustaining Tech Company, STARIS', desc: 'We no longer rely on external investments.\nWe pioneer our own future with proven SI development capabilities, fueling our games\' global expansion.',
-                        cards: [
-                            { icon: 'Rocket', title: 'Self-Sustaining Growth', desc: 'Instead of chasing investments, we operate and reinvest in R&D through profits from advanced SI/outsourcing projects.' },
-                            { icon: 'RefreshCw', title: 'Virtuous Cycle', desc: 'Capital and tech accumulated from SI projects become the foundation for global expansion and live service of our own games (IP).' },
-                            { icon: 'Globe', title: 'Global Expansion', desc: 'We launch domestically proven games globally with our own strength, writing the success story of true K-Games.' }
-                        ]
-                    },
-                    ceo: {
-                        tag: 'CEO Spotlight', title: 'Developer at Heart', name: 'CEO Park Jung-ju', role: 'Founder & Head Developer', interview_title: 'How to Survive as a Developer', interview_desc: "In the 18 years since founding SnowFamily in 2007, I've learned that 'people' and 'networks' are key.\nSuccess isn't just about code. Our 'Network Theory', harmonizing planning, marketing, and business, is STARIS's core strength.",
-                        philosophy: [
-                            { title: 'The 3-3-3 Rule', desc: 'Fun for 3 mins leads to 30 mins, and 30 mins to 3 hours. (Immersion Philosophy)' },
-                            { title: 'Persistence', desc: '18 years of grit and determination, born from a pro-gamer’s competitive spirit.' },
-                            { title: 'Convergence', desc: 'Creating new value by combining the Fun of games with the Earnings of blockchain.' }
-                        ],
-                        press_clips: [
-                            { media: 'MoneyToday', date: '2014.05', title: "18 Years of Persistence: The Dream of Korea's App Star", link: '#' },
-                            { media: 'Inven', date: '2014.04', title: "CEO Park: How to Survive as a Game Developer in Korea", link: '#' },
-                            { media: 'G-Star', date: '2023', title: "Outlook on Blockchain and Metaverse Game Market" }
                         ]
                     },
                     about: {
