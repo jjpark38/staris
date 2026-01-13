@@ -43,7 +43,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // Added updateDoc to imports
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -74,6 +75,7 @@
                 getDocs,
                 doc,
                 deleteDoc,
+                updateDoc, // Expose updateDoc
                 query,
                 orderBy,
                 onSnapshot
@@ -164,10 +166,10 @@
             Refresh: (props) => <Icon {...props} path={<><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></>} />
         };
 
-        // --- Board Component (Robust Version) ---
+        // --- Board Component (Robust Version with Edit) ---
         const BoardSection = ({ t, lang }) => {
             const [posts, setPosts] = useState([]);
-            const [view, setView] = useState('list'); // 'list', 'write', 'detail'
+            const [view, setView] = useState('list'); // 'list', 'write', 'detail', 'edit'
             const [currentPost, setCurrentPost] = useState(null);
             const [formData, setFormData] = useState({ title: '', author: '', content: '' });
             const [user, setUser] = useState(null);
@@ -295,10 +297,9 @@
                                 signInAnonymously(auth).then(() => {
                                     // Success handled by onAuthStateChanged
                                 }).catch(e => {
-                                    // CRITICAL FIX: If auth fails (e.g. configuration-not-found), still try to load data as guest
                                     console.warn("Auth failed, falling back to guest mode:", e);
                                     setStatus("Auth missing. Trying guest access...");
-                                    setErrorMsg(null); // Clear auth error to show UI
+                                    setErrorMsg(null); 
                                     
                                     if (!unsubscribeSnapshot) {
                                         unsubscribeSnapshot = setupRealtimeListener();
@@ -346,11 +347,34 @@
                     
                     setFormData({ title: '', author: '', content: '' });
                     setView('list');
-                    // Optional: force reload if listener is stuck
-                    // forceLoadPosts(); 
                 } catch (error) {
                     console.error("Error adding post:", error);
                     alert("Failed to post: " + error.message);
+                }
+            };
+
+            // NEW: Handle Update
+            const handleUpdate = async (e) => {
+                e.preventDefault();
+                if (!formData.title || !formData.content) return;
+
+                try {
+                    const { db, doc, updateDoc } = window.firebaseModules;
+                    const postRef = doc(db, 'board_posts', currentPost.id);
+
+                    await updateDoc(postRef, {
+                        title: formData.title,
+                        author: formData.author,
+                        content: formData.content,
+                        updatedAt: Date.now()
+                    });
+
+                    // Update currentPost state to reflect changes immediately in detail view
+                    setCurrentPost({ ...currentPost, ...formData });
+                    setView('detail');
+                } catch (error) {
+                    console.error("Error updating post:", error);
+                    alert("Failed to update: " + error.message);
                 }
             };
 
@@ -393,13 +417,16 @@
                                     )}
                                     {view === 'list' && (
                                         <button 
-                                            onClick={() => setView('write')}
+                                            onClick={() => {
+                                                setFormData({ title: '', author: '', content: '' });
+                                                setView('write');
+                                            }}
                                             className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2"
                                         >
                                             <Icons.Edit size={16} /> Write
                                         </button>
                                     )}
-                                    {(view === 'write' || view === 'detail') && (
+                                    {(view === 'write' || view === 'detail' || view === 'edit') && (
                                         <button 
                                             onClick={() => setView('list')}
                                             className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2"
@@ -478,8 +505,10 @@
                                             </div>
                                         )}
 
+                                        {/* WRITE FORM */}
                                         {view === 'write' && (
                                             <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6 animate-fade-in-up">
+                                                <h3 className="text-2xl font-bold mb-4">New Post</h3>
                                                 <div>
                                                     <label className="block text-sm font-bold text-slate-700 mb-2">Title</label>
                                                     <input 
@@ -534,14 +563,88 @@
                                             </form>
                                         )}
 
+                                        {/* EDIT FORM (New Added) */}
+                                        {view === 'edit' && (
+                                            <form onSubmit={handleUpdate} className="max-w-2xl mx-auto space-y-6 animate-fade-in-up">
+                                                <h3 className="text-2xl font-bold mb-4">Edit Post</h3>
+                                                <div>
+                                                    <label className="block text-sm font-bold text-slate-700 mb-2">Title</label>
+                                                    <input 
+                                                        type="text" 
+                                                        name="title" 
+                                                        value={formData.title} 
+                                                        onChange={handleInputChange}
+                                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                                                        placeholder="Enter post title"
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-6">
+                                                    <div>
+                                                        <label className="block text-sm font-bold text-slate-700 mb-2">Author</label>
+                                                        <input 
+                                                            type="text" 
+                                                            name="author" 
+                                                            value={formData.author} 
+                                                            onChange={handleInputChange}
+                                                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
+                                                            placeholder="Anonymous"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-bold text-slate-700 mb-2">Content</label>
+                                                    <textarea 
+                                                        name="content" 
+                                                        value={formData.content} 
+                                                        onChange={handleInputChange}
+                                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 h-64 focus:outline-none focus:border-blue-500 transition-colors resize-none"
+                                                        placeholder="Write your message here..."
+                                                        required
+                                                    ></textarea>
+                                                </div>
+                                                <div className="flex justify-end gap-4">
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => setView('detail')}
+                                                        className="px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-bold transition-colors"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                    <button 
+                                                        type="submit" 
+                                                        className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition-colors shadow-lg shadow-blue-500/30"
+                                                    >
+                                                        Update Post
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        )}
+
                                         {view === 'detail' && currentPost && (
                                             <div className="animate-fade-in-up">
                                                 <div className="border-b border-slate-200 pb-6 mb-6">
                                                     <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">{currentPost.title}</h2>
-                                                    <div className="flex items-center gap-4 text-sm text-slate-500">
-                                                        <span className="flex items-center gap-1"><span className="font-bold text-slate-700">By</span> {currentPost.author}</span>
-                                                        <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                                                        <span>{formatDate(currentPost.createdAt)}</span>
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-4 text-sm text-slate-500">
+                                                            <span className="flex items-center gap-1"><span className="font-bold text-slate-700">By</span> {currentPost.author}</span>
+                                                            <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                                            <span>{formatDate(currentPost.createdAt)}</span>
+                                                        </div>
+                                                        {/* Edit Button in Detail View */}
+                                                        <button 
+                                                            onClick={() => {
+                                                                setFormData({ 
+                                                                    title: currentPost.title, 
+                                                                    author: currentPost.author, 
+                                                                    content: currentPost.content 
+                                                                });
+                                                                setView('edit');
+                                                            }}
+                                                            className="text-blue-600 hover:text-blue-800 font-bold text-sm flex items-center gap-1"
+                                                        >
+                                                            <Icons.Edit size={16} /> Edit
+                                                        </button>
                                                     </div>
                                                 </div>
                                                 <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed whitespace-pre-wrap min-h-[300px]">
