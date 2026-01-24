@@ -222,7 +222,7 @@
                     setStatus("Error during load.");
                     
                     if (error.code === 'permission-denied') {
-                        setErrorMsg("Error: Permission Denied. Check Firebase Rules.");
+                        setErrorMsg("Error: Permission Denied. Please enable read access in Firebase Rules.");
                     }
                 } finally {
                     setLoading(false);
@@ -237,7 +237,6 @@
                 setLoading(true);
                 setStatus(`Streaming from '${collectionName}'...`);
 
-                // FIX: Use static root collection 'board_posts' for personal DB persistence
                 const postsRef = collection(db, collectionName); 
                 
                 const unsubscribe = onSnapshot(postsRef, (snapshot) => {
@@ -300,21 +299,21 @@
 
                     const { auth, signInAnonymously, onAuthStateChanged } = window.firebaseModules;
                     
-                    // 1. Immediately try to setup listener (Works if public)
+                    // 1. ALWAYS Try to setup listener immediately (for public data)
                     unsubscribeSnapshot = setupRealtimeListener();
 
-                    // 2. Try Auth if available
+                    // 2. Try Auth if available, but don't block
                     if (auth) {
                         try {
                             onAuthStateChanged(auth, (u) => {
-                                setUser(u);
                                 if (u) {
-                                    setStatus("Authenticated. Syncing...");
+                                    setStatus("Authenticated. Re-syncing...");
+                                    // Re-subscribe with auth token
+                                    if (unsubscribeSnapshot) unsubscribeSnapshot();
+                                    unsubscribeSnapshot = setupRealtimeListener();
                                 } else {
                                     setStatus("Signing in...");
-                                    signInAnonymously(auth).then(() => {
-                                       setStatus("Authenticated (Anonymous)");
-                                    }).catch(e => {
+                                    signInAnonymously(auth).catch(e => {
                                         console.warn("Auth failed (Guest Mode):", e.message);
                                         setStatus("Guest Mode (Public Access)");
                                     });
@@ -322,9 +321,10 @@
                             });
                         } catch (err) {
                              console.warn("Auth Error:", err);
+                             setStatus("Guest Mode (Auth Error)");
                         }
                     } else {
-                        setStatus("Guest Mode (No Auth)");
+                        setStatus("Guest Mode (No Auth Config)");
                     }
                 };
                 
@@ -467,6 +467,29 @@
                                         className="bg-slate-700 text-white text-xs px-2 py-1 rounded border border-slate-600 focus:outline-none" 
                                     />
                                     <button onClick={forceLoadPosts} className="text-xs bg-blue-600 text-white px-2 py-1 rounded">Set & Load</button>
+                                    
+                                    {/* Test Write Button */}
+                                    <button 
+                                        onClick={async () => {
+                                            if (!window.firebaseModules) return;
+                                            try {
+                                                const { db, collection, addDoc } = window.firebaseModules;
+                                                await addDoc(collection(db, collectionName), {
+                                                    title: "Test Connection Post",
+                                                    author: "System",
+                                                    content: "This is a test post to verify database connection.",
+                                                    createdAt: Date.now()
+                                                });
+                                                alert("Test post created! Check if it appears.");
+                                                forceLoadPosts();
+                                            } catch (e) {
+                                                alert("Write failed: " + e.message);
+                                            }
+                                        }}
+                                        className="text-xs bg-green-600 text-white px-2 py-1 rounded ml-2"
+                                    >
+                                        Test Write
+                                    </button>
                                 </div>
                             )}
 
