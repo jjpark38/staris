@@ -286,13 +286,15 @@
                     const { auth, signInAnonymously, onAuthStateChanged } = window.firebaseModules;
                     
                     try {
+                        // FIX: Attempt to setup listener immediately regardless of auth state
+                        // This allows data loading if public access is enabled in rules
+                        // while auth happens in background
+                        unsubscribeSnapshot = setupRealtimeListener();
+
                         onAuthStateChanged(auth, (u) => {
                             setUser(u);
                             if (u) {
                                 setStatus("User Authenticated. Fetching...");
-                                if (!unsubscribeSnapshot) {
-                                    unsubscribeSnapshot = setupRealtimeListener();
-                                }
                             } else {
                                 setStatus("Signing in anonymously...");
                                 signInAnonymously(auth).then(() => {
@@ -300,7 +302,7 @@
                                 }).catch(e => {
                                     // CRITICAL FIX: If auth fails (e.g. configuration-not-found), still try to load data as guest
                                     console.warn("Auth failed, falling back to guest mode:", e);
-                                    setStatus("Guest Mode (Public Access)"); // Updated status
+                                    setStatus("Auth missing. Trying guest access...");
                                     setErrorMsg(null); // Clear auth error to show UI
                                     
                                     if (!unsubscribeSnapshot) {
@@ -482,7 +484,7 @@
                                                         {posts.length === 0 ? (
                                                             <tr>
                                                                 <td colSpan="4" className="py-12 text-center text-slate-400">
-                                                                    No posts found.<br/>
+                                                                    No posts found in 'board_posts'.<br/>
                                                                     <span className="text-xs text-slate-300 mt-2 block">
                                                                         Current Status: {status}
                                                                     </span>
