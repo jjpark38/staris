@@ -37,12 +37,11 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Firebase SDKs (Stable Version 10.7.1) -->
+    <!-- Firebase SDKs (v10.8.0) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -56,14 +55,21 @@
         };
 
         // Initialize Firebase
+        let app, auth, db;
         try {
-            const app = initializeApp(firebaseConfig);
-            const analytics = getAnalytics(app);
-            const auth = getAuth(app);
-            const db = getFirestore(app);
-            
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            // Try initializing auth, but don't block DB if it fails
+            try {
+                auth = getAuth(app);
+            } catch (authError) {
+                console.warn("Auth initialization failed (Auth disabled in console?):", authError);
+                auth = null;
+            }
+
             // Expose Firebase functions to window so React can use them
             window.firebaseModules = {
+                app,
                 auth,
                 db,
                 signInAnonymously,
@@ -78,9 +84,9 @@
                 orderBy,
                 onSnapshot
             };
-            console.log("Firebase Initialized with STARIS DB");
+            console.log("Firebase Initialized. Auth status:", auth ? "Active" : "Inactive");
         } catch (e) {
-            console.error("Firebase Init Failed:", e);
+            console.error("Firebase Core Init Failed:", e);
         }
     </script>
 
@@ -161,7 +167,8 @@
             Edit: (props) => <Icon {...props} path={<><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></>} />,
             ArrowLeft: (props) => <Icon {...props} path={<><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></>} />,
             MessageSquare: (props) => <Icon {...props} path={<><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></>} />,
-            Refresh: (props) => <Icon {...props} path={<><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></>} />
+            Refresh: (props) => <Icon {...props} path={<><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></>} />,
+            Settings: (props) => <Icon {...props} path={<><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></>} />
         };
 
         // --- Board Component (Robust Version) ---
@@ -173,23 +180,27 @@
             const [loading, setLoading] = useState(true);
             const [status, setStatus] = useState("Initializing...");
             const [errorMsg, setErrorMsg] = useState(null);
+            
+            // Debugging State
+            const [showDebug, setShowDebug] = useState(false);
+            const [collectionName, setCollectionName] = useState('board_posts');
 
             // Function to manually fetch data (One-time fetch)
             const forceLoadPosts = async () => {
                 if (!window.firebaseModules) return;
                 const { db, collection, getDocs } = window.firebaseModules;
                 
-                setStatus("Forcing Data Load...");
+                setStatus(`Fetching from '${collectionName}'...`);
                 setLoading(true);
                 setErrorMsg(null);
 
                 try {
-                    // Use static root collection 'board_posts'
-                    const postsRef = collection(db, 'board_posts');
+                    // Use dynamic collection name
+                    const postsRef = collection(db, collectionName);
                     const querySnapshot = await getDocs(postsRef);
                     
                     if (querySnapshot.empty) {
-                        setStatus("Connected: 0 posts found.");
+                        setStatus(`Success: '${collectionName}' is empty (0 posts).`);
                         setPosts([]);
                     } else {
                         const loadedPosts = querySnapshot.docs.map(doc => {
@@ -203,7 +214,7 @@
                         
                         loadedPosts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                         setPosts(loadedPosts);
-                        setStatus(`Success: Loaded ${loadedPosts.length} posts.`);
+                        setStatus(`Success: Loaded ${loadedPosts.length} posts from '${collectionName}'.`);
                     }
                 } catch (error) {
                     console.error("Force load error:", error);
@@ -211,7 +222,7 @@
                     setStatus("Error during load.");
                     
                     if (error.code === 'permission-denied') {
-                        setErrorMsg("Error: Permission Denied. Please enable read access in Firebase Rules.");
+                        setErrorMsg("Error: Permission Denied. Check Firebase Rules.");
                     }
                 } finally {
                     setLoading(false);
@@ -224,13 +235,14 @@
                 const { db, collection, onSnapshot } = window.firebaseModules;
                 
                 setLoading(true);
-                setStatus("Connecting to Real-time Stream...");
+                setStatus(`Streaming from '${collectionName}'...`);
 
-                const postsRef = collection(db, 'board_posts'); 
+                // FIX: Use static root collection 'board_posts' for personal DB persistence
+                const postsRef = collection(db, collectionName); 
                 
                 const unsubscribe = onSnapshot(postsRef, (snapshot) => {
                     if (snapshot.empty) {
-                        setStatus("Connected: No posts yet.");
+                        setStatus(`Connected: No posts in '${collectionName}'.`);
                         setPosts([]);
                         setLoading(false);
                         return;
@@ -255,11 +267,11 @@
                     setLoading(false);
                     // Handle missing auth configuration gracefully
                     if (error.code === 'permission-denied') {
-                         setErrorMsg("Permission Denied. Check Firebase Rules.");
+                         setErrorMsg(`Permission Denied for '${collectionName}'. Check Rules.`);
                          setStatus("Error: Permission Denied.");
                     } else {
                          // Likely authentication error, try force load one-time
-                         setStatus("Stream Error. Attempting force load...");
+                         setStatus("Stream Error. Retrying force load...");
                          forceLoadPosts();
                     }
                 });
@@ -288,23 +300,31 @@
 
                     const { auth, signInAnonymously, onAuthStateChanged } = window.firebaseModules;
                     
-                    try {
-                        // Attempt to connect immediately (Optimistic UI)
-                        unsubscribeSnapshot = setupRealtimeListener();
+                    // 1. Immediately try to setup listener (Works if public)
+                    unsubscribeSnapshot = setupRealtimeListener();
 
-                        // Try Auth in background
-                        signInAnonymously(auth).then(() => {
-                           setStatus("Authenticated (Anonymous)");
-                        }).catch(e => {
-                            console.warn("Auth failed (Guest Mode):", e.message);
-                            setStatus("Guest Mode (Public Access)");
-                            // Even if auth fails, we already started the listener above
-                        });
-
-                    } catch (error) {
-                        console.error("Firebase Init Error:", error);
-                        setLoading(false);
-                        setErrorMsg("Init Failed: " + error.message);
+                    // 2. Try Auth if available
+                    if (auth) {
+                        try {
+                            onAuthStateChanged(auth, (u) => {
+                                setUser(u);
+                                if (u) {
+                                    setStatus("Authenticated. Syncing...");
+                                } else {
+                                    setStatus("Signing in...");
+                                    signInAnonymously(auth).then(() => {
+                                       setStatus("Authenticated (Anonymous)");
+                                    }).catch(e => {
+                                        console.warn("Auth failed (Guest Mode):", e.message);
+                                        setStatus("Guest Mode (Public Access)");
+                                    });
+                                }
+                            });
+                        } catch (err) {
+                             console.warn("Auth Error:", err);
+                        }
+                    } else {
+                        setStatus("Guest Mode (No Auth)");
                     }
                 };
                 
@@ -315,7 +335,7 @@
                         unsubscribeSnapshot();
                     }
                 };
-            }, []);
+            }, [collectionName]); // Re-run when collection name changes
 
             const handleInputChange = (e) => {
                 const { name, value } = e.target;
@@ -328,7 +348,7 @@
                 
                 try {
                     const { db, collection, addDoc } = window.firebaseModules;
-                    const postsRef = collection(db, 'board_posts');
+                    const postsRef = collection(db, collectionName);
                     
                     await addDoc(postsRef, {
                         title: formData.title,
@@ -353,7 +373,7 @@
 
                 try {
                     const { db, doc, updateDoc } = window.firebaseModules;
-                    const postRef = doc(db, 'board_posts', currentPost.id);
+                    const postRef = doc(db, collectionName, currentPost.id);
 
                     await updateDoc(postRef, {
                         title: formData.title,
@@ -390,11 +410,18 @@
                                 <h3 className="text-white font-bold text-xl flex items-center gap-2">
                                     <Icons.MessageSquare className="text-blue-400" />
                                     STARIS Board
+                                    <button 
+                                        onClick={() => setShowDebug(!showDebug)} 
+                                        className="text-slate-600 hover:text-white transition-colors ml-2"
+                                        title="Debug Settings"
+                                    >
+                                        <Icons.Settings size={16} />
+                                    </button>
                                 </h3>
                                 
                                 {/* Status Bar for Debugging */}
                                 <div className="text-xs text-slate-400 bg-slate-800 px-3 py-1 rounded-full hidden md:block">
-                                    System Status: <span className="text-blue-300">{status}</span>
+                                    Status: <span className="text-blue-300">{status}</span>
                                 </div>
 
                                 <div className="flex gap-2">
@@ -404,7 +431,7 @@
                                             className="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition-colors border border-slate-600"
                                             title="Force Refresh Data"
                                         >
-                                            Load List (Force)
+                                            <Icons.Refresh size={16} /> Load
                                         </button>
                                     )}
                                     {view === 'list' && (
@@ -428,6 +455,20 @@
                                     )}
                                 </div>
                             </div>
+                            
+                            {/* Debug Collection Input */}
+                            {showDebug && (
+                                <div className="bg-slate-800 p-4 border-t border-slate-700 flex gap-2 items-center">
+                                    <span className="text-white text-xs font-bold">Collection:</span>
+                                    <input 
+                                        type="text" 
+                                        value={collectionName} 
+                                        onChange={(e) => setCollectionName(e.target.value)} 
+                                        className="bg-slate-700 text-white text-xs px-2 py-1 rounded border border-slate-600 focus:outline-none" 
+                                    />
+                                    <button onClick={forceLoadPosts} className="text-xs bg-blue-600 text-white px-2 py-1 rounded">Set & Load</button>
+                                </div>
+                            )}
 
                             {/* Mobile Status Bar */}
                             <div className="bg-slate-800 px-6 py-2 md:hidden text-center">
@@ -470,7 +511,7 @@
                                                         {posts.length === 0 ? (
                                                             <tr>
                                                                 <td colSpan="4" className="py-12 text-center text-slate-400">
-                                                                    No posts found in 'board_posts'.<br/>
+                                                                    No posts found in '{collectionName}'.<br/>
                                                                     <span className="text-xs text-slate-300 mt-2 block">
                                                                         Current Status: {status}
                                                                     </span>
