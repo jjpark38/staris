@@ -62,14 +62,10 @@
             const auth = getAuth(app);
             const db = getFirestore(app);
             
-            // Get current App ID for persistent storage path
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
             // Expose Firebase functions to window so React can use them
             window.firebaseModules = {
                 auth,
                 db,
-                appId, // Expose appId
                 signInAnonymously,
                 onAuthStateChanged,
                 collection,
@@ -82,7 +78,7 @@
                 orderBy,
                 onSnapshot
             };
-            console.log("Firebase Initialized with STARIS DB (Persistent Mode)");
+            console.log("Firebase Initialized with STARIS DB (Fixed Root Collection)");
         } catch (e) {
             console.error("Firebase Init Failed in Module:", e);
         }
@@ -189,8 +185,9 @@
                 setErrorMsg(null);
 
                 try {
-                    // Strict Path Rule: artifacts/{appId}/public/data/board_posts
-                    const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'board_posts');
+                    // FIX: Use static root collection 'board_posts' for personal DB persistence
+                    // Old: const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'board_posts');
+                    const postsRef = collection(db, 'board_posts');
                     const querySnapshot = await getDocs(postsRef);
                     
                     if (querySnapshot.empty) {
@@ -227,8 +224,8 @@
                 setLoading(true);
                 setStatus("Connecting to Real-time Stream...");
 
-                // Strict Path Rule: artifacts/{appId}/public/data/board_posts
-                const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'board_posts'); 
+                // FIX: Use static root collection 'board_posts' for personal DB persistence
+                const postsRef = collection(db, 'board_posts'); 
                 
                 const unsubscribe = onSnapshot(postsRef, (snapshot) => {
                     if (snapshot.empty) {
@@ -339,8 +336,8 @@
                 
                 try {
                     const { db, collection, addDoc, appId } = window.firebaseModules;
-                    // Strict Path Rule: artifacts/{appId}/public/data/board_posts
-                    const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'board_posts');
+                    // FIX: Use static root collection 'board_posts'
+                    const postsRef = collection(db, 'board_posts');
                     
                     await addDoc(postsRef, {
                         title: formData.title,
@@ -365,8 +362,8 @@
 
                 try {
                     const { db, doc, updateDoc, appId } = window.firebaseModules;
-                    // Strict Path Rule: artifacts/{appId}/public/data/board_posts/{id}
-                    const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'board_posts', currentPost.id);
+                    // FIX: Use static root collection 'board_posts'
+                    const postRef = doc(db, 'board_posts', currentPost.id);
 
                     await updateDoc(postRef, {
                         title: formData.title,
