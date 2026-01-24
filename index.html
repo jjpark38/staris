@@ -5,28 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STARIS - Blockchain & SI Technology Leader</title>
     
-    <!-- ==========================================
-         Marketing & SEO Meta Tags (Applied)
-         ========================================== -->
-    <meta name="description" content="STARIS - 넷마블 인기 1위 개발진이 만드는 최상의 SI 솔루션, 웹/앱 개발 전문">
-    <meta name="keywords" content="SI개발, 웹개발, 앱개발, 게임개발, STARIS, 스타리스">
-    <meta name="author" content="STARIS Corp.">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph / Facebook / KakaoTalk -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.staris.io/">
-    <meta property="og:title" content="STARIS - 기술의 별이 되다">
-    <meta property="og:description" content="당신의 아이디어를 현실로. 최고의 기술 파트너 STARIS입니다.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200&auto=format&fit=crop">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://www.staris.io/">
-    <meta property="twitter:title" content="STARIS - 기술의 별이 되다">
-    <meta property="twitter:description" content="당신의 아이디어를 현실로. 최고의 기술 파트너 STARIS입니다.">
-    <meta property="twitter:image" content="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200&auto=format&fit=crop">
-    
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -37,11 +15,12 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Firebase SDKs (v10.8.0) -->
+    <!-- Firebase SDKs (Stable Version 10.7.1) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -55,22 +34,14 @@
         };
 
         // Initialize Firebase
-        let app, auth, db;
         try {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            
-            // Try initializing auth, but handle failure gracefully
-            try {
-                auth = getAuth(app);
-            } catch (authError) {
-                console.warn("Auth initialization failed (Using Guest Mode):", authError);
-                auth = null;
-            }
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
 
             // Expose Firebase functions to window so React can use them
             window.firebaseModules = {
-                app,
                 auth,
                 db,
                 signInAnonymously,
@@ -80,14 +51,13 @@
                 getDocs,
                 doc,
                 deleteDoc,
-                updateDoc,
                 query,
                 orderBy,
                 onSnapshot
             };
-            console.log("Firebase Initialized. DB Status: Ready");
+            console.log("Firebase Initialized with STARIS DB");
         } catch (e) {
-            console.error("Firebase Core Init Failed:", e);
+            console.error("Firebase Init Failed in Module:", e);
         }
     </script>
 
@@ -168,39 +138,35 @@
             Edit: (props) => <Icon {...props} path={<><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></>} />,
             ArrowLeft: (props) => <Icon {...props} path={<><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></>} />,
             MessageSquare: (props) => <Icon {...props} path={<><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></>} />,
-            Refresh: (props) => <Icon {...props} path={<><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></>} />,
-            Settings: (props) => <Icon {...props} path={<><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></>} />
+            Refresh: (props) => <Icon {...props} path={<><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></>} />
         };
 
-        // --- Board Component (Final Robust Version) ---
+        // --- Board Component (Robust Version) ---
         const BoardSection = ({ t, lang }) => {
             const [posts, setPosts] = useState([]);
-            const [view, setView] = useState('list');
+            const [view, setView] = useState('list'); // 'list', 'write', 'detail'
             const [currentPost, setCurrentPost] = useState(null);
             const [formData, setFormData] = useState({ title: '', author: '', content: '' });
+            const [user, setUser] = useState(null);
             const [loading, setLoading] = useState(true);
-            const [status, setStatus] = useState("Connecting...");
+            const [status, setStatus] = useState("Initializing...");
             const [errorMsg, setErrorMsg] = useState(null);
-            
-            // Debugging State
-            const [showDebug, setShowDebug] = useState(false);
-            const [collectionName, setCollectionName] = useState('board_posts'); // 루트 컬렉션 이름
 
-            // Function to manually fetch data (Fallback)
+            // Function to manually fetch data (One-time fetch)
             const forceLoadPosts = async () => {
                 if (!window.firebaseModules) return;
                 const { db, collection, getDocs } = window.firebaseModules;
                 
-                setStatus(`Forcing Load from '${collectionName}'...`);
+                setStatus("Forcing Data Load...");
                 setLoading(true);
                 setErrorMsg(null);
 
                 try {
-                    const postsRef = collection(db, collectionName);
+                    const postsRef = collection(db, 'board_posts');
                     const querySnapshot = await getDocs(postsRef);
                     
                     if (querySnapshot.empty) {
-                        setStatus(`Success: '${collectionName}' is empty (0 posts).`);
+                        setStatus("Success: Collection is empty (0 posts).");
                         setPosts([]);
                     } else {
                         const loadedPosts = querySnapshot.docs.map(doc => {
@@ -212,33 +178,32 @@
                             };
                         });
                         
-                        // Sort descending
                         loadedPosts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                         setPosts(loadedPosts);
                         setStatus(`Success: Loaded ${loadedPosts.length} posts.`);
                     }
                 } catch (error) {
                     console.error("Force load error:", error);
-                    setErrorMsg("Load failed: " + error.message);
+                    setErrorMsg("Force load failed: " + error.message);
                     setStatus("Error during force load.");
                 } finally {
                     setLoading(false);
                 }
             };
 
-            // Real-time Listener (Main)
+            // Real-time Listener Function
             const setupRealtimeListener = () => {
                 if (!window.firebaseModules) return null;
                 const { db, collection, onSnapshot } = window.firebaseModules;
                 
                 setLoading(true);
-                setStatus(`Streaming from '${collectionName}'...`);
+                setStatus("Connecting to Real-time Stream...");
 
-                const postsRef = collection(db, collectionName); 
+                const postsRef = collection(db, 'board_posts'); 
                 
-                return onSnapshot(postsRef, (snapshot) => {
+                const unsubscribe = onSnapshot(postsRef, (snapshot) => {
                     if (snapshot.empty) {
-                        setStatus(`Connected: No posts in '${collectionName}'.`);
+                        setStatus("Connected: No data found (Empty Collection).");
                         setPosts([]);
                         setLoading(false);
                         return;
@@ -256,67 +221,86 @@
                     loadedPosts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                     
                     setPosts(loadedPosts);
-                    setStatus(`Connected: ${loadedPosts.length} posts loaded.`);
+                    setStatus(`Connected: Updated with ${loadedPosts.length} posts.`);
                     setLoading(false);
                 }, (error) => {
                     console.error("Listener Error:", error);
                     setLoading(false);
-                    // Permission error
+                    // Even if permission denied here, we handle gracefully.
+                    // But if public read is allowed, this might work fine.
                     if (error.code === 'permission-denied') {
-                         setErrorMsg(`Permission Denied for '${collectionName}'. Check Rules.`);
-                         setStatus("Error: Permission Denied.");
+                        setErrorMsg("Permission Denied: Check Firebase Rules.");
+                        setStatus("Error: Permission Denied.");
                     } else {
-                         // Other errors: try fallback
-                         setStatus("Stream Error. Retrying via Force Load...");
-                         forceLoadPosts();
+                        setErrorMsg(`Stream Error: ${error.message}`);
+                        setStatus("Error: Stream failed.");
                     }
                 });
+                
+                return unsubscribe;
             };
 
-            // Initialize Logic (Decoupled from Auth)
+            // Initialize Firebase and Auth
             useEffect(() => {
                 let unsubscribeSnapshot = null;
                 let retryCount = 0;
 
-                const initBoard = async () => {
-                    // 1. Wait for Firebase modules
+                const initFirebase = async () => {
                     if (!window.firebaseModules) {
-                        if (retryCount < 20) {
+                        if (retryCount < 10) {
                             retryCount++;
-                            setStatus(`Waiting for DB... (${retryCount})`);
-                            setTimeout(initBoard, 200); 
+                            setStatus(`Loading Firebase SDK... (${retryCount})`);
+                            setTimeout(initFirebase, 500); 
                         } else {
-                            setErrorMsg("Firebase SDK not loaded.");
+                            setErrorMsg("Failed to load Firebase libraries.");
+                            setStatus("Error: SDK Missing.");
                             setLoading(false);
                         }
                         return;
                     }
 
-                    // 2. Start Data Listening IMMEDIATELY (Do not wait for auth)
-                    // This assumes public read access is enabled
-                    if (unsubscribeSnapshot) unsubscribeSnapshot();
-                    unsubscribeSnapshot = setupRealtimeListener();
-
-                    // 3. Handle Auth quietly in background
                     const { auth, signInAnonymously, onAuthStateChanged } = window.firebaseModules;
-                    if (auth) {
+                    
+                    try {
                         onAuthStateChanged(auth, (u) => {
-                            if (!u) {
-                                // Try signing in silently
-                                signInAnonymously(auth).catch(e => console.warn("Guest mode active:", e.message));
+                            setUser(u);
+                            if (u) {
+                                setStatus("User Authenticated. Fetching...");
+                                if (!unsubscribeSnapshot) {
+                                    unsubscribeSnapshot = setupRealtimeListener();
+                                }
+                            } else {
+                                setStatus("Signing in anonymously...");
+                                signInAnonymously(auth).then(() => {
+                                    // Success handled by onAuthStateChanged
+                                }).catch(e => {
+                                    // CRITICAL FIX: If auth fails (e.g. configuration-not-found), still try to load data as guest
+                                    console.warn("Auth failed, falling back to guest mode:", e);
+                                    setStatus("Auth missing. Trying guest access...");
+                                    setErrorMsg(null); // Clear auth error to show UI
+                                    
+                                    if (!unsubscribeSnapshot) {
+                                        unsubscribeSnapshot = setupRealtimeListener();
+                                    }
+                                });
                             }
                         });
+
+                    } catch (error) {
+                        console.error("Firebase Init Error:", error);
+                        setLoading(false);
+                        setErrorMsg("Init Failed: " + error.message);
                     }
                 };
                 
-                initBoard();
+                initFirebase();
 
                 return () => {
                     if (unsubscribeSnapshot && typeof unsubscribeSnapshot === 'function') {
                         unsubscribeSnapshot();
                     }
                 };
-            }, [collectionName]); // Re-run if collection name changes
+            }, []);
 
             const handleInputChange = (e) => {
                 const { name, value } = e.target;
@@ -329,7 +313,9 @@
                 
                 try {
                     const { db, collection, addDoc } = window.firebaseModules;
-                    await addDoc(collection(db, collectionName), {
+                    const postsRef = collection(db, 'board_posts');
+                    
+                    await addDoc(postsRef, {
                         title: formData.title,
                         author: formData.author || 'Anonymous',
                         content: formData.content,
@@ -337,37 +323,13 @@
                         views: 0
                     });
                     
-                    alert("Post submitted!");
                     setFormData({ title: '', author: '', content: '' });
                     setView('list');
+                    // Optional: force reload if listener is stuck
+                    // forceLoadPosts(); 
                 } catch (error) {
                     console.error("Error adding post:", error);
                     alert("Failed to post: " + error.message);
-                }
-            };
-
-            const handleUpdate = async (e) => {
-                e.preventDefault();
-                if (!formData.title || !formData.content) return;
-
-                try {
-                    const { db, doc, updateDoc } = window.firebaseModules;
-                    const postRef = doc(db, collectionName, currentPost.id);
-
-                    await updateDoc(postRef, {
-                        title: formData.title,
-                        author: formData.author,
-                        content: formData.content,
-                        updatedAt: Date.now()
-                    });
-
-                    setCurrentPost({ ...currentPost, ...formData });
-                    setView('detail');
-                    // Force refresh to ensure list is updated
-                    setTimeout(forceLoadPosts, 500); 
-                } catch (error) {
-                    console.error("Error updating post:", error);
-                    alert("Failed to update: " + error.message);
                 }
             };
 
@@ -391,17 +353,11 @@
                                 <h3 className="text-white font-bold text-xl flex items-center gap-2">
                                     <Icons.MessageSquare className="text-blue-400" />
                                     STARIS Board
-                                    <button 
-                                        onClick={() => setShowDebug(!showDebug)} 
-                                        className="text-slate-600 hover:text-white transition-colors ml-2"
-                                        title="Debug Settings"
-                                    >
-                                        <Icons.Settings size={16} />
-                                    </button>
                                 </h3>
                                 
+                                {/* Status Bar for Debugging */}
                                 <div className="text-xs text-slate-400 bg-slate-800 px-3 py-1 rounded-full hidden md:block">
-                                    <span className="text-blue-300">{status}</span>
+                                    System Status: <span className="text-blue-300">{status}</span>
                                 </div>
 
                                 <div className="flex gap-2">
@@ -411,21 +367,18 @@
                                             className="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-bold transition-colors border border-slate-600"
                                             title="Force Refresh Data"
                                         >
-                                            <Icons.Refresh size={16} /> Load
+                                            Load List (Force)
                                         </button>
                                     )}
                                     {view === 'list' && (
                                         <button 
-                                            onClick={() => {
-                                                setFormData({ title: '', author: '', content: '' });
-                                                setView('write');
-                                            }}
+                                            onClick={() => setView('write')}
                                             className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2"
                                         >
                                             <Icons.Edit size={16} /> Write
                                         </button>
                                     )}
-                                    {(view !== 'list') && (
+                                    {(view === 'write' || view === 'detail') && (
                                         <button 
                                             onClick={() => setView('list')}
                                             className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2"
@@ -435,43 +388,6 @@
                                     )}
                                 </div>
                             </div>
-                            
-                            {/* Debug Collection Input */}
-                            {showDebug && (
-                                <div className="bg-slate-800 p-4 border-t border-slate-700 flex gap-2 items-center">
-                                    <span className="text-white text-xs font-bold">Collection:</span>
-                                    <input 
-                                        type="text" 
-                                        value={collectionName} 
-                                        onChange={(e) => setCollectionName(e.target.value)} 
-                                        className="bg-slate-700 text-white text-xs px-2 py-1 rounded border border-slate-600 focus:outline-none" 
-                                    />
-                                    <button onClick={forceLoadPosts} className="text-xs bg-blue-600 text-white px-2 py-1 rounded">Set & Load</button>
-                                    
-                                    {/* Test Write Button */}
-                                    <button 
-                                        onClick={async () => {
-                                            if (!window.firebaseModules) return;
-                                            try {
-                                                const { db, collection, addDoc } = window.firebaseModules;
-                                                await addDoc(collection(db, collectionName), {
-                                                    title: "Test Post " + new Date().toLocaleTimeString(),
-                                                    author: "System",
-                                                    content: "This is a test post to verify database connection.",
-                                                    createdAt: Date.now()
-                                                });
-                                                alert("Test post created!");
-                                                forceLoadPosts();
-                                            } catch (e) {
-                                                alert("Write failed: " + e.message);
-                                            }
-                                        }}
-                                        className="text-xs bg-green-600 text-white px-2 py-1 rounded ml-2"
-                                    >
-                                        Test Write
-                                    </button>
-                                </div>
-                            )}
 
                             {/* Mobile Status Bar */}
                             <div className="bg-slate-800 px-6 py-2 md:hidden text-center">
@@ -514,7 +430,7 @@
                                                         {posts.length === 0 ? (
                                                             <tr>
                                                                 <td colSpan="4" className="py-12 text-center text-slate-400">
-                                                                    No posts found in '{collectionName}'.<br/>
+                                                                    No posts found in 'board_posts'.<br/>
                                                                     <span className="text-xs text-slate-300 mt-2 block">
                                                                         Current Status: {status}
                                                                     </span>
@@ -541,10 +457,8 @@
                                             </div>
                                         )}
 
-                                        {/* WRITE FORM */}
                                         {view === 'write' && (
                                             <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6 animate-fade-in-up">
-                                                <h3 className="text-2xl font-bold mb-4">New Post</h3>
                                                 <div>
                                                     <label className="block text-sm font-bold text-slate-700 mb-2">Title</label>
                                                     <input 
@@ -599,87 +513,14 @@
                                             </form>
                                         )}
 
-                                        {/* EDIT FORM */}
-                                        {view === 'edit' && (
-                                            <form onSubmit={handleUpdate} className="max-w-2xl mx-auto space-y-6 animate-fade-in-up">
-                                                <h3 className="text-2xl font-bold mb-4">Edit Post</h3>
-                                                <div>
-                                                    <label className="block text-sm font-bold text-slate-700 mb-2">Title</label>
-                                                    <input 
-                                                        type="text" 
-                                                        name="title" 
-                                                        value={formData.title} 
-                                                        onChange={handleInputChange}
-                                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
-                                                        placeholder="Enter post title"
-                                                        required
-                                                    />
-                                                </div>
-                                                <div className="grid grid-cols-2 gap-6">
-                                                    <div>
-                                                        <label className="block text-sm font-bold text-slate-700 mb-2">Author</label>
-                                                        <input 
-                                                            type="text" 
-                                                            name="author" 
-                                                            value={formData.author} 
-                                                            onChange={handleInputChange}
-                                                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
-                                                            placeholder="Anonymous"
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-bold text-slate-700 mb-2">Content</label>
-                                                    <textarea 
-                                                        name="content" 
-                                                        value={formData.content} 
-                                                        onChange={handleInputChange}
-                                                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 h-64 focus:outline-none focus:border-blue-500 transition-colors resize-none"
-                                                        placeholder="Write your message here..."
-                                                        required
-                                                    ></textarea>
-                                                </div>
-                                                <div className="flex justify-end gap-4">
-                                                    <button 
-                                                        type="button" 
-                                                        onClick={() => setView('detail')}
-                                                        className="px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-bold transition-colors"
-                                                    >
-                                                        Cancel
-                                                    </button>
-                                                    <button 
-                                                        type="submit" 
-                                                        className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition-colors shadow-lg shadow-blue-500/30"
-                                                    >
-                                                        Update Post
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        )}
-
                                         {view === 'detail' && currentPost && (
                                             <div className="animate-fade-in-up">
                                                 <div className="border-b border-slate-200 pb-6 mb-6">
                                                     <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">{currentPost.title}</h2>
-                                                    <div className="flex items-center justify-between">
-                                                        <div className="flex items-center gap-4 text-sm text-slate-500">
-                                                            <span className="flex items-center gap-1"><span className="font-bold text-slate-700">By</span> {currentPost.author}</span>
-                                                            <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                                                            <span>{formatDate(currentPost.createdAt)}</span>
-                                                        </div>
-                                                        <button 
-                                                            onClick={() => {
-                                                                setFormData({ 
-                                                                    title: currentPost.title, 
-                                                                    author: currentPost.author, 
-                                                                    content: currentPost.content 
-                                                                });
-                                                                setView('edit');
-                                                            }}
-                                                            className="text-blue-600 hover:text-blue-800 font-bold text-sm flex items-center gap-1"
-                                                        >
-                                                            <Icons.Edit size={16} /> Edit
-                                                        </button>
+                                                    <div className="flex items-center gap-4 text-sm text-slate-500">
+                                                        <span className="flex items-center gap-1"><span className="font-bold text-slate-700">By</span> {currentPost.author}</span>
+                                                        <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                                        <span>{formatDate(currentPost.createdAt)}</span>
                                                     </div>
                                                 </div>
                                                 <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed whitespace-pre-wrap min-h-[300px]">
@@ -741,8 +582,11 @@
                 const subject = `[STARIS 문의] ${formData.type} - ${formData.name}`;
                 const body = `Name: ${formData.name}\nPhone: ${formData.phone}\nEmail: ${formData.email}\nType: ${formData.type}\n\nMessage:\n${formData.message}`;
                 
+                // Force use of Gmail web interface for better PC compatibility
+                // Format: https://mail.google.com/mail/?view=cm&fs=1&to={EMAIL}&su={SUBJECT}&body={BODY}
                 const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=numjou@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                 
+                // Open in a new tab
                 window.open(gmailLink, '_blank');
             };
 
@@ -778,6 +622,64 @@
                             { icon: 'Server', title: '26년차 베테랑', desc: 'KTF/SKT 통신망 관리 시스템부터 금융권 SI까지, 실패가 용납되지 않는 미션 크리티컬 시스템 개발의 산증인.' },
                             { icon: 'ShieldCheck', title: '거래소 구축 총괄', desc: '빗크몬(Bitcmon) 등 가상자산 거래소 개발을 총괄하며 금융 보안 규격(ISO)과 대용량 매칭 엔진을 설계.' },
                             { icon: 'Cpu', title: '풀스택 리더십', desc: 'C/C++, Java, Blockchain을 아우르는 깊이 있는 기술력으로 스타리즈의 R&D 센터를 이끕니다.' }
+                        ]
+                    },
+                    about: {
+                        tag: 'The Spectrum of Excellence', title_pre: 'RGB to ', title_post: 'White.', subtitle: '17 Years of Perfect Teamwork.', desc: 'Since forming the SnowFamily team in 2007, our history continues. Diverse experts (RGB) come together to create one perfect light (White).',
+                        items: [
+                            { title: 'Since 2007 Heritage', desc: 'Top-grossing game development teamwork (Guardians League, NOx, etc.)' },
+                            { title: 'Blockchain Integration', desc: 'Advanced technology for P2E games & Exchange integration' },
+                            { title: 'Crypto Listing Support', desc: 'Technical support for successful coin listing and tokenomics' }
+                        ]
+                    },
+                    tech: {
+                        tag: 'Core Technology', title: 'Proprietary R&D Capabilities', desc: '게임 엔진 기술을 블록체인에 접목하여 압도적인 퍼포먼스를 냅니다.',
+                        items: [
+                            { title: 'P2E Middleware', desc: '게임 데이터와 블록체인 지갑을 실시간으로 동기화하는 미들웨어 기술.' },
+                            { title: 'Level Design Editor', desc: '메타버스 환경 구축을 위한 자체 맵 에디터 및 최적화 툴.' },
+                            { title: 'High-Traffic Server', desc: '대규모 트래픽 처리가 가능한 게임 서버 아키텍처 및 이펙트 매니저.' }
+                        ]
+                    },
+                    business: {
+                        tag: 'Our Business', title: '블록체인과 게임의 융합', desc: '단순한 개발을 넘어, 상장부터 P2E 생태계 구축까지 원스톱 서비스를 제공합니다.',
+                        cards: [
+                            { title: 'Crypto Exchange & Listing', subtitle: '거래소 구축 및 상장 지원', desc: '빗크몬 등 실제 거래소 구축 경험을 바탕으로, 코인 상장(Listing)에 필요한 기술적 요구사항을 완벽하게 지원합니다.', list: ['거래소 구축 솔루션', '코인 상장 기술 지원', 'KYC/AML 보안 시스템'] },
+                            { title: 'P2E Game Development', subtitle: '블록체인 게임 개발', desc: '17년 게임 개발 역량을 P2E에 접목했습니다. 재미있는 게임에 토크노믹스를 입혀 지속 가능한 생태계를 만듭니다.', list: ['RPG/캐주얼 P2E 게임', 'NFT 민팅 시스템', '인게임 토큰 경제 설계'] },
+                            { title: 'Blockchain Integration', subtitle: '연동 및 인프라 기술', desc: '기존 게임이나 플랫폼에 블록체인을 연동합니다. 지갑 연결, 스마트 컨트랙트 배포 등 복잡한 기술을 해결해 드립니다.', list: ['WEB3 지갑 연동', '스마트 컨트랙트 개발', '이종 체인 간 브릿지'] }
+                        ]
+                    },
+                    portfolio: { 
+                        tag: 'Selected Works', 
+                        title: 'Portfolio Highlights', 
+                        video1_title: 'God Sword (갓검) Action RPG', 
+                        video1_desc: '스타리즈 기술력으로 완성된 화려한 액션과 타격감. 갓검(God Sword) 플레이 영상입니다.', 
+                        video2_title: 'Guardians League Netmarble', 
+                        video2_desc: '구글 인기 1위, 매출 17위 달성. 넷마블을 통해 서비스된 전설적인 모바일 AOS 게임.' 
+                    },
+                    contact: { title: 'Start a Win-Win Partnership', desc: '단순한 외주를 넘어, 서로의 비즈니스를 성장시킬 파트너십 제안은 언제나 환영합니다.', winwin_title: 'Open for Proposals', winwin_desc: '귀사의 아이디어와 스타리즈의 기술력이 만나면 불가능은 없습니다. \n공동 사업, 기술 제휴, 프로젝트 협업 등 어떤 형태의 제안도 귀담아듣겠습니다.', address: '강원도 춘천시 소양고개길 50, 3층', btn: '제안서 보내기' }
+                },
+                en: {
+                    nav: { home: 'Home', about: 'About', vision: 'Vision', ceo: 'CEO', cto: 'CTO', tech: 'Technology', business: 'Business', portfolio: 'Portfolio', board: 'Board', contact: 'Contact' },
+                    hero: { badge: 'Technology Heritage Since 2007', title1: 'Convergence of', title2: 'Blockchain & P2E Games', desc: 'Expertise in Crypto Listing combined with P2E Game Development.\nSTARIS leads your business to the center of the digital asset ecosystem.', btn_tech: 'View Technology', btn_contact: 'Contact Us' },
+                    vision: {
+                        tag: 'Our Independence & Goal', title: 'Beyond Investment, Towards Global', subtitle: 'Self-Sustaining Tech Company, STARIS', desc: 'We no longer rely on external investments.\nWe pioneer our own future with proven SI development capabilities, fueling our games\' global expansion.',
+                        cards: [
+                            { icon: 'Rocket', title: 'Self-Sustaining Growth', desc: 'Instead of chasing investments, we operate and reinvest in R&D through profits from advanced SI/outsourcing projects.' },
+                            { icon: 'RefreshCw', title: 'Virtuous Cycle', desc: 'Capital and tech accumulated from SI projects become the foundation for global expansion and live service of our own games (IP).' },
+                            { icon: 'Globe', title: 'Global Expansion', desc: 'We launch domestically proven games globally with our own strength, writing the success story of true K-Games.' }
+                        ]
+                    },
+                    ceo: {
+                        tag: 'CEO Spotlight', title: 'Developer at Heart', name: 'CEO Park Jung-ju', role: 'Founder & Head Developer', interview_title: 'How to Survive as a Developer', interview_desc: "In the 18 years since founding SnowFamily in 2007, I've learned that 'people' and 'networks' are key.\nSuccess isn't just about code. Our 'Network Theory', harmonizing planning, marketing, and business, is STARIS's core strength.",
+                        philosophy: [
+                            { title: 'The 3-3-3 Rule', desc: 'Fun for 3 mins leads to 30 mins, and 30 mins to 3 hours. (Immersion Philosophy)' },
+                            { title: 'Persistence', desc: '18 years of grit and determination, born from a pro-gamer’s competitive spirit.' },
+                            { title: 'Convergence', desc: 'Creating new value by combining the Fun of games with the Earnings of blockchain.' }
+                        ],
+                        press_clips: [
+                            { media: 'MoneyToday', date: '2014.05', title: "18 Years of Persistence: The Dream of Korea's App Star", link: '#' },
+                            { media: 'Inven', date: '2014.04', title: "CEO Park: How to Survive as a Game Developer in Korea", link: '#' },
+                            { media: 'G-Star', date: '2023', title: "Outlook on Blockchain and Metaverse Game Market" }
                         ]
                     },
                     about: {
@@ -1339,3 +1241,4 @@
     </script>
 </body>
 </html>
+
