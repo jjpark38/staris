@@ -6,7 +6,7 @@
     <title>STARIS - Blockchain & SI Technology Leader</title>
     
     <!-- ==========================================
-         Marketing & SEO Meta Tags (Updated)
+         Marketing & SEO Meta Tags
          ========================================== -->
     <meta name="description" content="STARIS - 넷마블 인기 1위 개발진이 만드는 최상의 SI 솔루션, 웹/앱 개발 전문">
     <meta name="keywords" content="SI개발, 웹개발, 앱개발, 게임개발, STARIS, 스타리스">
@@ -15,10 +15,9 @@
 
     <!-- Open Graph / Facebook / KakaoTalk -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.staris.io/"> <!-- 실제 도메인으로 변경 권장 -->
+    <meta property="og:url" content="https://www.staris.io/">
     <meta property="og:title" content="STARIS - 기술의 별이 되다">
     <meta property="og:description" content="당신의 아이디어를 현실로. 최고의 기술 파트너 STARIS입니다.">
-    <!-- 배경 이미지를 대표 썸네일로 사용 -->
     <meta property="og:image" content="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200&auto=format&fit=crop">
 
     <!-- Twitter -->
@@ -43,7 +42,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        // Added updateDoc to imports
         import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
@@ -63,11 +61,15 @@
             const analytics = getAnalytics(app);
             const auth = getAuth(app);
             const db = getFirestore(app);
+            
+            // Get current App ID for persistent storage path
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
             // Expose Firebase functions to window so React can use them
             window.firebaseModules = {
                 auth,
                 db,
+                appId, // Expose appId
                 signInAnonymously,
                 onAuthStateChanged,
                 collection,
@@ -75,12 +77,12 @@
                 getDocs,
                 doc,
                 deleteDoc,
-                updateDoc, // Expose updateDoc
+                updateDoc,
                 query,
                 orderBy,
                 onSnapshot
             };
-            console.log("Firebase Initialized with STARIS DB");
+            console.log("Firebase Initialized with STARIS DB (Persistent Mode)");
         } catch (e) {
             console.error("Firebase Init Failed in Module:", e);
         }
@@ -166,7 +168,7 @@
             Refresh: (props) => <Icon {...props} path={<><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></>} />
         };
 
-        // --- Board Component (Robust Version with Edit) ---
+        // --- Board Component (Persistent Version with Edit) ---
         const BoardSection = ({ t, lang }) => {
             const [posts, setPosts] = useState([]);
             const [view, setView] = useState('list'); // 'list', 'write', 'detail', 'edit'
@@ -180,14 +182,15 @@
             // Function to manually fetch data (One-time fetch)
             const forceLoadPosts = async () => {
                 if (!window.firebaseModules) return;
-                const { db, collection, getDocs } = window.firebaseModules;
+                const { db, collection, getDocs, appId } = window.firebaseModules;
                 
                 setStatus("Forcing Data Load...");
                 setLoading(true);
                 setErrorMsg(null);
 
                 try {
-                    const postsRef = collection(db, 'board_posts');
+                    // Strict Path Rule: artifacts/{appId}/public/data/board_posts
+                    const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'board_posts');
                     const querySnapshot = await getDocs(postsRef);
                     
                     if (querySnapshot.empty) {
@@ -219,12 +222,13 @@
             // Real-time Listener Function
             const setupRealtimeListener = () => {
                 if (!window.firebaseModules) return null;
-                const { db, collection, onSnapshot } = window.firebaseModules;
+                const { db, collection, onSnapshot, appId } = window.firebaseModules;
                 
                 setLoading(true);
                 setStatus("Connecting to Real-time Stream...");
 
-                const postsRef = collection(db, 'board_posts'); 
+                // Strict Path Rule: artifacts/{appId}/public/data/board_posts
+                const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'board_posts'); 
                 
                 const unsubscribe = onSnapshot(postsRef, (snapshot) => {
                     if (snapshot.empty) {
@@ -334,8 +338,9 @@
                 if (!formData.title || !formData.content) return;
                 
                 try {
-                    const { db, collection, addDoc } = window.firebaseModules;
-                    const postsRef = collection(db, 'board_posts');
+                    const { db, collection, addDoc, appId } = window.firebaseModules;
+                    // Strict Path Rule: artifacts/{appId}/public/data/board_posts
+                    const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'board_posts');
                     
                     await addDoc(postsRef, {
                         title: formData.title,
@@ -359,8 +364,9 @@
                 if (!formData.title || !formData.content) return;
 
                 try {
-                    const { db, doc, updateDoc } = window.firebaseModules;
-                    const postRef = doc(db, 'board_posts', currentPost.id);
+                    const { db, doc, updateDoc, appId } = window.firebaseModules;
+                    // Strict Path Rule: artifacts/{appId}/public/data/board_posts/{id}
+                    const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'board_posts', currentPost.id);
 
                     await updateDoc(postRef, {
                         title: formData.title,
@@ -478,7 +484,7 @@
                                                         {posts.length === 0 ? (
                                                             <tr>
                                                                 <td colSpan="4" className="py-12 text-center text-slate-400">
-                                                                    No posts found in 'board_posts'.<br/>
+                                                                    No posts found.<br/>
                                                                     <span className="text-xs text-slate-300 mt-2 block">
                                                                         Current Status: {status}
                                                                     </span>
