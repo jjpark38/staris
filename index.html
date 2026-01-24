@@ -78,9 +78,9 @@
                 orderBy,
                 onSnapshot
             };
-            console.log("Firebase Initialized with STARIS DB (Fixed Root Collection)");
+            console.log("Firebase Initialized with STARIS DB");
         } catch (e) {
-            console.error("Firebase Init Failed in Module:", e);
+            console.error("Firebase Init Failed:", e);
         }
     </script>
 
@@ -164,13 +164,12 @@
             Refresh: (props) => <Icon {...props} path={<><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></>} />
         };
 
-        // --- Board Component (Persistent Version with Edit) ---
+        // --- Board Component (Robust Version) ---
         const BoardSection = ({ t, lang }) => {
             const [posts, setPosts] = useState([]);
             const [view, setView] = useState('list'); // 'list', 'write', 'detail', 'edit'
             const [currentPost, setCurrentPost] = useState(null);
             const [formData, setFormData] = useState({ title: '', author: '', content: '' });
-            const [user, setUser] = useState(null);
             const [loading, setLoading] = useState(true);
             const [status, setStatus] = useState("Initializing...");
             const [errorMsg, setErrorMsg] = useState(null);
@@ -178,20 +177,19 @@
             // Function to manually fetch data (One-time fetch)
             const forceLoadPosts = async () => {
                 if (!window.firebaseModules) return;
-                const { db, collection, getDocs, appId } = window.firebaseModules;
+                const { db, collection, getDocs } = window.firebaseModules;
                 
                 setStatus("Forcing Data Load...");
                 setLoading(true);
                 setErrorMsg(null);
 
                 try {
-                    // FIX: Use static root collection 'board_posts' for personal DB persistence
-                    // Old: const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'board_posts');
+                    // Use static root collection 'board_posts'
                     const postsRef = collection(db, 'board_posts');
                     const querySnapshot = await getDocs(postsRef);
                     
                     if (querySnapshot.empty) {
-                        setStatus("Success: Collection is empty (0 posts).");
+                        setStatus("Connected: 0 posts found.");
                         setPosts([]);
                     } else {
                         const loadedPosts = querySnapshot.docs.map(doc => {
@@ -209,8 +207,12 @@
                     }
                 } catch (error) {
                     console.error("Force load error:", error);
-                    setErrorMsg("Force load failed: " + error.message);
-                    setStatus("Error during force load.");
+                    setErrorMsg("Load failed: " + error.message);
+                    setStatus("Error during load.");
+                    
+                    if (error.code === 'permission-denied') {
+                        setErrorMsg("Error: Permission Denied. Please enable read access in Firebase Rules.");
+                    }
                 } finally {
                     setLoading(false);
                 }
@@ -219,17 +221,16 @@
             // Real-time Listener Function
             const setupRealtimeListener = () => {
                 if (!window.firebaseModules) return null;
-                const { db, collection, onSnapshot, appId } = window.firebaseModules;
+                const { db, collection, onSnapshot } = window.firebaseModules;
                 
                 setLoading(true);
                 setStatus("Connecting to Real-time Stream...");
 
-                // FIX: Use static root collection 'board_posts' for personal DB persistence
                 const postsRef = collection(db, 'board_posts'); 
                 
                 const unsubscribe = onSnapshot(postsRef, (snapshot) => {
                     if (snapshot.empty) {
-                        setStatus("Connected: No data found (Empty Collection).");
+                        setStatus("Connected: No posts yet.");
                         setPosts([]);
                         setLoading(false);
                         return;
@@ -247,17 +248,19 @@
                     loadedPosts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                     
                     setPosts(loadedPosts);
-                    setStatus(`Connected: Updated with ${loadedPosts.length} posts.`);
+                    setStatus(`Connected: ${loadedPosts.length} posts loaded.`);
                     setLoading(false);
                 }, (error) => {
                     console.error("Listener Error:", error);
                     setLoading(false);
+                    // Handle missing auth configuration gracefully
                     if (error.code === 'permission-denied') {
-                        setErrorMsg("Permission Denied: Check Firebase Rules.");
-                        setStatus("Error: Permission Denied.");
+                         setErrorMsg("Permission Denied. Check Firebase Rules.");
+                         setStatus("Error: Permission Denied.");
                     } else {
-                        setErrorMsg(`Stream Error: ${error.message}`);
-                        setStatus("Error: Stream failed.");
+                         // Likely authentication error, try force load one-time
+                         setStatus("Stream Error. Attempting force load...");
+                         forceLoadPosts();
                     }
                 });
                 
@@ -286,30 +289,16 @@
                     const { auth, signInAnonymously, onAuthStateChanged } = window.firebaseModules;
                     
                     try {
-                        // FIX: Attempt to setup listener immediately regardless of auth state
-                        // This allows data loading if public access is enabled in rules
-                        // while auth happens in background
+                        // Attempt to connect immediately (Optimistic UI)
                         unsubscribeSnapshot = setupRealtimeListener();
 
-                        onAuthStateChanged(auth, (u) => {
-                            setUser(u);
-                            if (u) {
-                                setStatus("User Authenticated. Fetching...");
-                            } else {
-                                setStatus("Signing in anonymously...");
-                                signInAnonymously(auth).then(() => {
-                                    // Success handled by onAuthStateChanged
-                                }).catch(e => {
-                                    // CRITICAL FIX: If auth fails (e.g. configuration-not-found), still try to load data as guest
-                                    console.warn("Auth failed, falling back to guest mode:", e);
-                                    setStatus("Auth missing. Trying guest access...");
-                                    setErrorMsg(null); // Clear auth error to show UI
-                                    
-                                    if (!unsubscribeSnapshot) {
-                                        unsubscribeSnapshot = setupRealtimeListener();
-                                    }
-                                });
-                            }
+                        // Try Auth in background
+                        signInAnonymously(auth).then(() => {
+                           setStatus("Authenticated (Anonymous)");
+                        }).catch(e => {
+                            console.warn("Auth failed (Guest Mode):", e.message);
+                            setStatus("Guest Mode (Public Access)");
+                            // Even if auth fails, we already started the listener above
                         });
 
                     } catch (error) {
@@ -338,8 +327,7 @@
                 if (!formData.title || !formData.content) return;
                 
                 try {
-                    const { db, collection, addDoc, appId } = window.firebaseModules;
-                    // FIX: Use static root collection 'board_posts'
+                    const { db, collection, addDoc } = window.firebaseModules;
                     const postsRef = collection(db, 'board_posts');
                     
                     await addDoc(postsRef, {
@@ -358,14 +346,13 @@
                 }
             };
 
-            // NEW: Handle Update
+             // NEW: Handle Update
             const handleUpdate = async (e) => {
                 e.preventDefault();
                 if (!formData.title || !formData.content) return;
 
                 try {
-                    const { db, doc, updateDoc, appId } = window.firebaseModules;
-                    // FIX: Use static root collection 'board_posts'
+                    const { db, doc, updateDoc } = window.firebaseModules;
                     const postRef = doc(db, 'board_posts', currentPost.id);
 
                     await updateDoc(postRef, {
@@ -375,7 +362,6 @@
                         updatedAt: Date.now()
                     });
 
-                    // Update currentPost state to reflect changes immediately in detail view
                     setCurrentPost({ ...currentPost, ...formData });
                     setView('detail');
                 } catch (error) {
