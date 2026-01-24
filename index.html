@@ -298,9 +298,10 @@
                                 signInAnonymously(auth).then(() => {
                                     // Success handled by onAuthStateChanged
                                 }).catch(e => {
+                                    // CRITICAL FIX: If auth fails (e.g. configuration-not-found), still try to load data as guest
                                     console.warn("Auth failed, falling back to guest mode:", e);
-                                    setStatus("Auth missing. Trying guest access...");
-                                    setErrorMsg(null); 
+                                    setStatus("Guest Mode (Public Access)"); // Updated status
+                                    setErrorMsg(null); // Clear auth error to show UI
                                     
                                     if (!unsubscribeSnapshot) {
                                         unsubscribeSnapshot = setupRealtimeListener();
