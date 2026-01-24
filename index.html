@@ -59,11 +59,12 @@
         try {
             app = initializeApp(firebaseConfig);
             db = getFirestore(app);
-            // Try initializing auth, but don't block DB if it fails
+            
+            // Try initializing auth, but handle failure gracefully (e.g. if disabled in console)
             try {
                 auth = getAuth(app);
             } catch (authError) {
-                console.warn("Auth initialization failed (Auth disabled in console?):", authError);
+                console.warn("Auth initialization failed (Auth might be disabled in Firebase Console):", authError);
                 auth = null;
             }
 
@@ -84,7 +85,7 @@
                 orderBy,
                 onSnapshot
             };
-            console.log("Firebase Initialized. Auth status:", auth ? "Active" : "Inactive");
+            console.log("Firebase Initialized. Auth status:", auth ? "Active" : "Inactive (Data-only mode)");
         } catch (e) {
             console.error("Firebase Core Init Failed:", e);
         }
@@ -177,6 +178,7 @@
             const [view, setView] = useState('list'); // 'list', 'write', 'detail', 'edit'
             const [currentPost, setCurrentPost] = useState(null);
             const [formData, setFormData] = useState({ title: '', author: '', content: '' });
+            const [user, setUser] = useState(null);
             const [loading, setLoading] = useState(true);
             const [status, setStatus] = useState("Initializing...");
             const [errorMsg, setErrorMsg] = useState(null);
@@ -300,17 +302,18 @@
                     const { auth, signInAnonymously, onAuthStateChanged } = window.firebaseModules;
                     
                     // 1. ALWAYS Try to setup listener immediately (for public data)
+                    // This is the key fix: We start listening for data BEFORE checking auth
                     unsubscribeSnapshot = setupRealtimeListener();
 
-                    // 2. Try Auth if available, but don't block
+                    // 2. Try Auth if available, but don't block reading
                     if (auth) {
                         try {
                             onAuthStateChanged(auth, (u) => {
+                                setUser(u);
                                 if (u) {
-                                    setStatus("Authenticated. Re-syncing...");
-                                    // Re-subscribe with auth token
-                                    if (unsubscribeSnapshot) unsubscribeSnapshot();
-                                    unsubscribeSnapshot = setupRealtimeListener();
+                                    setStatus("Authenticated. Syncing...");
+                                    // Optionally re-subscribe with auth token if rules require it
+                                    // But if rules are public, the first listener is enough
                                 } else {
                                     setStatus("Signing in...");
                                     signInAnonymously(auth).catch(e => {
