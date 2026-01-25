@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>홍익인간 RPG (Day 2 빌드)</title>
+<style>
+    /* 90년대 감성 스타일 */
+    body { background-color: #1a1a1a; color: #ddd; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+    #game-layout { display: flex; border: 4px solid #555; background: #000; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+    canvas { background-color: #2b2b2b; display: block; image-rendering: pixelated; }
+    #log-panel { width: 280px; height: 600px; overflow-y: auto; padding: 15px; border-left: 2px solid #555; font-size: 13px; line-height: 1.5; background: #111; }
+    
+    /* 로그 텍스트 컬러 */
+    .sys { color: #888; }
+    .info { color: #fff; }
+    .stat { color: #00ff00; }
+    .npc { color: #ffff00; font-weight: bold; }
+    .alert { color: #ff4444; }
+</style>
+</head>
+<body>
+
+<div id="game-layout">
+    <canvas id="gameCanvas" width="500" height="600"></canvas>
+    <div id="log-panel"></div>
+</div>
+
+<script>
+    // --- 설정 ---
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const logPanel = document.getElementById('log-panel');
+
+    // 주인공 '정주' (Day 1 설정 반영: 근10, 민5, 내5)
+    const player = {
+        name: "정주",
+        x: 230, y: 400, size: 32, speed: 5, color: "#ff4444", // 빨간색
+        stats: { str: 10, agi: 5, power: 5 }
+    };
+
+    // 오브젝트들
+    const npcs = [
+        { name: "도비", x: 200, y: 200, w: 24, h: 24, color: "#D2691E", msg: "멍! (형, MUD 게임 만드는 중이야?)", type: "npc" },
+        { name: "지니", x: 260, y: 200, w: 24, h: 48, color: "#00BFFF", msg: "오빠, 밥 먹고 해~", type: "npc" },
+        { name: "개발PC", x: 100, y: 100, w: 60, h: 40, color: "#888", msg: "시스템: 코딩 중... 버그가 발생했습니다.", type: "obj" }
+    ];
+
+    // 키 입력 상태
+    const keys = {};
+
+    // --- 시스템 함수 ---
+    function log(text, type = 'info') {
+        const div = document.createElement('div');
+        div.innerText = text;
+        div.className = type;
+        logPanel.appendChild(div);
+        logPanel.scrollTop = logPanel.scrollHeight;
+    }
+
+    // --- 핵심 로직 ---
+    function update() {
+        // 이동 로직 (방향키)
+        if (keys['ArrowUp'] && player.y > 0) player.y -= player.speed;
+        if (keys['ArrowDown'] && player.y < canvas.height - player.size) player.y += player.speed;
+        if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+        if (keys['ArrowRight'] && player.x < canvas.width - player.size) player.x += player.speed;
+
+        // 충돌 체크 (NPC와 닿으면 대화)
+        npcs.forEach(npc => {
+            if (
+                player.x < npc.x + npc.w &&
+                player.x + player.size > npc.x &&
+                player.y < npc.y + npc.h &&
+                player.y + player.size > npc.y
+            ) {
+                // 단순 충돌 처리: 살짝 밀어내기 (안 그러면 로그가 도배됨)
+                if (keys['ArrowUp']) player.y += player.speed + 2;
+                if (keys['ArrowDown']) player.y -= player.speed + 2;
+                if (keys['ArrowLeft']) player.x += player.speed + 2;
+                if (keys['ArrowRight']) player.x -= player.speed + 2;
+                
+                // 대화 출력
+                log(`[${npc.name}] ${npc.msg}`, npc.type === 'npc' ? 'npc' : 'sys');
+            }
+        });
+    }
+
+    function draw() {
+        // 배경 리셋
+        ctx.fillStyle = "#202020"; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // NPC 그리기
+        npcs.forEach(obj => {
+            ctx.fillStyle = obj.color;
+            ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
+            
+            ctx.fillStyle = "#aaa";
+            ctx.font = "12px monospace";
+            ctx.textAlign = "center";
+            ctx.fillText(obj.name, obj.x + obj.w/2, obj.y - 5);
+        });
+
+        // 플레이어 그리기
+        ctx.fillStyle = player.color;
+        ctx.fillRect(player.x, player.y, player.size, player.size);
+        
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 14px monospace";
+        ctx.textAlign = "center";
+        ctx.fillText(player.name, player.x + player.size/2, player.y - 8);
+    }
+
+    function loop() {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+    }
+
+    // --- 이벤트 리스너 ---
+    window.addEventListener('keydown', e => { keys[e.key] = true; });
+    window.addEventListener('keyup', e => { keys[e.key] = false; });
+
+    // --- 초기화 ---
+    log("[SYSTEM] 홍익인간 RPG 서버 가동...", "sys");
+    log(`[INFO] '${player.name}'님 접속. (근:${player.stats.str} 민:${player.stats.agi})`, "stat");
+    log("[TIP] 방향키로 이동하여 도비에게 말을 거세요.", "alert");
+    
+    loop(); // 게임 루프 시작
+</script>
+</body>
+</html>
