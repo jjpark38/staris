@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>GodBlade — 팀 상태 대시보드 (web)</title>
+<style>
+  /* ===== Reset / Base ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #0d0d10;
+    color: #e8e6e1;
+    font-family: "Pretendard", "맑은 고딕", "Malgun Gothic", -apple-system,
+                 BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: #d6b65a; text-decoration: none; }
+  a:hover { color: #f5d57a; text-decoration: underline; }
+
+  :root {
+    --bg-0: #0d0d10;
+    --bg-1: #15151a;
+    --bg-2: #1c1c22;
+    --bg-3: #25252d;
+    --border: #34343d;
+    --border-strong: #4a4a55;
+    --text-0: #e8e6e1;
+    --text-1: #a6a39c;
+    --text-2: #6f6c66;
+    --gold: #d6b65a;
+    --gold-2: #f5d57a;
+    --red: #c0392b;
+    --orange: #e67e22;
+    --yellow: #f1c40f;
+    --green: #27ae60;
+    --blue: #3498db;
+    --purple: #8e44ad;
+  }
+
+  .wrap {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 28px 24px 80px;
+  }
+
+  /* ===== Confidential Banner ===== */
+  .conf-banner {
+    background: rgba(192,57,43,0.12);
+    border: 1px solid var(--red);
+    border-left: 4px solid var(--red);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    color: #f5b7b1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .conf-banner b { color: #fadbd8; }
+  .conf-banner .tag {
+    background: var(--red);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* ===== Header ===== */
+  header.hero {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+  }
+  header.hero h1 {
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  header.hero h1 small {
+    display: block;
+    font-size: 13px;
+    color: var(--text-1);
+    font-weight: 400;
+    margin-top: 4px;
+    letter-spacing: 0;
+  }
+  header.hero h1 .web-tag {
+    display: inline-block;
+    background: var(--blue);
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 700;
+    margin-left: 8px;
+    letter-spacing: 0.4px;
+    vertical-align: middle;
+  }
+  .hero-meta {
+    text-align: right;
+    color: var(--text-1);
+    font-size: 13px;
+  }
+  .hero-meta b { color: var(--text-0); }
+  .hero-meta .dday {
+    display: inline-block;
+    background: var(--gold);
+    color: #1a1a1f;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 13px;
+    margin-left: 6px;
+  }
+
+  /* ===== Section ===== */
+  section { margin-bottom: 36px; }
+  section > h2 {
+    font-size: 16px;
+    color: var(--gold-2);
+    border-left: 3px solid var(--gold);
+    padding-left: 10px;
+    margin-bottom: 14px;
+    letter-spacing: 0.3px;
+    font-weight: 600;
+  }
+  section > h2 .sub {
+    font-size: 12px;
+    color: var(--text-1);
+    margin-left: 8px;
+    font-weight: 400;
+  }
+
+  /* ===== Metric Cards ===== */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+  }
+  .metric-card {
+    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 18px;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .metric-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+  .metric-card .label {
+    font-size: 12px;
+    color: var(--text-1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .metric-card .value {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1.1;
+  }
+  .metric-card .delta {
+    font-size: 11px;
+    color: var(--text-2);
+    margin-top: 6px;
+  }
+  .metric-card.go .value { color: var(--green); }
+  .metric-card.risk .value { color: var(--orange); }
+
+  /* ===== Agent Cards ===== */
+  .agent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 14px;
+  }
+  .agent-card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .agent-card .name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-0);
+    margin-bottom: 2px;
+  }
+  .agent-card .role {
+    font-size: 11px;
+    color: var(--text-1);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .agent-card .work {
+    font-size: 12.5px;
+    color: var(--text-0);
+    line-height: 1.5;
+  }
+  .agent-card .hours {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    font-size: 11px;
+    color: var(--text-1);
+    display: flex;
+    justify-content: space-between;
+  }
+  .agent-card .hours b { color: var(--gold); }
+
+  .agent-card.pd { border-left-color: var(--gold-2); }
+  .agent-card.main { border-left-color: var(--blue); }
+  .agent-card.code { border-left-color: var(--green); }
+  .agent-card.designer { border-left-color: var(--purple); }
+  .agent-card.writer { border-left-color: var(--orange); }
+  .agent-card.pm { border-left-color: var(--gold); }
+  .agent-card.dots { border-left-color: var(--red); }
+
+  /* ===== Gantt ===== */
+  .gantt {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .gantt-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 100px;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .gantt-row:last-child { border-bottom: none; }
+  .gantt-row.header {
+    color: var(--text-1);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .gantt-name { font-weight: 700; color: var(--gold); font-size: 13px; }
+  .gantt-track {
+    position: relative;
+    height: 26px;
+    background: var(--bg-2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .gantt-bar {
+    position: absolute;
+    top: 3px;
+    height: 20px;
+    background: linear-gradient(90deg, var(--gold) 0%, #b8923f 100%);
+    border-radius: 2px;
+    color: #1a1a1f;
+    font-size: 10.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .gantt-bar.w1 { background: linear-gradient(90deg, #d6b65a 0%, #b8923f 100%); }
+  .gantt-bar.w2 { background: linear-gradient(90deg, #8e7530 0%, #6f5b25 100%); color: var(--gold-2); }
+  .gantt-bar.now {
+    background: var(--green);
+    color: #fff;
+    animation: pulseBar 2s ease-in-out infinite;
+  }
+  @keyframes pulseBar {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.5); }
+    50% { box-shadow: 0 0 0 4px rgba(39, 174, 96, 0); }
+  }
+  .gantt-status {
+    font-size: 11px;
+    color: var(--text-1);
+    text-align: right;
+  }
+  .gantt-status.ready { color: var(--green); }
+  .gantt-status.dminus { color: var(--gold-2); font-weight: 700; }
+
+  .gantt-axis {
+    display: grid;
+    grid-template-columns: 80px 1fr 100px;
+    gap: 12px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-2);
+    font-size: 10.5px;
+  }
+  .gantt-axis-inner {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    text-align: left;
+  }
+
+  /* ===== Tables ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 12.5px;
+  }
+  table thead {
+    background: var(--bg-3);
+  }
+  table th {
+    text-align: left;
+    padding: 10px 12px;
+    color: var(--gold-2);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-0);
+    vertical-align: top;
+  }
+  table tbody tr:last-child td { border-bottom: none; }
+  table tbody tr:hover td { background: var(--bg-2); }
+  table .author { color: var(--text-1); font-size: 11.5px; }
+  table .ver {
+    display: inline-block;
+    background: var(--bg-3);
+    color: var(--gold);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+  }
+  table .ver.pass { background: var(--green); color: #0d0d10; }
+
+  /* ===== Risk Chips ===== */
+  .risk-summary {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .risk-stat {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .risk-stat .num {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .risk-stat .lab {
+    font-size: 11px;
+    color: var(--text-1);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .risk-stat.crit .num { color: var(--red); }
+  .risk-stat.high .num { color: var(--orange); }
+  .risk-stat.med .num { color: var(--yellow); }
+  .risk-stat.low .num { color: var(--green); }
+  .risk-stat.fp .num { color: var(--text-1); }
+
+  .risk-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .risk-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+  }
+  .risk-chip::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .risk-chip.crit { color: #f5b7b1; border-color: var(--red); background: rgba(192,57,43,0.18); }
+  .risk-chip.crit::before { background: var(--red); }
+  .risk-chip.high { color: #fad7a0; border-color: var(--orange); background: rgba(230,126,34,0.15); }
+  .risk-chip.high::before { background: var(--orange); }
+  .risk-chip.med { color: #f9e79f; border-color: var(--yellow); background: rgba(241,196,15,0.13); }
+  .risk-chip.med::before { background: var(--yellow); }
+  .risk-chip.low { color: #abebc6; border-color: var(--green); background: rgba(39,174,96,0.13); }
+  .risk-chip.low::before { background: var(--green); }
+  .risk-chip.fp { color: var(--text-1); border-style: dashed; }
+  .risk-chip.new {
+    box-shadow: 0 0 0 1px var(--gold) inset;
+  }
+  .risk-chip.new::after {
+    content: "NEW";
+    background: var(--gold);
+    color: #1a1a1f;
+    font-size: 9px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-weight: 700;
+    margin-left: 2px;
+  }
+
+  /* ===== Routine ===== */
+  .routine-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .routine-status.fired { background: var(--green); color: #0d0d10; }
+  .routine-status.wait { background: var(--bg-3); color: var(--gold-2); border: 1px solid var(--gold); }
+
+  /* ===== Decision Cards ===== */
+  .decision-card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .decision-card .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .decision-card .id {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .decision-card .deadline {
+    font-size: 11px;
+    color: var(--orange);
+    font-weight: 600;
+  }
+  .decision-card .deadline.urgent { color: var(--red); animation: blinkUrgent 2s ease-in-out infinite; }
+  @keyframes blinkUrgent { 50% { opacity: 0.55; } }
+  .decision-card .opts {
+    font-size: 12px;
+    color: var(--text-1);
+    margin-bottom: 4px;
+  }
+  .decision-card .recommend {
+    font-size: 12px;
+    color: var(--text-0);
+  }
+  .decision-card .recommend b { color: var(--gold-2); }
+
+  /* ===== Memory Index ===== */
+  .memory-block {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 8px 14px;
+    font-size: 12px;
+  }
+  .memory-block .mem {
+    color: var(--text-1);
+    border-bottom: 1px dashed var(--border);
+    padding: 4px 0;
+  }
+  .memory-block .mem b { color: var(--text-0); }
+  .memory-block .mem .tag {
+    display: inline-block;
+    font-size: 9.5px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-right: 4px;
+    background: var(--bg-3);
+    color: var(--gold);
+  }
+  .memory-note {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-2);
+    padding: 8px 12px;
+    background: var(--bg-2);
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+  }
+  .memory-note b { color: var(--text-1); }
+
+  /* ===== Footer ===== */
+  footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--text-2);
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  footer .last-seen { color: var(--text-1); }
+  footer .host {
+    color: var(--text-1);
+  }
+  footer .host b { color: var(--gold); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 1100px) {
+    .metric-grid { grid-template-columns: repeat(3, 1fr); }
+    .risk-summary { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .wrap { padding: 16px 12px 40px; }
+    .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    .risk-summary { grid-template-columns: repeat(2, 1fr); }
+    .gantt-row, .gantt-axis { grid-template-columns: 60px 1fr 70px; gap: 8px; }
+    .agent-grid { grid-template-columns: 1fr; }
+    table { font-size: 11.5px; }
+    table th, table td { padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== §0 Confidential Banner (web 전용) ===== -->
+  <div class="conf-banner">
+    <span class="tag">CONFIDENTIAL</span>
+    <span>본 대시보드는 <b>GodBlade 글로벌 출시 프로젝트 내부 자료</b>입니다. 사업 일정·리스크·결정 기록 포함. 외부 공유 시 사업 정보 노출에 주의하세요.</span>
+  </div>
+
+  <!-- ===== §1 Header + Metric Cards ===== -->
+  <header class="hero">
+    <div>
+      <h1>GodBlade — 팀 상태 대시보드 <span class="web-tag">WEB</span>
+        <small>글로벌 출시 (Phase 2 + 3) · PD + AI 6 Agent · 1인 파트타임</small>
+      </h1>
+    </div>
+    <div class="hero-meta">
+      <div>현재 일자 <b>2026-05-03 (일)</b></div>
+      <div>Sp01 킥오프 <b>2026-05-04</b> <span class="dday">D-1</span></div>
+      <div>Phase 2+3 종료 <b>2026-09-14</b> (D-135)</div>
+    </div>
+  </header>
+
+  <section>
+    <h2>§1 요약 메트릭 <span class="sub">— 5건</span></h2>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="label">누적 작업</div>
+        <div class="value">22</div>
+        <div class="delta">Sp00 D+1 ~ 2026-05-02</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">산출물</div>
+        <div class="value">14</div>
+        <div class="delta">설계 / 검수 / 체크포인트</div>
+      </div>
+      <div class="metric-card risk">
+        <div class="label">리스크</div>
+        <div class="value">21</div>
+        <div class="delta">해소 0 · 신규 3 · 잔존 18</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">스프린트</div>
+        <div class="value">5</div>
+        <div class="delta">Sp01 ~ Sp05 (Phase 2 MVP)</div>
+      </div>
+      <div class="metric-card go">
+        <div class="label">종료 가능성</div>
+        <div class="value">GO 80%</div>
+        <div class="delta">2026-09-14 목표 기준</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== §2 Agent Cards ===== -->
+  <section>
+    <h2>§2 에이전트 팀 <span class="sub">— PD + 6 AI</span></h2>
+    <div class="agent-grid">
+
+      <div class="agent-card pd">
+        <div class="name">PD (모비딕)</div>
+        <div class="role">Tier 1 Director · Creative + Tech + Producer 통합</div>
+        <div class="work">1인 파트타임 전체 PM. 결정 회신 13회 (Sp00 D+1 버퍼 + 5/2 ALL IN). Question→Options→Decision→Draft→Approval 5단계 운영.</div>
+        <div class="hours"><span>결정 회신</span><b>13건</b></div>
+      </div>
+
+      <div class="agent-card main">
+        <div class="name">메인 세션</div>
+        <div class="role">오케스트레이터 + 직접 작업</div>
+        <div class="work">graphify 분석 / 메모리 등재 / 서브에이전트 호출 라우팅. 1쪽 요약으로 PD에 보고.</div>
+        <div class="hours"><span>주력 작업</span><b>graphify · MEMORY</b></div>
+      </div>
+
+      <div class="agent-card code">
+        <div class="name">code-lead 정현우</div>
+        <div class="role">Tier 2 Lead · Unity 6 / DOTS / Addressables 2.x</div>
+        <div class="work">Sp01 W2 precheck v1.0 (50분). DemonHunter MVP + 4 빌더 race condition patch (정적 리뷰).</div>
+        <div class="hours"><span>총 누적</span><b>~50분 + 정적</b></div>
+      </div>
+
+      <div class="agent-card designer">
+        <div class="name">game-designer 박세린</div>
+        <div class="role">Tier 2 Lead · 기획PD (RPG 20년차 / 디아블로 감성)</div>
+        <div class="work">Sp02 W1 draft / Sp03 preflight / Sp05 preflight / 16~17화 brief / 11~14화 검수 / Sp04 supplement v1.3 / preflight v1.2.</div>
+        <div class="hours"><span>총 누적</span><b>~7h</b></div>
+      </div>
+
+      <div class="agent-card writer">
+        <div class="name">scenario-writer 강시연</div>
+        <div class="role">Specialist · 본문 시나리오 (박세린 산하)</div>
+        <div class="work">chapter_11~14 (4화) / volume_1 v0.3 / F_paste_guide. 1주 2화, 24~48h 회신 표준.</div>
+        <div class="hours"><span>총 누적</span><b>~3h</b></div>
+      </div>
+
+      <div class="agent-card pm">
+        <div class="name">project-manager (본인)</div>
+        <div class="role">Tier 2 Lead · PM (하네스 공법)</div>
+        <div class="work">sprint-01.md 확정본 / phase-2-roadmap-checkpoint / shared-checkpoints v1.1 / 본 대시보드 (team_status.html / web).</div>
+        <div class="hours"><span>총 누적</span><b>~3h</b></div>
+      </div>
+
+      <div class="agent-card dots">
+        <div class="name">dots-platform 류재현</div>
+        <div class="role">Specialist · Unity DOTS 측정</div>
+        <div class="work">Sp02 W2 dots measurement spec v1.0 (50분). 200F · 5,000 entity 부하 측정 사양.</div>
+        <div class="hours"><span>총 누적</span><b>~50분</b></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== §3 Gantt ===== -->
+  <section>
+    <h2>§3 스프린트 간트 <span class="sub">— 2026-05-04 ~ 2026-09-14 (19주 · 5 Sprint × 2주 + 4주 확장)</span></h2>
+    <div class="gantt">
+      <div class="gantt-axis">
+        <div></div>
+        <div class="gantt-axis-inner">
+          <span>05-04</span><span>05-31</span><span>06-29</span><span>07-27</span><span>08-24</span>
+        </div>
+        <div></div>
+      </div>
+      <div class="gantt-row header">
+        <div>스프린트</div>
+        <div>W1 (좌) / W2 (우) — 19주 절대축</div>
+        <div>상태</div>
+      </div>
+
+      <!-- 19주 = 133일. 각 스프린트 14일 = ~7.4% 폭. 시작 위치는 (시작일-2026-05-04) / 133 * 100 -->
+      <!-- Sp01: 0% ~ 10.5% (14일/133). W1=0~5.25, W2=5.25~10.5 -->
+      <div class="gantt-row">
+        <div class="gantt-name">Sp01</div>
+        <div class="gantt-track">
+          <div class="gantt-bar w1 now" style="left:0%;width:5.25%;" title="2026-05-04 ~ 2026-05-11 · W1: 무한던전+프레스티지 통합 검증">W1 통합검증</div>
+          <div class="gantt-bar w2" style="left:5.25%;width:5.25%;" title="2026-05-11 ~ 2026-05-18 · W2: Importer 구현">W2 Importer</div>
+        </div>
+        <div class="gantt-status dminus">D-1 (5/3)</div>
+      </div>
+
+      <!-- Sp02: 14~28일 = 10.5% ~ 21.05% -->
+      <div class="gantt-row">
+        <div class="gantt-name">Sp02</div>
+        <div class="gantt-track">
+          <div class="gantt-bar w1" style="left:10.5%;width:5.25%;" title="2026-05-18 ~ 2026-05-25 · W1: 프레스티지 30항목">W1 프레스티지30</div>
+          <div class="gantt-bar w2" style="left:15.79%;width:5.26%;" title="2026-05-25 ~ 2026-06-01 · W2: BuildSummary + TsvReader">W2 BuildSummary</div>
+        </div>
+        <div class="gantt-status ready">사전검증 완료</div>
+      </div>
+
+      <!-- Sp03: 28~42일 = 21.05% ~ 31.58% -->
+      <div class="gantt-row">
+        <div class="gantt-name">Sp03</div>
+        <div class="gantt-track">
+          <div class="gantt-bar w1" style="left:21.05%;width:5.26%;" title="2026-06-01 ~ 2026-06-08 · W1: IdleTicker">W1 IdleTicker</div>
+          <div class="gantt-bar w2" style="left:26.32%;width:5.26%;" title="2026-06-08 ~ 2026-06-15 · W2: PP 자동 분배">W2 PP 자동</div>
+        </div>
+        <div class="gantt-status ready">사전검증 완료</div>
+      </div>
+
+      <!-- Sp04: 42~56일 = 31.58% ~ 42.11% -->
+      <div class="gantt-row">
+        <div class="gantt-name">Sp04</div>
+        <div class="gantt-track">
+          <div class="gantt-bar w1" style="left:31.58%;width:5.26%;" title="2026-06-15 ~ 2026-06-22 · W1: 어픽스 풀 36어픽스">W1 어픽스36</div>
+          <div class="gantt-bar w2" style="left:36.84%;width:5.26%;" title="2026-06-22 ~ 2026-06-29 · W2: Mythic 재검증">W2 Mythic</div>
+        </div>
+        <div class="gantt-status ready">사전검증 완료</div>
+      </div>
+
+      <!-- Sp05: 56~70일 = 42.11% ~ 52.63% -->
+      <div class="gantt-row">
+        <div class="gantt-name">Sp05</div>
+        <div class="gantt-track">
+          <div class="gantt-bar w1" style="left:42.11%;width:5.26%;" title="2026-06-29 ~ 2026-07-06 · W1: ISeasonClock">W1 ISeasonClock</div>
+          <div class="gantt-bar w2" style="left:47.37%;width:5.26%;" title="2026-07-06 ~ 2026-07-13 · W2: MigrateSeasonalToPermanent">W2 Migrate</div>
+        </div>
+        <div class="gantt-status ready">사전검증 완료</div>
+      </div>
+
+      <!-- Phase 3 확장 안내 (Sp06+ 미스케줄, Sp05 종료~9/14 = 9주 잔여) -->
+      <div class="gantt-row">
+        <div class="gantt-name" style="color:var(--text-1);">Phase 3</div>
+        <div class="gantt-track">
+          <div class="gantt-bar" style="left:52.63%;width:47.37%;background:linear-gradient(90deg,var(--bg-3),var(--bg-2));color:var(--text-1);border:1px dashed var(--border-strong);">Sp06+ 확장 (미상세)</div>
+        </div>
+        <div class="gantt-status">2026-09-14</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== §4 Deliverables ===== -->
+  <section>
+    <h2>§4 산출물 <span class="sub">— 14건 (최신순)</span></h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:90px;">일자</th>
+          <th>파일</th>
+          <th style="width:140px;">작성자</th>
+          <th style="width:80px;">버전</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>2026-05-02</td><td>sprint-01-w2-importer-precheck.md</td><td class="author">code-lead</td><td><span class="ver">v1.0</span></td></tr>
+        <tr><td>2026-05-02</td><td>sprint-02-w1-prestige-items-draft.md</td><td class="author">game-designer</td><td><span class="ver">v1.0</span></td></tr>
+        <tr><td>2026-05-02</td><td>sprint-03-idle-system-preflight.md</td><td class="author">game-designer</td><td><span class="ver">v1.0</span></td></tr>
+        <tr><td>2026-05-02</td><td>sprint-05-season-system-preflight.md</td><td class="author">game-designer</td><td><span class="ver">v1.0</span></td></tr>
+        <tr><td>2026-05-02</td><td>sp02-w2-dots-measurement-spec.md</td><td class="author">dots-platform</td><td><span class="ver">v1.0</span></td></tr>
+        <tr><td>2026-05-02</td><td>sp04_w1_preflight.md</td><td class="author">game-designer</td><td><span class="ver">v1.2</span></td></tr>
+        <tr><td>2026-05-02</td><td>volume_1/volume_1_synopsis.md</td><td class="author">scenario-writer</td><td><span class="ver">v0.3</span></td></tr>
+        <tr><td>2026-05-02</td><td>volume_1/F_paste_guide.md</td><td class="author">scenario-writer</td><td><span class="ver">v1.0</span></td></tr>
+        <tr><td>2026-05-02</td><td>volume_2/chapter_11~14.md (4화)</td><td class="author">scenario-writer</td><td><span class="ver pass">PASS</span></td></tr>
+        <tr><td>2026-05-02</td><td>volume_2/chapter_16_17_brief.md</td><td class="author">game-designer</td><td><span class="ver">v1.0</span></td></tr>
+        <tr><td>2026-05-02</td><td>volume_2_synopsis_v2.md</td><td class="author">game-designer</td><td><span class="ver">v2.3</span></td></tr>
+        <tr><td>2026-05-02</td><td>affix_pool_sp04_supplement_v1.md</td><td class="author">game-designer</td><td><span class="ver">v1.3</span></td></tr>
+        <tr><td>2026-05-02</td><td>phase-2-roadmap-checkpoint-2026-05-02.md</td><td class="author">project-manager</td><td><span class="ver">v1.0</span></td></tr>
+        <tr><td>2026-05-02</td><td>shared-checkpoints.md</td><td class="author">project-manager</td><td><span class="ver">v1.1</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== §5 Risk Catalog ===== -->
+  <section>
+    <h2>§5 리스크 카탈로그 <span class="sub">— 21건 (해소 0 / 신규 3 / 잔존 18)</span></h2>
+    <div class="risk-summary">
+      <div class="risk-stat crit"><div class="num">1</div><div class="lab">Critical</div></div>
+      <div class="risk-stat high"><div class="num">6</div><div class="lab">High</div></div>
+      <div class="risk-stat med"><div class="num">9</div><div class="lab">Medium</div></div>
+      <div class="risk-stat low"><div class="num">4</div><div class="lab">Low</div></div>
+      <div class="risk-stat fp"><div class="num">1</div><div class="lab">부분 FP</div></div>
+    </div>
+    <div class="risk-list">
+      <span class="risk-chip crit">R-DR-S02</span>
+
+      <span class="risk-chip high">R-DR-04</span>
+      <span class="risk-chip high">R-DR-07</span>
+      <span class="risk-chip high">R-DR-08</span>
+      <span class="risk-chip high">R-DR-10</span>
+      <span class="risk-chip high">R-DR-11</span>
+      <span class="risk-chip high">R-DR-S01</span>
+
+      <span class="risk-chip med">R-DR-02</span>
+      <span class="risk-chip med">R-DR-05</span>
+      <span class="risk-chip med">R-DR-06</span>
+      <span class="risk-chip med">R-DR-12</span>
+      <span class="risk-chip med">R-DR-S03</span>
+      <span class="risk-chip med">R-DR-14</span>
+      <span class="risk-chip med">R-DR-15</span>
+      <span class="risk-chip med new">R-DR-S03-Sp03</span>
+      <span class="risk-chip med new">R-V2.3-01</span>
+
+      <span class="risk-chip low">R-DR-01</span>
+      <span class="risk-chip low">R-DR-03</span>
+      <span class="risk-chip low">R-DR-09</span>
+      <span class="risk-chip low">R-DR-13</span>
+
+      <span class="risk-chip fp">R-DR-09 (부분 FP)</span>
+      <span class="risk-chip fp">R-DR-11 (부분 FP)</span>
+    </div>
+  </section>
+
+  <!-- ===== §6 Schedule Routine ===== -->
+  <section>
+    <h2>§6 Schedule Routine <span class="sub">— 3건</span></h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:110px;">일자</th>
+          <th style="width:90px;">시각 (KST)</th>
+          <th>이름</th>
+          <th style="width:340px;">trigger ID</th>
+          <th style="width:100px;">상태</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2026-05-03</td>
+          <td>09:00</td>
+          <td>Sp01 D-1 체크리스트</td>
+          <td><a href="https://claude.ai/code/routines/trig_01JiqaEBEj4NBJniQfJbzx58" target="_blank" rel="noopener noreferrer">trig_01JiqaEBEj4NBJniQfJbzx58</a></td>
+          <td><span class="routine-status fired">발화 완료</span></td>
+        </tr>
+        <tr>
+          <td>2026-05-04</td>
+          <td>09:00</td>
+          <td>Sp01 킥오프 W1 발주</td>
+          <td><a href="https://claude.ai/code/routines/trig_01Li9VqQPfxFrzEVusS38PiE" target="_blank" rel="noopener noreferrer">trig_01Li9VqQPfxFrzEVusS38PiE</a></td>
+          <td><span class="routine-status wait">대기 (내일)</span></td>
+        </tr>
+        <tr>
+          <td>2026-05-09</td>
+          <td>09:00</td>
+          <td>강시연 16~17화 ETA</td>
+          <td><a href="https://claude.ai/code/routines/trig_01R4wvYFXbFkHqnV751c9KmV" target="_blank" rel="noopener noreferrer">trig_01R4wvYFXbFkHqnV751c9KmV</a></td>
+          <td><span class="routine-status wait">대기</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== §7 PD 결정 대기 ===== -->
+  <section>
+    <h2>§7 PD 결정 대기 <span class="sub">— 2건</span></h2>
+
+    <div class="decision-card">
+      <div class="head">
+        <div class="id">R-DR-S03-Sp03 — Sp03 보상 디자인 미정</div>
+        <div class="deadline">마감 · Sp03 W2 #09 시점 (~2026-06-12)</div>
+      </div>
+      <div class="opts">옵션: <b>(a)</b> 등급만 / <b>(b)</b> 등급+속성 / <b>(c)</b> 등급+속성+희귀도</div>
+      <div class="recommend">권고: <b>(a) 등급만</b> — Sp03 범위 보호, 속성/희귀도는 Sp06+ 이월</div>
+    </div>
+
+    <div class="decision-card">
+      <div class="head">
+        <div class="id">R-V2.3-01 — 시즌 종료 시 Wallet 처리</div>
+        <div class="deadline urgent">마감 · 2026-06-28 18:00 (Sp05 W2 직전)</div>
+      </div>
+      <div class="opts">옵션: <b>(a)</b> 영구 / <b>(b)</b> 삭제 / <b>(c)</b> 50% retain / <b>(d)</b> MythicEssence 변환</div>
+      <div class="recommend">권고: <b>(b) 삭제</b> 또는 <b>(d) MythicEssence 변환</b> — (c)는 v2.3 결정과 충돌 가능</div>
+    </div>
+  </section>
+
+  <!-- ===== §8 Memory Index ===== -->
+  <section>
+    <h2>§8 메모리 인덱스 <span class="sub">— 31건 (MEMORY.md)</span></h2>
+    <div class="memory-block">
+      <div class="mem"><span class="tag">FBK</span><b>하네스 공법 적용</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>EodGameServer 전투 로직 없음</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>방치형 RPG + 무한던전</b></div>
+      <div class="mem"><span class="tag">FBK</span><b>AI 팀 체제 (3 agent)</b></div>
+      <div class="mem"><span class="tag">FBK</span><b>code-lead 컴파일 검증 버퍼</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>무한던전 보상 5대 결정</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>프레스티지/파라곤 5대 결정</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>Sp01 W2 Importer 4대 결정</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>Sp02 W2 프레스티지 기술 4대</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>Sp02 W1 프레스티지 30항목 3대</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>Sp03 방치 시스템 5대</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>Sp04 어픽스 풀 5대 (v1.1)</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>Sp05 시즌 시스템 7대</b></div>
+      <div class="mem"><span class="tag">REF</span><b>2026 한국 방치형 RPG 벤치 4선</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>Sp06+ 차별화 레버 5대</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>Phase 2+3 로드맵 v2.0 4대</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>Phase 2 MVP 18 리스크</b></div>
+      <div class="mem"><span class="tag">FBK</span><b>드라이런 실측 검증 원칙</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>MVP berserker 완료</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>MVP archon 완료</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>MVP slayer 완료</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>MVP knight 완료</b></div>
+      <div class="mem"><span class="tag">FBK</span><b>One-Click FBX race condition</b></div>
+      <div class="mem"><span class="tag">FBK</span><b>캐릭터 MVP 5건 트랩</b></div>
+      <div class="mem"><span class="tag">FBK</span><b>3DS Max Biped Generic 강제</b></div>
+      <div class="mem"><span class="tag">FBK</span><b>에이전트 협업 5단계 프로토콜</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>Phase 3 sub-specialist 재평가</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>2권 시놉시스 v2 8대</b></div>
+      <div class="mem"><span class="tag">PRJ</span><b>G-3 어픽스 IP 정합 5건</b></div>
+      <div class="mem"><span class="tag">FBK</span><b>IP 소스 우선 원칙 (본문 = IP)</b></div>
+      <div class="mem"><span class="tag">FBK</span><b>강시연 협업 표준 프로토콜</b></div>
+    </div>
+    <div class="memory-note">
+      원본 파일은 <b>PD 로컬 PC (Claude 메모리 저장소)</b> 에서만 접근 가능합니다. 본 web 대시보드에는 인덱스(제목·태그)만 표시되며, 본문은 노출되지 않습니다.
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    <div>
+      GodBlade Team Status Dashboard · <b>v1.0 web</b> · 정적 HTML · 외부 의존 0<br>
+      생성: project-manager · 2026-05-03 · 다음 갱신 권고: Sp01 D+14 회고 (2026-05-18)
+      <span class="host"> · 호스팅: <b>https://jjpark38.github.io/staris/godblade/team_status.html</b></span>
+    </div>
+    <div class="last-seen">
+      <span id="last-seen-text">최근 본 시각: 측정 중...</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // localStorage = 최근 본 시각 저장 (선택 사양)
+  (function() {
+    try {
+      var key = "godblade_dashboard_last_seen";
+      var prev = localStorage.getItem(key);
+      var now = new Date();
+      var fmt = function(d) {
+        var pad = function(n) { return n < 10 ? "0" + n : "" + n; };
+        return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate())
+             + " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+      };
+      var el = document.getElementById("last-seen-text");
+      if (el) {
+        if (prev) {
+          el.textContent = "최근 본 시각: " + prev + " (이번: " + fmt(now) + ")";
+        } else {
+          el.textContent = "최초 방문 · 현재 시각: " + fmt(now);
+        }
+      }
+      localStorage.setItem(key, fmt(now));
+    } catch(e) {
+      // localStorage 비허용 환경 — 무시
+    }
+  })();
+</script>
+
+</body>
+</html>
