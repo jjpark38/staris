@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>GodBlade — 1권 미리보기 「벽란도의 50대 노동자, 무신이 되다」</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #0d0d10;
+    color: #e8e6e1;
+    font-family: "Pretendard", "맑은 고딕", "Malgun Gothic", -apple-system,
+                 BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: #d6b65a; text-decoration: none; }
+  a:hover { color: #f5d57a; text-decoration: underline; }
+
+  :root {
+    --bg-0: #0d0d10;
+    --bg-1: #15151a;
+    --bg-2: #1c1c22;
+    --bg-3: #25252d;
+    --border: #34343d;
+    --border-strong: #4a4a55;
+    --text-0: #e8e6e1;
+    --text-1: #a6a39c;
+    --text-2: #6f6c66;
+    --gold: #d6b65a;
+    --gold-2: #f5d57a;
+    --red: #c0392b;
+    --orange: #e67e22;
+    --green: #27ae60;
+    --blue: #3498db;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* ===== Top Brand Bar ===== */
+  .brand-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+    font-size: 12px;
+    color: var(--text-1);
+  }
+  .brand-bar .logo {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 1.5px;
+  }
+  .brand-bar .nav a {
+    margin-left: 16px;
+    font-size: 12px;
+    color: var(--text-1);
+  }
+  .brand-bar .nav a:hover { color: var(--gold-2); }
+
+  /* ===== Hero ===== */
+  header.hero {
+    padding: 12px 0 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 30px;
+  }
+  header.hero .badges {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  header.hero .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  header.hero .badge.web { background: var(--blue); color: #fff; }
+  header.hero .badge.gen { background: var(--bg-3); color: var(--gold); border: 1px solid var(--gold); }
+  header.hero .badge.draft { background: rgba(192,57,43,0.15); color: #f5b7b1; border: 1px solid var(--red); }
+  header.hero h1 {
+    font-size: 32px;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+  header.hero .sub {
+    font-size: 16px;
+    color: var(--text-1);
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+  header.hero .meta {
+    font-size: 12px;
+    color: var(--text-2);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  header.hero .meta b { color: var(--text-1); font-weight: 600; }
+
+  /* ===== Section ===== */
+  section { margin-bottom: 44px; }
+  section > h2 {
+    font-size: 20px;
+    color: var(--gold-2);
+    border-left: 3px solid var(--gold);
+    padding-left: 12px;
+    margin-bottom: 18px;
+    letter-spacing: 0.3px;
+    font-weight: 600;
+  }
+  section > h2 .sub {
+    font-size: 13px;
+    color: var(--text-1);
+    margin-left: 10px;
+    font-weight: 400;
+  }
+  section h3 {
+    font-size: 15px;
+    color: var(--gold);
+    margin: 22px 0 10px;
+    font-weight: 600;
+  }
+  section p { margin-bottom: 14px; color: var(--text-0); }
+  section p.lead {
+    font-size: 16px;
+    color: var(--text-0);
+    border-left: 2px solid var(--gold);
+    padding-left: 14px;
+    margin-bottom: 18px;
+  }
+
+  /* ===== Quote (PD 인용) ===== */
+  blockquote.pd-quote {
+    background: var(--bg-1);
+    border-left: 3px solid var(--gold);
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14.5px;
+    color: var(--text-0);
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+    line-height: 1.7;
+  }
+  blockquote.pd-quote cite {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-1);
+    font-style: normal;
+    letter-spacing: 0.2px;
+  }
+
+  /* ===== Chapter Preview ===== */
+  .ch-card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+  .ch-card .ch-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .ch-card .ch-num {
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .ch-card .ch-title {
+    font-size: 17px;
+    color: var(--text-0);
+    font-weight: 700;
+    flex: 1 1 100%;
+    margin-top: 4px;
+  }
+  .ch-card .ch-meta {
+    font-size: 11px;
+    color: var(--text-2);
+  }
+  .ch-card .excerpt {
+    font-size: 14.5px;
+    color: var(--text-0);
+    line-height: 1.85;
+    white-space: pre-line;
+    padding: 4px 0 8px;
+  }
+  .ch-card .excerpt::first-letter {
+    color: var(--gold);
+    font-size: 1.4em;
+    font-weight: 700;
+  }
+  .ch-card .src {
+    font-size: 11px;
+    color: var(--text-2);
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+  }
+  .ch-card .src b { color: var(--text-1); }
+
+  /* ===== Synopsis Block ===== */
+  .syn-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .syn-item {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    border-radius: 4px;
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+  .syn-item .lab {
+    color: var(--text-1);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .syn-item .val { color: var(--text-0); font-weight: 500; }
+
+  /* ===== CTA ===== */
+  .cta-block {
+    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 28px;
+    margin: 24px 0;
+    text-align: center;
+  }
+  .cta-block h3 {
+    color: var(--gold-2);
+    font-size: 19px;
+    margin-bottom: 8px;
+  }
+  .cta-block p {
+    color: var(--text-1);
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+  .cta-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta-btn {
+    display: inline-block;
+    padding: 11px 22px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    border: 1px solid var(--gold);
+    background: var(--bg-3);
+    color: var(--gold);
+    transition: all 0.15s;
+  }
+  .cta-btn:hover {
+    background: var(--gold);
+    color: #1a1a1f;
+    text-decoration: none;
+  }
+  .cta-btn.primary {
+    background: var(--gold);
+    color: #1a1a1f;
+  }
+  .cta-btn.primary:hover {
+    background: var(--gold-2);
+  }
+  .cta-btn .pho {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 10px;
+    color: var(--text-2);
+    background: rgba(13,13,16,0.4);
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+  .cta-btn.primary .pho {
+    color: var(--text-1);
+    background: rgba(13,13,16,0.25);
+  }
+
+  /* ===== Author Note ===== */
+  .author-note {
+    background: var(--bg-1);
+    border: 1px dashed var(--border-strong);
+    border-radius: 6px;
+    padding: 18px 22px;
+    color: var(--text-1);
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .author-note .who {
+    font-size: 12px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .author-note p { color: var(--text-1); margin-bottom: 8px; }
+  .author-note p:last-child { margin-bottom: 0; }
+
+  /* ===== Footer ===== */
+  footer {
+    margin-top: 50px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    color: var(--text-2);
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  footer .ver { color: var(--text-1); }
+  footer .ver b { color: var(--gold); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 720px) {
+    .wrap { padding: 20px 14px 40px; }
+    header.hero h1 { font-size: 24px; }
+    header.hero .sub { font-size: 14px; }
+    section > h2 { font-size: 17px; }
+    .syn-grid { grid-template-columns: 1fr; }
+    .ch-card { padding: 16px 16px; }
+    .cta-block { padding: 22px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== Brand Bar ===== -->
+  <div class="brand-bar">
+    <div class="logo">STARIS</div>
+    <div class="nav">
+      <a href="../index.html">Home</a>
+      <a href="characters.html">Characters</a>
+      <a href="novel.html">Novel</a>
+    </div>
+  </div>
+
+  <!-- ===== Hero ===== -->
+  <header class="hero">
+    <div class="badges">
+      <span class="badge web">WEB NOVEL</span>
+      <span class="badge gen">GodBlade IP</span>
+      <span class="badge draft">v0.3 PREVIEW</span>
+    </div>
+    <h1>GodBlade — 1권 미리보기</h1>
+    <div class="sub">「벽란도의 50대 노동자, 무신이 되다」 — 곤륜산에서 시작되는 정주의 이야기</div>
+    <div class="meta">
+      <span><b>분량</b> 1권 11화 (1화 3,000~4,500자)</span>
+      <span><b>장르</b> 한국 무속 + AI 디스토피아 + 김용 풍 무협</span>
+      <span><b>시즌</b> 시즌 1 = 노동의 박자 시험</span>
+      <span><b>작가</b> PD (1권) / 강시연 (2~10권)</span>
+    </div>
+  </header>
+
+  <!-- ===== §1 권 시놉시스 ===== -->
+  <section>
+    <h2>§1. 1권 시놉시스 <span class="sub">— 한 쪽 요약</span></h2>
+
+    <div class="syn-grid">
+      <div class="syn-item"><div class="lab">시대 / 무대</div><div class="val">2030 서울 → 1981 부산 오륙도(회상) → 고려 말 벽란도</div></div>
+      <div class="syn-item"><div class="lab">주인공</div><div class="val">정주 (50대, 한진 41 컨베이어 13년차, 시급 9,860원)</div></div>
+      <div class="syn-item"><div class="lab">동료 4인</div><div class="val">무휼 / 슬레이어 / 홍대걸 / 이방원 (등장 순)</div></div>
+      <div class="syn-item"><div class="lab">11화 클라</div><div class="val">화산파 매화검수 60fps 환원 + 정주의 첫 어색한 답례 포권</div></div>
+    </div>
+
+    <p class="lead">
+      2030년 서울. 50대 노동자 <b>정주</b>는 한진 41 컨베이어 벨트 야간 알바 13년차다. 그가 2011년 중원게임즈에서 만들었던 잊혀진 MMORPG 「Eternal Guardians」 가 — 자기 50번째 생일 새벽 — 알 수 없는 글리치로 정주를 끌어당긴다. 정신을 차린 그는 고려 말 (1392 전후) <b>벽란도(碧瀾渡)</b> 의 산길에 서 있다. 어깨에는 2행정 공업용 예초기. 인벤토리에는 막걸리 사발. HUD 위쪽에는 한국어 + 영어 + 한자 + 영어 대문자 4중 다국어 글리치 텍스트.
+    </p>
+
+    <p>
+      세계는 김용 풍 강호 무림 + 한국 사극 (조선 초·고려 말) + 1990년대 한국 시장 키오스크 + 2030 AI 디스토피아의 4중 합성 글리치다. 정주의 어머니 <b>월자(月慈)</b> — 1981년 부산 오륙도에서 작두 위에서 한 봉인을 만들었던 무당 — 의 그 봉인이 49년 한계에 닿아 풀리려 하고 있다. 봉인이 풀리면 강호의 모든 박자가 어그러지고, 정주의 게임 코드가 폭주한다. 정주가 <b>무신화(武神化)</b> 해서 강호의 박자를 다시 봉인해야 한다.
+    </p>
+
+    <p>
+      벽란도 산길에서 정주는 <b>무휼</b>(190cm 강원도 거구 / H빔 60kg / 디아4 야만용사 톤)을 만나 동료가 된다. 이어서 <b>슬레이어</b>(영어 섞인 한국어를 쓰는 지니에 어머니 월자가 빙의하는 이중 인격 무당), <b>홍대걸</b>(단군왕검 코스프레 건(巾) 의 5살 어린아이 풍 거구 / 달고나 무공), 그리고 마지막으로 <b>이방원</b>(고려 말 → 조선 초의 그 이방원 / 의심 많은 호랑이 / 부러진 목검) 이 합류한다.
+    </p>
+
+    <h3>권 도입부 인용 — PD 톤 보존</h3>
+
+    <blockquote class="pd-quote">
+      "내 밥그릇과 내 관절이 먼저고 그 다음이 세상이다."
+      <cite>— 1권 7화 (이방원 1차 시험 답)</cite>
+    </blockquote>
+
+    <blockquote class="pd-quote">
+      "한진 41. 쿠팡 41 야간 알바. 13년. 컨베이어 벨트. 그 위에서 박자를 익혔어. 한 박자가 빠르면 손목이 꺾인다. 한 박자가 늦으면 어깨가 빠진다. 그래서 박자는 들쭉날쭉이어야 해."
+      <cite>— 1권 1화 (정주의 박자 본맥)</cite>
+    </blockquote>
+
+    <blockquote class="pd-quote">
+      "내 무공은 최저시급을 따라요. 시급 9,860원에 13년을 익힌 박자야. 1초에 9.86원이 들어와. 그 박자가 어긋나면 9,860원이 깨지지."
+      <cite>— 1권 7화 (정주 무공 본맥 자술)</cite>
+    </blockquote>
+
+    <p style="font-size: 13px; color: var(--text-1); margin-top: 16px;">
+      본 권의 척추 = <b>"내가 만든 게임이라 내가 책임진다"</b> + <b>"50대 노동자의 무릎과 박자는 절대로 균형이 아니다"</b>. 김용 풍 의천도룡기의 장무기 (평범 청년 → 명교 교주) 의 한국 무속·노동·AI 디스토피아 변형판.
+    </p>
+  </section>
+
+  <!-- ===== §2 1~3화 미리보기 ===== -->
+  <section>
+    <h2>§2. 1~3화 미리보기 <span class="sub">— 본문 발췌</span></h2>
+
+    <div class="ch-card">
+      <div class="ch-head">
+        <div>
+          <div class="ch-num">CHAPTER 01</div>
+          <div class="ch-title">2030년 한진 41 컨베이어, 그리고 9,860원의 박자</div>
+        </div>
+        <div class="ch-meta">3,500자</div>
+      </div>
+      <div class="excerpt">정주는 어깨에 걸친 2행정 공업용 예초기를 한번 추슬렀다. 배기관에서 묻은 기름이 흰 무명 옷자락에 거뭇한 자국을 남겼다. 1권 11화에서 화산파 매화검수를 60fps로 강제 환원시킨 직후, 일행은 벽란도 외곽의 산길을 사흘 일정으로 오르고 있었다. 개성(開城) 까지는 도보 사흘. 사흘이라는 단위가 이렇게 길다는 사실을, 정주는 한진 41 컨베이어 벨트 야간 알바를 13년 한 후에야 알았다. 컨베이어 벨트는 시간을 잘게 썰지만, 산길은 시간을 길게 늘어뜨린다.</div>
+      <div class="src"><b>출처</b> · 강시연 사후 추출 v0.3 / 정본은 PD 1권 본문 paste 후 v1.0 갱신 예정</div>
+    </div>
+
+    <div class="ch-card">
+      <div class="ch-head">
+        <div>
+          <div class="ch-num">CHAPTER 02</div>
+          <div class="ch-title">벽란도 산길, 다크 고블린, 그리고 2011년 버린 자기 게임</div>
+        </div>
+        <div class="ch-meta">3,500자</div>
+      </div>
+      <div class="excerpt">매복은 산길 양쪽 바위 뒤에 두 명, 위쪽 절벽에 한 명, 굽이 너머에 두 명. 김용 선생의 신조협려에서 활사인묘(活死人墓) 의 합공 함정과 같은 구조였다. 다섯 방향에서 동시에 매화 꽃잎이 떨어진다. 다섯 검수가 다섯 방향에서 24fps 다운컨버트를 동시에 시전한다면 — 일행 전체의 시야가 5중으로 강제 다운된다. "내 관절이 먼저고 그 다음이 24fps다." 정주가 외쳤다. "무신화." 12초. 모든 능력치 +50%. 정주의 50대 몸이 20대로 변환되었다. 어깨에 걸친 예초기가 한 번 흔들렸다. 무릎의 시큰함이 12초 동안 사라졌다.</div>
+      <div class="src"><b>출처</b> · 강시연 사후 추출 v0.3 (2권 2화에 회상으로 인용된 본맥에서 역추적) / 정본은 정식 연재 시점 공개</div>
+    </div>
+
+    <div class="ch-card">
+      <div class="ch-head">
+        <div>
+          <div class="ch-num">CHAPTER 03</div>
+          <div class="ch-title">벽란도 마을 입성, 막걸리, 그리고 키오스크 글리치</div>
+        </div>
+        <div class="ch-meta">3,500자</div>
+      </div>
+      <div class="excerpt">객잔의 이름은 「반월(半月)」 이었다. 김용 선생의 사조영웅전에서 곽정과 황용이 처음 만난 객잔의 그 분위기였다. 흙벽돌 + 짚 지붕 + 마당의 평상 + 평상 위의 막걸리 항아리. 그러나 객잔의 한 구석에는 — 지붕 처마 아래에 — 1990년대식 네온 간판이 한 줄 걸려 있었다. "막걸리 한 사발 → ₩2,000". 글리치였다. "이 동네는 글리치가 일관성이 없네." 정주가 중얼거렸다. "형님요. 어디는 키오스크 있고 어디는 네온 간판 있고요. 우리 게임 만든 사람이 일관성을 안 잡았능 거 같음니더."</div>
+      <div class="src"><b>출처</b> · 강시연 사후 추출 v0.3 (2권 3화 객잔 도입부에서 1권 3화 분위기 역추적) / 정본은 정식 연재 시점 공개</div>
+    </div>
+  </section>
+
+  <!-- ===== §3 4화 이후 CTA ===== -->
+  <section>
+    <h2>§3. 4화 이후 — 정식 연재로 <span class="sub">— 동료 합류 / 이방원 시험 / 60fps 클라이맥스</span></h2>
+
+    <p style="color: var(--text-1); font-size: 14px;">
+      4화부터는 무휼의 본격 합류 + 슬레이어 빙의 토글 + 홍대걸 단군왕검 인증 + 이방원 3가지 시험 + 11화 화산파 매화검수 60fps 환원 클라이맥스가 펼쳐집니다. <b>전체 11화는 정식 연재 플랫폼에서 만나주세요.</b>
+    </p>
+
+    <div class="cta-block">
+      <h3>다음 화는 정식 연재로 만나세요</h3>
+      <p>2026년 4분기 한국 동시 연재 시작 · 2027년 1분기 일본 LINE 노벨 / 픽코마 진출 예정</p>
+      <div class="cta-buttons">
+        <a href="#" class="cta-btn">네이버시리즈<span class="pho">2026 Q4</span></a>
+        <a href="#" class="cta-btn">카카오페이지<span class="pho">2026 Q4</span></a>
+        <a href="#" class="cta-btn">픽코마<span class="pho">2027 Q1</span></a>
+      </div>
+    </div>
+
+    <div class="cta-block" style="border-color: var(--orange); background: linear-gradient(180deg, rgba(230,126,34,0.08), var(--bg-1));">
+      <h3 style="color: #fad7a0;">베타 신청하고 게임에서 만나기</h3>
+      <p>웹소설 1권 + 게임 2027 Q2 동시 출시. 베타 테스터로 정주의 무신화를 가장 먼저 체험하세요.</p>
+      <div class="cta-buttons">
+        <a href="#" class="cta-btn primary">베타 신청<span class="pho">폼 셋업 예정</span></a>
+        <a href="characters.html" class="cta-btn">캐릭터 5인 보기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== §4 작가 노트 ===== -->
+  <section>
+    <h2>§4. 작가 노트 <span class="sub">— 톤 / 융합 / 인용 출처</span></h2>
+
+    <div class="author-note">
+      <div class="who">강시연 (scenario-writer · 2~10권 담당)</div>
+      <p>
+        본 1권 미리보기는 <b>한국 무속 (작두 / 부적 / 살풀이 / 오방색) + AI 디스토피아 (게임 글리치 / 24fps·60fps / 코드 디버그) + 김용 풍 무협 (사부-제자 / 강호 의리 / 화산파 / 신조협려 합공)</b> 의 3중 융합 톤으로 집필되었습니다.
+      </p>
+      <p>
+        주인공 <b>정주</b>의 척추 인용 = 김용 의천도룡기의 장무기 (평범 청년 → 명교 교주) 의 한국 노동·AI 변형판. <b>무휼</b> = 사조영웅전 곽정 / <b>홍대걸</b> = 사조영웅전 홍칠공 / <b>슬레이어</b> = 황약사 부인 + 황용 / <b>이방원</b> = 위소보 + 강희제 + 영호충의 삼중 변형. PD 1권 본문 + 강시연 사후 추출 v0.3 (Volume 2 본문 14화 역추적). 정본 paste 시 v1.0 정식 갱신 예정.
+      </p>
+      <p style="font-size: 12px; color: var(--text-2);">
+        본 미리보기 본문 발췌 3건은 PD 정본 부재 상태에서의 <b>강시연 사후 추출</b> 입니다. 정식 연재 시점에 PD 본문이 정본으로 교체됩니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    <div>
+      © STARIS / 강시연 / GodBlade IP · <span class="ver">v0.3 preview</span> · 정적 HTML · 외부 의존 0<br>
+      1권 정본 paste 후 <b>v1.0</b> 갱신 예정 · 작성: 2026-05-02 강시연 (scenario-writer)
+    </div>
+    <div class="ver">
+      <a href="characters.html">캐릭터 5인 →</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

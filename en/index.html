@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>GodBlade — Korean Shamanism + AI Dystopia + Wuxia | Idle ARPG</title>
+<meta name="description" content="GodBlade is an idle ARPG inspired by Korean folklore (Dangun, Saktoo, Goryeo Dynasty 1392). Single-player. 200-floor infinite dungeon. Steam + iOS + Android. Coming Q1 2028.">
+<meta property="og:title" content="GodBlade — Korean Shamanism + AI Dystopia + Wuxia">
+<meta property="og:description" content="An idle ARPG melding Korean shamanism, 2030 Seoul cyberpunk, and the Goryeo Dynasty (1392). Tribute to Diablo, Path of Exile, and Jin Yong's wuxia universe.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://staris.cloud/godblade/hero.jpg">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #fafaf7;
+    color: #1d1d1f;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  a { color: #b8923f; text-decoration: none; transition: color 0.15s; }
+  a:hover { color: #8b6c2a; text-decoration: underline; }
+
+  :root {
+    --bg-0: #fafaf7;
+    --bg-1: #ffffff;
+    --bg-2: #f1efe8;
+    --border: #e2dfd4;
+    --text-0: #1d1d1f;
+    --text-1: #5a5a5c;
+    --text-2: #8a8a8c;
+    --gold: #b8923f;
+    --gold-strong: #8b6c2a;
+    --red: #8b1a1a;
+    --ink: #0d0d10;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* ===== Hero ===== */
+  header.hero {
+    text-align: center;
+    padding: 32px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  header.hero .badge {
+    display: inline-block;
+    background: var(--ink);
+    color: #f5d57a;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+    margin-bottom: 16px;
+  }
+  header.hero h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  header.hero h1 em {
+    font-style: normal;
+    color: var(--gold-strong);
+  }
+  header.hero .tagline {
+    font-size: 17px;
+    color: var(--text-1);
+    max-width: 620px;
+    margin: 0 auto 20px;
+  }
+  header.hero .hero-img {
+    width: 100%;
+    max-width: 720px;
+    height: 240px;
+    margin: 24px auto 28px;
+    background: linear-gradient(135deg, #1a1a1f 0%, #3a2a1a 50%, #6b4a1f 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(245, 213, 122, 0.35);
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  header.hero .hero-img::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 50%, rgba(245,213,122,0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 30%, rgba(192,57,43,0.18) 0%, transparent 50%);
+  }
+  header.hero .hero-img span { position: relative; z-index: 1; }
+  header.hero .cta-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: #f5d57a;
+  }
+  .btn-primary:hover {
+    background: #2a2a2f;
+    color: #f5d57a;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .btn-secondary {
+    background: var(--bg-1);
+    color: var(--text-0);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover {
+    background: var(--bg-2);
+    text-decoration: none;
+    border-color: var(--gold);
+    color: var(--gold-strong);
+  }
+
+  /* ===== Sections ===== */
+  section { margin-bottom: 48px; }
+  section h2 {
+    font-size: 22px;
+    color: var(--ink);
+    font-weight: 700;
+    margin-bottom: 18px;
+    letter-spacing: -0.2px;
+    border-left: 3px solid var(--gold);
+    padding-left: 12px;
+  }
+  section p {
+    color: var(--text-1);
+    margin-bottom: 12px;
+  }
+
+  /* ===== Pillars ===== */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .pillar {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 18px;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .pillar:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+  .pillar .icon {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: var(--gold-strong);
+    font-weight: 700;
+  }
+  .pillar h3 {
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .pillar p {
+    font-size: 13.5px;
+    color: var(--text-1);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* ===== Genre ===== */
+  .genre-box {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 24px;
+  }
+  .genre-box .lead {
+    font-size: 17px;
+    color: var(--ink);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .genre-box ul {
+    list-style: none;
+    padding: 0;
+  }
+  .genre-box li {
+    padding: 6px 0 6px 20px;
+    color: var(--text-1);
+    font-size: 14px;
+    position: relative;
+  }
+  .genre-box li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+
+  /* ===== Quick links ===== */
+  .links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .link-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  .link-card:hover {
+    border-color: var(--gold);
+    text-decoration: none;
+  }
+  .link-card .label {
+    font-size: 11px;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .link-card .name {
+    font-size: 14px;
+    color: var(--text-0);
+    font-weight: 600;
+  }
+  .link-card .name .pending {
+    font-size: 10px;
+    color: var(--text-2);
+    font-weight: 400;
+    margin-left: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* ===== Credits ===== */
+  .credits {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+  }
+  .credits dl {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 8px 16px;
+    font-size: 14px;
+  }
+  .credits dt {
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-size: 11px;
+    padding-top: 4px;
+    font-weight: 600;
+  }
+  .credits dd {
+    color: var(--text-0);
+  }
+  .credits dd span {
+    color: var(--text-1);
+    font-size: 13px;
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-2);
+    font-size: 12px;
+    text-align: center;
+  }
+  footer .conf {
+    display: inline-block;
+    background: rgba(139,26,26,0.08);
+    color: var(--red);
+    border: 1px solid rgba(139,26,26,0.2);
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 720px) {
+    header.hero h1 { font-size: 28px; }
+    header.hero .tagline { font-size: 15px; }
+    header.hero .hero-img { height: 180px; }
+    .pillars { grid-template-columns: 1fr; }
+    .links { grid-template-columns: 1fr; }
+    .credits dl { grid-template-columns: 1fr; gap: 4px; }
+    .credits dt { padding-top: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== Hero ===== -->
+  <header class="hero">
+    <div class="badge">Coming Q1 2028 · Steam · iOS · Android</div>
+    <h1>GodBlade — Korean Shamanism<br>+ AI Dystopia + <em>Wuxia</em></h1>
+    <p class="tagline">An idle ARPG inspired by Korean folklore — Dangun (2333 BCE), the Saktoo blade, and the Goryeo Dynasty (1392) — fused with 2030 Seoul cyberpunk and Jin Yong's wuxia universe.</p>
+    <div class="hero-img"><span>Hero trailer placeholder</span></div>
+    <div class="cta-row">
+      <a href="#" class="btn btn-primary">Wishlist on Steam (TBA)</a>
+      <a href="https://staris.cloud/novel.html" class="btn btn-secondary">Read the Novel Preview</a>
+    </div>
+  </header>
+
+  <!-- ===== §2 IP Differentiation ===== -->
+  <section>
+    <h2>What makes it different</h2>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="icon">巫</div>
+        <h3>Korean Shamanism</h3>
+        <p>Dangun (the founder deity, 2333 BCE), the Saktoo (a ritual blade walked by shamans), and the recurring 9,860 KRW (~$7) tribute — the price of a Korean meal, the cadence of a wage worker.</p>
+      </div>
+      <div class="pillar">
+        <div class="icon">AI</div>
+        <h3>AI Dystopia</h3>
+        <p>2030 Seoul cyberpunk collides with the Goryeo Dynasty (1392). PDA-augmented assassins. AI-driven economy. A timeline that bleeds across 700 years.</p>
+      </div>
+      <div class="pillar">
+        <div class="icon">武</div>
+        <h3>Wuxia (Jin Yong tribute)</h3>
+        <p>Four schools mapped to Jin Yong canon — Wudang (Heaven Sword and Dragon Saber), Beggars' Sect (Demi-Gods and Semi-Devils), Shaolin (Legend of Condor Heroes), Kunlun (Return of the Condor Heroes).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== §3 Genre Position ===== -->
+  <section>
+    <h2>Genre &amp; positioning</h2>
+    <div class="genre-box">
+      <div class="lead">Diablo 4 + Path of Exile + Korean webtoon roots.</div>
+      <ul>
+        <li><strong>Single-player.</strong> No always-online. No PvP. No paywalls.</li>
+        <li><strong>Idle progression.</strong> Auto-combat with on-demand active play.</li>
+        <li><strong>200-floor infinite dungeon.</strong> Prestige (Paragon-style) + 36-affix loot pool with 3+1 stack policy.</li>
+        <li><strong>Seasonal.</strong> 60-day cycles. Carry-over rules respect player time.</li>
+        <li><strong>Global launch:</strong> Q1 2028 — Steam (Win/Mac/Linux) + iOS + Android.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== §4 Quick Links ===== -->
+  <section>
+    <h2>Follow &amp; explore</h2>
+    <div class="links">
+      <a href="#" class="link-card">
+        <span class="label">Steam</span>
+        <span class="name">Wishlist <span class="pending">— page TBA</span></span>
+      </a>
+      <a href="#" class="link-card">
+        <span class="label">Discord</span>
+        <span class="name">Community server <span class="pending">— launching soon</span></span>
+      </a>
+      <a href="https://staris.cloud/godblade/" class="link-card">
+        <span class="label">Game site</span>
+        <span class="name">staris.cloud/godblade/ <span class="pending">(internal)</span></span>
+      </a>
+      <a href="https://staris.cloud/novel.html" class="link-card">
+        <span class="label">Novel</span>
+        <span class="name">Web novel preview</span>
+      </a>
+      <a href="https://staris.cloud/characters.html" class="link-card">
+        <span class="label">Characters</span>
+        <span class="name">Roster (KR · EN coming)</span>
+      </a>
+      <a href="https://staris.cloud/godblade/ip_infographic.html" class="link-card">
+        <span class="label">IP Glossary</span>
+        <span class="name">Korean shamanism in 60 seconds</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== §5 IP Credits ===== -->
+  <section>
+    <h2>Credits</h2>
+    <div class="credits">
+      <dl>
+        <dt>IP / Director</dt>
+        <dd>Park Jeongju <span>— CEO &amp; original author. Korean shamanism + wuxia melded.</span></dd>
+        <dt>Engineering</dt>
+        <dd>Lee (CTO) + Jung Hyunwoo <span>— Code Lead, Unity 6 / DOTS / Addressables.</span></dd>
+        <dt>Story</dt>
+        <dd>Kang Si-yeon <span>— Web novel author.</span></dd>
+        <dt>Design</dt>
+        <dd>Park Se-rin <span>— Game design lead (RPG 20yr / Diablo lineage).</span></dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    <div class="conf">Pre-release · Internal Preview</div>
+    <div>&copy; STARIS Inc. — Built in Seoul, Korea</div>
+    <div style="margin-top:6px;">staris.cloud/godblade/ · v0.1 · 2026-05-02</div>
+  </footer>
+
+</div>
+</body>
+</html>
