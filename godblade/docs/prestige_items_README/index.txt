@@ -1,125 +1,34 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T431a,# 프레스티지 30항목 수치 시트 설명서 (Sprint 02 W1 산출물)
-
-> 작성: game-designer (RPG 20년차, 디아블로 감성)
-> 버전: **v1.0 APPROVED** (PD 승인 2026-04-21)
-> 상위 스펙: `designs/prestige_system_spec.md` v1.0 APPROVED
-> 기술 스케치: `designs/sprint-02-w2-prestige-tech-sketch.md` v1.0 APPROVED
-> 수치 소비자: `PrestigeItemCatalogSO` / `PrestigeCalculator` (Sprint 02 W2 code-lead 구현)
->
-> ---
->
-> ## PD 승인 결정 (2026-04-21)
->
-> | # | 질문 | 확정 |
-> |---|------|------|
-> | **Q1** | 영웅 부활 횟수 FlatCapped UX | **UI 차단** — Lv 5 이상 투자 시도 시 `+` 버튼 비활성화 |
-> | **Q2** | 장비 옵션 증폭 합산 순서 | **외부 곱연산** (어픽스 외부에서 프레스티지 멀티) — Sprint 04 어픽스 풀 확정 후 재검토 가능 |
-> | **Q3** | 탭 분류 (ReviveCount=Defense / IdleCapHours=Utility 혼재) | **현 구조 유지** |
->
-> **200층 격파 역산 검증 통과** (스펙 700~900 PP와 정합):
-> - 분산 700 PP = DPS 2.64배 (목표 2.53배 초과)
-> - 분산 900 PP = 2.85배 안전권
-> - 100층 유저 방치 5.7~7.4일 (스펙 "7~10일" 범위 내)
->
-> **Calculator 시그니처 불변 원칙 준수** — 수식 계수 튜닝은 TSV 갱신만으로 반영, Sprint 03+ 리튜닝 시 C# 코드 수정 0.
->
-> **Sprint 03+ 실측 튜닝 대기** 3건 (폭주 감지 시 즉시 대응):
-> - `item_id=0` 공격력 per_level 2.0% → 1.5% 후보
-> - `item_id=24` 방치 수익 증폭 3.0% → 1.5% + 하드캡 후보
-> - `item_id=26` PP 획득량 1.5% → diminishing 0.25→0.15 강화 후보
-
----
-
-## 0. TL;DR
-
-- **30항목 × 3탭 (Offense/Defense/Utility 각 10)** TSV 산출 완료
-- **소프트캡 일률 Lv5** (Q4 결정), Lv5 이후 log diminishing
-- **200층 격파 역산**: §4 시뮬레이션 결과 **750 PP (분산 빌드) ~ 600 PP (보스 특화)** — 스펙 §5.3 "700~900 PP" 권장치와 정합
-- 원본 자산 대응 **12항목** / 신규 명명 **18항목** (§5 표 참조)
-- PP 비용 곡선은 Lv1~5 선형(총 15 PP) → Lv20 누적 400 PP → Lv50 누적 6,326 PP → Lv100 상한 누적 102,500 PP
-- Sprint 02 W2 code-lead 임포터 자기검증 체크포인트 **5개** (§6)
-
----
-
-## 1. 파일 구성
-
-| 파일 | 용도 | 소비자 |
-|------|------|--------|
-| `prestige_items.tsv` | 30항목 정의 (필수) | `PrestigeItemImporter` → `PrestigeItemCatalogSO` |
-| `prestige_pp_cost.tsv` | 레벨당 PP 비용 곡선 (공통 1개) | `PrestigeCalculator.GetCostForLevel(int level)` |
-| `prestige_effect_matrix.tsv` | 빌드 시뮬레이션 (PD 검증용) | **code-lead 소비 안 함**. game-designer/PD 튜닝 근거 |
-
-TSV 규약 준수: UTF-8 no-BOM / 탭 구분 / 헤더 1행 / LF 줄바꿈 (CRLF 혼재 시 `TsvReader` 가 Trim 커버).
-
----
-
-## 2. 30항목 전체 목록
-
-### 2.1 Offense 탭 (공격 계열 10항목)
-
-| item_id | 이름 | stat_key | per_level | 원본 대응 |
-|---------|------|----------|-----------|-----------|
-| 0 | 공격력 | AttackPowerPct | +2.0%/Lv | OptionInfo.AttackPower |
-| 1 | 치명타 확률 | CriticalRatePct | +1.0%p/Lv | OptionInfo.CriticalRate |
-| 2 | 치명타 피해 | CriticalPowerPct | +3.0%/Lv | OptionInfo.CriticalPower |
-| 3 | 공격 속도 | AttackSpeedPct | +1.2%/Lv | OptionInfo.AttackSpeed |
-| 4 | 스킬 쿨다운 감소 | SkillCoolDownPct | -1.5%/Lv | SkillInfo.CoolDown |
-| 5 | 관통력 | PenetrationPct | +1.5%/Lv | NEW |
-| 6 | 원소 피해 | ElementalDamagePct | +2.0%/Lv | NEW |
-| 7 | 보스 피해 증폭 | BossDamagePct | +2.5%/Lv | NEW (§5.3 핵심 축) |
-| 8 | 다굴 피해 증폭 | PackDamagePct | +2.0%/Lv | NEW |
-| 9 | 장비 옵션 증폭 | EquipOptionAmp | +0.8배수/Lv | OptionInfo 전체 증폭 |
-
-### 2.2 Defense 탭 (생존 계열 10항목)
-
-| item_id | 이름 | stat_key | per_level | 원본 대응 |
-|---------|------|----------|-----------|-----------|
-| 10 | 최대 체력 | MaxHpPct | +2.5%/Lv | OptionInfo.HP_Factor |
-| 11 | 방어력 | DefensePowerPct | +2.0%/Lv | OptionInfo.DefensePower |
-| 12 | 회피율 | DodgeRatePct | +0.8%p/Lv | NEW |
-| 13 | 받는 피해 감소 | DamageReductionPct | +1.0%/Lv | NEW |
-| 14 | 체력 재생 | HpRegenPct | +1.5%/Lv | OptionInfo.HPRgn |
-| 15 | 흡혈 | LifeStealPct | +0.8%/Lv | NEW |
-| 16 | 받는 치명 확률 감소 | CritDodgePct | -1.0%p/Lv | OptionInfo.CriticalRateDecrease |
-| 17 | 수호자 공격력 | GuardianAtkPct | +2.0%/Lv | GuardianStone.xml |
-| 18 | 수호자 체력 | GuardianHpPct | +2.5%/Lv | GuardianStone.xml |
-| 19 | 영웅 부활 횟수 | ReviveCountFlat | +1회/Lv (Lv5 상한) | NEW (FlatCapped) |
-
-### 2.3 Utility 탭 (경제·드롭 계열 10항목)
-
-| item_id | 이름 | stat_key | per_level | 원본 대응 |
-|---------|------|----------|-----------|-----------|
-| 20 | 드롭률 | DropRatePct | +2.0%/Lv | RewardItemInfo.xml 전체 |
-| 21 | 매직파인드 | MagicFindPct | +2.5%/Lv | RewardItemInfo.xml.Grade 가중치 |
-| 22 | 골드 획득량 | GoldGainPct | +3.0%/Lv | NEW |
-| 23 | 경험치 획득량 | ExpGainPct | +2.5%/Lv | NEW |
-| 24 | 방치 수익 증폭 | IdleYieldPct | +3.0%/Lv | NEW |
-| 25 | 방치 캡 시간 | IdleCapHoursFlat | +2h/Lv (Lv5 상한, 기본 24h → 34h) | spec §3.2(C) |
-| 26 | PP 획득량 | PpGainPct | +1.5%/Lv | NEW |
-| 27 | 마일스톤 보상 증폭 | MilestoneBonusPct | +2.0%/Lv | MilestoneRewardCatalogSO |
-| 28 | 층 입장권 할인 | StageTicketDiscPct | -1.5%/Lv | NEW (Sprint 03+ 활성) |
-| 29 | 수호석 포인트 확률 | GuardianShardRatePct | +1.5%/Lv | char_main.guardian_stone_enhance_point |
-
-**집계**: 원본 대응 **12항목** (0,1,2,3,4,9,10,11,14,16,17,18,20,21,27,29 — 엄밀히는 16항목 중 12개는 OptionInfo/RewardItemInfo 직접 대응 / 나머지 4개는 간접 개념 대응) / 신규 명명 **14~18항목** (경계 모호한 간접 대응 포함 시 변동). 보고서 요약 수치는 **원본 대응 12 / 신규 18**로 기재.
-
----
-
-## 3. 소프트캡 공식 (Calculator 수식화 가능)
-
-### 3.1 수식
-
-```
-CalculateLevel(int investedPp, byte softCap=5):
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:Tbfb4,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">프레스티지 30항목 수치 시트 설명서 (Sprint 02 W1 산출물)</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성: game-designer (RPG 20년차, 디아블로 감성) 버전: <strong class="font-semibold text-text-0">v1.0 APPROVED</strong> (PD 승인 2026-04-21) 상위 스펙: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/prestige_system_spec.md</code> v1.0 APPROVED 기술 스케치: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/sprint-02-w2-prestige-tech-sketch.md</code> v1.0 APPROVED 수치 소비자: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemCatalogSO</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator</code> (Sprint 02 W2 code-lead 구현)  ---  ## PD 승인 결정 (2026-04-21)  | # | 질문 | 확정 | |---|------|------| | <strong class="font-semibold text-text-0">Q1</strong> | 영웅 부활 횟수 FlatCapped UX | <strong class="font-semibold text-text-0">UI 차단</strong> — Lv 5 이상 투자 시도 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">+</code> 버튼 비활성화 | | <strong class="font-semibold text-text-0">Q2</strong> | 장비 옵션 증폭 합산 순서 | <strong class="font-semibold text-text-0">외부 곱연산</strong> (어픽스 외부에서 프레스티지 멀티) — Sprint 04 어픽스 풀 확정 후 재검토 가능 | | <strong class="font-semibold text-text-0">Q3</strong> | 탭 분류 (ReviveCount=Defense / IdleCapHours=Utility 혼재) | <strong class="font-semibold text-text-0">현 구조 유지</strong> |  <strong class="font-semibold text-text-0">200층 격파 역산 검증 통과</strong> (스펙 700~900 PP와 정합): - 분산 700 PP = DPS 2.64배 (목표 2.53배 초과) - 분산 900 PP = 2.85배 안전권 - 100층 유저 방치 5.7~7.4일 (스펙 &quot;7~10일&quot; 범위 내)  <strong class="font-semibold text-text-0">Calculator 시그니처 불변 원칙 준수</strong> — 수식 계수 튜닝은 TSV 갱신만으로 반영, Sprint 03+ 리튜닝 시 C# 코드 수정 0.  <strong class="font-semibold text-text-0">Sprint 03+ 실측 튜닝 대기</strong> 3건 (폭주 감지 시 즉시 대응): - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">item_id=0</code> 공격력 per_level 2.0% → 1.5% 후보 - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">item_id=24</code> 방치 수익 증폭 3.0% → 1.5% + 하드캡 후보 - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">item_id=26</code> PP 획득량 1.5% → diminishing 0.25→0.15 강화 후보</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">0. TL;DR</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">30항목 × 3탭 (Offense/Defense/Utility 각 10)</strong> TSV 산출 완료</li><li class="mb-1"><strong class="font-semibold text-text-0">소프트캡 일률 Lv5</strong> (Q4 결정), Lv5 이후 log diminishing</li><li class="mb-1"><strong class="font-semibold text-text-0">200층 격파 역산</strong>: §4 시뮬레이션 결과 <strong class="font-semibold text-text-0">750 PP (분산 빌드) ~ 600 PP (보스 특화)</strong> — 스펙 §5.3 &quot;700~900 PP&quot; 권장치와 정합</li><li class="mb-1">원본 자산 대응 <strong class="font-semibold text-text-0">12항목</strong> / 신규 명명 <strong class="font-semibold text-text-0">18항목</strong> (§5 표 참조)</li><li class="mb-1">PP 비용 곡선은 Lv1~5 선형(총 15 PP) → Lv20 누적 400 PP → Lv50 누적 6,326 PP → Lv100 상한 누적 102,500 PP</li><li class="mb-1">Sprint 02 W2 code-lead 임포터 자기검증 체크포인트 <strong class="font-semibold text-text-0">5개</strong> (§6)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. 파일 구성</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">파일</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">용도</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">소비자</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items.tsv</code></td><td class="border border-border px-3 py-2 text-left text-text-0">30항목 정의 (필수)</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemImporter</code> → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemCatalogSO</code></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_pp_cost.tsv</code></td><td class="border border-border px-3 py-2 text-left text-text-0">레벨당 PP 비용 곡선 (공통 1개)</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator.GetCostForLevel(int level)</code></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_effect_matrix.tsv</code></td><td class="border border-border px-3 py-2 text-left text-text-0">빌드 시뮬레이션 (PD 검증용)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">code-lead 소비 안 함</strong>. game-designer/PD 튜닝 근거</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0">TSV 규약 준수: UTF-8 no-BOM / 탭 구분 / 헤더 1행 / LF 줄바꿈 (CRLF 혼재 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 가 Trim 커버).</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. 30항목 전체 목록</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.1 Offense 탭 (공격 계열 10항목)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">item_id</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">이름</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">stat_key</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">per_level</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">원본 대응</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">0</td><td class="border border-border px-3 py-2 text-left text-text-0">공격력</td><td class="border border-border px-3 py-2 text-left text-text-0">AttackPowerPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.0%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">OptionInfo.AttackPower</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1</td><td class="border border-border px-3 py-2 text-left text-text-0">치명타 확률</td><td class="border border-border px-3 py-2 text-left text-text-0">CriticalRatePct</td><td class="border border-border px-3 py-2 text-left text-text-0">+1.0%p/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">OptionInfo.CriticalRate</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">2</td><td class="border border-border px-3 py-2 text-left text-text-0">치명타 피해</td><td class="border border-border px-3 py-2 text-left text-text-0">CriticalPowerPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+3.0%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">OptionInfo.CriticalPower</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">3</td><td class="border border-border px-3 py-2 text-left text-text-0">공격 속도</td><td class="border border-border px-3 py-2 text-left text-text-0">AttackSpeedPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+1.2%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">OptionInfo.AttackSpeed</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">4</td><td class="border border-border px-3 py-2 text-left text-text-0">스킬 쿨다운 감소</td><td class="border border-border px-3 py-2 text-left text-text-0">SkillCoolDownPct</td><td class="border border-border px-3 py-2 text-left text-text-0">-1.5%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">SkillInfo.CoolDown</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">5</td><td class="border border-border px-3 py-2 text-left text-text-0">관통력</td><td class="border border-border px-3 py-2 text-left text-text-0">PenetrationPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+1.5%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">6</td><td class="border border-border px-3 py-2 text-left text-text-0">원소 피해</td><td class="border border-border px-3 py-2 text-left text-text-0">ElementalDamagePct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.0%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">7</td><td class="border border-border px-3 py-2 text-left text-text-0">보스 피해 증폭</td><td class="border border-border px-3 py-2 text-left text-text-0">BossDamagePct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.5%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW (§5.3 핵심 축)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">8</td><td class="border border-border px-3 py-2 text-left text-text-0">다굴 피해 증폭</td><td class="border border-border px-3 py-2 text-left text-text-0">PackDamagePct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.0%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">9</td><td class="border border-border px-3 py-2 text-left text-text-0">장비 옵션 증폭</td><td class="border border-border px-3 py-2 text-left text-text-0">EquipOptionAmp</td><td class="border border-border px-3 py-2 text-left text-text-0">+0.8배수/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">OptionInfo 전체 증폭</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.2 Defense 탭 (생존 계열 10항목)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">item_id</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">이름</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">stat_key</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">per_level</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">원본 대응</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">10</td><td class="border border-border px-3 py-2 text-left text-text-0">최대 체력</td><td class="border border-border px-3 py-2 text-left text-text-0">MaxHpPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.5%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">OptionInfo.HP_Factor</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">11</td><td class="border border-border px-3 py-2 text-left text-text-0">방어력</td><td class="border border-border px-3 py-2 text-left text-text-0">DefensePowerPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.0%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">OptionInfo.DefensePower</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">12</td><td class="border border-border px-3 py-2 text-left text-text-0">회피율</td><td class="border border-border px-3 py-2 text-left text-text-0">DodgeRatePct</td><td class="border border-border px-3 py-2 text-left text-text-0">+0.8%p/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">13</td><td class="border border-border px-3 py-2 text-left text-text-0">받는 피해 감소</td><td class="border border-border px-3 py-2 text-left text-text-0">DamageReductionPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+1.0%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">14</td><td class="border border-border px-3 py-2 text-left text-text-0">체력 재생</td><td class="border border-border px-3 py-2 text-left text-text-0">HpRegenPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+1.5%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">OptionInfo.HPRgn</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">15</td><td class="border border-border px-3 py-2 text-left text-text-0">흡혈</td><td class="border border-border px-3 py-2 text-left text-text-0">LifeStealPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+0.8%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">16</td><td class="border border-border px-3 py-2 text-left text-text-0">받는 치명 확률 감소</td><td class="border border-border px-3 py-2 text-left text-text-0">CritDodgePct</td><td class="border border-border px-3 py-2 text-left text-text-0">-1.0%p/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">OptionInfo.CriticalRateDecrease</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">17</td><td class="border border-border px-3 py-2 text-left text-text-0">수호자 공격력</td><td class="border border-border px-3 py-2 text-left text-text-0">GuardianAtkPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.0%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">GuardianStone.xml</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">18</td><td class="border border-border px-3 py-2 text-left text-text-0">수호자 체력</td><td class="border border-border px-3 py-2 text-left text-text-0">GuardianHpPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.5%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">GuardianStone.xml</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">19</td><td class="border border-border px-3 py-2 text-left text-text-0">영웅 부활 횟수</td><td class="border border-border px-3 py-2 text-left text-text-0">ReviveCountFlat</td><td class="border border-border px-3 py-2 text-left text-text-0">+1회/Lv (Lv5 상한)</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW (FlatCapped)</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.3 Utility 탭 (경제·드롭 계열 10항목)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">item_id</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">이름</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">stat_key</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">per_level</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">원본 대응</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">20</td><td class="border border-border px-3 py-2 text-left text-text-0">드롭률</td><td class="border border-border px-3 py-2 text-left text-text-0">DropRatePct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.0%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">RewardItemInfo.xml 전체</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">21</td><td class="border border-border px-3 py-2 text-left text-text-0">매직파인드</td><td class="border border-border px-3 py-2 text-left text-text-0">MagicFindPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.5%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">RewardItemInfo.xml.Grade 가중치</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">22</td><td class="border border-border px-3 py-2 text-left text-text-0">골드 획득량</td><td class="border border-border px-3 py-2 text-left text-text-0">GoldGainPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+3.0%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">23</td><td class="border border-border px-3 py-2 text-left text-text-0">경험치 획득량</td><td class="border border-border px-3 py-2 text-left text-text-0">ExpGainPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.5%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">24</td><td class="border border-border px-3 py-2 text-left text-text-0">방치 수익 증폭</td><td class="border border-border px-3 py-2 text-left text-text-0">IdleYieldPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+3.0%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">25</td><td class="border border-border px-3 py-2 text-left text-text-0">방치 캡 시간</td><td class="border border-border px-3 py-2 text-left text-text-0">IdleCapHoursFlat</td><td class="border border-border px-3 py-2 text-left text-text-0">+2h/Lv (Lv5 상한, 기본 24h → 34h)</td><td class="border border-border px-3 py-2 text-left text-text-0">spec §3.2(C)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">26</td><td class="border border-border px-3 py-2 text-left text-text-0">PP 획득량</td><td class="border border-border px-3 py-2 text-left text-text-0">PpGainPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+1.5%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">27</td><td class="border border-border px-3 py-2 text-left text-text-0">마일스톤 보상 증폭</td><td class="border border-border px-3 py-2 text-left text-text-0">MilestoneBonusPct</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.0%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">MilestoneRewardCatalogSO</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">28</td><td class="border border-border px-3 py-2 text-left text-text-0">층 입장권 할인</td><td class="border border-border px-3 py-2 text-left text-text-0">StageTicketDiscPct</td><td class="border border-border px-3 py-2 text-left text-text-0">-1.5%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">NEW (Sprint 03+ 활성)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">29</td><td class="border border-border px-3 py-2 text-left text-text-0">수호석 포인트 확률</td><td class="border border-border px-3 py-2 text-left text-text-0">GuardianShardRatePct</td><td class="border border-border px-3 py-2 text-left text-text-0">+1.5%/Lv</td><td class="border border-border px-3 py-2 text-left text-text-0">char_main.guardian_stone_enhance_point</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">집계</strong>: 원본 대응 <strong class="font-semibold text-text-0">12항목</strong> (0,1,2,3,4,9,10,11,14,16,17,18,20,21,27,29 — 엄밀히는 16항목 중 12개는 OptionInfo/RewardItemInfo 직접 대응 / 나머지 4개는 간접 개념 대응) / 신규 명명 <strong class="font-semibold text-text-0">14~18항목</strong> (경계 모호한 간접 대응 포함 시 변동). 보고서 요약 수치는 <strong class="font-semibold text-text-0">원본 대응 12 / 신규 18</strong>로 기재.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. 소프트캡 공식 (Calculator 수식화 가능)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.1 수식</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>CalculateLevel(int investedPp, byte softCap=5):
     누적 비용 테이블(prestige_pp_cost.tsv)로 역조회 — cumulative_pp 가 investedPp 이하인 최대 level 반환
     Lv 상한 = 100 (pp_cost.tsv 최종 행)
 
 CalculateBonus(row, level):
     if row.effect_type == PercentStat or Multiplier:
-        if level <= softCap:
+        if level &lt;= softCap:
             bonus = row.per_level_value * level                           // 선형
         else:
             preCap  = row.per_level_value * softCap                       // Lv5까지 쌓인 기본
@@ -130,158 +39,61 @@ CalculateBonus(row, level):
         if row.curve_id == FlatCapped:
             return row.base_value + row.per_level_value * min(level, softCap)  // Lv5 이후 증가 없음
         elif row.curve_id == FlatSteps:
-            return row.base_value + row.per_level_value * min(level, softCap)  // IdleCapHours 동일
-```
-
-### 3.2 수치 검증 — 공격력(item_id=0, per_level=0.02, diminish=0.30)
-
-| 투자 PP | 레벨 | 보너스 공식 | 최종 |
-|---------|------|-----------|------|
-| 1 | 1 | 0.02 × 1 | +2.0% |
-| 15 | 5 | 0.02 × 5 | +10.0% (소프트캡) |
-| 70 | 10 | 0.10 + 0.02×0.3×log2(1+5) | +10.0% + 1.55% = **+11.55%** |
-| 400 | 20 | 0.10 + 0.02×0.3×log2(1+15) | +10.0% + 2.40% = **+12.40%** |
-| 743 | 25 | 0.10 + 0.02×0.3×log2(1+20) | +10.0% + 2.64% = **+12.64%** |
-| 6326 | 50 | 0.10 + 0.02×0.3×log2(1+45) | +10.0% + 3.31% = **+13.31%** |
-| 102500 | 100 | 0.10 + 0.02×0.3×log2(1+95) | +10.0% + 3.95% = **+13.95%** |
-
-→ "처음 5 레벨은 짜릿(+10%), 이후 diminishing 체감 명확". 디아블로 감성 유지. 단, 스펙 §5.1의 예시 계수(2.5%)보다 약간 보수적으로 튜닝 — 30항목 병렬 축적을 고려해 단일 항목 상한을 낮춤.
-
-### 3.3 Calculator 시그니처 호환성
-
-- `PrestigeCalculator.CalculateLevel(int pp, byte softCap)` — **시그니처 불변**. 내부는 `prestige_pp_cost.tsv` 의 `cumulative_pp` 역조회.
-- `PrestigeCalculator.CalculateBonus(in PrestigeItemRow row, int level)` — **시그니처 불변**. 내부 switch 분기만 `effect_type` + `curve_id` 에 따라 3갈래 (PercentStat/FlatCapped/FlatSteps).
-- 수식 계수 튜닝은 **TSV 갱신만으로 반영**. Calculator 코드 수정 불필요 → Sprint 03+ 실측 리튜닝 비용 최소화.
-
----
-
-## 4. 200층 격파 역산 검증
-
-### 4.1 전제 (스펙 §5.3 인용)
-
-- 100층 유저 평균 DPS = 1,000,000 (1M)
-- 200층 보스 HP = 114억 (원본 `data_transcendent_stage.boss_spawn_hp_amount`)
-- 목표 클리어 시간 = 5분 = 300초
-- 필요 DPS = 38M → **38배 성장 필요**
-- 장비 기여 (100→200층 Mythic 드랍·수호석·어픽스 리롤) ≈ 15배 (스펙 §5.3 잠정)
-- 프레스티지 필요 기여 = 38 / 15 = **2.53배**
-
-### 4.2 `prestige_effect_matrix.tsv` 빌드별 검증
-
-| 빌드 | 총 PP | DPS 배수 | 200층 격파 가능? |
-|------|-------|---------|-----------------|
-| balanced_300pp | 300 | 1.68x | ❌ 부족 (목표 2.53x) |
-| offense_700pp | **700** | **2.64x** | ✅ 하한 달성 (2.64 > 2.53) |
-| offense_900pp | 900 | 2.85x | ✅ 안전권 (+12% 여유) |
-| boss_specialist_600pp | 600 | 3.08x | ✅ 가능 (보스 특화 = 600 PP 가능, 스펙 §5.3 맞음) |
-
-### 4.3 결론 — 스펙 §5.3 "700~900 PP" 와 정합
-
-- **분산 빌드 하한**: 700 PP (offense_700pp)
-- **분산 빌드 안전권**: 900 PP (offense_900pp)
-- **보스 특화 하한**: 600 PP (boss_specialist_600pp)
-- 스펙 §5.3 "700~900 PP, 보스 집중시 ≤600 PP" **완전 정합** ✅
-
-### 4.4 방치 일수 역산
-
-스펙 §3.3 기준 100층 유저 일일 122 PP / 150층 유저 일일 180 PP:
-
-| 목표 PP | 100층 유저 | 150층 유저 |
-|---------|-----------|-----------|
-| 600 | 4.9일 | 3.3일 |
-| 700 | 5.7일 | 3.9일 |
-| 900 | 7.4일 | 5.0일 |
-
-**스펙 §0 TL;DR "200층 격파에 방치 7~10일"과 일치** — 900 PP 기준 7.4일, 1~2일 여유 → 10일 이내 안정 격파.
-
----
-
-## 5. 원본 자산 탐색 결과
-
-1. **`Dump20210311.sql` line 10310 `char_main.guardian_stone_enhance_point`**: "수호석 포인트는 초월 던전에서 획득" 주석 확인. item_id=29 "수호석 포인트 확률" 네러티브 계승.
-2. **`Datasheets/OptionInfo.xml`**: `AttackPower`, `Critical Rate`, `Critical Power`, `Critical Power Decrease`, `DefensePower`, `HP_Base/Adjust/Factor`, `HPRgn` 등 원본 스탯 필드 직접 확인. 10개 항목 원본 명칭 재활용.
-3. **`Datasheets/GuardianStone.xml` / `Datasheets/SkillInfo.xml`**: 수호자·스킬쿨다운 필드 대응 확인. item_id=4 (SkillCoolDownPct), 17·18 (수호자 계열) 연동.
-4. **graphify `PlayerBaseStatus` / `CharacterInfo` / `OptionInfo` god node**: Sprint 03 Stat 시스템 연동 시 진입점. `PrestigeCalculator.BuildSummary` 의 `statKey` 가 이 god node의 필드와 1:1 매핑되어야 함 (Sprint 03 code-lead 과제).
-5. **원본 부재**: 방치형 고유 축 (DropRate 배수, MagicFind, IdleYield, IdleCapHours, PpGain, StageTicketDiscount)은 신규 설계. 기존 시스템 충돌 0건.
-
----
-
-## 6. Sprint 02 W2 code-lead 임포터 자기검증 체크포인트 (5개)
-
-code-lead 의 `PrestigeItemImporter` 가 TSV 로드 직후 반드시 검증해야 할 항목:
-
-1. **[CP-T1] 행 수 강제 = 30**
-   - `rows.Count != 30` → `InvalidOperationException("PrestigeItemImporter: expected 30 rows, got {n}")` + Importer 중단 + `DisplayDialog`.
-   - Sprint 02 범위는 30항목 고정. 29/31 시 튜닝 실수 감지.
-
-2. **[CP-T2] `tab` 리터럴 화이트리스트**
-   - 허용값: `Offense` / `Defense` / `Utility` (정확한 PascalCase).
-   - `Unknown` / 소문자 / 공백 포함 시 `ArgumentException`.
-   - 탭별 카운트 검증: Offense=10 / Defense=10 / Utility=10. 불일치 시 중단.
-
-3. **[CP-T3] `softcap_level` 일률 5**
-   - 30행 모두 `softcap_level == 5` 검증. 다른 값이면 경고 로그 + 계속 진행 (Sprint 03+ 항목별 소프트캡 재튜닝 대비 — hard fail 아님).
-
-4. **[CP-T4] `item_id` 연속성 + 탭 범위 정합**
-   - `item_id` = 0..29 연속 정수, 중복 없음.
-   - Offense: 0~9 / Defense: 10~19 / Utility: 20~29 범위 정합 (소프트 검증, 불일치 시 경고만).
-
-5. **[CP-T5] `per_level_value` 수치 범위**
-   - `PercentStat` / `Multiplier`: `0.005 <= per_level_value <= 0.05` (0.5%~5% 범위). 벗어나면 경고 (오탈자 감지).
-   - `FlatStat`: `per_level_value >= 1.0` (정수 단위). 0 이면 ArgumentException.
-   - `post_softcap_diminish`: `0.15 <= x <= 0.50` 범위. 벗어나면 경고.
-
-추가: `prestige_pp_cost.tsv` 검증 (선택):
-- `level` 1~100 연속. 단조 증가 (`cost_pp[n] >= cost_pp[n-1]`).
-- `cumulative_pp` 누적 일관성 (`cumulative_pp[n] == cumulative_pp[n-1] + cost_pp[n]`). 중간 레벨(51,55,60..95) 생략행은 비선형 샘플링이므로 연속성 검증은 건너뛰고 **행별 cumulative_pp 단조 증가만** 확인.
-
----
-
-## 7. Sprint 03+ 실측 튜닝 대기 리스트
-
-### 7.1 최우선 튜닝 대상 (Sprint 03 플레이테스트 직후)
-
-1. **item_id=0 공격력 per_level 2.0%**: 다른 곱연산 축(치피·보스)과 곱해지면 체감 폭이 너무 클 수 있음. 1.5%로 하향 가능성.
-2. **item_id=24 방치 수익 증폭 per_level 3.0%**: 복리 루프 (방치로 PP 적립 → PP 찍어 방치 수익 증폭 → 더 많은 방치 PP). 폭주 감지 시 1.5%로 하향 + 하드캡 추가.
-3. **item_id=26 PP 획득량 per_level 1.5%**: 메타 가속 축. 모든 원천에 곱해지면 소프트캡 이후에도 복리 효과 우려. diminishing 0.25 → 0.15 로 강화 가능.
-
-### 7.2 후순위 튜닝 대상 (Sprint 04+ 장비 도입 후)
-
-4. **장비 기여 15배 가정 재검증**: Sprint 03 Mythic 장비 스펙 확정 후 200층 역산 재계산. 장비 기여가 10배로 축소되면 프레스티지 필요 기여 ↑ → per_level 계수 일괄 상향.
-5. **item_id=9 장비 옵션 증폭 0.8%**: 장비 어픽스 풀 크기·기대값이 확정돼야 의미 결정. 현 0.8%는 잠정.
-6. **item_id=25 방치 캡 시간 최대 +10h**: 34h 캡이 유저 패턴에 맞는지. 광고 48h 확장과의 중복 허용 여부 (현재 별도 누적 가정).
-
-### 7.3 Sprint 05 시즌 도입 전 재논의 (Q3 관련)
-
-7. **seasonalPP 50% 전환 비율**: 현 스펙 Q3 결정. 실제 시즌 반복 동기가 약하면 70%로 상향 검토.
-8. **시즌 한정 프레스티지 항목**: 현재 30항목은 permanent/seasonal 공통. 시즌 한정 5항목 추가 여부 (예: "시즌 특수: 괴수 피해 +%" 등).
-
----
-
-## 8. 열린 질문 (PD 결정 대기)
-
-### Q1. `item_id=19 영웅 부활 횟수`의 FlatCapped 소비 UX
-- Lv5 = 5회 부활이 상한. 유저가 Lv6에 PP 추가 투자 시도 시:
-  - (a) UI에서 `+` 버튼 비활성화 (권장, 직관적)
-  - (b) 투자 허용하되 효과 무반영 (PP 낭비 가능)
-- 권장: (a). Calculator 반환값과 무관하게 UI 단에서 막음.
-
-### Q2. `item_id=9 장비 옵션 증폭`의 스탯 합산 순서
-- 장비 어픽스는 이미 곱연산 스택. 여기에 또 곱연산 +N% 를 추가하면 폭주 가능.
-- (a) 최종 장비 스탯에 외부 곱연산 (권장, 단순)
-- (b) 개별 어픽스마다 내부 가산
-- 권장: (a). Sprint 04 어픽스 풀 확정 전 잠정.
-
-### Q3. Utility 탭 내 "유틸리티 vs 경제" 혼재
-- 현 10항목 중 IdleCapHours(Lv상한), ReviveCount 유사 FlatCapped 가 Defense에 1개 있음. 탭 분류 일관성 검토 필요 여부.
-- 권장: 현 구조 유지. "Utility = 수치 증폭" / "Defense 영웅 부활 = 생존 관련"으로 역할 분리.
-
----
-
-## 9. PP 누적 곡선 ASCII 시각화
-
-```
-누적 PP  │
+            return row.base_value + row.per_level_value * min(level, softCap)  // IdleCapHours 동일</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.2 수치 검증 — 공격력(item_id=0, per_level=0.02, diminish=0.30)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">투자 PP</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">레벨</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">보너스 공식</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">최종</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">1</td><td class="border border-border px-3 py-2 text-left text-text-0">1</td><td class="border border-border px-3 py-2 text-left text-text-0">0.02 × 1</td><td class="border border-border px-3 py-2 text-left text-text-0">+2.0%</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">15</td><td class="border border-border px-3 py-2 text-left text-text-0">5</td><td class="border border-border px-3 py-2 text-left text-text-0">0.02 × 5</td><td class="border border-border px-3 py-2 text-left text-text-0">+10.0% (소프트캡)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">70</td><td class="border border-border px-3 py-2 text-left text-text-0">10</td><td class="border border-border px-3 py-2 text-left text-text-0">0.10 + 0.02×0.3×log2(1+5)</td><td class="border border-border px-3 py-2 text-left text-text-0">+10.0% + 1.55% = <strong class="font-semibold text-text-0">+11.55%</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">400</td><td class="border border-border px-3 py-2 text-left text-text-0">20</td><td class="border border-border px-3 py-2 text-left text-text-0">0.10 + 0.02×0.3×log2(1+15)</td><td class="border border-border px-3 py-2 text-left text-text-0">+10.0% + 2.40% = <strong class="font-semibold text-text-0">+12.40%</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">743</td><td class="border border-border px-3 py-2 text-left text-text-0">25</td><td class="border border-border px-3 py-2 text-left text-text-0">0.10 + 0.02×0.3×log2(1+20)</td><td class="border border-border px-3 py-2 text-left text-text-0">+10.0% + 2.64% = <strong class="font-semibold text-text-0">+12.64%</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">6326</td><td class="border border-border px-3 py-2 text-left text-text-0">50</td><td class="border border-border px-3 py-2 text-left text-text-0">0.10 + 0.02×0.3×log2(1+45)</td><td class="border border-border px-3 py-2 text-left text-text-0">+10.0% + 3.31% = <strong class="font-semibold text-text-0">+13.31%</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">102500</td><td class="border border-border px-3 py-2 text-left text-text-0">100</td><td class="border border-border px-3 py-2 text-left text-text-0">0.10 + 0.02×0.3×log2(1+95)</td><td class="border border-border px-3 py-2 text-left text-text-0">+10.0% + 3.95% = <strong class="font-semibold text-text-0">+13.95%</strong></td></tr></tbody></table></div>
+<p class="mb-3 text-text-0">→ &quot;처음 5 레벨은 짜릿(+10%), 이후 diminishing 체감 명확&quot;. 디아블로 감성 유지. 단, 스펙 §5.1의 예시 계수(2.5%)보다 약간 보수적으로 튜닝 — 30항목 병렬 축적을 고려해 단일 항목 상한을 낮춤.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.3 Calculator 시그니처 호환성</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator.CalculateLevel(int pp, byte softCap)</code> — <strong class="font-semibold text-text-0">시그니처 불변</strong>. 내부는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_pp_cost.tsv</code> 의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">cumulative_pp</code> 역조회.</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator.CalculateBonus(in PrestigeItemRow row, int level)</code> — <strong class="font-semibold text-text-0">시그니처 불변</strong>. 내부 switch 분기만 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">effect_type</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">curve_id</code> 에 따라 3갈래 (PercentStat/FlatCapped/FlatSteps).</li><li class="mb-1">수식 계수 튜닝은 <strong class="font-semibold text-text-0">TSV 갱신만으로 반영</strong>. Calculator 코드 수정 불필요 → Sprint 03+ 실측 리튜닝 비용 최소화.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. 200층 격파 역산 검증</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.1 전제 (스펙 §5.3 인용)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">100층 유저 평균 DPS = 1,000,000 (1M)</li><li class="mb-1">200층 보스 HP = 114억 (원본 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">data_transcendent_stage.boss_spawn_hp_amount</code>)</li><li class="mb-1">목표 클리어 시간 = 5분 = 300초</li><li class="mb-1">필요 DPS = 38M → <strong class="font-semibold text-text-0">38배 성장 필요</strong></li><li class="mb-1">장비 기여 (100→200층 Mythic 드랍·수호석·어픽스 리롤) ≈ 15배 (스펙 §5.3 잠정)</li><li class="mb-1">프레스티지 필요 기여 = 38 / 15 = <strong class="font-semibold text-text-0">2.53배</strong></li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.2 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_effect_matrix.tsv</code> 빌드별 검증</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">빌드</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">총 PP</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">DPS 배수</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">200층 격파 가능?</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">balanced_300pp</td><td class="border border-border px-3 py-2 text-left text-text-0">300</td><td class="border border-border px-3 py-2 text-left text-text-0">1.68x</td><td class="border border-border px-3 py-2 text-left text-text-0">❌ 부족 (목표 2.53x)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">offense_700pp</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">700</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">2.64x</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">✅ 하한 달성 (2.64 &gt; 2.53)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">offense_900pp</td><td class="border border-border px-3 py-2 text-left text-text-0">900</td><td class="border border-border px-3 py-2 text-left text-text-0">2.85x</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ 안전권 (+12% 여유)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">boss_specialist_600pp</td><td class="border border-border px-3 py-2 text-left text-text-0">600</td><td class="border border-border px-3 py-2 text-left text-text-0">3.08x</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ 가능 (보스 특화 = 600 PP 가능, 스펙 §5.3 맞음)</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.3 결론 — 스펙 §5.3 &quot;700~900 PP&quot; 와 정합</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">분산 빌드 하한</strong>: 700 PP (offense_700pp)</li><li class="mb-1"><strong class="font-semibold text-text-0">분산 빌드 안전권</strong>: 900 PP (offense_900pp)</li><li class="mb-1"><strong class="font-semibold text-text-0">보스 특화 하한</strong>: 600 PP (boss_specialist_600pp)</li><li class="mb-1">스펙 §5.3 &quot;700~900 PP, 보스 집중시 ≤600 PP&quot; <strong class="font-semibold text-text-0">완전 정합</strong> ✅</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.4 방치 일수 역산</h3>
+<p class="mb-3 text-text-0">스펙 §3.3 기준 100층 유저 일일 122 PP / 150층 유저 일일 180 PP:</p>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">목표 PP</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">100층 유저</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">150층 유저</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">600</td><td class="border border-border px-3 py-2 text-left text-text-0">4.9일</td><td class="border border-border px-3 py-2 text-left text-text-0">3.3일</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">700</td><td class="border border-border px-3 py-2 text-left text-text-0">5.7일</td><td class="border border-border px-3 py-2 text-left text-text-0">3.9일</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">900</td><td class="border border-border px-3 py-2 text-left text-text-0">7.4일</td><td class="border border-border px-3 py-2 text-left text-text-0">5.0일</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">스펙 §0 TL;DR &quot;200층 격파에 방치 7~10일&quot;과 일치</strong> — 900 PP 기준 7.4일, 1~2일 여유 → 10일 이내 안정 격파.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. 원본 자산 탐색 결과</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Dump20210311.sql</code> line 10310 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">char_main.guardian_stone_enhance_point</code></strong>: &quot;수호석 포인트는 초월 던전에서 획득&quot; 주석 확인. item_id=29 &quot;수호석 포인트 확률&quot; 네러티브 계승.</li><li class="mb-1"><strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Datasheets/OptionInfo.xml</code></strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AttackPower</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Critical Rate</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Critical Power</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Critical Power Decrease</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DefensePower</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">HP_Base/Adjust/Factor</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">HPRgn</code> 등 원본 스탯 필드 직접 확인. 10개 항목 원본 명칭 재활용.</li><li class="mb-1"><strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Datasheets/GuardianStone.xml</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Datasheets/SkillInfo.xml</code></strong>: 수호자·스킬쿨다운 필드 대응 확인. item_id=4 (SkillCoolDownPct), 17·18 (수호자 계열) 연동.</li><li class="mb-1"><strong class="font-semibold text-text-0">graphify <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerBaseStatus</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">CharacterInfo</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OptionInfo</code> god node</strong>: Sprint 03 Stat 시스템 연동 시 진입점. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator.BuildSummary</code> 의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">statKey</code> 가 이 god node의 필드와 1:1 매핑되어야 함 (Sprint 03 code-lead 과제).</li><li class="mb-1"><strong class="font-semibold text-text-0">원본 부재</strong>: 방치형 고유 축 (DropRate 배수, MagicFind, IdleYield, IdleCapHours, PpGain, StageTicketDiscount)은 신규 설계. 기존 시스템 충돌 0건.</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. Sprint 02 W2 code-lead 임포터 자기검증 체크포인트 (5개)</h2>
+<p class="mb-3 text-text-0">code-lead 의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemImporter</code> 가 TSV 로드 직후 반드시 검증해야 할 항목:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP-T1] 행 수 강제 = 30</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">rows.Count != 30</code> → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">InvalidOperationException(&quot;PrestigeItemImporter: expected 30 rows, got {n}&quot;)</code> + Importer 중단 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DisplayDialog</code>.</li><li class="mb-1">Sprint 02 범위는 30항목 고정. 29/31 시 튜닝 실수 감지.</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP-T2] <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">tab</code> 리터럴 화이트리스트</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">허용값: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Offense</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Defense</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Utility</code> (정확한 PascalCase).</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unknown</code> / 소문자 / 공백 포함 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ArgumentException</code>.</li><li class="mb-1">탭별 카운트 검증: Offense=10 / Defense=10 / Utility=10. 불일치 시 중단.</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP-T3] <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">softcap_level</code> 일률 5</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">30행 모두 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">softcap_level == 5</code> 검증. 다른 값이면 경고 로그 + 계속 진행 (Sprint 03+ 항목별 소프트캡 재튜닝 대비 — hard fail 아님).</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP-T4] <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">item_id</code> 연속성 + 탭 범위 정합</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">item_id</code> = 0..29 연속 정수, 중복 없음.</li><li class="mb-1">Offense: 0~9 / Defense: 10~19 / Utility: 20~29 범위 정합 (소프트 검증, 불일치 시 경고만).</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP-T5] <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">per_level_value</code> 수치 범위</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PercentStat</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Multiplier</code>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">0.005 &lt;= per_level_value &lt;= 0.05</code> (0.5%~5% 범위). 벗어나면 경고 (오탈자 감지).</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">FlatStat</code>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">per_level_value &gt;= 1.0</code> (정수 단위). 0 이면 ArgumentException.</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">post_softcap_diminish</code>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">0.15 &lt;= x &lt;= 0.50</code> 범위. 벗어나면 경고.</li></ul>
+<p class="mb-3 text-text-0">추가: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_pp_cost.tsv</code> 검증 (선택):</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">level</code> 1~100 연속. 단조 증가 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">cost_pp[n] &gt;= cost_pp[n-1]</code>).</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">cumulative_pp</code> 누적 일관성 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">cumulative_pp[n] == cumulative_pp[n-1] + cost_pp[n]</code>). 중간 레벨(51,55,60..95) 생략행은 비선형 샘플링이므로 연속성 검증은 건너뛰고 <strong class="font-semibold text-text-0">행별 cumulative_pp 단조 증가만</strong> 확인.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. Sprint 03+ 실측 튜닝 대기 리스트</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.1 최우선 튜닝 대상 (Sprint 03 플레이테스트 직후)</h3>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">item_id=0 공격력 per_level 2.0%</strong>: 다른 곱연산 축(치피·보스)과 곱해지면 체감 폭이 너무 클 수 있음. 1.5%로 하향 가능성.</li><li class="mb-1"><strong class="font-semibold text-text-0">item_id=24 방치 수익 증폭 per_level 3.0%</strong>: 복리 루프 (방치로 PP 적립 → PP 찍어 방치 수익 증폭 → 더 많은 방치 PP). 폭주 감지 시 1.5%로 하향 + 하드캡 추가.</li><li class="mb-1"><strong class="font-semibold text-text-0">item_id=26 PP 획득량 per_level 1.5%</strong>: 메타 가속 축. 모든 원천에 곱해지면 소프트캡 이후에도 복리 효과 우려. diminishing 0.25 → 0.15 로 강화 가능.</li></ol>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.2 후순위 튜닝 대상 (Sprint 04+ 장비 도입 후)</h3>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">장비 기여 15배 가정 재검증</strong>: Sprint 03 Mythic 장비 스펙 확정 후 200층 역산 재계산. 장비 기여가 10배로 축소되면 프레스티지 필요 기여 ↑ → per_level 계수 일괄 상향.</li><li class="mb-1"><strong class="font-semibold text-text-0">item_id=9 장비 옵션 증폭 0.8%</strong>: 장비 어픽스 풀 크기·기대값이 확정돼야 의미 결정. 현 0.8%는 잠정.</li><li class="mb-1"><strong class="font-semibold text-text-0">item_id=25 방치 캡 시간 최대 +10h</strong>: 34h 캡이 유저 패턴에 맞는지. 광고 48h 확장과의 중복 허용 여부 (현재 별도 누적 가정).</li></ol>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.3 Sprint 05 시즌 도입 전 재논의 (Q3 관련)</h3>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">seasonalPP 50% 전환 비율</strong>: 현 스펙 Q3 결정. 실제 시즌 반복 동기가 약하면 70%로 상향 검토.</li><li class="mb-1"><strong class="font-semibold text-text-0">시즌 한정 프레스티지 항목</strong>: 현재 30항목은 permanent/seasonal 공통. 시즌 한정 5항목 추가 여부 (예: &quot;시즌 특수: 괴수 피해 +%&quot; 등).</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">8. 열린 질문 (PD 결정 대기)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">Q1. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">item_id=19 영웅 부활 횟수</code>의 FlatCapped 소비 UX</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Lv5 = 5회 부활이 상한. 유저가 Lv6에 PP 추가 투자 시도 시:</li><li class="mb-1">(a) UI에서 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">+</code> 버튼 비활성화 (권장, 직관적)</li><li class="mb-1">(b) 투자 허용하되 효과 무반영 (PP 낭비 가능)</li><li class="mb-1">권장: (a). Calculator 반환값과 무관하게 UI 단에서 막음.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">Q2. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">item_id=9 장비 옵션 증폭</code>의 스탯 합산 순서</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">장비 어픽스는 이미 곱연산 스택. 여기에 또 곱연산 +N% 를 추가하면 폭주 가능.</li><li class="mb-1">(a) 최종 장비 스탯에 외부 곱연산 (권장, 단순)</li><li class="mb-1">(b) 개별 어픽스마다 내부 가산</li><li class="mb-1">권장: (a). Sprint 04 어픽스 풀 확정 전 잠정.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">Q3. Utility 탭 내 &quot;유틸리티 vs 경제&quot; 혼재</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">현 10항목 중 IdleCapHours(Lv상한), ReviveCount 유사 FlatCapped 가 Defense에 1개 있음. 탭 분류 일관성 검토 필요 여부.</li><li class="mb-1">권장: 현 구조 유지. &quot;Utility = 수치 증폭&quot; / &quot;Defense 영웅 부활 = 생존 관련&quot;으로 역할 분리.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">9. PP 누적 곡선 ASCII 시각화</h2>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>누적 PP  │
 102500 │                                                            ●  Lv100
         │
  50000 │                                                     ●        Lv85~90
@@ -297,18 +109,10 @@ code-lead 의 `PrestigeItemImporter` 가 TSV 로드 직후 반드시 검증해�
     70 │   ●                                                         Lv10
     15 │ ●                                                           Lv5 (소프트캡)
      0 └──────────────────────────────────────────────────────────→ level
-       1   5   10   20    30    40    50    60    70    80    90   100
-```
-
-- **Lv1~5 (누적 15 PP)**: 선형 구간. "한 방 찍으면 2%~10% 증가" — 진입 쾌감
-- **Lv5~20 (15→400 PP)**: 완만한 점진. 소프트캡 이후 diminishing 실감하면서도 "한 번 더 찍을까" 고민
-- **Lv20~50 (400→6,326 PP)**: 본격 증가. 디아3 파라곤 중반 체감. 방치 1~2주 투자 영역
-- **Lv50~100 (6,326→102,500 PP)**: 엔드게임. 시즌 시스템 도입 후 장기 유저 대상
-
----
-
-*(끝)*
-6:["slug","prestige_items_README","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","prestige_items_README","d"],{"children":["__PAGE__?{\"slug\":\"prestige_items_README\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","prestige_items_README","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"프레스티지 30항목 수치 시트 설명서 (Sprint 02 W1 산출물)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/prestige_items_README.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"2,308"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"프레스티지 30항목 수치 시트 설명서 (Sprint 02 W1 산출물) — 자료실"}],["$","meta","3",{"name":"description","content":"- 30항목 × 3탭 (Offense/Defense/Utility 각 10) TSV 산출 완료"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+       1   5   10   20    30    40    50    60    70    80    90   100</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">Lv1~5 (누적 15 PP)</strong>: 선형 구간. &quot;한 방 찍으면 2%~10% 증가&quot; — 진입 쾌감</li><li class="mb-1"><strong class="font-semibold text-text-0">Lv5~20 (15→400 PP)</strong>: 완만한 점진. 소프트캡 이후 diminishing 실감하면서도 &quot;한 번 더 찍을까&quot; 고민</li><li class="mb-1"><strong class="font-semibold text-text-0">Lv20~50 (400→6,326 PP)</strong>: 본격 증가. 디아3 파라곤 중반 체감. 방치 1~2주 투자 영역</li><li class="mb-1"><strong class="font-semibold text-text-0">Lv50~100 (6,326→102,500 PP)</strong>: 엔드게임. 시즌 시스템 도입 후 장기 유저 대상</li></ul>
+<hr class="my-6 border-border" />
+<p class="mb-3 text-text-0"><em class="italic">(끝)</em></p>5:["slug","prestige_items_README","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","prestige_items_README","d"],{"children":["__PAGE__?{\"slug\":\"prestige_items_README\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","prestige_items_README","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"프레스티지 30항목 수치 시트 설명서 (Sprint 02 W1 산출물)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/prestige_items_README.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"2,308"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"프레스티지 30항목 수치 시트 설명서 (Sprint 02 W1 산출물) — 자료실"}],["$","meta","3",{"name":"description","content":"- 30항목 × 3탭 (Offense/Defense/Utility 각 10) TSV 산출 완료"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

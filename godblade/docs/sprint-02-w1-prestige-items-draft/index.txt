@@ -1,211 +1,73 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T2e6d,# Sprint 02 W1 — 프레스티지 30항목 v1.0 흡수 검증 draft
-
-> 작성: 2026-05-02 (game-designer / 박세린) · 1.0h 작업
-> 목적: Sp01 W1 #W1-04 회귀 검증 단축용 사전 흡수 검증
-> 입력: `prestige_items.tsv` v1.0 (30행 APPROVED) + `affix_pool_sp04_supplement_v1.md` v1.3 (36행 정식 락) + `affix_pool.tsv` v1.0 (30행) + `prestige_system_spec.md` v1.0 + `sprint-02-w2-prestige-tech-sketch.md` v1.0
-> 판정: **GO** — 변동 0건, Calculator 시그니처 불변, Sp02 W1 5/18 정식 시작 시 인수 가능
-> 절약: Sp01 W1 #W1-04 회귀 검증 1.0h → 0.3h (-0.7h)
-
----
-
-## 0. TL;DR (PD 30초)
-
-- 어픽스 v1.3 흡수 결과 **30항목 변동 0건** / 200F **4.21 → 4.20배** (-0.24%, 노이즈)
-- 외부 곱연산 매핑 **30행 전수 검증** — exclusive_onlyOne 6건이 폭주 차단 핵심
-- Calculator 시그니처 (`CalcMultiplier(StatKey, prestigeLv, affixSumPct)`) 변경 0
-- B04/B07/B09 빌드 200F 격파 38배 게이트 1.65배 여유 PASS
-- Sp02 W1 정식 시작 시 인수인계 항목 0건 — `prestige_items.tsv` v1.0 그대로 진행 OK
-
----
-
-## 1. 어픽스 v1.3 흡수 결과 (변동 0건)
-
-### 1.1 v1.3 변경 핵심
-- **G-3 IP 정합 6건 추가** (5cm 어긋남 / 작두 박자 / 60fps 풀스로틀 / 9,860원의 박자 / Veil of Dangun / Way of Five Directions)
-- 어픽스 풀 = **30 → 36개**, Defensive +1·Offensive +2·Utility +2·additive_hardcap +1
-- 200F 영향: **4.26배 (v1.0) → 4.21배 (v1.2) → 4.20배 (v1.3)**, -1.4% 누적
-- AFX_36 "Way of Five Directions" Rare Defensive `additive_hardcap` 50% (광역 디버프 저항) → **공격축 무영향**
-
-### 1.2 프레스티지 30항목 변동 검증
-- v1.3 신규 6어픽스 모두 **어픽스-only** (프레스티지 stat_key 매핑 없음)
-- Way of Five Directions = `debuffResistPct` 신규 stat_key (프레스티지 미존재)
-- 5cm/작두/60fps/9860원/Veil of Dangun = IP 정합 명명 어픽스이나 underlying stat_key 는 기존 어픽스 풀 30종 내 매핑 (예: 5cm 어긋남 = `attackPct` cross-axis, 작두 박자 = `damageReductionPct` hardcap)
-- **결론**: `prestige_items.tsv` 30행 모두 변동 사유 없음. v1.0 락 유지.
-
-### 1.3 200F 4.20배 정합 검증 (B04/B07/B09)
-
-| 빌드 | 프레스티지 배수 | 어픽스 배수 (v1.3) | 합계 | 38배 게이트 대비 |
-|------|---------------|--------------------|------|----------------|
-| B04 표준900PP균형 (Epic 6슬롯) | 2.30 | 1.82 (v1.0 1.85 -1.6%) | **4.19~4.20** | 1.65배 PASS |
-| B07 Legendary4슬롯 | 2.30 | 2.23 (v1.0 2.26 -1.3%) | **5.13** | 2.05배 PASS |
-| B09 Mythic+1200PP | 2.58 | 2.86 (v1.0 2.89 -1.0%) | **7.38** | 2.95배 (overflow_critical 의도 유지) |
-
-- 모든 빌드 38배 게이트 통과 (B04 1.65배 / B07 2.05배 / B09 2.95배)
-- v1.0 대비 -0.2~-1.6% 감소 = G-3.6 Defensive 어픽스 1건 추가가 슬롯 확률 분산
-- **권장 액션 0건** — 노이즈 수준, Sp03+ 실측 튜닝 대기 항목 (item_id 0/24/26) 우선순위 변경 없음
-
----
-
-## 2. 외부 곱연산 매핑표 30행 (메인 진실 자료)
-
-### 2.1 프레스티지 ↔ 어픽스 stat_key 정밀 매핑
-
-| item_id | 프레스티지 stat_key | 어픽스 affix_id | 어픽스 stat_key | stack_policy | 폭주 위험 |
-|---------|---------------------|-----------------|-----------------|--------------|----------|
-| 0 | AttackPowerPct | 1 | AttackPct | additive_crossAxis | 낮음 |
-| 1 | CriticalRatePct | 6 | CritRatePct | additive_hardcap (100%) | 차단 |
-| 2 | CriticalPowerPct | 7 | CritDmgPct | additive_crossAxis | 낮음 |
-| 3 | AttackSpeedPct | 8 | AttackSpeedPct | additive_hardcap (+100%) | 차단 |
-| 4 | SkillCoolDownPct | 9 | CooldownReductionPct | additive_hardcap (80%) | 차단 |
-| 5 | PenetrationPct | 10 | PenetrationPct | additive_crossAxis | 낮음 |
-| 6 | ElementalDamagePct | 13 | ElementalDamagePct | additive_crossAxis | 낮음 |
-| 7 | BossDamagePct | 11 | BossDamagePct | additive_crossAxis | 낮음 (의도된 200F 핵심) |
-| 8 | PackDamagePct | 12 | PackDamagePct | additive_crossAxis | 낮음 |
-| 9 | EquipOptionAmp | 27 | EquipOptionAmp | **exclusive_onlyOne** | **자기참조 폭주 차단** |
-| 10 | MaxHpPct | 3 | HpPct | additive_crossAxis | 낮음 |
-| 11 | DefensePowerPct | 5 | DefensePct | additive_crossAxis | 낮음 |
-| 12 | DodgeRatePct | 14 | DodgeRatePct | additive_hardcap (40%) | 차단 |
-| 13 | DamageReductionPct | 15 | DamageReductionPct | additive_hardcap (60%) | 차단 |
-| 14 | HpRegenPct | 17 | HpRegenPct | additive_crossAxis | 낮음 |
-| 15 | LifeStealPct | 16 | LifeStealPct | additive_hardcap (15%) | 차단 |
-| 16 | CritDodgePct | 18 | CritDodgePct | additive_crossAxis | 낮음 |
-| 17 | GuardianAtkPct | 25 | GuardianAtkPct | additive_crossAxis | 낮음 |
-| 18 | GuardianHpPct | 26 | GuardianHpPct | additive_crossAxis | 낮음 |
-| 19 | ReviveCountFlat | — | (none) | prestige-only | N/A |
-| 20 | DropRatePct | 19 | DropRatePct | **exclusive_onlyOne** | **방치 폭주 차단** |
-| 21 | MagicFindPct | 20 | MagicFindPct | additive_crossAxis | 낮음 |
-| 22 | GoldGainPct | 21 | GoldGainPct | **exclusive_onlyOne** | **경제 폭주 차단** |
-| 23 | ExpGainPct | 22 | ExpGainPct | **exclusive_onlyOne** | **레벨 가속 폭주 차단** |
-| 24 | IdleYieldPct | 23 | IdleYieldPct | **exclusive_onlyOne** | **방치 드립 폭주 차단** |
-| 25 | IdleCapHoursFlat | — | (none) | prestige-only | N/A |
-| 26 | PpGainPct | 24 | PpGainPct | **exclusive_onlyOne** | **메타 복리 차단** |
-| 27 | MilestoneBonusPct | 29 | MilestoneBonusPct | additive_crossAxis | 낮음 |
-| 28 | StageTicketDiscPct | — | (none) | prestige-only | N/A |
-| 29 | GuardianShardRatePct | — | (none) | prestige-only | N/A |
-
-### 2.2 폭주 차단 6건 = 경제·메타 안전 핵심
-- 9 EquipOptionAmp / 20 DropRatePct / 22 GoldGainPct / 23 ExpGainPct / 24 IdleYieldPct / 26 PpGainPct
-- **공통**: 곱연산 누적 시 메타 복리 폭주 → `exclusive_onlyOne` 으로 max(prestige, affix) 단일 적용
-- 디아4 Pit 인플레이션 사례 (시즌 2 골드 폭주 → 시즌 3 곱연산 너프) 학습 반영
-
-### 2.3 부속 매핑
-- **프레스티지-only 4건**: ReviveCountFlat / IdleCapHoursFlat / StageTicketDiscPct / GuardianShardRatePct → 어픽스 영향 0
-- **어픽스-only 5건 (v1.0 기준)**: flatAttack / flatHp / flatDefense / moveSpeedPct / 그리고 v1.3 신규 debuffResistPct → 프레스티지 영향 0
-- **v1.3 신규 6건**: 모두 어픽스-only or 기존 매핑 stat_key 재활용 → 매핑표 신규 행 0
-
----
-
-## 3. Calculator 시그니처 불변 검증
-
-### 3.1 Sp02 W2 기술 스케치 정합
-`sprint-02-w2-prestige-tech-sketch.md` v1.0 §부수 확정:
-> `PlayerPrestigeState` + `PrestigeCalculator` 분리 유지 (수식 변경 시그니처 불변)
-
-### 3.2 시그니처 점검 (3건)
-
-| 시그니처 | 변경 여부 | 사유 |
-|---------|----------|------|
-| `PrestigeCalculator.CalculateLevel(int pp, byte softCap)` | **변경 0** | PP→Lv 환산은 어픽스와 무관 |
-| `PrestigeCalculator.CalculateBonus(in PrestigeItemRow row, int level)` | **변경 0** | 단일 항목 단일 레벨 보너스 산출. 어픽스 합산은 외부 호출자 책임 |
-| `PrestigeCalculator.CalcMultiplier(StatKey key, int prestigeLv, float affixSumPct)` | **변경 0** | `affix_pool_README.md` §3.4 오버로드 시그니처 락. v1.3 6건 신규도 동일 호출 경로 |
-
-### 3.3 PrestigeItemRow 필드 / BuildSummary 합산 경로
-- 30행 헤더 15컬럼 (item_id ~ notes) 변동 0
-- BuildSummary = `Σ(per stat) finalMult(stat)` × baseDps — 수식 §3.3 (affix_pool_README) 동일
-- v1.3 어픽스 6건 추가가 외부 호출자 affixSumPct 계산 입력만 늘림 (Calculator 내부 무관)
-
-### 3.4 결론
-- **Sp02 W1 정식 시작 (5/18) 시점 코드 수정 0 보장**
-- code-lead 인계 시 "어픽스 v1.3 흡수했음, Calculator 변경 0" 1줄 통보로 충분
-
----
-
-## 4. Sp01 W1 #W1-04 단축 패키지 (1.0h → 0.3h, -0.7h 절약)
-
-### 4.1 #W1-04 회귀 검증 본 작업 (PM sprint-01.md 정의)
-- 어픽스 풀 갱신 후 프레스티지 정합 회귀 검증
-- 30항목 변동 여부 + 200F 게이트 PASS 여부 + Calculator 시그니처 불변 여부 → GO/HOLD 판정
-
-### 4.2 단축 메커니즘
-- 본 draft §1~§3 가 #W1-04 입력 자료 100% 사전 준비
-- #W1-04 실작업 = "본 draft 재검토 + GO/HOLD 한 줄 판정"만
-- **단축 0.7h** = 통상 회귀 검증 1.0h - 자료 재검토 0.3h
-
-### 4.3 #W1-04 입력 패키지 인계 (3종)
-1. **§1.3 표** = 200F 4.20배 정합 + B04/B07/B09 PASS 증빙
-2. **§2.1 매핑표 30행** = 외부 곱연산 정합 증빙 + 폭주 차단 6건 명시
-3. **§3.2 시그니처 점검 3건** = Calculator 변경 0 증빙
-
-### 4.4 GO/HOLD 판정 권고
-- **GO 권고** — 3종 패키지 모두 PASS, HOLD 전환 트리거 없음
-- HOLD 전환 가능 시나리오 (현 시점 미발생): G-3.6 Defensive 어픽스가 B05 보스특화 빌드 1.61 → 1.50 미만으로 떨어지는 경우 (현재 1.59~1.60, 게이트 여유 0.01)
-
----
-
-## 5. Sp02 W1 5/18 정식 시작 시 인수인계 (1쪽)
-
-### 5.1 인수 항목 0건 — v1.0 그대로 진행
-- `prestige_items.tsv` v1.0 30행 변동 0
-- `prestige_pp_cost.tsv` v1.0 변동 0
-- `prestige_effect_matrix.tsv` v1.0 변동 0 (단 G-3.6 흡수 시뮬은 본 draft §1.3 표로 대체)
-- `prestige_items_README.md` v1.0 변동 0
-
-### 5.2 신규 작업 0건
-- 어픽스 v1.3 흡수가 프레스티지 측에 신규 작업 유발 안 함
-- code-lead Sp02 W2 기술 스케치도 변동 0
-
-### 5.3 잔존 우려 (Sp03+ 실측 튜닝 대기 3건 우선순위 재조정 가능성)
-- `item_id=0` 공격력 per_level 2.0% → 1.5% 후보 — **유지**, B04 4.20배 PASS 여유 1.65배
-- `item_id=24` 방치 수익 증폭 3.0% → 1.5% + 하드캡 후보 — **유지**, exclusive_onlyOne 6건 폭주 차단 증명
-- `item_id=26` PP 획득량 1.5% → diminishing 0.25→0.15 강화 후보 — **우선순위 ↓**, exclusive_onlyOne 메타 복리 차단 강력
-
-### 5.4 Sp04 킥오프 시 game-designer 책임 (4건)
-- 본 draft 와 별개. `affix_pool_sp04_supplement_v1.md` v1.3 §1.3 인용:
-  1. `affix_pool.tsv` 36행 정식 락 + `affix_stack_matrix.tsv` 10빌드 36어픽스 재시뮬
-  2. Mythic B08~B09 폭주 재검증 (overflow_critical 의도 유지 여부)
-  3. 메모리 `project_sprint04_affix_pool.md` 30 → 36 갱신
-  4. AFX_36 Way of Five Directions debuffResistPct 신규 stat_key 등록
-
----
-
-## 6. 데이터 근거
-
-- `designs/prestige_items.tsv` v1.0 (30행 APPROVED 2026-04-21)
-- `designs/prestige_pp_cost.tsv` v1.0
-- `designs/prestige_effect_matrix.tsv` v1.0
-- `designs/prestige_items_README.md` v1.0 §0~§5
-- `designs/affix_pool.tsv` v1.0 (30행, v1.3 36행 갱신 대기)
-- `designs/affix_pool_README.md` v1.0 §3 스택 정책 4종
-- `designs/affix_pool_sp04_supplement_v1.md` v1.3 (G-3.6 추가 정식 락 2026-05-02)
-- `designs/affix_stack_matrix.tsv` v1.0 (10빌드)
-- `designs/sprint-02-w2-prestige-tech-sketch.md` v1.0 §부수 확정
-- 메모리 `project_sprint02_w1_prestige_items.md` (UI 차단 / 외부 곱연산 / 탭 현구조)
-- 메모리 `project_sprint02_w2_prestige_tech_sketch.md` (struct+List / JSON / 시그니처 불변)
-- 메모리 `project_sprint04_affix_pool.md` v1.1 (35어픽스 × 3+1 스택, v1.3 36 갱신 권고)
-
----
-
-## 7. 리스크·미해결
-
-### 7.1 식별된 리스크 0건 (현재 시점)
-- 어픽스 v1.3 흡수 = 변동 0건 / 시그니처 불변 / 200F PASS
-
-### 7.2 모니터링 권고 (Sp03+ 실측 시점)
-- B05 보스특화 빌드 v1.0 1.61 → v1.3 1.59~1.60 (게이트 여유 0.09~0.10)
-- 추가 IP 정합 어픽스 (G-4 강시연 15화+ 검수) 추가 시 누적 영향 -1.4% → -2.0% 가능성
-- 트리거: B05 게이트 여유 0.05 미만 진입 시 즉시 PD 보고
-
-### 7.3 미해결 0건
-- Sp02 W1 5/18 정식 시작 가능. 추가 결정 사항 없음.
-
----
-
-*(끝 — 1.0h draft, GO 권고)*
-6:["slug","sprint-02-w1-prestige-items-draft","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sprint-02-w1-prestige-items-draft","d"],{"children":["__PAGE__?{\"slug\":\"sprint-02-w1-prestige-items-draft\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-02-w1-prestige-items-draft","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint 02 W1 — 프레스티지 30항목 v1.0 흡수 검증 draft"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-02-w1-prestige-items-draft.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,693"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint 02 W1 — 프레스티지 30항목 v1.0 흡수 검증 draft — 자료실"}],["$","meta","3",{"name":"description","content":"- 어픽스 v1.3 흡수 결과 30항목 변동 0건 / 200F 4.21 → 4.20배 (-0.24%, 노이즈)"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T93f1,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">Sprint 02 W1 — 프레스티지 30항목 v1.0 흡수 검증 draft</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성: 2026-05-02 (game-designer / 박세린) · 1.0h 작업 목적: Sp01 W1 #W1-04 회귀 검증 단축용 사전 흡수 검증 입력: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items.tsv</code> v1.0 (30행 APPROVED) + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">affix_pool_sp04_supplement_v1.md</code> v1.3 (36행 정식 락) + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">affix_pool.tsv</code> v1.0 (30행) + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_system_spec.md</code> v1.0 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-02-w2-prestige-tech-sketch.md</code> v1.0 판정: <strong class="font-semibold text-text-0">GO</strong> — 변동 0건, Calculator 시그니처 불변, Sp02 W1 5/18 정식 시작 시 인수 가능 절약: Sp01 W1 #W1-04 회귀 검증 1.0h → 0.3h (-0.7h)</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">0. TL;DR (PD 30초)</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">어픽스 v1.3 흡수 결과 <strong class="font-semibold text-text-0">30항목 변동 0건</strong> / 200F <strong class="font-semibold text-text-0">4.21 → 4.20배</strong> (-0.24%, 노이즈)</li><li class="mb-1">외부 곱연산 매핑 <strong class="font-semibold text-text-0">30행 전수 검증</strong> — exclusive_onlyOne 6건이 폭주 차단 핵심</li><li class="mb-1">Calculator 시그니처 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">CalcMultiplier(StatKey, prestigeLv, affixSumPct)</code>) 변경 0</li><li class="mb-1">B04/B07/B09 빌드 200F 격파 38배 게이트 1.65배 여유 PASS</li><li class="mb-1">Sp02 W1 정식 시작 시 인수인계 항목 0건 — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items.tsv</code> v1.0 그대로 진행 OK</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. 어픽스 v1.3 흡수 결과 (변동 0건)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.1 v1.3 변경 핵심</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">G-3 IP 정합 6건 추가</strong> (5cm 어긋남 / 작두 박자 / 60fps 풀스로틀 / 9,860원의 박자 / Veil of Dangun / Way of Five Directions)</li><li class="mb-1">어픽스 풀 = <strong class="font-semibold text-text-0">30 → 36개</strong>, Defensive +1·Offensive +2·Utility +2·additive_hardcap +1</li><li class="mb-1">200F 영향: <strong class="font-semibold text-text-0">4.26배 (v1.0) → 4.21배 (v1.2) → 4.20배 (v1.3)</strong>, -1.4% 누적</li><li class="mb-1">AFX_36 &quot;Way of Five Directions&quot; Rare Defensive <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">additive_hardcap</code> 50% (광역 디버프 저항) → <strong class="font-semibold text-text-0">공격축 무영향</strong></li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.2 프레스티지 30항목 변동 검증</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">v1.3 신규 6어픽스 모두 <strong class="font-semibold text-text-0">어픽스-only</strong> (프레스티지 stat_key 매핑 없음)</li><li class="mb-1">Way of Five Directions = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">debuffResistPct</code> 신규 stat_key (프레스티지 미존재)</li><li class="mb-1">5cm/작두/60fps/9860원/Veil of Dangun = IP 정합 명명 어픽스이나 underlying stat_key 는 기존 어픽스 풀 30종 내 매핑 (예: 5cm 어긋남 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">attackPct</code> cross-axis, 작두 박자 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">damageReductionPct</code> hardcap)</li><li class="mb-1"><strong class="font-semibold text-text-0">결론</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items.tsv</code> 30행 모두 변동 사유 없음. v1.0 락 유지.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.3 200F 4.20배 정합 검증 (B04/B07/B09)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">빌드</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">프레스티지 배수</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">어픽스 배수 (v1.3)</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">합계</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">38배 게이트 대비</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">B04 표준900PP균형 (Epic 6슬롯)</td><td class="border border-border px-3 py-2 text-left text-text-0">2.30</td><td class="border border-border px-3 py-2 text-left text-text-0">1.82 (v1.0 1.85 -1.6%)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">4.19~4.20</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">1.65배 PASS</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">B07 Legendary4슬롯</td><td class="border border-border px-3 py-2 text-left text-text-0">2.30</td><td class="border border-border px-3 py-2 text-left text-text-0">2.23 (v1.0 2.26 -1.3%)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">5.13</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">2.05배 PASS</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">B09 Mythic+1200PP</td><td class="border border-border px-3 py-2 text-left text-text-0">2.58</td><td class="border border-border px-3 py-2 text-left text-text-0">2.86 (v1.0 2.89 -1.0%)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">7.38</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">2.95배 (overflow_critical 의도 유지)</td></tr></tbody></table></div>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">모든 빌드 38배 게이트 통과 (B04 1.65배 / B07 2.05배 / B09 2.95배)</li><li class="mb-1">v1.0 대비 -0.2~-1.6% 감소 = G-3.6 Defensive 어픽스 1건 추가가 슬롯 확률 분산</li><li class="mb-1"><strong class="font-semibold text-text-0">권장 액션 0건</strong> — 노이즈 수준, Sp03+ 실측 튜닝 대기 항목 (item_id 0/24/26) 우선순위 변경 없음</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. 외부 곱연산 매핑표 30행 (메인 진실 자료)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.1 프레스티지 ↔ 어픽스 stat_key 정밀 매핑</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">item_id</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">프레스티지 stat_key</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">어픽스 affix_id</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">어픽스 stat_key</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">stack_policy</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">폭주 위험</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">0</td><td class="border border-border px-3 py-2 text-left text-text-0">AttackPowerPct</td><td class="border border-border px-3 py-2 text-left text-text-0">1</td><td class="border border-border px-3 py-2 text-left text-text-0">AttackPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1</td><td class="border border-border px-3 py-2 text-left text-text-0">CriticalRatePct</td><td class="border border-border px-3 py-2 text-left text-text-0">6</td><td class="border border-border px-3 py-2 text-left text-text-0">CritRatePct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_hardcap (100%)</td><td class="border border-border px-3 py-2 text-left text-text-0">차단</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">2</td><td class="border border-border px-3 py-2 text-left text-text-0">CriticalPowerPct</td><td class="border border-border px-3 py-2 text-left text-text-0">7</td><td class="border border-border px-3 py-2 text-left text-text-0">CritDmgPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">3</td><td class="border border-border px-3 py-2 text-left text-text-0">AttackSpeedPct</td><td class="border border-border px-3 py-2 text-left text-text-0">8</td><td class="border border-border px-3 py-2 text-left text-text-0">AttackSpeedPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_hardcap (+100%)</td><td class="border border-border px-3 py-2 text-left text-text-0">차단</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">4</td><td class="border border-border px-3 py-2 text-left text-text-0">SkillCoolDownPct</td><td class="border border-border px-3 py-2 text-left text-text-0">9</td><td class="border border-border px-3 py-2 text-left text-text-0">CooldownReductionPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_hardcap (80%)</td><td class="border border-border px-3 py-2 text-left text-text-0">차단</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">5</td><td class="border border-border px-3 py-2 text-left text-text-0">PenetrationPct</td><td class="border border-border px-3 py-2 text-left text-text-0">10</td><td class="border border-border px-3 py-2 text-left text-text-0">PenetrationPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">6</td><td class="border border-border px-3 py-2 text-left text-text-0">ElementalDamagePct</td><td class="border border-border px-3 py-2 text-left text-text-0">13</td><td class="border border-border px-3 py-2 text-left text-text-0">ElementalDamagePct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">7</td><td class="border border-border px-3 py-2 text-left text-text-0">BossDamagePct</td><td class="border border-border px-3 py-2 text-left text-text-0">11</td><td class="border border-border px-3 py-2 text-left text-text-0">BossDamagePct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음 (의도된 200F 핵심)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">8</td><td class="border border-border px-3 py-2 text-left text-text-0">PackDamagePct</td><td class="border border-border px-3 py-2 text-left text-text-0">12</td><td class="border border-border px-3 py-2 text-left text-text-0">PackDamagePct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">9</td><td class="border border-border px-3 py-2 text-left text-text-0">EquipOptionAmp</td><td class="border border-border px-3 py-2 text-left text-text-0">27</td><td class="border border-border px-3 py-2 text-left text-text-0">EquipOptionAmp</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">exclusive_onlyOne</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">자기참조 폭주 차단</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">10</td><td class="border border-border px-3 py-2 text-left text-text-0">MaxHpPct</td><td class="border border-border px-3 py-2 text-left text-text-0">3</td><td class="border border-border px-3 py-2 text-left text-text-0">HpPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">11</td><td class="border border-border px-3 py-2 text-left text-text-0">DefensePowerPct</td><td class="border border-border px-3 py-2 text-left text-text-0">5</td><td class="border border-border px-3 py-2 text-left text-text-0">DefensePct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">12</td><td class="border border-border px-3 py-2 text-left text-text-0">DodgeRatePct</td><td class="border border-border px-3 py-2 text-left text-text-0">14</td><td class="border border-border px-3 py-2 text-left text-text-0">DodgeRatePct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_hardcap (40%)</td><td class="border border-border px-3 py-2 text-left text-text-0">차단</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">13</td><td class="border border-border px-3 py-2 text-left text-text-0">DamageReductionPct</td><td class="border border-border px-3 py-2 text-left text-text-0">15</td><td class="border border-border px-3 py-2 text-left text-text-0">DamageReductionPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_hardcap (60%)</td><td class="border border-border px-3 py-2 text-left text-text-0">차단</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">14</td><td class="border border-border px-3 py-2 text-left text-text-0">HpRegenPct</td><td class="border border-border px-3 py-2 text-left text-text-0">17</td><td class="border border-border px-3 py-2 text-left text-text-0">HpRegenPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">15</td><td class="border border-border px-3 py-2 text-left text-text-0">LifeStealPct</td><td class="border border-border px-3 py-2 text-left text-text-0">16</td><td class="border border-border px-3 py-2 text-left text-text-0">LifeStealPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_hardcap (15%)</td><td class="border border-border px-3 py-2 text-left text-text-0">차단</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">16</td><td class="border border-border px-3 py-2 text-left text-text-0">CritDodgePct</td><td class="border border-border px-3 py-2 text-left text-text-0">18</td><td class="border border-border px-3 py-2 text-left text-text-0">CritDodgePct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">17</td><td class="border border-border px-3 py-2 text-left text-text-0">GuardianAtkPct</td><td class="border border-border px-3 py-2 text-left text-text-0">25</td><td class="border border-border px-3 py-2 text-left text-text-0">GuardianAtkPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">18</td><td class="border border-border px-3 py-2 text-left text-text-0">GuardianHpPct</td><td class="border border-border px-3 py-2 text-left text-text-0">26</td><td class="border border-border px-3 py-2 text-left text-text-0">GuardianHpPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">19</td><td class="border border-border px-3 py-2 text-left text-text-0">ReviveCountFlat</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">(none)</td><td class="border border-border px-3 py-2 text-left text-text-0">prestige-only</td><td class="border border-border px-3 py-2 text-left text-text-0">N/A</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">20</td><td class="border border-border px-3 py-2 text-left text-text-0">DropRatePct</td><td class="border border-border px-3 py-2 text-left text-text-0">19</td><td class="border border-border px-3 py-2 text-left text-text-0">DropRatePct</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">exclusive_onlyOne</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">방치 폭주 차단</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">21</td><td class="border border-border px-3 py-2 text-left text-text-0">MagicFindPct</td><td class="border border-border px-3 py-2 text-left text-text-0">20</td><td class="border border-border px-3 py-2 text-left text-text-0">MagicFindPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">22</td><td class="border border-border px-3 py-2 text-left text-text-0">GoldGainPct</td><td class="border border-border px-3 py-2 text-left text-text-0">21</td><td class="border border-border px-3 py-2 text-left text-text-0">GoldGainPct</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">exclusive_onlyOne</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">경제 폭주 차단</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">23</td><td class="border border-border px-3 py-2 text-left text-text-0">ExpGainPct</td><td class="border border-border px-3 py-2 text-left text-text-0">22</td><td class="border border-border px-3 py-2 text-left text-text-0">ExpGainPct</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">exclusive_onlyOne</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">레벨 가속 폭주 차단</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">24</td><td class="border border-border px-3 py-2 text-left text-text-0">IdleYieldPct</td><td class="border border-border px-3 py-2 text-left text-text-0">23</td><td class="border border-border px-3 py-2 text-left text-text-0">IdleYieldPct</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">exclusive_onlyOne</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">방치 드립 폭주 차단</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">25</td><td class="border border-border px-3 py-2 text-left text-text-0">IdleCapHoursFlat</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">(none)</td><td class="border border-border px-3 py-2 text-left text-text-0">prestige-only</td><td class="border border-border px-3 py-2 text-left text-text-0">N/A</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">26</td><td class="border border-border px-3 py-2 text-left text-text-0">PpGainPct</td><td class="border border-border px-3 py-2 text-left text-text-0">24</td><td class="border border-border px-3 py-2 text-left text-text-0">PpGainPct</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">exclusive_onlyOne</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">메타 복리 차단</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">27</td><td class="border border-border px-3 py-2 text-left text-text-0">MilestoneBonusPct</td><td class="border border-border px-3 py-2 text-left text-text-0">29</td><td class="border border-border px-3 py-2 text-left text-text-0">MilestoneBonusPct</td><td class="border border-border px-3 py-2 text-left text-text-0">additive_crossAxis</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">28</td><td class="border border-border px-3 py-2 text-left text-text-0">StageTicketDiscPct</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">(none)</td><td class="border border-border px-3 py-2 text-left text-text-0">prestige-only</td><td class="border border-border px-3 py-2 text-left text-text-0">N/A</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">29</td><td class="border border-border px-3 py-2 text-left text-text-0">GuardianShardRatePct</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">(none)</td><td class="border border-border px-3 py-2 text-left text-text-0">prestige-only</td><td class="border border-border px-3 py-2 text-left text-text-0">N/A</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.2 폭주 차단 6건 = 경제·메타 안전 핵심</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">9 EquipOptionAmp / 20 DropRatePct / 22 GoldGainPct / 23 ExpGainPct / 24 IdleYieldPct / 26 PpGainPct</li><li class="mb-1"><strong class="font-semibold text-text-0">공통</strong>: 곱연산 누적 시 메타 복리 폭주 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">exclusive_onlyOne</code> 으로 max(prestige, affix) 단일 적용</li><li class="mb-1">디아4 Pit 인플레이션 사례 (시즌 2 골드 폭주 → 시즌 3 곱연산 너프) 학습 반영</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.3 부속 매핑</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">프레스티지-only 4건</strong>: ReviveCountFlat / IdleCapHoursFlat / StageTicketDiscPct / GuardianShardRatePct → 어픽스 영향 0</li><li class="mb-1"><strong class="font-semibold text-text-0">어픽스-only 5건 (v1.0 기준)</strong>: flatAttack / flatHp / flatDefense / moveSpeedPct / 그리고 v1.3 신규 debuffResistPct → 프레스티지 영향 0</li><li class="mb-1"><strong class="font-semibold text-text-0">v1.3 신규 6건</strong>: 모두 어픽스-only or 기존 매핑 stat_key 재활용 → 매핑표 신규 행 0</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. Calculator 시그니처 불변 검증</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.1 Sp02 W2 기술 스케치 정합</h3>
+<p class="mb-3 text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-02-w2-prestige-tech-sketch.md</code> v1.0 §부수 확정:</p>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerPrestigeState</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator</code> 분리 유지 (수식 변경 시그니처 불변)</blockquote>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.2 시그니처 점검 (3건)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시그니처</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">변경 여부</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">사유</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator.CalculateLevel(int pp, byte softCap)</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">변경 0</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">PP→Lv 환산은 어픽스와 무관</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator.CalculateBonus(in PrestigeItemRow row, int level)</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">변경 0</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">단일 항목 단일 레벨 보너스 산출. 어픽스 합산은 외부 호출자 책임</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator.CalcMultiplier(StatKey key, int prestigeLv, float affixSumPct)</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">변경 0</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">affix_pool_README.md</code> §3.4 오버로드 시그니처 락. v1.3 6건 신규도 동일 호출 경로</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.3 PrestigeItemRow 필드 / BuildSummary 합산 경로</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">30행 헤더 15컬럼 (item_id ~ notes) 변동 0</li><li class="mb-1">BuildSummary = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Σ(per stat) finalMult(stat)</code> × baseDps — 수식 §3.3 (affix_pool_README) 동일</li><li class="mb-1">v1.3 어픽스 6건 추가가 외부 호출자 affixSumPct 계산 입력만 늘림 (Calculator 내부 무관)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.4 결론</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">Sp02 W1 정식 시작 (5/18) 시점 코드 수정 0 보장</strong></li><li class="mb-1">code-lead 인계 시 &quot;어픽스 v1.3 흡수했음, Calculator 변경 0&quot; 1줄 통보로 충분</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. Sp01 W1 #W1-04 단축 패키지 (1.0h → 0.3h, -0.7h 절약)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.1 #W1-04 회귀 검증 본 작업 (PM sprint-01.md 정의)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">어픽스 풀 갱신 후 프레스티지 정합 회귀 검증</li><li class="mb-1">30항목 변동 여부 + 200F 게이트 PASS 여부 + Calculator 시그니처 불변 여부 → GO/HOLD 판정</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.2 단축 메커니즘</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">본 draft §1~§3 가 #W1-04 입력 자료 100% 사전 준비</li><li class="mb-1">#W1-04 실작업 = &quot;본 draft 재검토 + GO/HOLD 한 줄 판정&quot;만</li><li class="mb-1"><strong class="font-semibold text-text-0">단축 0.7h</strong> = 통상 회귀 검증 1.0h - 자료 재검토 0.3h</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.3 #W1-04 입력 패키지 인계 (3종)</h3>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">§1.3 표</strong> = 200F 4.20배 정합 + B04/B07/B09 PASS 증빙</li><li class="mb-1"><strong class="font-semibold text-text-0">§2.1 매핑표 30행</strong> = 외부 곱연산 정합 증빙 + 폭주 차단 6건 명시</li><li class="mb-1"><strong class="font-semibold text-text-0">§3.2 시그니처 점검 3건</strong> = Calculator 변경 0 증빙</li></ol>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.4 GO/HOLD 판정 권고</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">GO 권고</strong> — 3종 패키지 모두 PASS, HOLD 전환 트리거 없음</li><li class="mb-1">HOLD 전환 가능 시나리오 (현 시점 미발생): G-3.6 Defensive 어픽스가 B05 보스특화 빌드 1.61 → 1.50 미만으로 떨어지는 경우 (현재 1.59~1.60, 게이트 여유 0.01)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. Sp02 W1 5/18 정식 시작 시 인수인계 (1쪽)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.1 인수 항목 0건 — v1.0 그대로 진행</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items.tsv</code> v1.0 30행 변동 0</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_pp_cost.tsv</code> v1.0 변동 0</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_effect_matrix.tsv</code> v1.0 변동 0 (단 G-3.6 흡수 시뮬은 본 draft §1.3 표로 대체)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items_README.md</code> v1.0 변동 0</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.2 신규 작업 0건</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">어픽스 v1.3 흡수가 프레스티지 측에 신규 작업 유발 안 함</li><li class="mb-1">code-lead Sp02 W2 기술 스케치도 변동 0</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.3 잔존 우려 (Sp03+ 실측 튜닝 대기 3건 우선순위 재조정 가능성)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">item_id=0</code> 공격력 per_level 2.0% → 1.5% 후보 — <strong class="font-semibold text-text-0">유지</strong>, B04 4.20배 PASS 여유 1.65배</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">item_id=24</code> 방치 수익 증폭 3.0% → 1.5% + 하드캡 후보 — <strong class="font-semibold text-text-0">유지</strong>, exclusive_onlyOne 6건 폭주 차단 증명</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">item_id=26</code> PP 획득량 1.5% → diminishing 0.25→0.15 강화 후보 — <strong class="font-semibold text-text-0">우선순위 ↓</strong>, exclusive_onlyOne 메타 복리 차단 강력</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.4 Sp04 킥오프 시 game-designer 책임 (4건)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">본 draft 와 별개. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">affix_pool_sp04_supplement_v1.md</code> v1.3 §1.3 인용:</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">affix_pool.tsv</code> 36행 정식 락 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">affix_stack_matrix.tsv</code> 10빌드 36어픽스 재시뮬</li><li class="mb-1">Mythic B08~B09 폭주 재검증 (overflow_critical 의도 유지 여부)</li><li class="mb-1">메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint04_affix_pool.md</code> 30 → 36 갱신</li><li class="mb-1">AFX_36 Way of Five Directions debuffResistPct 신규 stat_key 등록</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. 데이터 근거</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/prestige_items.tsv</code> v1.0 (30행 APPROVED 2026-04-21)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/prestige_pp_cost.tsv</code> v1.0</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/prestige_effect_matrix.tsv</code> v1.0</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/prestige_items_README.md</code> v1.0 §0~§5</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/affix_pool.tsv</code> v1.0 (30행, v1.3 36행 갱신 대기)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/affix_pool_README.md</code> v1.0 §3 스택 정책 4종</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/affix_pool_sp04_supplement_v1.md</code> v1.3 (G-3.6 추가 정식 락 2026-05-02)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/affix_stack_matrix.tsv</code> v1.0 (10빌드)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/sprint-02-w2-prestige-tech-sketch.md</code> v1.0 §부수 확정</li><li class="mb-1">메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint02_w1_prestige_items.md</code> (UI 차단 / 외부 곱연산 / 탭 현구조)</li><li class="mb-1">메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint02_w2_prestige_tech_sketch.md</code> (struct+List / JSON / 시그니처 불변)</li><li class="mb-1">메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint04_affix_pool.md</code> v1.1 (35어픽스 × 3+1 스택, v1.3 36 갱신 권고)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. 리스크·미해결</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.1 식별된 리스크 0건 (현재 시점)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">어픽스 v1.3 흡수 = 변동 0건 / 시그니처 불변 / 200F PASS</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.2 모니터링 권고 (Sp03+ 실측 시점)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">B05 보스특화 빌드 v1.0 1.61 → v1.3 1.59~1.60 (게이트 여유 0.09~0.10)</li><li class="mb-1">추가 IP 정합 어픽스 (G-4 강시연 15화+ 검수) 추가 시 누적 영향 -1.4% → -2.0% 가능성</li><li class="mb-1">트리거: B05 게이트 여유 0.05 미만 진입 시 즉시 PD 보고</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.3 미해결 0건</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Sp02 W1 5/18 정식 시작 가능. 추가 결정 사항 없음.</li></ul>
+<hr class="my-6 border-border" />
+<p class="mb-3 text-text-0"><em class="italic">(끝 — 1.0h draft, GO 권고)</em></p>5:["slug","sprint-02-w1-prestige-items-draft","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","sprint-02-w1-prestige-items-draft","d"],{"children":["__PAGE__?{\"slug\":\"sprint-02-w1-prestige-items-draft\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-02-w1-prestige-items-draft","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint 02 W1 — 프레스티지 30항목 v1.0 흡수 검증 draft"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-02-w1-prestige-items-draft.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,693"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint 02 W1 — 프레스티지 30항목 v1.0 흡수 검증 draft — 자료실"}],["$","meta","3",{"name":"description","content":"- 어픽스 v1.3 흡수 결과 30항목 변동 0건 / 200F 4.21 → 4.20배 (-0.24%, 노이즈)"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

@@ -1,57 +1,24 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:Ta102,# Sp05 Season System Preflight — D-7 본격 착수 절차서
-
-> 작성: 2026-05-02 박세린 (game-designer)
-> version: **1.1** (D-56 시점 R-V2.3-01 PD 결정 락 흡수, v1.0 = D-57 시점 신규 작성, Sp04 preflight v1.2 패턴 답습)
-> 대상 D-Day: **2026-06-22 (Sp05 킥오프 D-7)**
-> 본격 착수 마감: **2026-06-28 (Sp05 킥오프 D-1)**
-> 정식 킥오프: **2026-06-29**
-> 입력 자료:
-> - `designs/sprint-05-season-research.md` v1.0 APPROVED (Q1~Q7 7결정 + 5+1 사이드이펙트)
-> - `sprints/sprint-05-dry-run-2026-04-21.md` v1.0 (§5 ISeasonClock 시그니처 / §6 5순서 / §11 Round 정수)
-> - `designs/affix_pool_sp04_supplement_v1.md` **v1.3** (36어픽스 + 시즌 패스 Tier 매핑 9건)
-> - `designs/webnovel/volume_2_synopsis_v2.md` **v2.4** (§4.3 Tier 70 영구 보유 정정 v2.4 흡수)
-> - 메모리 `project_sprint05_season_research.md` (7결정) / `project_volume2_synopsis_v2_decisions.md` (8결정 + v2.4 D-2.15) / `project_affix_pool_supplement_5_decisions.md`
-> - `sprints/shared-checkpoints.md` (CP-M01~M28)
-> 목적: Sp05 W1·W2 본격 착수 시 즉시 가동 가능한 절차서. PRINT-AND-CHECK 양식 + 회귀 가드 (R-DR-S01~S03) + 시놉 v2.4 변동 흡수 + 어픽스 v1.3 정합 + Tier 매핑 9건 + R-V2.3-01 PD 결정 락 (옵션 a 영구 보유). **D-57 시점 작성 = ROI 입증 (1.5h 투자 → 2~3h 절감 + Critical 리스크 사전 방어)**.
-
----
-
-## 0. 한 줄 맥락
-
-Sp03 → Sp04 → **Sp05 (시즌 시스템)** 사이클의 D-7 본격 착수 절차서. 7결정 (60일 / Manual→Firebase / 리셋+스냅샷 / 이월3건 / Firestore / Round / Wallet 50% retain) 정식 락 후 Sp05 W1 (T1~T6 = 10h) + W2 (T7~T13 = 9h) 총 14h/2주 예산. **2026-06-22 (D-7) 시점 game-designer 가 책상에 펴 놓고 즉시 가동 가능한 절차서** + R-DR-S02 Critical (5+1 순서 위반) 가드 + 시놉 v2.4 신규 5건 흡수 (Tier 60 / Tier 75 / W7 유교 드래곤 / Tier 70 영구 보유 락) + **R-V2.3-01 PD 결정 락 (2026-05-03 옵션 (a) 영구 보유 채택)** — 시놉 v2.3 → v2.4 §4.3 Tier 70 정정 (시즌 1회 영구 보유, 다음 시즌엔 다른 어픽스 보상 X1 안). 박세린 비권장 안이었으나 PD 결정 존중.
-
----
-
-## 1. W1 절차서 — Firebase 인프라 + 시즌 전환 Backend (T1~T6 게이트 6건)
-
-### 1.1 W1 작업 표 (Sp05 dry-run §1 W1 5건 + Tier 매핑 정합 1건 추가 = 6건)
-
-| T# | 작업 | 예상 소요 | 산출 | 게이트 |
-|----|------|---------|------|-------|
-| T1 | `SeasonConfigSO` + `ISeasonClock` + `ManualSeasonClock` (디버그 메뉴) | 1.5h | SO + Interface + 1구현 | G-W1.1 |
-| T2 | `PrestigeSaveDto_V2` + `Migrate` v1→v2 스위치 (v2 신규 3필드) | 1.5h | DTO V2 + Migrator | G-W1.2 |
-| T3 | `SeasonController` + `OnSeasonEnd` 발화자 + 이중 발화 플래그 | 2.0h | Controller + 5+1 순서 배선 | G-W1.3 (Critical) |
-| T4 | Firebase SDK 통합 + 익명 Auth + Firestore 초기화 (하드 캡 6h) | 3.0h~6.0h | SDK 통합 + Ping | G-W1.4 |
-| T5 | `ILeaderboardRepository` + `LocalLeaderboardRepository` + `FirestoreLeaderboardRepository` 스켈레톤 | 2.0h | Interface + 2구현 | G-W1.5 |
-| **T6** | **시즌 패스 30 Tier 매핑 정합 표 → `season_pass_s2.tsv` 신설** (시놉 v2.4 신규 3건 흡수: Tier 60 / Tier 70 영구 보유 / Tier 75) | 1.0h (신규) | 30 Tier TSV + 어픽스 풀 v1.3 정합 검증 | G-W1.6 (신규) |
-| **합계** | | **11.0h** (T6 +1h) | | 게이트 6/6 |
-
-**v1.0 신규**: T6 = 시즌 패스 Tier 매핑 표 신설 (시놉 v2.4 §4.3 9건 매핑 + 어픽스 풀 v1.3 정합 검증). dry-run §1 5건 + T6 1건 = 11.0h. Q4 권장 14h 예산 내 (W2 T7~T13 = 4h 잔여 가능).
-
-### 1.2 ISeasonClock 시그니처 (dry-run §5.1 90% 정의 그대로 + ITimeProvider 주입)
-
-```csharp
-namespace GodBlade.Runtime.Season {
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T17212,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">Sp05 Season System Preflight — D-7 본격 착수 절차서</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성: 2026-05-02 박세린 (game-designer) version: <strong class="font-semibold text-text-0">1.1</strong> (D-56 시점 R-V2.3-01 PD 결정 락 흡수, v1.0 = D-57 시점 신규 작성, Sp04 preflight v1.2 패턴 답습) 대상 D-Day: <strong class="font-semibold text-text-0">2026-06-22 (Sp05 킥오프 D-7)</strong> 본격 착수 마감: <strong class="font-semibold text-text-0">2026-06-28 (Sp05 킥오프 D-1)</strong> 정식 킥오프: <strong class="font-semibold text-text-0">2026-06-29</strong> 입력 자료: - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/sprint-05-season-research.md</code> v1.0 APPROVED (Q1~Q7 7결정 + 5+1 사이드이펙트) - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/sprint-05-dry-run-2026-04-21.md</code> v1.0 (§5 ISeasonClock 시그니처 / §6 5순서 / §11 Round 정수) - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/affix_pool_sp04_supplement_v1.md</code> <strong class="font-semibold text-text-0">v1.3</strong> (36어픽스 + 시즌 패스 Tier 매핑 9건) - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/webnovel/volume_2_synopsis_v2.md</code> <strong class="font-semibold text-text-0">v2.4</strong> (§4.3 Tier 70 영구 보유 정정 v2.4 흡수) - 메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint05_season_research.md</code> (7결정) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_volume2_synopsis_v2_decisions.md</code> (8결정 + v2.4 D-2.15) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_affix_pool_supplement_5_decisions.md</code> - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/shared-checkpoints.md</code> (CP-M01~M28) 목적: Sp05 W1·W2 본격 착수 시 즉시 가동 가능한 절차서. PRINT-AND-CHECK 양식 + 회귀 가드 (R-DR-S01~S03) + 시놉 v2.4 변동 흡수 + 어픽스 v1.3 정합 + Tier 매핑 9건 + R-V2.3-01 PD 결정 락 (옵션 a 영구 보유). <strong class="font-semibold text-text-0">D-57 시점 작성 = ROI 입증 (1.5h 투자 → 2~3h 절감 + Critical 리스크 사전 방어)</strong>.</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">0. 한 줄 맥락</h2>
+<p class="mb-3 text-text-0">Sp03 → Sp04 → <strong class="font-semibold text-text-0">Sp05 (시즌 시스템)</strong> 사이클의 D-7 본격 착수 절차서. 7결정 (60일 / Manual→Firebase / 리셋+스냅샷 / 이월3건 / Firestore / Round / Wallet 50% retain) 정식 락 후 Sp05 W1 (T1~T6 = 10h) + W2 (T7~T13 = 9h) 총 14h/2주 예산. <strong class="font-semibold text-text-0">2026-06-22 (D-7) 시점 game-designer 가 책상에 펴 놓고 즉시 가동 가능한 절차서</strong> + R-DR-S02 Critical (5+1 순서 위반) 가드 + 시놉 v2.4 신규 5건 흡수 (Tier 60 / Tier 75 / W7 유교 드래곤 / Tier 70 영구 보유 락) + <strong class="font-semibold text-text-0">R-V2.3-01 PD 결정 락 (2026-05-03 옵션 (a) 영구 보유 채택)</strong> — 시놉 v2.3 → v2.4 §4.3 Tier 70 정정 (시즌 1회 영구 보유, 다음 시즌엔 다른 어픽스 보상 X1 안). 박세린 비권장 안이었으나 PD 결정 존중.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. W1 절차서 — Firebase 인프라 + 시즌 전환 Backend (T1~T6 게이트 6건)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.1 W1 작업 표 (Sp05 dry-run §1 W1 5건 + Tier 매핑 정합 1건 추가 = 6건)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">T#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">작업</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">예상 소요</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">산출</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">게이트</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">T1</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SeasonConfigSO</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ISeasonClock</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ManualSeasonClock</code> (디버그 메뉴)</td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td><td class="border border-border px-3 py-2 text-left text-text-0">SO + Interface + 1구현</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W1.1</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T2</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSaveDto_V2</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Migrate</code> v1→v2 스위치 (v2 신규 3필드)</td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td><td class="border border-border px-3 py-2 text-left text-text-0">DTO V2 + Migrator</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W1.2</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T3</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SeasonController</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnSeasonEnd</code> 발화자 + 이중 발화 플래그</td><td class="border border-border px-3 py-2 text-left text-text-0">2.0h</td><td class="border border-border px-3 py-2 text-left text-text-0">Controller + 5+1 순서 배선</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W1.3 (Critical)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T4</td><td class="border border-border px-3 py-2 text-left text-text-0">Firebase SDK 통합 + 익명 Auth + Firestore 초기화 (하드 캡 6h)</td><td class="border border-border px-3 py-2 text-left text-text-0">3.0h~6.0h</td><td class="border border-border px-3 py-2 text-left text-text-0">SDK 통합 + Ping</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W1.4</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T5</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ILeaderboardRepository</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">LocalLeaderboardRepository</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">FirestoreLeaderboardRepository</code> 스켈레톤</td><td class="border border-border px-3 py-2 text-left text-text-0">2.0h</td><td class="border border-border px-3 py-2 text-left text-text-0">Interface + 2구현</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W1.5</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">T6</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">시즌 패스 30 Tier 매핑 정합 표 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">season_pass_s2.tsv</code> 신설</strong> (시놉 v2.4 신규 3건 흡수: Tier 60 / Tier 70 영구 보유 / Tier 75)</td><td class="border border-border px-3 py-2 text-left text-text-0">1.0h (신규)</td><td class="border border-border px-3 py-2 text-left text-text-0">30 Tier TSV + 어픽스 풀 v1.3 정합 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W1.6 (신규)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">합계</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">11.0h</strong> (T6 +1h)</td><td class="border border-border px-3 py-2 text-left text-text-0"></td><td class="border border-border px-3 py-2 text-left text-text-0">게이트 6/6</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">v1.0 신규</strong>: T6 = 시즌 패스 Tier 매핑 표 신설 (시놉 v2.4 §4.3 9건 매핑 + 어픽스 풀 v1.3 정합 검증). dry-run §1 5건 + T6 1건 = 11.0h. Q4 권장 14h 예산 내 (W2 T7~T13 = 4h 잔여 가능).</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.2 ISeasonClock 시그니처 (dry-run §5.1 90% 정의 그대로 + ITimeProvider 주입)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>namespace GodBlade.Runtime.Season {
   public interface ISeasonClock {
-    string CurrentSeasonId { get; }                     // "s1", "s2", ...
+    string CurrentSeasonId { get; }                     // &quot;s1&quot;, &quot;s2&quot;, ...
     System.DateTime GetSeasonStartUtc();
     System.DateTime GetSeasonEndUtc();
-    bool IsSeasonEnded();                               // ITimeProvider.UtcNow >= GetSeasonEndUtc()
-    event System.Action<string> OnSeasonRolledOver;    // Phase 5 Remote Config 이벤트 훅
+    bool IsSeasonEnded();                               // ITimeProvider.UtcNow &gt;= GetSeasonEndUtc()
+    event System.Action&lt;string&gt; OnSeasonRolledOver;    // Phase 5 Remote Config 이벤트 훅
   }
 
   // Sprint 05 W1 T1 구현
@@ -64,102 +31,39 @@ namespace GodBlade.Runtime.Season {
 
   // Sprint 06+ Phase 5 이월
   public sealed class RemoteConfigSeasonClock : ISeasonClock { /* Firebase.RemoteConfig */ }
-}
-```
-
-**W1 T1 합/불합 판정**:
-1. `ISeasonClock` interface 5 멤버 모두 정의 (CurrentSeasonId / Start / End / IsEnded / OnRolledOver)
-2. `ManualSeasonClock` 생성자 = `(SeasonConfigSO, ITimeProvider)` 주입 (DateTime.UtcNow 직접 호출 금지)
-3. `SeasonConfigSO` ScriptableObject = `seasonId` (string) / `startUtc` (long unix ms) / `endUtc` (long unix ms) / `displayName` (string) 4 필드
-4. `IsSeasonEnded()` 단위 테스트 = `ITimeProvider` Mock 으로 결정론 검증
-
-### 1.3 ITimeProvider 주입 패턴 (Sp03 IdleTicker 시계 가드 패턴 재활용)
-
-```csharp
-namespace GodBlade.Runtime.Common {
+}</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">W1 T1 합/불합 판정</strong>:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ISeasonClock</code> interface 5 멤버 모두 정의 (CurrentSeasonId / Start / End / IsEnded / OnRolledOver)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ManualSeasonClock</code> 생성자 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">(SeasonConfigSO, ITimeProvider)</code> 주입 (DateTime.UtcNow 직접 호출 금지)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SeasonConfigSO</code> ScriptableObject = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">seasonId</code> (string) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">startUtc</code> (long unix ms) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">endUtc</code> (long unix ms) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">displayName</code> (string) 4 필드</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IsSeasonEnded()</code> 단위 테스트 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ITimeProvider</code> Mock 으로 결정론 검증</li></ol>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.3 ITimeProvider 주입 패턴 (Sp03 IdleTicker 시계 가드 패턴 재활용)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>namespace GodBlade.Runtime.Common {
   public interface ITimeProvider {
     System.DateTime UtcNow { get; }
     long UtcNowUnixMs { get; }
   }
   public sealed class SystemTimeProvider : ITimeProvider {
-    public System.DateTime UtcNow => System.DateTime.UtcNow;
-    public long UtcNowUnixMs => System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+    public System.DateTime UtcNow =&gt; System.DateTime.UtcNow;
+    public long UtcNowUnixMs =&gt; System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
   }
-}
-```
-
-**왜 신설하는가**: dry-run §5.1 결정론 주의 — `IsSeasonEnded()`는 `DateTime.UtcNow` 직접 비교 금지 → `ITimeProvider` 주입으로 테스트 가능화. **Sp03 IdleTicker 가 이미 동일 패턴 사용 중일 가능성** = D-1 (2026-06-28) code-lead B1 실측으로 확인. 미적용 시 신설 +0.5h.
-
-**T1 의존**: ITimeProvider 가 Sp03 에 이미 존재하면 재활용 (0h) / 미존재 시 신설 (+0.5h)
-
-### 1.4 시즌 패스 30 Tier 매핑 정합 표 (T6 신규 산출, 시놉 v2.4 §4.3 9건 + Tier 60·75 신규 + Tier 70 영구 보유)
-
-| Tier | 보상 (KR) | 보상 (EN) | 어픽스 풀 v1.3 정합 | 시놉 v2.4 매핑 화 |
-|------|----------|-----------|-------------------|---------------|
-| 5 | PDA 스캐너 스킨 | PDA Scanner Skin | — (스킨) | 21·25화 (홍대걸 PDA) |
-| 15 | 작두 박자 어픽스 Magic 1회 무료 | Jakdu Rhythm Affix Magic Free Roll | v1.3 G-3.2 (AFX_32) ✅ | 7화 (정주 어머니 월자) |
-| 30 | 5cm 어긋남 어픽스 Rare 1회 무료 | 5cm Misalignment Affix Rare Free Roll | v1.3 G-3.1 (AFX_31) ✅ | 10화 (무휼 H빔) |
-| 50 | 60fps 풀스로틀 어픽스 Epic 1회 무료 | 60fps Full Throttle Affix Epic Free Roll | v1.3 G-3.3 (AFX_33) ✅ | 1~5화 (60fps 농담) |
-| **60 (v2.3 신규)** | **오방위의 도(道) 어픽스 Rare 1회 무료** | **Way of Five Directions Affix Rare Free Roll** | **v1.3 G-3.6 (AFX_36) ✅** | **11·13화 (청천 무공)** |
-| **70 (v2.4 정정)** | **9,860원의 박자 어픽스 Legendary 1회 (시즌 1회 영구 보유, 다음 시즌엔 다른 어픽스)** | **9,860 Won Cadence Affix Legendary (1-Per-Season Permanent, Different Affix Next Season)** | **v1.3 G-3.4 (AFX_34) ✅ + R-V2.3-01 PD 옵션 (a) 영구 보유 락 (2026-05-03)** | 10화 (PD 본문) |
-| **75 (v2.3 신규)** | **slayer 유교 드래곤 시그니처 스킨 (W7 백발마녀 처치 보상)** | **Slayer Confucian Dragon Signature Skin** | — (스킨) | 41~43화 (W7 빙공 카운터) |
-| 90 | 단군왕검의 건(巾) (Veil of Dangun) 액세서리 스킨 | Veil of Dangun Accessory Skin | v1.3 G-3.5 (AFX_35) ✅ | 25~28화 (홍대걸 부활전) |
-| 100 (보스) | 백발마녀 NPC 호감도 + 곤륜파 사절 칭호 | Bai Fa Witch NPC Affinity + Kunlun Envoy Title | — (NPC 자산) | 41~43화 |
-
-**T6 합/불합 판정**:
-1. 9 Tier 매핑 = 시놉 v2.4 §4.3 일치 (Tier 60 / Tier 75 v2.3 신규 + Tier 70 v2.4 정정 표기 포함)
-2. 어픽스 풀 정합 = G-3.1~G-3.6 6건 모두 매핑 (G-3.1 Tier 30 / G-3.2 Tier 15 / G-3.3 Tier 50 / G-3.4 Tier 70 / G-3.5 Tier 90 / G-3.6 Tier 60)
-3. 글로벌 명칭 6건 락 일치 (D-A.2 / D-A.3' / G-3.6 supplement v1.3 §1.4~§1.6) + Tier 70 v2.4 영문 표기 갱신 ("1-Per-Season Permanent, Different Affix Next Season")
-4. **R-V2.3-01 (Tier 70 영구 보유 정책) = §4.2 PD 결정 락 표시 (2026-05-03 옵션 a 채택, X1 안 = 시즌 1회 영구 보유 + 다음 시즌 다른 어픽스 로테이션)**
-5. TSV 30 Tier × 6 컬럼 (tier / reward_key / reward_en / affix_id / season_only_flag / permanent_retain_flag) UTF-8 / 탭 구분. **Tier 70 행: season_only_flag = false / permanent_retain_flag = true (v2.4 정정)**
-6. 30 Tier 중 9 정의 + 21 미정 (마케팅팀장 TBD 합류 후 결정 = Sp06+ 이월)
-
----
-
-## 2. W2 절차서 — 시즌 컨텐츠 + Smoke Test (T7~T13 게이트 7건)
-
-### 2.1 W2 작업 표 (Sp05 dry-run §1 W2 5건 + Tier 70 R-V2.3-01 가드 1건 + 정합 검증 1건 = 7건)
-
-| T# | 작업 | 예상 소요 | 산출 | 게이트 |
-|----|------|---------|------|-------|
-| T7 | `SetItemCatalogSO` + `SetItemImporter` + `SetEffectEvaluator` 스켈레톤 | 2.5h | SO + Importer + Evaluator | G-W2.1 |
-| T8 | `IMythicConstraint` + `NoDuplicateSlotConstraint` + `equip()` validator | 2.0h | Interface + 1구현 + Hook | G-W2.2 |
-| T9 | `PlayerWalletState` + `MythicEssence(long)` + 시즌 종료 50% retain | 1.5h | Wallet State + Migrate Hook | G-W2.3 |
-| T10 | `SeasonEndModal` UI + `OnSeasonEndMigrationCompleted` 구독 | 1.5h | UI Prefab + Subscriber | G-W2.4 |
-| T11 | Smoke Test — 전체 루프 (Force End → Migrate → 리더보드 제출 → 모달 → v2.json) | 1.5h | Editor Play Mode 검증 | G-W2.5 |
-| **T12** | **R-V2.3-01 PD 결정 (a) 영구 보유 반영 = Tier 70 어픽스 retain 예외 처리 분기 1줄 (X1 안 = 시즌 1회 영구 보유 + 다음 시즌 다른 어픽스 로테이션)** | 0.5h (신규) | `if (affixId == TIER_70_SEASON_AFFIX) Skip(retain50)` 1줄 + Edit-mode 검증 1건 | G-W2.6 (신규) |
-| **T13** | **`MigrateSeasonalToPermanent` 5+1 사이드이펙트 통합 테스트** (§2.2 표 6건 모두 검증, 6번째 = Tier 70 영구 보유 정상 동작) | 0.5h (신규) | Edit-mode 테스트 6건 (Tier 70 영구 보유 1건 포함) | G-W2.7 (신규) |
-| **합계** | | **10.0h** (T12·T13 +1h) | | 게이트 7/7 |
-
-**v1.1 갱신 (R-V2.3-01 PD 옵션 (a) 영구 보유 락 흡수)**:
-- T12 = R-V2.3-01 PD 결정 옵션 (a) 영구 보유 코드 분기 = `if (affixId == TIER_70_SEASON_AFFIX) Skip(retain50)` 1줄 (영구 보유 + 50% retain 예외 처리). **박세린 비권장 안이었으나 PD 결정 존중**.
-- T13 = 5+1 사이드이펙트 통합 테스트 6건 = §2.2 표 6건 모두 Edit-mode 검증. 6번째 = "Tier 70 영구 보유 정상 동작" (시즌 종료 후 Tier 70 어픽스 인벤토리 100% 잔존 + Permanent 채널 미이동 + 다음 시즌 시작 시 보유 상태 유지). **R-DR-S02 Critical 가드 직결**.
-
-**W1 11h + W2 10h = 21h** → Q4 권장 예산 14h 초과 7h. **완화책**: T4 Firebase 통합 하드 캡 6h 적용 시 이론치 14h 가능. T6 / T12 / T13 = 신규 +2.5h 는 ROI 입증 (Critical 리스크 1건 + 시놉 v2.4 정합 1건 + 통합 테스트 1건).
-
-### 2.2 MigrateSeasonalToPermanent 5+1 사이드이펙트 표 (dry-run §6 5순서 + 신규 6번째 = R-V2.3-01 PD 락)
-
-| 순 | 동작 | 근거 | 순서 위반 시 결과 | 검증 (T13) |
-|----|------|------|-----------------|----------|
-| **1** | `seasonEnding=true` 플래그 선행 저장 | dry-run §6 + CP-M25 | 이중 발화 → 2차 호출에서 Seasonal 0에 50% 적용 → Permanent 증가 0 + 백업 덮어씀 | Mock 시퀀스 검증 |
-| **2** | `IdleTicker.Instance?.FlushCatchUp(forceImmediate: true)` | dry-run §6 + CP-M26 | 방치 누적 PP 가 Seasonal 채널 미반영 → Permanent 직행 (비율 미적용, 시스템 손해) | Mock 호출 순서 검증 |
-| **3** | `prestige.v1.json.bak` 백업 + `prestige_season<N>_pre_migrate.json` | dry-run §6 + §2.5 복구 3단계 | 중간 크래시 시 복구 불가 | 파일 시스템 검증 (file exists) |
-| **4** | `PlayerPrestigeState.MigrateSeasonalToPermanent(retainRatio)` 호출 | Sp02 W2 §4.3 의사코드 | — | PP 전후 비교 (Round 정수 검증) |
-| **5 (v1.1 위치 변경)** | **Tier 70 어픽스 영구 보유 분기 (R-V2.3-01 PD 옵션 a 락)** = `if (affixId == TIER_70_SEASON_AFFIX) Skip(retain50)` 1줄 = `PlayerWalletState.RetainAffixForNextSeason()` 호출 시 Tier 70 어픽스만 retain50 적용 X / 100% 잔존 | v2.4 시놉 §4.3 + 어픽스 풀 v1.3 정합 + R-V2.3-01 PD 옵션 (a) 영구 보유 락 (2026-05-03) | 미처리 시 Tier 70 어픽스가 50% retain 으로 처리됨 → PD 결정 옵션 (a) 영구 보유 위배 → 유저 결제 보상 -50% 즉시 손실 | 시즌 종료 후 Tier 70 어픽스 인벤토리 100% 잔존 검증 + 다음 시즌 시작 시 보유 상태 유지 검증 |
-| **6 (v1.0 → v1.1 순서 변경)** | `OnSeasonEndMigrationCompleted` 이벤트 발화 + `SeasonEndModal` UI 트리거 + `maxFloor` 스냅샷 저장 + `MilestoneGranter.ResetForNewSeason()` | dry-run §6 + Q3 C안 (스냅샷 보존) | UI 없이 PP 반토막 → 유저 혼란 | 이벤트 1건 + UI 모달 활성 + maxFloor 0 리셋 검증 |
-
-**v1.1 변경 사유 (R-V2.3-01 PD 결정 락)**:
-- 시놉 v2.4 §4.3 Tier 70 = "9,860원의 박자 어픽스 Legendary 1회 (시즌 1회 영구 보유, 다음 시즌엔 다른 어픽스 보상)" 정정 락
-- 7결정 Q7 = `PlayerWalletState` + 50% retain (어픽스 자체는 retain 정책 미명시)
-- **PD 결정 (2026-05-03)**: 옵션 (a) 영구 보유 채택 = Tier 70 어픽스만 50% retain 예외 처리 (Skip(retain50)) + 100% 잔존 + 다음 시즌엔 다른 Legendary 어픽스로 보상 로테이션
-- 박세린 비권장 안 (b 삭제 / d MythicEssence 환원) 폐기. PD 결정 존중
-- 코드 분기: T12 작업 0.5h = `if (affixId == TIER_70_SEASON_AFFIX) Skip(retain50)` 1줄 + 다음 시즌 Tier 70 보상 = 다른 Legendary 어픽스 ID 발급 로테이션 (시즌 패스 매력 유지 X1 안)
-- 5번 → 6번 순서 변경: T12 분기는 T11 (UI 트리거) 이전 실행. UI 모달에서 Tier 70 어픽스 보유 표기를 위해 retain 처리가 선행되어야 함
-
-### 2.3 Round 정수 나눗셈 + MythicEssence 음수 보호 (dry-run §11 R-DR-S03 가드)
-
-```csharp
-// PlayerPrestigeState.MigrateSeasonalToPermanent(float retainRatio = 0.5f)
+}</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">왜 신설하는가</strong>: dry-run §5.1 결정론 주의 — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IsSeasonEnded()</code>는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DateTime.UtcNow</code> 직접 비교 금지 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ITimeProvider</code> 주입으로 테스트 가능화. <strong class="font-semibold text-text-0">Sp03 IdleTicker 가 이미 동일 패턴 사용 중일 가능성</strong> = D-1 (2026-06-28) code-lead B1 실측으로 확인. 미적용 시 신설 +0.5h.</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">T1 의존</strong>: ITimeProvider 가 Sp03 에 이미 존재하면 재활용 (0h) / 미존재 시 신설 (+0.5h)</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.4 시즌 패스 30 Tier 매핑 정합 표 (T6 신규 산출, 시놉 v2.4 §4.3 9건 + Tier 60·75 신규 + Tier 70 영구 보유)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Tier</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">보상 (KR)</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">보상 (EN)</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">어픽스 풀 v1.3 정합</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시놉 v2.4 매핑 화</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">5</td><td class="border border-border px-3 py-2 text-left text-text-0">PDA 스캐너 스킨</td><td class="border border-border px-3 py-2 text-left text-text-0">PDA Scanner Skin</td><td class="border border-border px-3 py-2 text-left text-text-0">— (스킨)</td><td class="border border-border px-3 py-2 text-left text-text-0">21·25화 (홍대걸 PDA)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">15</td><td class="border border-border px-3 py-2 text-left text-text-0">작두 박자 어픽스 Magic 1회 무료</td><td class="border border-border px-3 py-2 text-left text-text-0">Jakdu Rhythm Affix Magic Free Roll</td><td class="border border-border px-3 py-2 text-left text-text-0">v1.3 G-3.2 (AFX_32) ✅</td><td class="border border-border px-3 py-2 text-left text-text-0">7화 (정주 어머니 월자)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">30</td><td class="border border-border px-3 py-2 text-left text-text-0">5cm 어긋남 어픽스 Rare 1회 무료</td><td class="border border-border px-3 py-2 text-left text-text-0">5cm Misalignment Affix Rare Free Roll</td><td class="border border-border px-3 py-2 text-left text-text-0">v1.3 G-3.1 (AFX_31) ✅</td><td class="border border-border px-3 py-2 text-left text-text-0">10화 (무휼 H빔)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">50</td><td class="border border-border px-3 py-2 text-left text-text-0">60fps 풀스로틀 어픽스 Epic 1회 무료</td><td class="border border-border px-3 py-2 text-left text-text-0">60fps Full Throttle Affix Epic Free Roll</td><td class="border border-border px-3 py-2 text-left text-text-0">v1.3 G-3.3 (AFX_33) ✅</td><td class="border border-border px-3 py-2 text-left text-text-0">1~5화 (60fps 농담)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">60 (v2.3 신규)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">오방위의 도(道) 어픽스 Rare 1회 무료</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Way of Five Directions Affix Rare Free Roll</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">v1.3 G-3.6 (AFX_36) ✅</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">11·13화 (청천 무공)</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">70 (v2.4 정정)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">9,860원의 박자 어픽스 Legendary 1회 (시즌 1회 영구 보유, 다음 시즌엔 다른 어픽스)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">9,860 Won Cadence Affix Legendary (1-Per-Season Permanent, Different Affix Next Season)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">v1.3 G-3.4 (AFX_34) ✅ + R-V2.3-01 PD 옵션 (a) 영구 보유 락 (2026-05-03)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">10화 (PD 본문)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">75 (v2.3 신규)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">slayer 유교 드래곤 시그니처 스킨 (W7 백발마녀 처치 보상)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Slayer Confucian Dragon Signature Skin</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">— (스킨)</td><td class="border border-border px-3 py-2 text-left text-text-0">41~43화 (W7 빙공 카운터)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">90</td><td class="border border-border px-3 py-2 text-left text-text-0">단군왕검의 건(巾) (Veil of Dangun) 액세서리 스킨</td><td class="border border-border px-3 py-2 text-left text-text-0">Veil of Dangun Accessory Skin</td><td class="border border-border px-3 py-2 text-left text-text-0">v1.3 G-3.5 (AFX_35) ✅</td><td class="border border-border px-3 py-2 text-left text-text-0">25~28화 (홍대걸 부활전)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">100 (보스)</td><td class="border border-border px-3 py-2 text-left text-text-0">백발마녀 NPC 호감도 + 곤륜파 사절 칭호</td><td class="border border-border px-3 py-2 text-left text-text-0">Bai Fa Witch NPC Affinity + Kunlun Envoy Title</td><td class="border border-border px-3 py-2 text-left text-text-0">— (NPC 자산)</td><td class="border border-border px-3 py-2 text-left text-text-0">41~43화</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">T6 합/불합 판정</strong>:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">9 Tier 매핑 = 시놉 v2.4 §4.3 일치 (Tier 60 / Tier 75 v2.3 신규 + Tier 70 v2.4 정정 표기 포함)</li><li class="mb-1">어픽스 풀 정합 = G-3.1~G-3.6 6건 모두 매핑 (G-3.1 Tier 30 / G-3.2 Tier 15 / G-3.3 Tier 50 / G-3.4 Tier 70 / G-3.5 Tier 90 / G-3.6 Tier 60)</li><li class="mb-1">글로벌 명칭 6건 락 일치 (D-A.2 / D-A.3&#39; / G-3.6 supplement v1.3 §1.4~§1.6) + Tier 70 v2.4 영문 표기 갱신 (&quot;1-Per-Season Permanent, Different Affix Next Season&quot;)</li><li class="mb-1"><strong class="font-semibold text-text-0">R-V2.3-01 (Tier 70 영구 보유 정책) = §4.2 PD 결정 락 표시 (2026-05-03 옵션 a 채택, X1 안 = 시즌 1회 영구 보유 + 다음 시즌 다른 어픽스 로테이션)</strong></li><li class="mb-1">TSV 30 Tier × 6 컬럼 (tier / reward_key / reward_en / affix_id / season_only_flag / permanent_retain_flag) UTF-8 / 탭 구분. <strong class="font-semibold text-text-0">Tier 70 행: season_only_flag = false / permanent_retain_flag = true (v2.4 정정)</strong></li><li class="mb-1">30 Tier 중 9 정의 + 21 미정 (마케팅팀장 TBD 합류 후 결정 = Sp06+ 이월)</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. W2 절차서 — 시즌 컨텐츠 + Smoke Test (T7~T13 게이트 7건)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.1 W2 작업 표 (Sp05 dry-run §1 W2 5건 + Tier 70 R-V2.3-01 가드 1건 + 정합 검증 1건 = 7건)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">T#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">작업</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">예상 소요</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">산출</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">게이트</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">T7</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SetItemCatalogSO</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SetItemImporter</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SetEffectEvaluator</code> 스켈레톤</td><td class="border border-border px-3 py-2 text-left text-text-0">2.5h</td><td class="border border-border px-3 py-2 text-left text-text-0">SO + Importer + Evaluator</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W2.1</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T8</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IMythicConstraint</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">NoDuplicateSlotConstraint</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">equip()</code> validator</td><td class="border border-border px-3 py-2 text-left text-text-0">2.0h</td><td class="border border-border px-3 py-2 text-left text-text-0">Interface + 1구현 + Hook</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W2.2</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T9</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerWalletState</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MythicEssence(long)</code> + 시즌 종료 50% retain</td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td><td class="border border-border px-3 py-2 text-left text-text-0">Wallet State + Migrate Hook</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W2.3</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T10</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SeasonEndModal</code> UI + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnSeasonEndMigrationCompleted</code> 구독</td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td><td class="border border-border px-3 py-2 text-left text-text-0">UI Prefab + Subscriber</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W2.4</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T11</td><td class="border border-border px-3 py-2 text-left text-text-0">Smoke Test — 전체 루프 (Force End → Migrate → 리더보드 제출 → 모달 → v2.json)</td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td><td class="border border-border px-3 py-2 text-left text-text-0">Editor Play Mode 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W2.5</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">T12</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">R-V2.3-01 PD 결정 (a) 영구 보유 반영 = Tier 70 어픽스 retain 예외 처리 분기 1줄 (X1 안 = 시즌 1회 영구 보유 + 다음 시즌 다른 어픽스 로테이션)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">0.5h (신규)</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">if (affixId == TIER_70_SEASON_AFFIX) Skip(retain50)</code> 1줄 + Edit-mode 검증 1건</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W2.6 (신규)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">T13</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MigrateSeasonalToPermanent</code> 5+1 사이드이펙트 통합 테스트</strong> (§2.2 표 6건 모두 검증, 6번째 = Tier 70 영구 보유 정상 동작)</td><td class="border border-border px-3 py-2 text-left text-text-0">0.5h (신규)</td><td class="border border-border px-3 py-2 text-left text-text-0">Edit-mode 테스트 6건 (Tier 70 영구 보유 1건 포함)</td><td class="border border-border px-3 py-2 text-left text-text-0">G-W2.7 (신규)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">합계</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">10.0h</strong> (T12·T13 +1h)</td><td class="border border-border px-3 py-2 text-left text-text-0"></td><td class="border border-border px-3 py-2 text-left text-text-0">게이트 7/7</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">v1.1 갱신 (R-V2.3-01 PD 옵션 (a) 영구 보유 락 흡수)</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">T12 = R-V2.3-01 PD 결정 옵션 (a) 영구 보유 코드 분기 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">if (affixId == TIER_70_SEASON_AFFIX) Skip(retain50)</code> 1줄 (영구 보유 + 50% retain 예외 처리). <strong class="font-semibold text-text-0">박세린 비권장 안이었으나 PD 결정 존중</strong>.</li><li class="mb-1">T13 = 5+1 사이드이펙트 통합 테스트 6건 = §2.2 표 6건 모두 Edit-mode 검증. 6번째 = &quot;Tier 70 영구 보유 정상 동작&quot; (시즌 종료 후 Tier 70 어픽스 인벤토리 100% 잔존 + Permanent 채널 미이동 + 다음 시즌 시작 시 보유 상태 유지). <strong class="font-semibold text-text-0">R-DR-S02 Critical 가드 직결</strong>.</li></ul>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">W1 11h + W2 10h = 21h</strong> → Q4 권장 예산 14h 초과 7h. <strong class="font-semibold text-text-0">완화책</strong>: T4 Firebase 통합 하드 캡 6h 적용 시 이론치 14h 가능. T6 / T12 / T13 = 신규 +2.5h 는 ROI 입증 (Critical 리스크 1건 + 시놉 v2.4 정합 1건 + 통합 테스트 1건).</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.2 MigrateSeasonalToPermanent 5+1 사이드이펙트 표 (dry-run §6 5순서 + 신규 6번째 = R-V2.3-01 PD 락)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">순</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">동작</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">근거</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">순서 위반 시 결과</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">검증 (T13)</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">1</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">seasonEnding=true</code> 플래그 선행 저장</td><td class="border border-border px-3 py-2 text-left text-text-0">dry-run §6 + CP-M25</td><td class="border border-border px-3 py-2 text-left text-text-0">이중 발화 → 2차 호출에서 Seasonal 0에 50% 적용 → Permanent 증가 0 + 백업 덮어씀</td><td class="border border-border px-3 py-2 text-left text-text-0">Mock 시퀀스 검증</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">2</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleTicker.Instance?.FlushCatchUp(forceImmediate: true)</code></td><td class="border border-border px-3 py-2 text-left text-text-0">dry-run §6 + CP-M26</td><td class="border border-border px-3 py-2 text-left text-text-0">방치 누적 PP 가 Seasonal 채널 미반영 → Permanent 직행 (비율 미적용, 시스템 손해)</td><td class="border border-border px-3 py-2 text-left text-text-0">Mock 호출 순서 검증</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">3</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige.v1.json.bak</code> 백업 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_season&lt;N&gt;_pre_migrate.json</code></td><td class="border border-border px-3 py-2 text-left text-text-0">dry-run §6 + §2.5 복구 3단계</td><td class="border border-border px-3 py-2 text-left text-text-0">중간 크래시 시 복구 불가</td><td class="border border-border px-3 py-2 text-left text-text-0">파일 시스템 검증 (file exists)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">4</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerPrestigeState.MigrateSeasonalToPermanent(retainRatio)</code> 호출</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp02 W2 §4.3 의사코드</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">PP 전후 비교 (Round 정수 검증)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">5 (v1.1 위치 변경)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Tier 70 어픽스 영구 보유 분기 (R-V2.3-01 PD 옵션 a 락)</strong> = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">if (affixId == TIER_70_SEASON_AFFIX) Skip(retain50)</code> 1줄 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerWalletState.RetainAffixForNextSeason()</code> 호출 시 Tier 70 어픽스만 retain50 적용 X / 100% 잔존</td><td class="border border-border px-3 py-2 text-left text-text-0">v2.4 시놉 §4.3 + 어픽스 풀 v1.3 정합 + R-V2.3-01 PD 옵션 (a) 영구 보유 락 (2026-05-03)</td><td class="border border-border px-3 py-2 text-left text-text-0">미처리 시 Tier 70 어픽스가 50% retain 으로 처리됨 → PD 결정 옵션 (a) 영구 보유 위배 → 유저 결제 보상 -50% 즉시 손실</td><td class="border border-border px-3 py-2 text-left text-text-0">시즌 종료 후 Tier 70 어픽스 인벤토리 100% 잔존 검증 + 다음 시즌 시작 시 보유 상태 유지 검증</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">6 (v1.0 → v1.1 순서 변경)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnSeasonEndMigrationCompleted</code> 이벤트 발화 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SeasonEndModal</code> UI 트리거 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">maxFloor</code> 스냅샷 저장 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneGranter.ResetForNewSeason()</code></td><td class="border border-border px-3 py-2 text-left text-text-0">dry-run §6 + Q3 C안 (스냅샷 보존)</td><td class="border border-border px-3 py-2 text-left text-text-0">UI 없이 PP 반토막 → 유저 혼란</td><td class="border border-border px-3 py-2 text-left text-text-0">이벤트 1건 + UI 모달 활성 + maxFloor 0 리셋 검증</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">v1.1 변경 사유 (R-V2.3-01 PD 결정 락)</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">시놉 v2.4 §4.3 Tier 70 = &quot;9,860원의 박자 어픽스 Legendary 1회 (시즌 1회 영구 보유, 다음 시즌엔 다른 어픽스 보상)&quot; 정정 락</li><li class="mb-1">7결정 Q7 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerWalletState</code> + 50% retain (어픽스 자체는 retain 정책 미명시)</li><li class="mb-1"><strong class="font-semibold text-text-0">PD 결정 (2026-05-03)</strong>: 옵션 (a) 영구 보유 채택 = Tier 70 어픽스만 50% retain 예외 처리 (Skip(retain50)) + 100% 잔존 + 다음 시즌엔 다른 Legendary 어픽스로 보상 로테이션</li><li class="mb-1">박세린 비권장 안 (b 삭제 / d MythicEssence 환원) 폐기. PD 결정 존중</li><li class="mb-1">코드 분기: T12 작업 0.5h = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">if (affixId == TIER_70_SEASON_AFFIX) Skip(retain50)</code> 1줄 + 다음 시즌 Tier 70 보상 = 다른 Legendary 어픽스 ID 발급 로테이션 (시즌 패스 매력 유지 X1 안)</li><li class="mb-1">5번 → 6번 순서 변경: T12 분기는 T11 (UI 트리거) 이전 실행. UI 모달에서 Tier 70 어픽스 보유 표기를 위해 retain 처리가 선행되어야 함</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.3 Round 정수 나눗셈 + MythicEssence 음수 보호 (dry-run §11 R-DR-S03 가드)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>// PlayerPrestigeState.MigrateSeasonalToPermanent(float retainRatio = 0.5f)
 public void MigrateSeasonalToPermanent(float retainRatio) {
   // ... (1~3 순서) ...
 
@@ -168,21 +72,21 @@ public void MigrateSeasonalToPermanent(float retainRatio) {
   long convertedPermanent = (seasonalTotal * 50L) / 100L;  // (long * 50) / 100 = Round 자연 처리
 
   // 음수 보호 (R-DR-S03)
-  if (convertedPermanent < 0L) {
-    Debug.LogError($"[Season] Migrate convertedPermanent < 0: {convertedPermanent}, seasonalTotal={seasonalTotal}");
+  if (convertedPermanent &lt; 0L) {
+    Debug.LogError($&quot;[Season] Migrate convertedPermanent &lt; 0: {convertedPermanent}, seasonalTotal={seasonalTotal}&quot;);
     convertedPermanent = 0L;  // Fail-safe = 0 로 처리, throw 안 함 (유저 PP 보호 우선)
   }
 
   PermanentPp += convertedPermanent;
   SeasonalPp = 0L;
-  RemoveAll(s => s.channel == Seasonal);
+  RemoveAll(s =&gt; s.channel == Seasonal);
 }
 
 // PlayerWalletState.RetainMythicEssenceForNextSeason(float retainRatio = 0.5f)
 public void RetainMythicEssenceForNextSeason(float retainRatio) {
   long retained = (MythicEssence * 50L) / 100L;
-  if (retained < 0L) {
-    Debug.LogError($"[Season] MythicEssence retain < 0: {retained}");
+  if (retained &lt; 0L) {
+    Debug.LogError($&quot;[Season] MythicEssence retain &lt; 0: {retained}&quot;);
     retained = 0L;
   }
   MythicEssence = retained;
@@ -199,159 +103,63 @@ public void RetainAffixForNextSeason(string affixId, float retainRatio) {
 
   // 기본 50% retain (다른 어픽스)
   // ... (생략) ...
-}
-```
-
-**R-DR-S03 가드 4건**:
-1. `(long * 50L) / 100L` 정수 연산 강제 → 부동소수 오차 0% (1 PP 단위 누적 오차 차단)
-2. 음수 검출 시 `Debug.LogError` + `0L` Fail-safe (throw 안 함, 유저 PP 보호)
-3. retainRatio 파라미터 = `0.5f` 기본값 + 향후 시즌별 조정 가능 (시즌 6+ 운영 레버)
-4. T13 통합 테스트 = SeasonalPp = 100 → Permanent +50 / SeasonalPp = 101 → Permanent +50 (Round 50.5 → 50 정수 잘림, Q6 B Round 정합) + **Tier 70 어픽스 영구 보유 검증 (v1.1 신규) = 시즌 종료 후 인벤토리 100% 잔존 / 다음 시즌 시작 시 보유 유지**
-
-### 2.4 ILeaderboardRepository 추상화 (dry-run §5.2 그대로)
-
-```csharp
-namespace GodBlade.Runtime.Season {
+}</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">R-DR-S03 가드 4건</strong>:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">(long * 50L) / 100L</code> 정수 연산 강제 → 부동소수 오차 0% (1 PP 단위 누적 오차 차단)</li><li class="mb-1">음수 검출 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Debug.LogError</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">0L</code> Fail-safe (throw 안 함, 유저 PP 보호)</li><li class="mb-1">retainRatio 파라미터 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">0.5f</code> 기본값 + 향후 시즌별 조정 가능 (시즌 6+ 운영 레버)</li><li class="mb-1">T13 통합 테스트 = SeasonalPp = 100 → Permanent +50 / SeasonalPp = 101 → Permanent +50 (Round 50.5 → 50 정수 잘림, Q6 B Round 정합) + <strong class="font-semibold text-text-0">Tier 70 어픽스 영구 보유 검증 (v1.1 신규) = 시즌 종료 후 인벤토리 100% 잔존 / 다음 시즌 시작 시 보유 유지</strong></li></ol>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.4 ILeaderboardRepository 추상화 (dry-run §5.2 그대로)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>namespace GodBlade.Runtime.Season {
   public interface ILeaderboardRepository {
-    System.Threading.Tasks.Task<bool> SubmitAsync(SeasonLeaderboardEntry entry);
-    System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<SeasonLeaderboardEntry>>
+    System.Threading.Tasks.Task&lt;bool&gt; SubmitAsync(SeasonLeaderboardEntry entry);
+    System.Threading.Tasks.Task&lt;System.Collections.Generic.IReadOnlyList&lt;SeasonLeaderboardEntry&gt;&gt;
       GetTopAsync(string seasonId, int limit);
-    System.Threading.Tasks.Task<SeasonLeaderboardEntry?> GetMyEntryAsync(string seasonId, string playerId);
+    System.Threading.Tasks.Task&lt;SeasonLeaderboardEntry?&gt; GetMyEntryAsync(string seasonId, string playerId);
   }
 
   // Sp05 W1 T5 구현 3종
   public sealed class LocalLeaderboardRepository : ILeaderboardRepository { /* JSON */ }      // 항상 동작 (fallback)
   public sealed class InMemoryLeaderboardRepository : ILeaderboardRepository { /* Edit-mode */ }
   public sealed class FirestoreLeaderboardRepository : ILeaderboardRepository { /* orderBy+limit */ } // Firebase 의존
-}
-```
-
-**T5 합/불합 판정**:
-1. Interface 3 메서드 모두 정의 (Submit / GetTop / GetMyEntry)
-2. 3 구현 모두 컴파일 성공 (Local / InMemory / Firestore)
-3. CP-M27 = Firebase 초기화 실패 시 자동 fallback → `LocalLeaderboardRepository` 사용 (NRE 0건)
-4. Sp06+ 주간 이벤트 (`project_sp06_plus_lever_decisions.md`) `ILeaderboardRepository` 동일 인터페이스 재투입 가능
-
----
-
-## 3. 회귀 가드 (드라이런 R-DR-S01 / S02 / S03 사전 정렬)
-
-### 3.1 R-DR-S01 가드 [High] (Firebase 첫 도입 러닝커브)
-
-> **참조**: dry-run §9.2 R-DR-S01 + 메모리 `feedback_codelead_review_compile_verify.md`
-> **위험**: Firebase SDK 통합 3h 예산 낙관적. 실제 8~12h 가능 → Sp05 W1 블로킹
-
-| # | 가드 항목 | 시행 시점 | 책임 | 비고 |
-|---|----------|----------|------|------|
-| G-S01.1 | T4 하드 캡 6h 명시 = PR 본문 템플릿 (dry-run §9.2 A2) | T4 착수 시 | code-lead | 6h 초과 시 T5·T11 Firebase 부분 Sp06 이월 |
-| G-S01.2 | `LocalLeaderboardRepository` fallback 경로 = Firebase 초기화 실패와 무관하게 독립 동작 (CP-M27) | T5 종료 시 | code-lead | NRE 0건 보장 |
-| G-S01.3 | Phase P1~P4 분해 = 각 단계 하드 타임박스 (1.5h / 1h / 1.5h / 2h) | T4 진행 중 | code-lead | dry-run §3 P1~P4 분해 그대로 |
-| G-S01.4 | `google-services.json` (Android) / `GoogleService-Info.plist` (iOS) 배치 검증 = T4 P1 완료 조건 | T4 P1 종료 시 | code-lead | 누락 시 Auth 실패 NRE 직결 |
-
-**FAIL 시 분기**:
-- G-S01.1 T4 6h 초과 = T5 스켈레톤만 유지 + T11 Smoke Test에서 Firebase 부분 skip
-- G-S01.2 NRE 발생 = `LocalLeaderboardRepository` 강제 주입 + Firestore 부분 Sp06 이월
-- G-S01.3 단계별 초과 = 다음 Phase 자동 skip (cascade)
-- G-S01.4 SDK 파일 미배치 = T4 P1 재시작 (15분)
-
-### 3.2 R-DR-S02 가드 [Critical] (5+1 사이드이펙트 순서 위반)
-
-> **참조**: dry-run §6 5순서 + §7 S2 Critical
-> **위험**: 순서 뒤집힘 = PP 영구 유실 또는 Seasonal/Permanent 비율 위반
-
-| # | 가드 항목 | 시행 시점 | 책임 | 비고 |
-|---|----------|----------|------|------|
-| G-S02.1 | T3 P3 = 5+1 사이드이펙트 순서 배선 코드 리뷰 | T3 P3 종료 시 | code-lead | §2.2 표 6건 순서 일치 검증 |
-| G-S02.2 | `seasonEnding=true` 플래그 선행 저장 = Step 1 (CP-M25 이중 발화 차단) | T3 P2 | code-lead | 2회 호출 = 2차 early return 검증 |
-| G-S02.3 | `IdleTicker.FlushCatchUp(forceImmediate=true)` 선행 = Step 2 (CP-M26 순서 검증) | T3 P3 | code-lead | Mock 시퀀스 = FlushCatchUp 호출 후 백업 호출 |
-| G-S02.4 | T13 통합 테스트 = §2.2 표 6건 모두 Edit-mode 검증 (6번째 = Tier 70 영구 보유 정상 동작 1건 포함) | T13 | game-designer + code-lead | 6건 PASS = R-DR-S02 회귀 차단 |
-| G-S02.5 | **Step 5 (v1.1 위치 변경) = R-V2.3-01 PD 옵션 (a) 영구 보유 락 분기** = Tier 70 9,860원 박자 Legendary 어픽스 retain 예외 처리 코드 분기 | T12 | code-lead | PD 결정 옵션 (a) 영구 보유 동작 검증 + 다음 시즌 보유 유지 검증 |
-
-**FAIL 시 분기**:
-- G-S02.1 순서 위반 = 즉시 PR 차단 + T3 P3 재작업 (1h)
-- G-S02.2 / G-S02.3 = CP-M25 / CP-M26 회귀 = code-lead 재작업
-- G-S02.4 통합 테스트 6건 중 1건 FAIL = 즉시 game-designer 에스컬레이션 → 5+1 표 재검증
-- G-S02.5 R-V2.3-01 분기 동작 FAIL = T12 재작업 (15분, 1줄 분기 정정)
-
-### 3.3 R-DR-S03 가드 [Medium] (Round 정수 나눗셈 + 음수 보호)
-
-> **참조**: dry-run §11 R-DR-S03 + §11 정수 연산 강제
-> **위험**: `(total * 50f) / 100f` 부동소수 사용 시 1 PP 단위 누적 오차 / 음수 발생 시 throw
-
-| # | 가드 항목 | 시행 시점 | 책임 | 비고 |
-|---|----------|----------|------|------|
-| G-S03.1 | `MigrateSeasonalToPermanent` 본문 = `(long * 50L) / 100L` 정수 연산만 (float / double 금지) | T3 P4 | code-lead | grep 검증 = float 키워드 0건 |
-| G-S03.2 | 음수 검출 = `Debug.LogError` + `0L` Fail-safe (throw 안 함) | T3 P4 | code-lead | 유저 PP 보호 우선 (시스템 손해 0) |
-| G-S03.3 | `PlayerWalletState.RetainMythicEssenceForNextSeason` 동일 정수 연산 + 음수 보호 | T9 | code-lead | T3 P4 패턴 답습 |
-| G-S03.4 | T13 통합 테스트 = SeasonalPp 0 / 1 / 100 / 101 / Long.MaxValue / -1 (강제 주입) 6 케이스 검증 | T13 | game-designer + code-lead | 음수 케이스 = 0L 수렴 검증 |
-
-**FAIL 시 분기**:
-- G-S03.1 float 사용 발견 = 즉시 정정 (15분)
-- G-S03.2 throw 잔존 = Fail-safe 변환 (15분)
-- G-S03.4 통합 테스트 케이스 미커버 = T13 재작업 (30분)
-
----
-
-## 4. 변동 흡수
-
-### 4.1 시놉 v2.4 신규 5건 흡수 영향 평가
-
-| 시놉 v2.4 변경 | 흡수 영향 (Sp05 시스템) | 처리 |
-|------------|--------------------|------|
-| **D-2.10 W7 유교 드래곤 재등장 (v2.3)** | 시즌 패스 Tier 75 매핑 신규 (T6 §1.4) | T6 산출 정합 검증 |
-| **D-2.11 Tier 75 슬레이어 스킨 (v2.3)** | 시즌 패스 Tier 75 매핑 신규 (T6 §1.4) | T6 산출 정합 검증 |
-| **D-2.12 Tier 60 어픽스 보상 (v2.3)** | 시즌 패스 Tier 60 매핑 신규 + 어픽스 풀 v1.3 G-3.6 정합 (T6 §1.4) | T6 산출 정합 검증 |
-| **D-2.13 38화 비단 결계 키 (v2.3)** | Sp05 영향 0% (시놉 본문 갱신만, 시즌 시험 매핑은 Sp06+ 시즌 시험 시스템) | 흡수 0h |
-| **D-2.14 49화 청천 등장 (v2.3)** | Sp05 영향 0% (NPC 자산만, 시즌 시스템 미영향) | 흡수 0h |
-| **D-2.9 35화 광복동 시간선 (v2.3)** | Sp05 영향 0% (시놉 본문만) | 흡수 0h |
-| **D-2.15 Tier 70 영구 보유 정정 (v2.4 신규, R-V2.3-01 PD 옵션 a 락)** | Sp05 W2 T12 코드 분기 1줄 + T13 통합 테스트 6번째 1건 + T6 TSV permanent_retain_flag 컬럼 추가 | 흡수 0.5h (T12) + 0h (T13 통합 테스트는 기존 0.5h 내 흡수) + 0h (T6 TSV 컬럼 추가는 기존 1.0h 내 흡수) |
-
-**총 흡수 부하**: T6 1.0h + T12 0.5h + T13 0.5h = 2.0h (v1.0 동일, v1.1 추가 부하 0h). **D-56 시점 즉시 흡수로 D-7 시점 부하 감소 입증**.
-
-### 4.2 R-V2.3-01 PD 결정 락 (2026-05-03) — 옵션 (a) 영구 보유 채택
-
-> **상태**: ✅ PD 락 (2026-05-03)
-> **결정 사유**: 시놉 v2.3 Tier 70 9,860원 박자 Legendary "시즌 한정" vs 7결정 Q7 50% retain 정책 충돌 → PD 옵션 (a) 영구 보유 채택
-
-**4안 결과 표 (PD 결정 락)**:
-
-| 안 | 처리 | 장점 | 단점 | ARPU 영향 | 박세린 평가 | PD 결정 |
-|---|------|------|------|---------|-----------|---------|
-| **(a)** | **영구 보유 (다음 시즌도 사용) + X1 변형 = 다음 시즌엔 다른 어픽스 보상 로테이션** | 유저 만족 + 시즌별 어픽스 다양성 = 시즌 패스 매력 유지 (X1 안) | "시즌 한정" 약속 위배 → 마케팅 신뢰 손실 가능 | +0% (단기) / **-10% (장기, 시즌 한정 ARPU 모델 약화)** | ❌ 비권장 (단 PD 결정 존중) | **✅ PD 락 (2026-05-03)** |
-| (b) | 삭제 (시즌 종료 시 인벤토리 회수) | "시즌 한정" 약속 정확 = 디아4 시그니처 톤 + 마케팅 신뢰 | 유저 단기 불만 가능 | +15% (시즌 한정 ARPU 모델 정합) | ✅ 권장 1순위 (폐기) | ❌ 폐기 |
-| (c) | 50% retain (다른 어픽스와 동일 정책) | Q7 정책 일관성 | "시즌 한정" 약속 위배 | -5% | ❌ 비권장 (폐기) | ❌ 폐기 |
-| (d) | MythicEssence 환원 (어픽스 삭제 + Essence 1회분 환원) | 유저 보상 + "시즌 한정" 약속 정확 | MythicEssence 인플레 약간 | +10% (보상 톤 OK + ARPU 보존) | ✅ 권장 2순위 (폐기) | ❌ 폐기 |
-
-**박세린 비권장 사유 (1줄)**:
-- 시즌 한정 약속 위배 + ARPU -10% 장기 위험 (디아4 S15 시즌 패스 conversion 35% 벤치 대비 -5% 이상 하락 가능)
-- 단 PD 결정 존중 — X1 안 (시즌 1회 영구 보유 + 다음 시즌엔 다른 어픽스 로테이션) 으로 시즌 패스 매력 유지 + ARPU 충격 완화 가능
-
-**ARPU 모니터링 트리거 (필수)**:
-- **시점**: 출시 후 6개월 시점 (2028-07 추정 = Phase 7 Live Ops)
-- **분석 대상**: Tier 70 영구 보유 안의 시즌 패스 conversion (실측) vs 가상 시즌 한정 안의 시뮬 conversion 비교 분석
-- **벤치마크**: 디아4 S15 시즌 패스 conversion 35% 평균
-- **트리거 조건**: 출시 후 6개월 시점 시즌 패스 conversion 30% 이하 (벤치 대비 -5% 이상 하락) → game-designer 후속 정책 검토 발주 (Tier 70 보상 변경 / 시즌 패스 가격 조정 / 추가 마케팅 캠페인)
-- **책임**: game-designer 박세린 (출시 후 6개월 시점 자동 발주)
-
-### 4.3 차기 16~17화 도착 시 추가 어픽스 후보 영향 평가
-
-| 화 | 도착 추정 | 어픽스 추가 가능성 | Sp05 시즌 패스 영향 |
-|---|---------|-------------------|------------------|
-| 16화 (폐사찰 진입) | 2026-05-09 | Low (환경 묘사 위주) | 0건 추정 |
-| 17화 (99 글리치) | 2026-05-16 | **Low~Medium (S-3 가능성 = AFX_34 트리거 조건 변형)** | AFX_34 변형 = Tier 70 매핑 변경 가능성 (R-V2.3-01 PD 락 후 영향 재평가 = 영구 보유 정책은 유지, 트리거 조건만 변경 가능) |
-
-**Sp05 영향**: 차기 16~17화 도착 = 5/9~5/16 = D-44~D-37 시점. T6 시즌 패스 매핑 표 = D-7 (6/22) 시점 작성 = **5주 여유 = 차기 16~17화 도착 후 흡수 충분 가능**. 추가 어픽스 1건 시 Tier 매핑 1건 추가 = T6 부하 +0.2h 추정 (전체 부하 미영향).
-
----
-
-## 5. D-Day 체크리스트 (D-7 본격 착수 시 PRINT-AND-CHECK 양식, 게이트 16/16)
-
-> **사용법**: 2026-06-22 (D-7) 책상에 출력. 항목별 체크박스 표시. GO/NO-GO 표 1행 작성.
-
-### 5.1 W1 게이트 (T1~T6 = 6건)
-
-```
-[ ] G-W1.1 (T1) : SeasonConfigSO + ISeasonClock + ManualSeasonClock 정의
+}</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">T5 합/불합 판정</strong>:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">Interface 3 메서드 모두 정의 (Submit / GetTop / GetMyEntry)</li><li class="mb-1">3 구현 모두 컴파일 성공 (Local / InMemory / Firestore)</li><li class="mb-1">CP-M27 = Firebase 초기화 실패 시 자동 fallback → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">LocalLeaderboardRepository</code> 사용 (NRE 0건)</li><li class="mb-1">Sp06+ 주간 이벤트 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sp06_plus_lever_decisions.md</code>) <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ILeaderboardRepository</code> 동일 인터페이스 재투입 가능</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. 회귀 가드 (드라이런 R-DR-S01 / S02 / S03 사전 정렬)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.1 R-DR-S01 가드 [High] (Firebase 첫 도입 러닝커브)</h3>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">참조</strong>: dry-run §9.2 R-DR-S01 + 메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">feedback_codelead_review_compile_verify.md</code> <strong class="font-semibold text-text-0">위험</strong>: Firebase SDK 통합 3h 예산 낙관적. 실제 8~12h 가능 → Sp05 W1 블로킹</blockquote>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">가드 항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시행 시점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">책임</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비고</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S01.1</td><td class="border border-border px-3 py-2 text-left text-text-0">T4 하드 캡 6h 명시 = PR 본문 템플릿 (dry-run §9.2 A2)</td><td class="border border-border px-3 py-2 text-left text-text-0">T4 착수 시</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">6h 초과 시 T5·T11 Firebase 부분 Sp06 이월</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S01.2</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">LocalLeaderboardRepository</code> fallback 경로 = Firebase 초기화 실패와 무관하게 독립 동작 (CP-M27)</td><td class="border border-border px-3 py-2 text-left text-text-0">T5 종료 시</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">NRE 0건 보장</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S01.3</td><td class="border border-border px-3 py-2 text-left text-text-0">Phase P1~P4 분해 = 각 단계 하드 타임박스 (1.5h / 1h / 1.5h / 2h)</td><td class="border border-border px-3 py-2 text-left text-text-0">T4 진행 중</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">dry-run §3 P1~P4 분해 그대로</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S01.4</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">google-services.json</code> (Android) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GoogleService-Info.plist</code> (iOS) 배치 검증 = T4 P1 완료 조건</td><td class="border border-border px-3 py-2 text-left text-text-0">T4 P1 종료 시</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">누락 시 Auth 실패 NRE 직결</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">FAIL 시 분기</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">G-S01.1 T4 6h 초과 = T5 스켈레톤만 유지 + T11 Smoke Test에서 Firebase 부분 skip</li><li class="mb-1">G-S01.2 NRE 발생 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">LocalLeaderboardRepository</code> 강제 주입 + Firestore 부분 Sp06 이월</li><li class="mb-1">G-S01.3 단계별 초과 = 다음 Phase 자동 skip (cascade)</li><li class="mb-1">G-S01.4 SDK 파일 미배치 = T4 P1 재시작 (15분)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.2 R-DR-S02 가드 [Critical] (5+1 사이드이펙트 순서 위반)</h3>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">참조</strong>: dry-run §6 5순서 + §7 S2 Critical <strong class="font-semibold text-text-0">위험</strong>: 순서 뒤집힘 = PP 영구 유실 또는 Seasonal/Permanent 비율 위반</blockquote>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">가드 항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시행 시점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">책임</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비고</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S02.1</td><td class="border border-border px-3 py-2 text-left text-text-0">T3 P3 = 5+1 사이드이펙트 순서 배선 코드 리뷰</td><td class="border border-border px-3 py-2 text-left text-text-0">T3 P3 종료 시</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">§2.2 표 6건 순서 일치 검증</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S02.2</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">seasonEnding=true</code> 플래그 선행 저장 = Step 1 (CP-M25 이중 발화 차단)</td><td class="border border-border px-3 py-2 text-left text-text-0">T3 P2</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">2회 호출 = 2차 early return 검증</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S02.3</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleTicker.FlushCatchUp(forceImmediate=true)</code> 선행 = Step 2 (CP-M26 순서 검증)</td><td class="border border-border px-3 py-2 text-left text-text-0">T3 P3</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">Mock 시퀀스 = FlushCatchUp 호출 후 백업 호출</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S02.4</td><td class="border border-border px-3 py-2 text-left text-text-0">T13 통합 테스트 = §2.2 표 6건 모두 Edit-mode 검증 (6번째 = Tier 70 영구 보유 정상 동작 1건 포함)</td><td class="border border-border px-3 py-2 text-left text-text-0">T13</td><td class="border border-border px-3 py-2 text-left text-text-0">game-designer + code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">6건 PASS = R-DR-S02 회귀 차단</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S02.5</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Step 5 (v1.1 위치 변경) = R-V2.3-01 PD 옵션 (a) 영구 보유 락 분기</strong> = Tier 70 9,860원 박자 Legendary 어픽스 retain 예외 처리 코드 분기</td><td class="border border-border px-3 py-2 text-left text-text-0">T12</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">PD 결정 옵션 (a) 영구 보유 동작 검증 + 다음 시즌 보유 유지 검증</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">FAIL 시 분기</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">G-S02.1 순서 위반 = 즉시 PR 차단 + T3 P3 재작업 (1h)</li><li class="mb-1">G-S02.2 / G-S02.3 = CP-M25 / CP-M26 회귀 = code-lead 재작업</li><li class="mb-1">G-S02.4 통합 테스트 6건 중 1건 FAIL = 즉시 game-designer 에스컬레이션 → 5+1 표 재검증</li><li class="mb-1">G-S02.5 R-V2.3-01 분기 동작 FAIL = T12 재작업 (15분, 1줄 분기 정정)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.3 R-DR-S03 가드 [Medium] (Round 정수 나눗셈 + 음수 보호)</h3>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">참조</strong>: dry-run §11 R-DR-S03 + §11 정수 연산 강제 <strong class="font-semibold text-text-0">위험</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">(total * 50f) / 100f</code> 부동소수 사용 시 1 PP 단위 누적 오차 / 음수 발생 시 throw</blockquote>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">가드 항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시행 시점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">책임</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비고</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S03.1</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MigrateSeasonalToPermanent</code> 본문 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">(long * 50L) / 100L</code> 정수 연산만 (float / double 금지)</td><td class="border border-border px-3 py-2 text-left text-text-0">T3 P4</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">grep 검증 = float 키워드 0건</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S03.2</td><td class="border border-border px-3 py-2 text-left text-text-0">음수 검출 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Debug.LogError</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">0L</code> Fail-safe (throw 안 함)</td><td class="border border-border px-3 py-2 text-left text-text-0">T3 P4</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">유저 PP 보호 우선 (시스템 손해 0)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S03.3</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerWalletState.RetainMythicEssenceForNextSeason</code> 동일 정수 연산 + 음수 보호</td><td class="border border-border px-3 py-2 text-left text-text-0">T9</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">T3 P4 패턴 답습</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">G-S03.4</td><td class="border border-border px-3 py-2 text-left text-text-0">T13 통합 테스트 = SeasonalPp 0 / 1 / 100 / 101 / Long.MaxValue / -1 (강제 주입) 6 케이스 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">T13</td><td class="border border-border px-3 py-2 text-left text-text-0">game-designer + code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">음수 케이스 = 0L 수렴 검증</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">FAIL 시 분기</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">G-S03.1 float 사용 발견 = 즉시 정정 (15분)</li><li class="mb-1">G-S03.2 throw 잔존 = Fail-safe 변환 (15분)</li><li class="mb-1">G-S03.4 통합 테스트 케이스 미커버 = T13 재작업 (30분)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. 변동 흡수</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.1 시놉 v2.4 신규 5건 흡수 영향 평가</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시놉 v2.4 변경</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">흡수 영향 (Sp05 시스템)</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">처리</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">D-2.10 W7 유교 드래곤 재등장 (v2.3)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">시즌 패스 Tier 75 매핑 신규 (T6 §1.4)</td><td class="border border-border px-3 py-2 text-left text-text-0">T6 산출 정합 검증</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">D-2.11 Tier 75 슬레이어 스킨 (v2.3)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">시즌 패스 Tier 75 매핑 신규 (T6 §1.4)</td><td class="border border-border px-3 py-2 text-left text-text-0">T6 산출 정합 검증</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">D-2.12 Tier 60 어픽스 보상 (v2.3)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">시즌 패스 Tier 60 매핑 신규 + 어픽스 풀 v1.3 G-3.6 정합 (T6 §1.4)</td><td class="border border-border px-3 py-2 text-left text-text-0">T6 산출 정합 검증</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">D-2.13 38화 비단 결계 키 (v2.3)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Sp05 영향 0% (시놉 본문 갱신만, 시즌 시험 매핑은 Sp06+ 시즌 시험 시스템)</td><td class="border border-border px-3 py-2 text-left text-text-0">흡수 0h</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">D-2.14 49화 청천 등장 (v2.3)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Sp05 영향 0% (NPC 자산만, 시즌 시스템 미영향)</td><td class="border border-border px-3 py-2 text-left text-text-0">흡수 0h</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">D-2.9 35화 광복동 시간선 (v2.3)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Sp05 영향 0% (시놉 본문만)</td><td class="border border-border px-3 py-2 text-left text-text-0">흡수 0h</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">D-2.15 Tier 70 영구 보유 정정 (v2.4 신규, R-V2.3-01 PD 옵션 a 락)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Sp05 W2 T12 코드 분기 1줄 + T13 통합 테스트 6번째 1건 + T6 TSV permanent_retain_flag 컬럼 추가</td><td class="border border-border px-3 py-2 text-left text-text-0">흡수 0.5h (T12) + 0h (T13 통합 테스트는 기존 0.5h 내 흡수) + 0h (T6 TSV 컬럼 추가는 기존 1.0h 내 흡수)</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">총 흡수 부하</strong>: T6 1.0h + T12 0.5h + T13 0.5h = 2.0h (v1.0 동일, v1.1 추가 부하 0h). <strong class="font-semibold text-text-0">D-56 시점 즉시 흡수로 D-7 시점 부하 감소 입증</strong>.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.2 R-V2.3-01 PD 결정 락 (2026-05-03) — 옵션 (a) 영구 보유 채택</h3>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">상태</strong>: ✅ PD 락 (2026-05-03) <strong class="font-semibold text-text-0">결정 사유</strong>: 시놉 v2.3 Tier 70 9,860원 박자 Legendary &quot;시즌 한정&quot; vs 7결정 Q7 50% retain 정책 충돌 → PD 옵션 (a) 영구 보유 채택</blockquote>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">4안 결과 표 (PD 결정 락)</strong>:</p>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">안</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">처리</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">장점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">단점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">ARPU 영향</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">박세린 평가</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">PD 결정</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">(a)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">영구 보유 (다음 시즌도 사용) + X1 변형 = 다음 시즌엔 다른 어픽스 보상 로테이션</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">유저 만족 + 시즌별 어픽스 다양성 = 시즌 패스 매력 유지 (X1 안)</td><td class="border border-border px-3 py-2 text-left text-text-0">&quot;시즌 한정&quot; 약속 위배 → 마케팅 신뢰 손실 가능</td><td class="border border-border px-3 py-2 text-left text-text-0">+0% (단기) / <strong class="font-semibold text-text-0">-10% (장기, 시즌 한정 ARPU 모델 약화)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">❌ 비권장 (단 PD 결정 존중)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">✅ PD 락 (2026-05-03)</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">(b)</td><td class="border border-border px-3 py-2 text-left text-text-0">삭제 (시즌 종료 시 인벤토리 회수)</td><td class="border border-border px-3 py-2 text-left text-text-0">&quot;시즌 한정&quot; 약속 정확 = 디아4 시그니처 톤 + 마케팅 신뢰</td><td class="border border-border px-3 py-2 text-left text-text-0">유저 단기 불만 가능</td><td class="border border-border px-3 py-2 text-left text-text-0">+15% (시즌 한정 ARPU 모델 정합)</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ 권장 1순위 (폐기)</td><td class="border border-border px-3 py-2 text-left text-text-0">❌ 폐기</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">(c)</td><td class="border border-border px-3 py-2 text-left text-text-0">50% retain (다른 어픽스와 동일 정책)</td><td class="border border-border px-3 py-2 text-left text-text-0">Q7 정책 일관성</td><td class="border border-border px-3 py-2 text-left text-text-0">&quot;시즌 한정&quot; 약속 위배</td><td class="border border-border px-3 py-2 text-left text-text-0">-5%</td><td class="border border-border px-3 py-2 text-left text-text-0">❌ 비권장 (폐기)</td><td class="border border-border px-3 py-2 text-left text-text-0">❌ 폐기</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">(d)</td><td class="border border-border px-3 py-2 text-left text-text-0">MythicEssence 환원 (어픽스 삭제 + Essence 1회분 환원)</td><td class="border border-border px-3 py-2 text-left text-text-0">유저 보상 + &quot;시즌 한정&quot; 약속 정확</td><td class="border border-border px-3 py-2 text-left text-text-0">MythicEssence 인플레 약간</td><td class="border border-border px-3 py-2 text-left text-text-0">+10% (보상 톤 OK + ARPU 보존)</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ 권장 2순위 (폐기)</td><td class="border border-border px-3 py-2 text-left text-text-0">❌ 폐기</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">박세린 비권장 사유 (1줄)</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">시즌 한정 약속 위배 + ARPU -10% 장기 위험 (디아4 S15 시즌 패스 conversion 35% 벤치 대비 -5% 이상 하락 가능)</li><li class="mb-1">단 PD 결정 존중 — X1 안 (시즌 1회 영구 보유 + 다음 시즌엔 다른 어픽스 로테이션) 으로 시즌 패스 매력 유지 + ARPU 충격 완화 가능</li></ul>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">ARPU 모니터링 트리거 (필수)</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">시점</strong>: 출시 후 6개월 시점 (2028-07 추정 = Phase 7 Live Ops)</li><li class="mb-1"><strong class="font-semibold text-text-0">분석 대상</strong>: Tier 70 영구 보유 안의 시즌 패스 conversion (실측) vs 가상 시즌 한정 안의 시뮬 conversion 비교 분석</li><li class="mb-1"><strong class="font-semibold text-text-0">벤치마크</strong>: 디아4 S15 시즌 패스 conversion 35% 평균</li><li class="mb-1"><strong class="font-semibold text-text-0">트리거 조건</strong>: 출시 후 6개월 시점 시즌 패스 conversion 30% 이하 (벤치 대비 -5% 이상 하락) → game-designer 후속 정책 검토 발주 (Tier 70 보상 변경 / 시즌 패스 가격 조정 / 추가 마케팅 캠페인)</li><li class="mb-1"><strong class="font-semibold text-text-0">책임</strong>: game-designer 박세린 (출시 후 6개월 시점 자동 발주)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.3 차기 16~17화 도착 시 추가 어픽스 후보 영향 평가</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">화</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">도착 추정</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">어픽스 추가 가능성</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sp05 시즌 패스 영향</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">16화 (폐사찰 진입)</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-05-09</td><td class="border border-border px-3 py-2 text-left text-text-0">Low (환경 묘사 위주)</td><td class="border border-border px-3 py-2 text-left text-text-0">0건 추정</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">17화 (99 글리치)</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-05-16</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Low~Medium (S-3 가능성 = AFX_34 트리거 조건 변형)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">AFX_34 변형 = Tier 70 매핑 변경 가능성 (R-V2.3-01 PD 락 후 영향 재평가 = 영구 보유 정책은 유지, 트리거 조건만 변경 가능)</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">Sp05 영향</strong>: 차기 16~17화 도착 = 5/9~5/16 = D-44~D-37 시점. T6 시즌 패스 매핑 표 = D-7 (6/22) 시점 작성 = <strong class="font-semibold text-text-0">5주 여유 = 차기 16~17화 도착 후 흡수 충분 가능</strong>. 추가 어픽스 1건 시 Tier 매핑 1건 추가 = T6 부하 +0.2h 추정 (전체 부하 미영향).</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. D-Day 체크리스트 (D-7 본격 착수 시 PRINT-AND-CHECK 양식, 게이트 16/16)</h2>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">사용법</strong>: 2026-06-22 (D-7) 책상에 출력. 항목별 체크박스 표시. GO/NO-GO 표 1행 작성.</blockquote>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.1 W1 게이트 (T1~T6 = 6건)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[ ] G-W1.1 (T1) : SeasonConfigSO + ISeasonClock + ManualSeasonClock 정의
               → 검증: ISeasonClock 5 멤버 / ManualSeasonClock(SeasonConfigSO, ITimeProvider) 생성자
               → FAIL 시 §1.2 시그니처 표 재참조 (15분)
 
@@ -373,13 +181,9 @@ namespace GodBlade.Runtime.Season {
 
 [ ] G-W1.6 (T6, v1.1 갱신) : 시즌 패스 30 Tier 매핑 표 + season_pass_s2.tsv 신설 + Tier 70 permanent_retain_flag 컬럼
               → 검증: 9 Tier 정의 (Tier 60 / Tier 75 v2.3 + Tier 70 v2.4 영구 보유 락 표기 포함) + 어픽스 풀 v1.3 정합 + R-V2.3-01 PD 락 표시 + permanent_retain_flag = true (Tier 70 행)
-              → FAIL 시 §1.4 매핑 표 재참조 + §4.2 R-V2.3-01 PD 결정 락 표 재참조
-```
-
-### 5.2 W2 게이트 (T7~T13 = 7건)
-
-```
-[ ] G-W2.1 (T7) : SetItemCatalogSO + SetItemImporter + SetEffectEvaluator
+              → FAIL 시 §1.4 매핑 표 재참조 + §4.2 R-V2.3-01 PD 결정 락 표 재참조</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.2 W2 게이트 (T7~T13 = 7건)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[ ] G-W2.1 (T7) : SetItemCatalogSO + SetItemImporter + SetEffectEvaluator
               → 검증: TSV→SO Importer + 장비 변경 이벤트 구독 + Dictionary 비직렬화 (CP-M09)
               → FAIL 시 dry-run §1 W2 T6 재참조
 
@@ -392,7 +196,7 @@ namespace GodBlade.Runtime.Season {
               → FAIL 시 §2.3 정수 연산 패턴 재참조
 
 [ ] G-W2.4 (T10) : SeasonEndModal UI + OnSeasonEndMigrationCompleted 구독
-              → 검증: 이벤트 수신 + PP 전후 비교 표시 + "확인" 버튼 닫힘
+              → 검증: 이벤트 수신 + PP 전후 비교 표시 + &quot;확인&quot; 버튼 닫힘
               → FAIL 시 sprint-05-research §3.5 재참조
 
 [ ] G-W2.5 (T11) : Smoke Test 전체 루프 (Force End → Migrate → 리더보드 제출 → 모달 → v2.json)
@@ -405,13 +209,9 @@ namespace GodBlade.Runtime.Season {
 
 [ ] G-W2.7 (T13, v1.1 갱신) : MigrateSeasonalToPermanent 5+1 사이드이펙트 통합 테스트 (§2.2 표 6건, 6번째 = Tier 70 영구 보유 정상 동작 1건 포함)
               → 검증: 6건 모두 Edit-mode PASS + 음수 케이스 (-1) = 0L Fail-safe 검증 + Tier 70 어픽스 다음 시즌 시작 시 보유 유지 검증
-              → FAIL 시 §3.2 R-DR-S02 가드 절차 + §3.3 R-DR-S03 가드 절차
-```
-
-### 5.3 R-DR 회귀 가드 게이트 (R-DR-S01 / S02 / S03 = 3건)
-
-```
-[ ] G-R-DR.S01 : Firebase 첫 도입 러닝커브 가드
+              → FAIL 시 §3.2 R-DR-S02 가드 절차 + §3.3 R-DR-S03 가드 절차</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.3 R-DR 회귀 가드 게이트 (R-DR-S01 / S02 / S03 = 3건)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[ ] G-R-DR.S01 : Firebase 첫 도입 러닝커브 가드
               → 검증: G-S01.1 (하드 캡 6h) + G-S01.2 (fallback NRE 0건) + G-S01.4 (SDK 파일 배치)
               → FAIL 시 §3.1 분기 (T5 스켈레톤만 + Firestore 부분 Sp06 이월)
 
@@ -421,13 +221,9 @@ namespace GodBlade.Runtime.Season {
 
 [ ] G-R-DR.S03 : Round 정수 나눗셈 + 음수 보호 가드
               → 검증: G-S03.1 (float 0건) + G-S03.2 (Fail-safe 0L) + G-S03.4 (T13 6 케이스)
-              → FAIL 시 §3.3 분기 (정정 15~30분)
-```
-
-### 5.4 GO/NO-GO 의사결정 표
-
-```
-+----------------------------------------------------------+
+              → FAIL 시 §3.3 분기 (정정 15~30분)</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.4 GO/NO-GO 의사결정 표</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>+----------------------------------------------------------+
 |  Sp05 W1·W2 GO/NO-GO 의사결정 (D-7 ~ D-1, 2026-06-22~28) |
 +----------------------------------------------------------+
 | 일자       | 게이트 통과 | 비고                          |
@@ -442,115 +238,44 @@ namespace GodBlade.Runtime.Season {
 | 최종 결정  | [ ] GO     [ ] NO-GO     [ ] 재검토 PD 호출 |
 | 결정자     | PD                                          |
 | 결정일     | 2026-06-28 18시                             |
-+----------------------------------------------------------+
-```
-
-**GO 조건**: G-W1.1~6 (6/6) + G-W2.1~7 (7/7) + G-R-DR.S01·S02·S03 (3/3) = **16/16 통과**
-**NO-GO 조건**: 1건 이상 FAIL 잔존 + §1~§3 분기 절차 미완료
-**재검토 PD 호출 조건**: G-S01.1 (Firebase 6h 초과)
-
-### 5.5 R-V2.3-01 게이트 (v1.1 갱신 = 해소됨)
-
-```
-[v1.0 → v1.1 변경] R-V2.3-01 PD 결정 게이트 = 해소됨 (2026-05-03 PD 옵션 (a) 영구 보유 락)
++----------------------------------------------------------+</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">GO 조건</strong>: G-W1.1~6 (6/6) + G-W2.1~7 (7/7) + G-R-DR.S01·S02·S03 (3/3) = <strong class="font-semibold text-text-0">16/16 통과</strong> <strong class="font-semibold text-text-0">NO-GO 조건</strong>: 1건 이상 FAIL 잔존 + §1~§3 분기 절차 미완료 <strong class="font-semibold text-text-0">재검토 PD 호출 조건</strong>: G-S01.1 (Firebase 6h 초과)</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.5 R-V2.3-01 게이트 (v1.1 갱신 = 해소됨)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[v1.0 → v1.1 변경] R-V2.3-01 PD 결정 게이트 = 해소됨 (2026-05-03 PD 옵션 (a) 영구 보유 락)
    → v1.0: 4안 중 1안 채택 마감 = 2026-06-28 (D-1) 18시 → 박세린 default = (b) 삭제
    → v1.1: PD 결정 락 (옵션 (a) 영구 보유) = D-1 마감 게이트 X
    → T12 코드 분기 = `if (affixId == TIER_70_SEASON_AFFIX) Skip(retain50)` 1줄 + 다음 시즌 다른 어픽스 로테이션 (X1 안)
-   → 박세린 비권장 안이었으나 PD 결정 존중. ARPU 모니터링 트리거 = 출시 후 6개월 시점 (game-designer 후속 발주)
-```
-
----
-
-## 6. 의존성·블로커
-
-### 6.1 Sp04 종료 = 6/29 (Sp05 킥오프 직전)
-
-| 의존 | 마감 | 책임 | Sp05 영향 | 상태 |
-|------|------|------|---------|------|
-| Sp04 종료 = 어픽스 풀 v1.3 36어픽스 락 + Calculator 시그니처 락 + 200F 약 4.20배 검증 | 2026-06-28 (Sp04 D+14) | code-lead + game-designer | T6 시즌 패스 매핑 = 어픽스 풀 v1.3 G-3.1~G-3.6 6건 정합 검증 | Sp04 진행 중 (D-37 시점) |
-| Sp03 IdleTicker.FlushCatchUp(forceImmediate=true) 파라미터 도착 | 2026-06-14 (Sp03 D+14) | code-lead | T3 P3 5+1 Step 2 = FlushCatchUp 호출 의존 | Sp03 진행 중 |
-| Sp02 W2 PlayerPrestigeState.MigrateSeasonalToPermanent(float) 시그니처 머지 | 2026-05-31 (Sp02 W2 회고) | code-lead | T3 P4 = MigrateSeasonalToPermanent 호출 의존 | Sp02 W2 진행 중 |
-
-**의존 그래프**:
-```
-Sp02 W2 (5/31) ───> Sp03 (6/14) ───> Sp04 (6/28) ───> Sp05 W1 킥오프 (6/29)
+   → 박세린 비권장 안이었으나 PD 결정 존중. ARPU 모니터링 트리거 = 출시 후 6개월 시점 (game-designer 후속 발주)</code></pre>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. 의존성·블로커</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.1 Sp04 종료 = 6/29 (Sp05 킥오프 직전)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">의존</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">마감</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">책임</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sp05 영향</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">상태</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 종료 = 어픽스 풀 v1.3 36어픽스 락 + Calculator 시그니처 락 + 200F 약 4.20배 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-06-28 (Sp04 D+14)</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead + game-designer</td><td class="border border-border px-3 py-2 text-left text-text-0">T6 시즌 패스 매핑 = 어픽스 풀 v1.3 G-3.1~G-3.6 6건 정합 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 진행 중 (D-37 시점)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Sp03 IdleTicker.FlushCatchUp(forceImmediate=true) 파라미터 도착</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-06-14 (Sp03 D+14)</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">T3 P3 5+1 Step 2 = FlushCatchUp 호출 의존</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp03 진행 중</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Sp02 W2 PlayerPrestigeState.MigrateSeasonalToPermanent(float) 시그니처 머지</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-05-31 (Sp02 W2 회고)</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">T3 P4 = MigrateSeasonalToPermanent 호출 의존</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp02 W2 진행 중</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">의존 그래프</strong>:</p>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>Sp02 W2 (5/31) ───&gt; Sp03 (6/14) ───&gt; Sp04 (6/28) ───&gt; Sp05 W1 킥오프 (6/29)
        │                  │                  │
        ▼                  ▼                  ▼
    Migrate(float)    FlushCatchUp(bool)  affix_pool v1.3
-                                          + Calculator
-```
-
-### 6.2 어픽스 v1.3 36어픽스 정합 (Tier 매핑 9건)
-
-| 어픽스 ID | 시즌 패스 Tier | 정합 검증 | 상태 |
-|---------|--------------|---------|------|
-| AFX_31 (5cm 어긋남) | Tier 30 Rare | T6 §1.4 ✅ | Sp04 W1 락 예정 |
-| AFX_32 (작두 박자) | Tier 15 Magic | T6 §1.4 ✅ | Sp04 W1 락 예정 |
-| AFX_33 (60fps 풀스로틀) | Tier 50 Epic | T6 §1.4 ✅ | Sp04 W1 락 예정 |
-| AFX_34 (9,860원의 박자) | Tier 70 Legendary (영구 보유, R-V2.3-01 PD 옵션 a 락) | T6 §1.4 ✅ + R-V2.3-01 락 | **PD 결정 락 (2026-05-03 옵션 a 영구 보유)** |
-| AFX_35 (Veil of Dangun) | Tier 90 액세서리 스킨 | T6 §1.4 ✅ | Sp04 W1 락 예정 |
-| **AFX_36 (오방위의 도(道))** | **Tier 60 Rare** | **T6 §1.4 ✅** | **Sp04 W1 락 예정 (v1.3 신규)** |
-
-**정합 게이트**: T6 산출물 = 9 Tier × 6 컬럼 TSV (v1.1: permanent_retain_flag 컬럼 신규). 6 어픽스 매핑 + 3 비-어픽스 매핑 (Tier 5 PDA 스킨 / Tier 75 슬레이어 스킨 / Tier 100 NPC 호감도). Tier 70 행: permanent_retain_flag = true (v2.4 정정).
-
-### 6.3 시놉 v2.4 ↔ Sp05 직접 영향 5건
-
-| 시놉 v2.4 | Sp05 영향 | 흡수 시점 |
-|---------|---------|---------|
-| D-2.10 W7 유교 드래곤 재등장 (v2.3) | Tier 75 매핑 신규 (T6) | D-57 ✅ 흡수 완료 |
-| D-2.11 Tier 75 슬레이어 스킨 (v2.3) | Tier 75 매핑 신규 (T6) | D-57 ✅ 흡수 완료 |
-| D-2.12 Tier 60 어픽스 보상 (v2.3) | Tier 60 매핑 신규 + AFX_36 정합 (T6) | D-57 ✅ 흡수 완료 |
-| **D-2.15 Tier 70 영구 보유 정정 (v2.4 신규, R-V2.3-01 PD 옵션 a 락)** | 5+1 사이드이펙트 Step 5 분기 (T12) + permanent_retain_flag (T6) + 통합 테스트 6번째 (T13) | **D-56 ✅ 흡수 완료 (PD 결정 2026-05-03)** |
-
-### 6.4 Firebase Phase 5+ 위임 (T4 하드 캡 6h)
-
-**Sp05 도입 범위 (최소)**:
-- Firebase SDK 통합 + Auth 익명 로그인 + Firestore 초기화
-- `seasonEndUtc` Remote Config (Phase 5+ 승격 대비 인터페이스만)
-- 시즌 리더보드 쓰기/읽기 (Firestore `orderBy + limit`)
-- 명예의 전당 영구 스냅샷 (Cloud Function = Sp06 이월)
-
-**Sp05 도입 범위 외 (Phase 5+ 이월)**:
-- 프레스티지 세이브 동기 (Phase 5+ 유지)
-- Firebase Remote Config `currentSeasonId` 발화 = `RemoteConfigSeasonClock` 구현 (Phase 5+)
-- Cloud Function 서버 검증 (Sp06+)
-- Security Rules 작성 (Sp06+)
-
-**T4 하드 캡 6h 초과 시 cascade 이월**:
-1. T5 `FirestoreLeaderboardRepository` 스켈레톤만 유지 (실 Firebase write는 Sp06)
-2. T11 Smoke Test = `LocalLeaderboardRepository` 만 검증 (Firestore 부분 skip)
-3. Sp05 W2 잔여 시간 = T6·T12·T13 신규 작업에 재배치
-
-### 6.5 블로커 시나리오 (PD 에스컬레이션 트리거)
-
-| # | 블로커 | 트리거 | 에스컬레이션 마감 | 대응 |
-|---|--------|--------|------------------|------|
-| B-1 | T4 Firebase 통합 6h 초과 | T4 진행 중 | 즉시 (1h 내) | code-lead 책임 = §3.1 cascade 이월 |
-| ~~B-2 R-V2.3-01 PD 결정 미결~~ | ~~D-1 = 6/28 18시~~ | ~~즉시 (D-1 마감)~~ | **v1.1 해소 (2026-05-03 PD 옵션 (a) 영구 보유 락)** |
-| B-3 | Sp02 W2 / Sp03 / Sp04 의존 시그니처 미도착 | 각 회고일 | 즉시 (1h 내) | code-lead B1 실측 + 미도착 시 PR 1건 선행 |
-| B-4 | T13 통합 테스트 6건 중 1건 FAIL | T13 종료 시 | 즉시 (1h 내) | game-designer 에스컬레이션 + 5+1 표 재검증 |
-| B-5 | Sp04 종료 지연 → Sp05 킥오프 영향 | Sp04 D+14 (6/28) | Sp04 D+14 시점 | PM 책임 (PM 보고 의존) |
-| **B-6 (v1.1 신규)** | **출시 후 6개월 시점 시즌 패스 conversion 30% 이하 (벤치 -5% 이상 하락)** | **2028-07 시점 (Phase 7 Live Ops)** | **즉시 (월 단위 분석)** | **game-designer 박세린 책임 = Tier 70 보상 정책 재검토 / 시즌 패스 가격 조정 / 마케팅 캠페인 발주 (R-V2.3-01 PD 옵션 a ARPU 모니터링 트리거)** |
-
-**박세린 책임 범위**: B-4 / B-6 (game-designer 영역) / B-1·B-3 = code-lead 책임 / B-5 = PM 책임 (단순 보고). B-2 = v1.1 해소.
-
----
-
-## 7. 변경 이력
-
-| version | 일자 | 변경 | 책임 |
-|---------|------|------|------|
-| **1.0** | **2026-05-02** | **D-57 시점 신규 작성. Sp04 preflight v1.2 패턴 답습. 7 섹션. T6·T12·T13 신규 게이트 3건 추가 (Tier 매핑 + R-V2.3-01 분기 + 5+1 통합 테스트). 시놉 v2.3 신규 4건 흡수 + R-V2.3-01 신규 발견 PD 결정 카드 (4안 중 박세린 권고 = (b) 삭제 / (d) MythicEssence 환원).** | **박세린** |
-| **1.1** | **2026-05-03** | **R-V2.3-01 PD 결정 락 흡수 = 옵션 (a) 영구 보유 채택. 5 항목 갱신: §0 한 줄 맥락 / §2.2 5+1 표 6번째 사이드이펙트 (Tier 70 영구 보유 retain 예외 처리, Step 5 위치 변경) / §4.2 PD 결정 락 표 (4안 중 (a) 채택 + 박세린 비권장 사유 + ARPU 모니터링 트리거 출시 후 6개월) / §5.1 D-Day 게이트 16/16 갱신 (T13 통합 테스트 6건 = 5+1 모두 + 6번째 Tier 70 영구 보유 정상 동작) / §5.5 R-V2.3-01 결정 게이트 해소 (D-1 6/28 마감 게이트 X) + §6.5 B-2 해소 + B-6 신규 (출시 후 6개월 시점 ARPU 모니터링 트리거). 시놉 v2.3 → v2.4 정정 발주 (§4.3 Tier 70 X1 안 = 시즌 1회 영구 보유, 다음 시즌엔 다른 어픽스 보상). 박세린 비권장 안이었으나 PD 결정 존중. T6 TSV 컬럼 = permanent_retain_flag 신규 추가.** | **박세린** |
-| 1.2 (예정) | D-30 (2026-05-30) | Sp02 W2 회고 후 시그니처 실측 결과 반영 | 박세린 |
-| 1.3 (예정) | D-15 (2026-06-14) | Sp03 IdleTicker.FlushCatchUp 파라미터 실측 결과 반영 | 박세린 |
-| 1.4 (예정) | D-7 (2026-06-22) | 본격 착수 직전 점검 (Sp04 종료 직전 어픽스 v1.3 락 + Calculator 시그니처 락 검증) | 박세린 |
-| 1.5 (예정) | D-1 (2026-06-28) | Sp04 종료 결과 흡수 + 16/16 게이트 PRINT-AND-CHECK 최종 점검 | 박세린 |
-
----
-
-*(끝, v1.1 2026-05-03 박세린)*
-6:["slug","sprint-05-season-system-preflight","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sprint-05-season-system-preflight","d"],{"children":["__PAGE__?{\"slug\":\"sprint-05-season-system-preflight\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-05-season-system-preflight","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sp05 Season System Preflight — D-7 본격 착수 절차서"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-05-season-system-preflight.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"6,113"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sp05 Season System Preflight — D-7 본격 착수 절차서 — 자료실"}],["$","meta","3",{"name":"description","content":"Sp03 → Sp04 → Sp05 (시즌 시스템) 사이클의 D-7 본격 착수 절차서. 7결정 (60일 / Manual→Firebase / 리셋+스냅샷 / 이월3건 / Firestore / Round / Wallet 50% retain) 정식 락 후 Sp05 W1 (T1~T6 = 10h)"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+                                          + Calculator</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.2 어픽스 v1.3 36어픽스 정합 (Tier 매핑 9건)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">어픽스 ID</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시즌 패스 Tier</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">정합 검증</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">상태</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">AFX_31 (5cm 어긋남)</td><td class="border border-border px-3 py-2 text-left text-text-0">Tier 30 Rare</td><td class="border border-border px-3 py-2 text-left text-text-0">T6 §1.4 ✅</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 W1 락 예정</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">AFX_32 (작두 박자)</td><td class="border border-border px-3 py-2 text-left text-text-0">Tier 15 Magic</td><td class="border border-border px-3 py-2 text-left text-text-0">T6 §1.4 ✅</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 W1 락 예정</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">AFX_33 (60fps 풀스로틀)</td><td class="border border-border px-3 py-2 text-left text-text-0">Tier 50 Epic</td><td class="border border-border px-3 py-2 text-left text-text-0">T6 §1.4 ✅</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 W1 락 예정</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">AFX_34 (9,860원의 박자)</td><td class="border border-border px-3 py-2 text-left text-text-0">Tier 70 Legendary (영구 보유, R-V2.3-01 PD 옵션 a 락)</td><td class="border border-border px-3 py-2 text-left text-text-0">T6 §1.4 ✅ + R-V2.3-01 락</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">PD 결정 락 (2026-05-03 옵션 a 영구 보유)</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">AFX_35 (Veil of Dangun)</td><td class="border border-border px-3 py-2 text-left text-text-0">Tier 90 액세서리 스킨</td><td class="border border-border px-3 py-2 text-left text-text-0">T6 §1.4 ✅</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 W1 락 예정</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">AFX_36 (오방위의 도(道))</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Tier 60 Rare</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">T6 §1.4 ✅</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Sp04 W1 락 예정 (v1.3 신규)</strong></td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">정합 게이트</strong>: T6 산출물 = 9 Tier × 6 컬럼 TSV (v1.1: permanent_retain_flag 컬럼 신규). 6 어픽스 매핑 + 3 비-어픽스 매핑 (Tier 5 PDA 스킨 / Tier 75 슬레이어 스킨 / Tier 100 NPC 호감도). Tier 70 행: permanent_retain_flag = true (v2.4 정정).</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.3 시놉 v2.4 ↔ Sp05 직접 영향 5건</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시놉 v2.4</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sp05 영향</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">흡수 시점</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">D-2.10 W7 유교 드래곤 재등장 (v2.3)</td><td class="border border-border px-3 py-2 text-left text-text-0">Tier 75 매핑 신규 (T6)</td><td class="border border-border px-3 py-2 text-left text-text-0">D-57 ✅ 흡수 완료</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D-2.11 Tier 75 슬레이어 스킨 (v2.3)</td><td class="border border-border px-3 py-2 text-left text-text-0">Tier 75 매핑 신규 (T6)</td><td class="border border-border px-3 py-2 text-left text-text-0">D-57 ✅ 흡수 완료</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D-2.12 Tier 60 어픽스 보상 (v2.3)</td><td class="border border-border px-3 py-2 text-left text-text-0">Tier 60 매핑 신규 + AFX_36 정합 (T6)</td><td class="border border-border px-3 py-2 text-left text-text-0">D-57 ✅ 흡수 완료</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">D-2.15 Tier 70 영구 보유 정정 (v2.4 신규, R-V2.3-01 PD 옵션 a 락)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">5+1 사이드이펙트 Step 5 분기 (T12) + permanent_retain_flag (T6) + 통합 테스트 6번째 (T13)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">D-56 ✅ 흡수 완료 (PD 결정 2026-05-03)</strong></td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.4 Firebase Phase 5+ 위임 (T4 하드 캡 6h)</h3>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">Sp05 도입 범위 (최소)</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Firebase SDK 통합 + Auth 익명 로그인 + Firestore 초기화</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">seasonEndUtc</code> Remote Config (Phase 5+ 승격 대비 인터페이스만)</li><li class="mb-1">시즌 리더보드 쓰기/읽기 (Firestore <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">orderBy + limit</code>)</li><li class="mb-1">명예의 전당 영구 스냅샷 (Cloud Function = Sp06 이월)</li></ul>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">Sp05 도입 범위 외 (Phase 5+ 이월)</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">프레스티지 세이브 동기 (Phase 5+ 유지)</li><li class="mb-1">Firebase Remote Config <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">currentSeasonId</code> 발화 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">RemoteConfigSeasonClock</code> 구현 (Phase 5+)</li><li class="mb-1">Cloud Function 서버 검증 (Sp06+)</li><li class="mb-1">Security Rules 작성 (Sp06+)</li></ul>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">T4 하드 캡 6h 초과 시 cascade 이월</strong>:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">T5 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">FirestoreLeaderboardRepository</code> 스켈레톤만 유지 (실 Firebase write는 Sp06)</li><li class="mb-1">T11 Smoke Test = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">LocalLeaderboardRepository</code> 만 검증 (Firestore 부분 skip)</li><li class="mb-1">Sp05 W2 잔여 시간 = T6·T12·T13 신규 작업에 재배치</li></ol>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.5 블로커 시나리오 (PD 에스컬레이션 트리거)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">블로커</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">트리거</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">에스컬레이션 마감</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">대응</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">B-1</td><td class="border border-border px-3 py-2 text-left text-text-0">T4 Firebase 통합 6h 초과</td><td class="border border-border px-3 py-2 text-left text-text-0">T4 진행 중</td><td class="border border-border px-3 py-2 text-left text-text-0">즉시 (1h 내)</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead 책임 = §3.1 cascade 이월</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><del class="text-text-2 line-through">B-2 R-V2.3-01 PD 결정 미결</del></td><td class="border border-border px-3 py-2 text-left text-text-0"><del class="text-text-2 line-through">D-1 = 6/28 18시</del></td><td class="border border-border px-3 py-2 text-left text-text-0"><del class="text-text-2 line-through">즉시 (D-1 마감)</del></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">v1.1 해소 (2026-05-03 PD 옵션 (a) 영구 보유 락)</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">B-3</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp02 W2 / Sp03 / Sp04 의존 시그니처 미도착</td><td class="border border-border px-3 py-2 text-left text-text-0">각 회고일</td><td class="border border-border px-3 py-2 text-left text-text-0">즉시 (1h 내)</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead B1 실측 + 미도착 시 PR 1건 선행</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">B-4</td><td class="border border-border px-3 py-2 text-left text-text-0">T13 통합 테스트 6건 중 1건 FAIL</td><td class="border border-border px-3 py-2 text-left text-text-0">T13 종료 시</td><td class="border border-border px-3 py-2 text-left text-text-0">즉시 (1h 내)</td><td class="border border-border px-3 py-2 text-left text-text-0">game-designer 에스컬레이션 + 5+1 표 재검증</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">B-5</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 종료 지연 → Sp05 킥오프 영향</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 D+14 (6/28)</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 D+14 시점</td><td class="border border-border px-3 py-2 text-left text-text-0">PM 책임 (PM 보고 의존)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">B-6 (v1.1 신규)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">출시 후 6개월 시점 시즌 패스 conversion 30% 이하 (벤치 -5% 이상 하락)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">2028-07 시점 (Phase 7 Live Ops)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">즉시 (월 단위 분석)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">game-designer 박세린 책임 = Tier 70 보상 정책 재검토 / 시즌 패스 가격 조정 / 마케팅 캠페인 발주 (R-V2.3-01 PD 옵션 a ARPU 모니터링 트리거)</strong></td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">박세린 책임 범위</strong>: B-4 / B-6 (game-designer 영역) / B-1·B-3 = code-lead 책임 / B-5 = PM 책임 (단순 보고). B-2 = v1.1 해소.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. 변경 이력</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">version</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">일자</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">변경</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">책임</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">1.0</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">2026-05-02</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">D-57 시점 신규 작성. Sp04 preflight v1.2 패턴 답습. 7 섹션. T6·T12·T13 신규 게이트 3건 추가 (Tier 매핑 + R-V2.3-01 분기 + 5+1 통합 테스트). 시놉 v2.3 신규 4건 흡수 + R-V2.3-01 신규 발견 PD 결정 카드 (4안 중 박세린 권고 = (b) 삭제 / (d) MythicEssence 환원).</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">박세린</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">1.1</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">2026-05-03</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">R-V2.3-01 PD 결정 락 흡수 = 옵션 (a) 영구 보유 채택. 5 항목 갱신: §0 한 줄 맥락 / §2.2 5+1 표 6번째 사이드이펙트 (Tier 70 영구 보유 retain 예외 처리, Step 5 위치 변경) / §4.2 PD 결정 락 표 (4안 중 (a) 채택 + 박세린 비권장 사유 + ARPU 모니터링 트리거 출시 후 6개월) / §5.1 D-Day 게이트 16/16 갱신 (T13 통합 테스트 6건 = 5+1 모두 + 6번째 Tier 70 영구 보유 정상 동작) / §5.5 R-V2.3-01 결정 게이트 해소 (D-1 6/28 마감 게이트 X) + §6.5 B-2 해소 + B-6 신규 (출시 후 6개월 시점 ARPU 모니터링 트리거). 시놉 v2.3 → v2.4 정정 발주 (§4.3 Tier 70 X1 안 = 시즌 1회 영구 보유, 다음 시즌엔 다른 어픽스 보상). 박세린 비권장 안이었으나 PD 결정 존중. T6 TSV 컬럼 = permanent_retain_flag 신규 추가.</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">박세린</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.2 (예정)</td><td class="border border-border px-3 py-2 text-left text-text-0">D-30 (2026-05-30)</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp02 W2 회고 후 시그니처 실측 결과 반영</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.3 (예정)</td><td class="border border-border px-3 py-2 text-left text-text-0">D-15 (2026-06-14)</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp03 IdleTicker.FlushCatchUp 파라미터 실측 결과 반영</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.4 (예정)</td><td class="border border-border px-3 py-2 text-left text-text-0">D-7 (2026-06-22)</td><td class="border border-border px-3 py-2 text-left text-text-0">본격 착수 직전 점검 (Sp04 종료 직전 어픽스 v1.3 락 + Calculator 시그니처 락 검증)</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.5 (예정)</td><td class="border border-border px-3 py-2 text-left text-text-0">D-1 (2026-06-28)</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 종료 결과 흡수 + 16/16 게이트 PRINT-AND-CHECK 최종 점검</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr></tbody></table></div>
+<hr class="my-6 border-border" />
+<p class="mb-3 text-text-0"><em class="italic">(끝, v1.1 2026-05-03 박세린)</em></p>5:["slug","sprint-05-season-system-preflight","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","sprint-05-season-system-preflight","d"],{"children":["__PAGE__?{\"slug\":\"sprint-05-season-system-preflight\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-05-season-system-preflight","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sp05 Season System Preflight — D-7 본격 착수 절차서"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-05-season-system-preflight.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"6,113"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sp05 Season System Preflight — D-7 본격 착수 절차서 — 자료실"}],["$","meta","3",{"name":"description","content":"Sp03 → Sp04 → Sp05 (시즌 시스템) 사이클의 D-7 본격 착수 절차서. 7결정 (60일 / Manual→Firebase / 리셋+스냅샷 / 이월3건 / Firestore / Round / Wallet 50% retain) 정식 락 후 Sp05 W1 (T1~T6 = 10h)"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

@@ -1,49 +1,17 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T6c81,# Sp03 IdleSystem Preflight — D-7 본격 착수 절차서
-
-> 작성: 2026-05-02 박세린 (game-designer)
-> version: **1.1** (R-DR-S03-Sp03 옵션 (a) 등급만 PD 락 / 2026-05-03)
-> 대상 D-Day: **2026-05-25 (Sp03 킥오프 D-7)**
-> 본격 착수 마감: **2026-05-31 (Sp03 킥오프 D-1, Sp02 W2 종료일)**
-> 정식 킥오프: **2026-06-01**
-> 입력 자료:
-> - `designs/sprint-03-idle-research.md` v1.0 APPROVED (5 결정 + CP-I1~I11 + 10 TodoWrite + 13.25h 예산)
-> - `designs/prestige_items_README.md` v1.0 APPROVED (Q2 = 24h 기본 / Lv당 +2h / 소프트캡 Lv5 → 34h)
-> - `designs/prestige_system_spec.md` (§3.2 PP 수식 = `maxStage × 0.05 PP/hour`)
-> - `designs/affix_pool_sp04_supplement_v1.md` v1.3 (36어픽스 정식 락 — Sp03 방치 영향 0)
-> - `sprints/sprint-03-dry-run-2026-04-21.md` v1.0 (R-DR-07/08/09 + A1~A5 사전 완화 5건)
-> - 메모리: `project_sprint03_idle_research.md` (5 결정) / `project_sprint04_affix_pool.md` v1.1 (36어픽스) / `project_phase2_dryrun_risks.md` (R-DR-07/10/11)
-> - 메모리: `feedback_writer_collaboration_protocol.md` (강시연 1주 2화 / 16~17화 도착 5/9~5/16)
-> 목적: Sp03 W1 / W2 본격 착수 시 즉시 가동 가능한 절차서. PRINT-AND-CHECK 양식 + 회귀 가드 (R-DR-07 [High] 차단) + 강시연 IP 변동 흡수 (Sp03 영향 매우 Low) + D-Day 체크리스트 (게이트 11/11) + 의존성·블로커. **Sp04 preflight v1.2 § 4.4 패턴 = 도착 즉시 흡수 적용 시 D-7 부하 1/3 감소 입증 답습**.
-
----
-
-## 0. 한 줄 맥락
-
-Sp02 W2 종료 (2026-05-31, PrestigePpAccumulator + GetIdleCapHours 헬퍼 머지) 직후 → **Sp03 W1 #01~#05 IdleTicker MonoBehaviour + 옵션 C 하이브리드 Calculator + JSON 저장** + W2 #06~#10 (PP 실배선 + 발화 순서 + 테스트 7건 + Smoke 10h=50PP) **본격 착수 절차서**. 2026-05-25 (D-7) 시점 game-designer 가 책상에 펴 놓고 즉시 가동 가능한 절차서 + 회귀 가드 + IP 변동 흡수 (Sp03 영향 0~Low) + D-Day 체크리스트 (게이트 11/11) + 의존성·블로커. **즉시 흡수 패턴 적용 = 강시연 11~14화 영향 0건 (방치 시스템은 어픽스 풀 의존도 Sp04+ 이월) → D-7 시점 부하 0h 유지**. **v1.1 갱신 = PD R-DR-S03-Sp03 옵션 (a) 등급만 락 (2026-05-03) — Sp03 부담 0h, Sp04 W2 인벤토리 도입과 함께 일괄 양식 확장**.
-
----
-
-## 1. W1 절차서 — IdleTicker 인프라 + 온라인 틱 (#01~#05)
-
-### 1.1 작업 개요 (예상 소요, idle-research v1.0 §7 W1 그대로)
-
-| # | 작업 | 예상 소요 | 산출 |
-|---|------|----------|------|
-| **#01** | `GodBlade.Runtime.Idle` 네임스페이스 + `IdleConstants.cs` + `IdleRewardBundle.cs` struct | 0.75h | 3 파일 |
-| **#02** | `IdleSaveSchema.cs` DTO + `IdleSaveService.cs` Save/Load/Migrate (`account/<accountId>/idle.v1.json`) | 1.5h | 2 파일 + JSON 회로 |
-| **#03** | `IdleRewardCalculator.cs` 옵션 C Phase 1 (Bulk 집계 공식) | 2h | Bulk 메서드 |
-| **#04** | `IdleRewardCalculator.cs` Phase 2 (Tail 3,600초 리플레이) + RNG 시드 결정론 | 1.5h | Tail 메서드 + 결정론 가드 |
-| **#05** | `IdleTicker.cs` MonoBehaviour + `OnApplicationPause` 훅 + singleton + `DontDestroyOnLoad` | 1.5h | MonoBehaviour 1 파일 |
-| **합계** | | **7.25h** | W1 5 파일 |
-
-### 1.2 `IdleRewardCalculator.Calculate` 시그니처 (확정, idle-research v1.0 §4.2 답습)
-
-```csharp
-namespace GodBlade.Runtime.Idle {
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:Tfe2e,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">Sp03 IdleSystem Preflight — D-7 본격 착수 절차서</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성: 2026-05-02 박세린 (game-designer) version: <strong class="font-semibold text-text-0">1.1</strong> (R-DR-S03-Sp03 옵션 (a) 등급만 PD 락 / 2026-05-03) 대상 D-Day: <strong class="font-semibold text-text-0">2026-05-25 (Sp03 킥오프 D-7)</strong> 본격 착수 마감: <strong class="font-semibold text-text-0">2026-05-31 (Sp03 킥오프 D-1, Sp02 W2 종료일)</strong> 정식 킥오프: <strong class="font-semibold text-text-0">2026-06-01</strong> 입력 자료: - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/sprint-03-idle-research.md</code> v1.0 APPROVED (5 결정 + CP-I1~I11 + 10 TodoWrite + 13.25h 예산) - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/prestige_items_README.md</code> v1.0 APPROVED (Q2 = 24h 기본 / Lv당 +2h / 소프트캡 Lv5 → 34h) - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/prestige_system_spec.md</code> (§3.2 PP 수식 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">maxStage × 0.05 PP/hour</code>) - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/affix_pool_sp04_supplement_v1.md</code> v1.3 (36어픽스 정식 락 — Sp03 방치 영향 0) - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/sprint-03-dry-run-2026-04-21.md</code> v1.0 (R-DR-07/08/09 + A1~A5 사전 완화 5건) - 메모리: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint03_idle_research.md</code> (5 결정) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint04_affix_pool.md</code> v1.1 (36어픽스) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_phase2_dryrun_risks.md</code> (R-DR-07/10/11) - 메모리: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">feedback_writer_collaboration_protocol.md</code> (강시연 1주 2화 / 16~17화 도착 5/9~5/16) 목적: Sp03 W1 / W2 본격 착수 시 즉시 가동 가능한 절차서. PRINT-AND-CHECK 양식 + 회귀 가드 (R-DR-07 [High] 차단) + 강시연 IP 변동 흡수 (Sp03 영향 매우 Low) + D-Day 체크리스트 (게이트 11/11) + 의존성·블로커. <strong class="font-semibold text-text-0">Sp04 preflight v1.2 § 4.4 패턴 = 도착 즉시 흡수 적용 시 D-7 부하 1/3 감소 입증 답습</strong>.</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">0. 한 줄 맥락</h2>
+<p class="mb-3 text-text-0">Sp02 W2 종료 (2026-05-31, PrestigePpAccumulator + GetIdleCapHours 헬퍼 머지) 직후 → <strong class="font-semibold text-text-0">Sp03 W1 #01~#05 IdleTicker MonoBehaviour + 옵션 C 하이브리드 Calculator + JSON 저장</strong> + W2 #06~#10 (PP 실배선 + 발화 순서 + 테스트 7건 + Smoke 10h=50PP) <strong class="font-semibold text-text-0">본격 착수 절차서</strong>. 2026-05-25 (D-7) 시점 game-designer 가 책상에 펴 놓고 즉시 가동 가능한 절차서 + 회귀 가드 + IP 변동 흡수 (Sp03 영향 0~Low) + D-Day 체크리스트 (게이트 11/11) + 의존성·블로커. <strong class="font-semibold text-text-0">즉시 흡수 패턴 적용 = 강시연 11~14화 영향 0건 (방치 시스템은 어픽스 풀 의존도 Sp04+ 이월) → D-7 시점 부하 0h 유지</strong>. <strong class="font-semibold text-text-0">v1.1 갱신 = PD R-DR-S03-Sp03 옵션 (a) 등급만 락 (2026-05-03) — Sp03 부담 0h, Sp04 W2 인벤토리 도입과 함께 일괄 양식 확장</strong>.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. W1 절차서 — IdleTicker 인프라 + 온라인 틱 (#01~#05)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.1 작업 개요 (예상 소요, idle-research v1.0 §7 W1 그대로)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">작업</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">예상 소요</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">산출</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">#01</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime.Idle</code> 네임스페이스 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleConstants.cs</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleRewardBundle.cs</code> struct</td><td class="border border-border px-3 py-2 text-left text-text-0">0.75h</td><td class="border border-border px-3 py-2 text-left text-text-0">3 파일</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">#02</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleSaveSchema.cs</code> DTO + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleSaveService.cs</code> Save/Load/Migrate (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">account/&lt;accountId&gt;/idle.v1.json</code>)</td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td><td class="border border-border px-3 py-2 text-left text-text-0">2 파일 + JSON 회로</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">#03</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleRewardCalculator.cs</code> 옵션 C Phase 1 (Bulk 집계 공식)</td><td class="border border-border px-3 py-2 text-left text-text-0">2h</td><td class="border border-border px-3 py-2 text-left text-text-0">Bulk 메서드</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">#04</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleRewardCalculator.cs</code> Phase 2 (Tail 3,600초 리플레이) + RNG 시드 결정론</td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td><td class="border border-border px-3 py-2 text-left text-text-0">Tail 메서드 + 결정론 가드</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">#05</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleTicker.cs</code> MonoBehaviour + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnApplicationPause</code> 훅 + singleton + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DontDestroyOnLoad</code></td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td><td class="border border-border px-3 py-2 text-left text-text-0">MonoBehaviour 1 파일</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">합계</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">7.25h</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">W1 5 파일</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.2 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleRewardCalculator.Calculate</code> 시그니처 (확정, idle-research v1.0 §4.2 답습)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>namespace GodBlade.Runtime.Idle {
   public static class IdleRewardCalculator {
     public static IdleRewardBundle Calculate(
       long elapsedSec,                           // DateTime 차 (cap 적용 전 입력)
@@ -56,31 +24,17 @@ namespace GodBlade.Runtime.Idle {
 
     // 내부 = §2.4 옵션 C 하이브리드:
     //   cappedSec = min(elapsedSec, idleCapHours * 3600)
-    //   if cappedSec > 3600: bulkBundle = AggregateFormula(cappedSec - 3600, ...)
+    //   if cappedSec &gt; 3600: bulkBundle = AggregateFormula(cappedSec - 3600, ...)
     //   tailBundle = ReplayEvents(min(cappedSec, 3600), ..., new System.Random(rngSeed))
     //   return IdleRewardBundle.Combine(in bulkBundle, in tailBundle);
   }
-}
-```
-
-**시그니처 락 = Sp02 W2 `BuildSummary` 와 정합 필수** (§6.3 의존성).
-
-### 1.3 입력 검증 항목 (#03~#04 게이트)
-
-| # | 검증 항목 | 통과 기준 | 비고 |
-|---|----------|---------|------|
-| 1.3.1 | `elapsedSec < 0` 역전 가드 | `elapsed = 0` 처리 + `Debug.LogWarning("[Idle] negative elapsed")` | CP-I9 idle-research §9.2 |
-| 1.3.2 | `elapsedSec > 30 * 86400` 30일 Warn | `Debug.LogWarning("[Idle] elapsed > 30d, capping to idleCapHours")` + cap 적용 후 정상 처리 | 치팅 부분 허용 (Phase 5 서버 시각 위임) |
-| 1.3.3 | `idleCapHours` 범위 24 ≤ x ≤ 34 | TSV `prestige_items.tsv` #25 = `24 + 2 × min(level, 5)` 범위 | Q2 결정 = TSV 그대로 (idle-research §6 Q2-A) |
-| 1.3.4 | `maxFloor > 0` | 0 이하 = 즉시 return `IdleRewardBundle.Empty` | 신규 유저 진입 첫 1틱 가드 |
-| 1.3.5 | `prestigeBonus.IdleRateMul > 0` | NaN / Infinity / 음수 시 1.0f 폴백 + `Debug.LogError` | Sp02 W2 BuildSummary drift 방어 |
-
-### 1.4 B04 100층 10h = PP 50 검증 양식 (CP-I4 idle-research §9.2 답습)
-
-> **수식**: `prestige_system_spec.md` §3.2(C) `ppGained = floor((elapsedSec / 3600) × maxFloor × 0.05 × prestigeBonus.IdleRateMul)`
-
-```
-입력 (Smoke Test #09 시뮬값, A4 사전 메모 = sprint-03-dry-run §0.3 A4):
+}</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">시그니처 락 = Sp02 W2 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">BuildSummary</code> 와 정합 필수</strong> (§6.3 의존성).</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.3 입력 검증 항목 (#03~#04 게이트)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">검증 항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">통과 기준</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비고</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.3.1</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">elapsedSec &lt; 0</code> 역전 가드</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">elapsed = 0</code> 처리 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Debug.LogWarning(&quot;[Idle] negative elapsed&quot;)</code></td><td class="border border-border px-3 py-2 text-left text-text-0">CP-I9 idle-research §9.2</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.3.2</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">elapsedSec &gt; 30 * 86400</code> 30일 Warn</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Debug.LogWarning(&quot;[Idle] elapsed &gt; 30d, capping to idleCapHours&quot;)</code> + cap 적용 후 정상 처리</td><td class="border border-border px-3 py-2 text-left text-text-0">치팅 부분 허용 (Phase 5 서버 시각 위임)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.3.3</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">idleCapHours</code> 범위 24 ≤ x ≤ 34</td><td class="border border-border px-3 py-2 text-left text-text-0">TSV <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items.tsv</code> #25 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">24 + 2 × min(level, 5)</code> 범위</td><td class="border border-border px-3 py-2 text-left text-text-0">Q2 결정 = TSV 그대로 (idle-research §6 Q2-A)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.3.4</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">maxFloor &gt; 0</code></td><td class="border border-border px-3 py-2 text-left text-text-0">0 이하 = 즉시 return <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleRewardBundle.Empty</code></td><td class="border border-border px-3 py-2 text-left text-text-0">신규 유저 진입 첫 1틱 가드</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.3.5</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestigeBonus.IdleRateMul &gt; 0</code></td><td class="border border-border px-3 py-2 text-left text-text-0">NaN / Infinity / 음수 시 1.0f 폴백 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Debug.LogError</code></td><td class="border border-border px-3 py-2 text-left text-text-0">Sp02 W2 BuildSummary drift 방어</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.4 B04 100층 10h = PP 50 검증 양식 (CP-I4 idle-research §9.2 답습)</h3>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">수식</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_system_spec.md</code> §3.2(C) <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ppGained = floor((elapsedSec / 3600) × maxFloor × 0.05 × prestigeBonus.IdleRateMul)</code></blockquote>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>입력 (Smoke Test #09 시뮬값, A4 사전 메모 = sprint-03-dry-run §0.3 A4):
   elapsedSec = 36000  (10h)
   maxFloor = 100
   prestigeBonus.IdleRateMul = 1.0f  (무투자)
@@ -95,54 +49,30 @@ PP 수식:
            = floor(50.0)
            = 50  ✅
 
-기대값: Debug.Log("[Idle] +50 PP, elapsed=36000s") 출력
-```
-
-**합/불합 판정**:
-- PASS: `ppGained == 50` 정확 일치
-- FAIL: 49 또는 51 → 수식 검증 (`floor` vs `round` 혼동? 곱셈 순서?). Calculator 내부 수식 grep 1회
-
----
-
-## 2. W2 절차서 — 통합 + 테스트 + Smoke (#06~#10)
-
-### 2.1 작업 개요 (예상 소요, idle-research v1.0 §7 W2 그대로)
-
-| # | 작업 | 예상 소요 | 산출 |
-|---|------|----------|------|
-| **#06** | `PrestigePpAccumulator.GrantIdleDrip` 실배선 + `PlayerPrestigeState.AddPermanentPp` 호출 | 0.75h | PP 적립 회로 |
-| **#07** | `IdleTicker.FlushCatchUp` 이벤트 발화 순서 (Milestones 배치 → Drops 로그 → PP 적립 → `OnIdleReward`) | 1.5h | 발화 순서 락 |
-| **#08** | Edit-mode 테스트 7건 (역전 / 캡 / 결정론 / 마일스톤 / Save 라운드트립 / PP 누적 / 30일 Warn) | 2h | `IdleRewardCalculatorTests.cs` + `IdleTickerTests.cs` |
-| **#09** | Smoke Test — 10h elapsed 시뮬 → PP ≈ 50 + `Debug.Log` 드롭 내역 1건+ | 0.75h | Smoke 통과 |
-| **#10** | §9 컴파일러 시뮬 11개 체크 + Unity Console 새 에러 0 + PR 머지 | 1h | PR 머지 |
-| **합계** | | **6.0h** | W2 |
-
-**W1 + W2 합계 = 13.25h** (1인 파트타임 11~15h 예산 내 + 회귀 버퍼 1.5~2h).
-
-### 2.2 PP 자동 적립 발화 순서 (Q4 = A 자동, idle-research §4.5 답습)
-
-`IdleTicker.FlushCatchUp()` 내부 순서 락 (CP-I7):
-
-```
-1. elapsed 계산 + cap 적용 + 역전 가드 (§1.3 5건)
+기대값: Debug.Log(&quot;[Idle] +50 PP, elapsed=36000s&quot;) 출력</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">합/불합 판정</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">PASS: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ppGained == 50</code> 정확 일치</li><li class="mb-1">FAIL: 49 또는 51 → 수식 검증 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">floor</code> vs <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">round</code> 혼동? 곱셈 순서?). Calculator 내부 수식 grep 1회</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. W2 절차서 — 통합 + 테스트 + Smoke (#06~#10)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.1 작업 개요 (예상 소요, idle-research v1.0 §7 W2 그대로)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">작업</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">예상 소요</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">산출</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">#06</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigePpAccumulator.GrantIdleDrip</code> 실배선 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerPrestigeState.AddPermanentPp</code> 호출</td><td class="border border-border px-3 py-2 text-left text-text-0">0.75h</td><td class="border border-border px-3 py-2 text-left text-text-0">PP 적립 회로</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">#07</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleTicker.FlushCatchUp</code> 이벤트 발화 순서 (Milestones 배치 → Drops 로그 → PP 적립 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnIdleReward</code>)</td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td><td class="border border-border px-3 py-2 text-left text-text-0">발화 순서 락</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">#08</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Edit-mode 테스트 7건 (역전 / 캡 / 결정론 / 마일스톤 / Save 라운드트립 / PP 누적 / 30일 Warn)</td><td class="border border-border px-3 py-2 text-left text-text-0">2h</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleRewardCalculatorTests.cs</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleTickerTests.cs</code></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">#09</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Smoke Test — 10h elapsed 시뮬 → PP ≈ 50 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Debug.Log</code> 드롭 내역 1건+</td><td class="border border-border px-3 py-2 text-left text-text-0">0.75h</td><td class="border border-border px-3 py-2 text-left text-text-0">Smoke 통과</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">#10</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">§9 컴파일러 시뮬 11개 체크 + Unity Console 새 에러 0 + PR 머지</td><td class="border border-border px-3 py-2 text-left text-text-0">1h</td><td class="border border-border px-3 py-2 text-left text-text-0">PR 머지</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">합계</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">6.0h</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">W2</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">W1 + W2 합계 = 13.25h</strong> (1인 파트타임 11~15h 예산 내 + 회귀 버퍼 1.5~2h).</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.2 PP 자동 적립 발화 순서 (Q4 = A 자동, idle-research §4.5 답습)</h3>
+<p class="mb-3 text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleTicker.FlushCatchUp()</code> 내부 순서 락 (CP-I7):</p>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>1. elapsed 계산 + cap 적용 + 역전 가드 (§1.3 5건)
 2. IdleRewardCalculator.Calculate(...) → IdleRewardBundle
 3. 배치 발화 (순서 절대 변경 금지):
-   a. bundle.MilestonesReached.ForEach(floor => MilestoneGranter.Award(floor))
+   a. bundle.MilestonesReached.ForEach(floor =&gt; MilestoneGranter.Award(floor))
       └─ floor==100 시 PlayerPrestigeState.Unlock() 연쇄 (Sp02 W2 계약)
       └─ floor==200 시 PrestigePpAccumulator.GrantMilestone(200) 연쇄
    b. bundle.KillsTotal / DropsCompact → Debug.Log (Q5 = A 로그만, Sp03 인벤토리 미도입)
    c. PrestigePpAccumulator.GrantIdleDrip(elapsed, maxFloor)
       └─ 내부 = PlayerPrestigeState.AddPermanentPp(ppGained) 호출
    d. OnIdleReward?.Invoke(bundle)  // UI 알림 (보고용, 수령 절차 X)
-4. IdleSaveService.Save()  // lastTickUtc 갱신
-```
-
-**불변식 (CP-I6)**: `OnIdleReward` 발화 시점엔 Milestones · Drops · PP 모두 이미 적용. UI 는 후처리 표시만. **이중 적립 금지**.
-
-### 2.3 Smoke Test #09 양식 (Q5 = A 드롭 로그만 / R-DR-S03-Sp03 옵션 (a) 등급만 PD 락 v1.1)
-
-```
-시뮬 입력 (하드코딩, A4 사전 메모):
+4. IdleSaveService.Save()  // lastTickUtc 갱신</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">불변식 (CP-I6)</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnIdleReward</code> 발화 시점엔 Milestones · Drops · PP 모두 이미 적용. UI 는 후처리 표시만. <strong class="font-semibold text-text-0">이중 적립 금지</strong>.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.3 Smoke Test #09 양식 (Q5 = A 드롭 로그만 / R-DR-S03-Sp03 옵션 (a) 등급만 PD 락 v1.1)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>시뮬 입력 (하드코딩, A4 사전 메모):
   elapsedSec = 36000
   maxFloor = 100
   prestigeBonus = BuildSummary.Default  (IdleRateMul=1.0 / GoldMul=1.0 / ExpMul=1.0 / DropMul=1.0)
@@ -161,104 +91,41 @@ PP 수식:
 - PASS: ppGained == 50 + 드롭 로그 1건 이상 (Common~Mythic 합계 ≥ 1) + Save 정상
 - FAIL: ppGained ≠ 50 → §1.4 수식 재검증
 - FAIL: 드롭 로그 0건 → DropRateTableSO 60행 read-only 호출 경로 grep
-- FAIL: Save 실패 → IdleSaveService.persistentDataPath 권한 + JSON 직렬화 회로 grep
-```
-
----
-
-## 3. 회귀 가드
-
-### 3.1 R-DR-07 [High] 차단 게이트 (G-DR07.1~5, 하이브리드 결정론 실패)
-
-> **참조**: `sprints/sprint-03-dry-run-2026-04-21.md` §0.2 R-DR-07 [High] / 메모리 `project_phase2_dryrun_risks.md`
-> **위험**: `IdleRewardCalculator.Calculate(elapsedSec, ..., rngSeed)` 가 동일 입력에서 에디터 vs 모바일 IL2CPP 다른 드롭 결과 → 테스트 #08 Edit Mode Green이어도 모바일 빌드 Red.
-
-| # | 가드 항목 | 시행 시점 | 책임 | 비고 |
-|---|----------|----------|------|------|
-| **G-DR07.1** | `new System.Random(rngSeed)` 명시 생성, `UnityEngine.Random` 금지 | #04 Tail 리플레이 작성 시 | code-lead | A2 사전 메모 1줄 |
-| **G-DR07.2** | `DropRateTableSO._lookup` Dictionary 순회 금지 → `DropRateTableSO.rows` List 인덱스 순 강제 | #04 작성 시 | code-lead | Dictionary 순회 = .NET Mono vs IL2CPP 비결정적 |
-| **G-DR07.3** | 동일 seed + 동일 입력 → 동일 출력 hardcoded assert | #08 테스트 | code-lead | "RNG 1234 + 10층 3600초 → 드롭 정확히 [Common × 12, Magic × 4, Rare × 1]" 식 정수 비교 |
-| **G-DR07.4** | `PP 수식 단일성` — Bulk 와 Tail 의 PP 수식은 **동일 함수 호출** (수식 두 벌 운영 금지) | #03 + #04 작성 시 | code-lead | idle-research §1.1 운영 원칙 답습 |
-| **G-DR07.5** | 모바일 IL2CPP 빌드 실측 검증 = **Phase 3+ 이월** (Sp03 범위 외 명시) | #10 PR 머지 시 | code-lead | PR 본문 1줄 — "IL2CPP 실기 검증 Phase 3+" (CP-M22 답습) |
-
-**FAIL 시 분기**:
-- G-DR07.1·2 = 즉시 정정 (15분, A2 메모 grep 1회)
-- G-DR07.3 = 테스트 7건 중 결정론 1건 Red → #04 코드 리뷰 + Dictionary 순회 grep
-- G-DR07.4 = Bulk/Tail PP 함수 분리 발견 시 → 통합 메서드 추출 (30분)
-- G-DR07.5 = Phase 3+ 이월 명시 PR 본문 누락 → PR 본문 정정 (5분)
-
-### 3.2 기존 R-DR-10 / R-DR-11 정합 (Sp04 어픽스 풀 회귀 가드)
-
-> **참조**: Sp04 preflight v1.2 §3 (R-DR-10 [High] StackPolicy / R-DR-11 [High] 음수 차감)
-> **Sp03 영향**: 방치 시스템은 어픽스 풀 의존도 0 (Sp04+ 이월). 단 **PP 음수 차감 경로** 1건 정합 필요.
-
-| # | 가드 항목 | 시행 시점 | 책임 | 비고 |
-|---|----------|----------|------|------|
-| **G-DR11.1** | `PrestigePpAccumulator.GrantIdleDrip(elapsedSec, maxFloor)` 출력 PP = 항상 양수 (`ppGained ≥ 0`) | #06 작성 시 | code-lead | `floor()` 결과가 0 이하면 `AddPermanentPp(0)` 호출 (또는 조기 return) |
-| **G-DR11.2** | `AddPermanentPp(long)` 시그니처 확인 (Sp02 W2) — 음수 입력 시 동작 보장 | A1 (D-1 2026-05-31) | code-lead | Sp02 W2 PR 머지 확인 |
-
-**FAIL 시 분기**: G-DR11.1 음수 PP 적립 발견 시 즉시 PD 에스컬레이션 (방치 시스템 본맥 위배)
-
----
-
-## 4. 변동 흡수
-
-### 4.1 강시연 16~17화 도착 시 어픽스 풀 갱신 → 방치 영향 검증
-
-> **참조**: 메모리 `feedback_writer_collaboration_protocol.md` 1주 2화 페이스 = 16~17화 도착 추정 5/9~5/16
-> **Sp03 D-7 시점 (2026-05-25) 누적 부하 추정**: 0h (방치 시스템은 어픽스 풀 의존도 0)
-
-| 시나리오 | 발생 가능성 | Sp03 W1·W2 영향 | 대응 절차 |
-|---------|----------|---------------|---------|
-| **S-1: 어픽스 풀 v1.4 신규 등록 (S-2 발동)** | Low (16~17화 도입 가능성 Low~Medium) | **0건** (방치 = `IdleRewardCalculator` 가 어픽스 미참조, Sp04+ 어픽스 효과 적용 후에도 Sp03 코드 변경 0) | §4.2 절차 (영향 검증만) |
-| **S-2: AFX_34 9,860원 박자 트리거 조건 변형 (17화 99 글리치)** | Low~Medium (Sp04 preflight v1.2 §6.4 평가 답습) | **0건** (어픽스 트리거 = Sp04 W1 Calculator 영역, Sp03 무관) | §4.2 절차 |
-| **S-3: 캐릭터 IP 신규 추가 (knight·slayer 추가 시그니처)** | Very Low | **0건** (방치 = 캐릭터 비참조) | 무대응 |
-
-### 4.2 영향 검증 절차 (S-1·S-2 발동 시, 박세린 30분 내)
-
-1. 강시연 회신 도착 (5/9~5/16 추정) → 1h 내 박세린 수신 확인
-2. 어픽스 풀 v1.x 갱신 발생 시 → `IdleRewardCalculator` grep `AffixPool` / `affix` / `Sp04` 키워드 → 참조 0건 확인 (예상)
-3. 참조 0건 = Sp03 영향 0 → 무대응 (preflight v1.0 갱신 0)
-4. 참조 발견 시 (예상 외) = PD 에스컬레이션 + Sp03 W1·W2 재검토
-
-**예상**: 4 단계 = 무발동 (idle-research v1.0 §5 정합성 10축 교차표 모두 ✅).
-
-### 4.3 R-DR-S03-Sp03 [Medium → Resolved] — 드롭 로그 어픽스 등급 미연동 (옵션 (a) 등급만 PD 락, 2026-05-03)
-
-**발견 시점**: 2026-05-02 preflight 작성 중 신규 노출
-**결정 시점**: 2026-05-03 PD 락 (옵션 (a) 등급만 채택, 박세린 자체 권고와 일치)
-**상태**: **Resolved** (Sp03 부담 0h, Sp04 W2 인벤토리 도입과 함께 일괄 양식 확장)
-
-**위험 (해결됨)**: Q5 = A "드롭 로그만" 결정 (Sp04 인벤토리 미도입). 단 **Smoke Test #09 출력 양식**에서 드롭 등급 표기 (`Common × 12, Magic × 4, Rare × 1, Epic × 0, ...`) 가 어픽스 풀 v1.x 36어픽스 등급별 분포와 무관하게 단순 6등급 카운트만 출력. 추후 Sp04 W2 인벤토리 도입 시 "Sp03 로그 양식과 다르다" 회귀 우려 Low~Medium.
-
-**옵션 검토 결과 (PD 결정 락)**:
-
-| 옵션 | 양식 | Sp03 부담 | Sp04 정합성 | 채택 |
-|------|------|---------|-----------|------|
-| **(a)** **등급만** (현 idle-research §1.5 / §2.2 양식 그대로) | `[Idle] Drops: Common x12, Magic x4, Rare x1, ...` | **0** (현 양식 답습) | Sp04 인벤토리 도입 시 양식 확장 (등급 → 등급 + 슬롯명) | **✅ PD 락 (2026-05-03)** |
-| (b) 등급 + 슬롯 | `[Idle] Drops: Common Weapon x3, Common Helm x2, Magic Boots x1, ...` | +0.5h (#09 양식 갱신) | Sp04 정합 양호 | ❌ 폐기 |
-| (c) Sp04 어픽스 풀 양식 사전 매핑 | `[Idle] Drops: AFX_31 x0, AFX_32 x1, ..., AFX_36 x0` | +1.5h (Sp04 인벤토리 임시 매핑 + 36어픽스 grep) | Sp04 정합 최우수, 단 Sp03 스코프 위반 | ❌ 폐기 |
-
-**Sp03 Smoke Test #09 정식 양식 락 (옵션 (a))**:
-```csharp
-Debug.Log("[Idle] Drops: Common x12, Magic x4, Rare x1, Epic x0, Legendary x0, Mythic x0");
-```
-
-**Sp04 W2 인벤토리 도입 시 인계 (이월 1줄)**:
-> Sp04 W2 인벤토리 도입과 함께 Sp03 드롭 로그 양식 일괄 확장 — 등급 → 등급 + 슬롯명 (옵션 (b) 형태) 또는 인벤토리 직접 적립 후 로그 폐기. Sp04 W2 preflight 작성 시 본 항 참조 (Sp03 preflight v1.1 §4.3).
-
-**박세린 권고 결과**: PD 옵션 (a) 채택 = 박세린 권고와 일치. Sp03 스코프 = "방치 계산 + PP 적립 + 마일스톤 배치 + Debug.Log 드롭" (idle-research Q5-A) 보존. 슬롯명 / 어픽스 매핑은 Sp04 인벤토리 도입과 함께 일괄 처리. **Sp03 preflight v1.1 변경 = §0 한 줄 맥락 + §2.3 Smoke 양식 락 표기 + §4.3 옵션 (a) 정식 채택 표기 + §5.4 GO/NO-GO 재검토 PD 호출 조건 갱신 + §7 변경 이력 + 메모리 갱신 권고 (총 5건)**.
-
----
-
-## 5. D-Day 체크리스트 (D-7 본격 착수 시 PRINT-AND-CHECK 양식, 게이트 11/11)
-
-> **사용법**: 2026-05-25 (D-7) 책상에 출력. 항목별 체크박스 표시. GO/NO-GO 표 1행 작성.
-
-### 5.1 W1 완료 판정 게이트 (5건)
-
-```
-[ ] G-W1.1 : #01 GodBlade.Runtime.Idle 네임스페이스 + IdleConstants + IdleRewardBundle struct 작성 완료 (3 파일)
+- FAIL: Save 실패 → IdleSaveService.persistentDataPath 권한 + JSON 직렬화 회로 grep</code></pre>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. 회귀 가드</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.1 R-DR-07 [High] 차단 게이트 (G-DR07.1~5, 하이브리드 결정론 실패)</h3>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">참조</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/sprint-03-dry-run-2026-04-21.md</code> §0.2 R-DR-07 [High] / 메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_phase2_dryrun_risks.md</code> <strong class="font-semibold text-text-0">위험</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleRewardCalculator.Calculate(elapsedSec, ..., rngSeed)</code> 가 동일 입력에서 에디터 vs 모바일 IL2CPP 다른 드롭 결과 → 테스트 #08 Edit Mode Green이어도 모바일 빌드 Red.</blockquote>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">가드 항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시행 시점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">책임</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비고</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">G-DR07.1</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">new System.Random(rngSeed)</code> 명시 생성, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">UnityEngine.Random</code> 금지</td><td class="border border-border px-3 py-2 text-left text-text-0">#04 Tail 리플레이 작성 시</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">A2 사전 메모 1줄</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">G-DR07.2</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateTableSO._lookup</code> Dictionary 순회 금지 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateTableSO.rows</code> List 인덱스 순 강제</td><td class="border border-border px-3 py-2 text-left text-text-0">#04 작성 시</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">Dictionary 순회 = .NET Mono vs IL2CPP 비결정적</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">G-DR07.3</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">동일 seed + 동일 입력 → 동일 출력 hardcoded assert</td><td class="border border-border px-3 py-2 text-left text-text-0">#08 테스트</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">&quot;RNG 1234 + 10층 3600초 → 드롭 정확히 [Common × 12, Magic × 4, Rare × 1]&quot; 식 정수 비교</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">G-DR07.4</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PP 수식 단일성</code> — Bulk 와 Tail 의 PP 수식은 <strong class="font-semibold text-text-0">동일 함수 호출</strong> (수식 두 벌 운영 금지)</td><td class="border border-border px-3 py-2 text-left text-text-0">#03 + #04 작성 시</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">idle-research §1.1 운영 원칙 답습</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">G-DR07.5</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">모바일 IL2CPP 빌드 실측 검증 = <strong class="font-semibold text-text-0">Phase 3+ 이월</strong> (Sp03 범위 외 명시)</td><td class="border border-border px-3 py-2 text-left text-text-0">#10 PR 머지 시</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">PR 본문 1줄 — &quot;IL2CPP 실기 검증 Phase 3+&quot; (CP-M22 답습)</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">FAIL 시 분기</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">G-DR07.1·2 = 즉시 정정 (15분, A2 메모 grep 1회)</li><li class="mb-1">G-DR07.3 = 테스트 7건 중 결정론 1건 Red → #04 코드 리뷰 + Dictionary 순회 grep</li><li class="mb-1">G-DR07.4 = Bulk/Tail PP 함수 분리 발견 시 → 통합 메서드 추출 (30분)</li><li class="mb-1">G-DR07.5 = Phase 3+ 이월 명시 PR 본문 누락 → PR 본문 정정 (5분)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.2 기존 R-DR-10 / R-DR-11 정합 (Sp04 어픽스 풀 회귀 가드)</h3>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">참조</strong>: Sp04 preflight v1.2 §3 (R-DR-10 [High] StackPolicy / R-DR-11 [High] 음수 차감) <strong class="font-semibold text-text-0">Sp03 영향</strong>: 방치 시스템은 어픽스 풀 의존도 0 (Sp04+ 이월). 단 <strong class="font-semibold text-text-0">PP 음수 차감 경로</strong> 1건 정합 필요.</blockquote>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">가드 항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시행 시점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">책임</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비고</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">G-DR11.1</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigePpAccumulator.GrantIdleDrip(elapsedSec, maxFloor)</code> 출력 PP = 항상 양수 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ppGained ≥ 0</code>)</td><td class="border border-border px-3 py-2 text-left text-text-0">#06 작성 시</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">floor()</code> 결과가 0 이하면 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AddPermanentPp(0)</code> 호출 (또는 조기 return)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">G-DR11.2</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AddPermanentPp(long)</code> 시그니처 확인 (Sp02 W2) — 음수 입력 시 동작 보장</td><td class="border border-border px-3 py-2 text-left text-text-0">A1 (D-1 2026-05-31)</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp02 W2 PR 머지 확인</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">FAIL 시 분기</strong>: G-DR11.1 음수 PP 적립 발견 시 즉시 PD 에스컬레이션 (방치 시스템 본맥 위배)</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. 변동 흡수</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.1 강시연 16~17화 도착 시 어픽스 풀 갱신 → 방치 영향 검증</h3>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">참조</strong>: 메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">feedback_writer_collaboration_protocol.md</code> 1주 2화 페이스 = 16~17화 도착 추정 5/9~5/16 <strong class="font-semibold text-text-0">Sp03 D-7 시점 (2026-05-25) 누적 부하 추정</strong>: 0h (방치 시스템은 어픽스 풀 의존도 0)</blockquote>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시나리오</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">발생 가능성</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sp03 W1·W2 영향</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">대응 절차</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">S-1: 어픽스 풀 v1.4 신규 등록 (S-2 발동)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Low (16~17화 도입 가능성 Low~Medium)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">0건</strong> (방치 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleRewardCalculator</code> 가 어픽스 미참조, Sp04+ 어픽스 효과 적용 후에도 Sp03 코드 변경 0)</td><td class="border border-border px-3 py-2 text-left text-text-0">§4.2 절차 (영향 검증만)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">S-2: AFX_34 9,860원 박자 트리거 조건 변형 (17화 99 글리치)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Low~Medium (Sp04 preflight v1.2 §6.4 평가 답습)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">0건</strong> (어픽스 트리거 = Sp04 W1 Calculator 영역, Sp03 무관)</td><td class="border border-border px-3 py-2 text-left text-text-0">§4.2 절차</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">S-3: 캐릭터 IP 신규 추가 (knight·slayer 추가 시그니처)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Very Low</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">0건</strong> (방치 = 캐릭터 비참조)</td><td class="border border-border px-3 py-2 text-left text-text-0">무대응</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.2 영향 검증 절차 (S-1·S-2 발동 시, 박세린 30분 내)</h3>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">강시연 회신 도착 (5/9~5/16 추정) → 1h 내 박세린 수신 확인</li><li class="mb-1">어픽스 풀 v1.x 갱신 발생 시 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleRewardCalculator</code> grep <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AffixPool</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">affix</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Sp04</code> 키워드 → 참조 0건 확인 (예상)</li><li class="mb-1">참조 0건 = Sp03 영향 0 → 무대응 (preflight v1.0 갱신 0)</li><li class="mb-1">참조 발견 시 (예상 외) = PD 에스컬레이션 + Sp03 W1·W2 재검토</li></ol>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">예상</strong>: 4 단계 = 무발동 (idle-research v1.0 §5 정합성 10축 교차표 모두 ✅).</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.3 R-DR-S03-Sp03 [Medium → Resolved] — 드롭 로그 어픽스 등급 미연동 (옵션 (a) 등급만 PD 락, 2026-05-03)</h3>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">발견 시점</strong>: 2026-05-02 preflight 작성 중 신규 노출 <strong class="font-semibold text-text-0">결정 시점</strong>: 2026-05-03 PD 락 (옵션 (a) 등급만 채택, 박세린 자체 권고와 일치) <strong class="font-semibold text-text-0">상태</strong>: <strong class="font-semibold text-text-0">Resolved</strong> (Sp03 부담 0h, Sp04 W2 인벤토리 도입과 함께 일괄 양식 확장)</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">위험 (해결됨)</strong>: Q5 = A &quot;드롭 로그만&quot; 결정 (Sp04 인벤토리 미도입). 단 <strong class="font-semibold text-text-0">Smoke Test #09 출력 양식</strong>에서 드롭 등급 표기 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Common × 12, Magic × 4, Rare × 1, Epic × 0, ...</code>) 가 어픽스 풀 v1.x 36어픽스 등급별 분포와 무관하게 단순 6등급 카운트만 출력. 추후 Sp04 W2 인벤토리 도입 시 &quot;Sp03 로그 양식과 다르다&quot; 회귀 우려 Low~Medium.</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">옵션 검토 결과 (PD 결정 락)</strong>:</p>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">옵션</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">양식</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sp03 부담</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sp04 정합성</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">채택</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">(a)</strong> <strong class="font-semibold text-text-0">등급만</strong> (현 idle-research §1.5 / §2.2 양식 그대로)</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[Idle] Drops: Common x12, Magic x4, Rare x1, ...</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">0</strong> (현 양식 답습)</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 인벤토리 도입 시 양식 확장 (등급 → 등급 + 슬롯명)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">✅ PD 락 (2026-05-03)</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">(b) 등급 + 슬롯</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[Idle] Drops: Common Weapon x3, Common Helm x2, Magic Boots x1, ...</code></td><td class="border border-border px-3 py-2 text-left text-text-0">+0.5h (#09 양식 갱신)</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 정합 양호</td><td class="border border-border px-3 py-2 text-left text-text-0">❌ 폐기</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">(c) Sp04 어픽스 풀 양식 사전 매핑</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[Idle] Drops: AFX_31 x0, AFX_32 x1, ..., AFX_36 x0</code></td><td class="border border-border px-3 py-2 text-left text-text-0">+1.5h (Sp04 인벤토리 임시 매핑 + 36어픽스 grep)</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp04 정합 최우수, 단 Sp03 스코프 위반</td><td class="border border-border px-3 py-2 text-left text-text-0">❌ 폐기</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">Sp03 Smoke Test #09 정식 양식 락 (옵션 (a))</strong>:</p>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>Debug.Log(&quot;[Idle] Drops: Common x12, Magic x4, Rare x1, Epic x0, Legendary x0, Mythic x0&quot;);</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">Sp04 W2 인벤토리 도입 시 인계 (이월 1줄)</strong>:</p>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">Sp04 W2 인벤토리 도입과 함께 Sp03 드롭 로그 양식 일괄 확장 — 등급 → 등급 + 슬롯명 (옵션 (b) 형태) 또는 인벤토리 직접 적립 후 로그 폐기. Sp04 W2 preflight 작성 시 본 항 참조 (Sp03 preflight v1.1 §4.3).</blockquote>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">박세린 권고 결과</strong>: PD 옵션 (a) 채택 = 박세린 권고와 일치. Sp03 스코프 = &quot;방치 계산 + PP 적립 + 마일스톤 배치 + Debug.Log 드롭&quot; (idle-research Q5-A) 보존. 슬롯명 / 어픽스 매핑은 Sp04 인벤토리 도입과 함께 일괄 처리. <strong class="font-semibold text-text-0">Sp03 preflight v1.1 변경 = §0 한 줄 맥락 + §2.3 Smoke 양식 락 표기 + §4.3 옵션 (a) 정식 채택 표기 + §5.4 GO/NO-GO 재검토 PD 호출 조건 갱신 + §7 변경 이력 + 메모리 갱신 권고 (총 5건)</strong>.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. D-Day 체크리스트 (D-7 본격 착수 시 PRINT-AND-CHECK 양식, 게이트 11/11)</h2>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">사용법</strong>: 2026-05-25 (D-7) 책상에 출력. 항목별 체크박스 표시. GO/NO-GO 표 1행 작성.</blockquote>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.1 W1 완료 판정 게이트 (5건)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[ ] G-W1.1 : #01 GodBlade.Runtime.Idle 네임스페이스 + IdleConstants + IdleRewardBundle struct 작성 완료 (3 파일)
               → 검증: GodBlade.Runtime.asmdef references 변경 0 / using GodBlade.Data; 명시
               → FAIL 시 CP-I2 분기 (네임스페이스 충돌 grep 5분)
 
@@ -276,13 +143,9 @@ Debug.Log("[Idle] Drops: Common x12, Magic x4, Rare x1, Epic x0, Legendary x0, M
 
 [ ] G-W1.5 : #05 IdleTicker MonoBehaviour + OnApplicationPause 훅 + singleton + DontDestroyOnLoad
               → 검증: 에디터 Play Mode 진입 시 IdleTicker.Instance 생성 + Update() 1초 누산 동작
-              → FAIL 시 CP-I1 Unity.ResourceManager 참조 확인 (Sp01 W2 시점 추가 완료, 재확인만)
-```
-
-### 5.2 W2 완료 판정 게이트 (5건)
-
-```
-[ ] G-W2.1 : #06 PrestigePpAccumulator.GrantIdleDrip 실배선 + AddPermanentPp 호출
+              → FAIL 시 CP-I1 Unity.ResourceManager 참조 확인 (Sp01 W2 시점 추가 완료, 재확인만)</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.2 W2 완료 판정 게이트 (5건)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[ ] G-W2.1 : #06 PrestigePpAccumulator.GrantIdleDrip 실배선 + AddPermanentPp 호출
               → 검증: GrantIdleDrip(36000, 100) 호출 시 PlayerPrestigeState.PermanentPp +50
               → FAIL 시 G-DR11.1 음수 차감 가드 (즉시 정정 5분)
 
@@ -299,27 +162,19 @@ Debug.Log("[Idle] Drops: Common x12, Magic x4, Rare x1, Epic x0, Legendary x0, M
               → FAIL 시 §2.3 합/불합 분기 절차
 
 [ ] G-W2.5 : #10 §9 CP-I1~I11 11개 체크 + Unity Console 새 에러 0 + PR 머지
-              → 검증: idle-research §9.2 11개 체크 통과 + PR 본문에 "IL2CPP 실기 검증 Phase 3+ 이월" 1줄 명시 (G-DR07.5)
-              → FAIL 시 회귀 패턴 grep (Sp00 회귀 2건 CS0246 / CS1061 재발 가드)
-```
-
-### 5.3 회귀 가드 게이트 (R-DR-07 차단, 1건)
-
-```
-[ ] G-R-DR07 : 하이브리드 결정론 5 가드 통과 (G-DR07.1~5)
+              → 검증: idle-research §9.2 11개 체크 통과 + PR 본문에 &quot;IL2CPP 실기 검증 Phase 3+ 이월&quot; 1줄 명시 (G-DR07.5)
+              → FAIL 시 회귀 패턴 grep (Sp00 회귀 2건 CS0246 / CS1061 재발 가드)</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.3 회귀 가드 게이트 (R-DR-07 차단, 1건)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[ ] G-R-DR07 : 하이브리드 결정론 5 가드 통과 (G-DR07.1~5)
               → 검증:
                 (1) System.Random(rngSeed) 명시 (UnityEngine.Random 0건 grep)
                 (2) DropRateTableSO.rows List 순회 (Dictionary _lookup 순회 0건 grep)
                 (3) #08 결정론 테스트 1건 hardcoded assert Green
                 (4) Bulk + Tail PP 수식 단일성 (메서드 추출 1개)
-                (5) PR 본문 "IL2CPP 실기 검증 Phase 3+ 이월" 1줄
-              → FAIL 시 §3.1 분기 절차 (가드별 정정 5~30분)
-```
-
-### 5.4 GO/NO-GO 의사결정 표 (게이트 11/11)
-
-```
-+----------------------------------------------------------+
+                (5) PR 본문 &quot;IL2CPP 실기 검증 Phase 3+ 이월&quot; 1줄
+              → FAIL 시 §3.1 분기 절차 (가드별 정정 5~30분)</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.4 GO/NO-GO 의사결정 표 (게이트 11/11)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>+----------------------------------------------------------+
 |  Sp03 W1+W2 GO/NO-GO 의사결정 (D-7 ~ D+14, 2026-05-25 ~ 2026-06-14) |
 +----------------------------------------------------------+
 | 일자       | 게이트 통과 | 비고                          |
@@ -333,21 +188,12 @@ Debug.Log("[Idle] Drops: Common x12, Magic x4, Rare x1, Epic x0, Legendary x0, M
 | 최종 결정  | [ ] GO     [ ] NO-GO     [ ] 재검토 PD 호출 |
 | 결정자     | PD                                          |
 | 결정일     | 2026-06-14 (Sp03 D+14, Sp04 킥오프 D-1)     |
-+----------------------------------------------------------+
-```
-
-**GO 조건**: G-W1.1~5 (5/5) + G-W2.1~5 (5/5) + G-R-DR07 (1/1) = **11/11 통과**
-**NO-GO 조건**: 1건 이상 FAIL 잔존 + §3.1 분기 절차 미완료
-**재검토 PD 호출 조건**: ~~R-DR-S03-Sp03 옵션 (a) 비채택 시~~ (v1.1 PD 락으로 해소) / R-DR-08 (OnApplicationPause) 모바일 실기 차단 우회 필요 시
-
----
-
-## 6. 의존성·블로커
-
-### 6.1 W1·W2 내부 의존성 그래프
-
-```
-Sp02 W2 종료 (2026-05-31)
++----------------------------------------------------------+</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">GO 조건</strong>: G-W1.1~5 (5/5) + G-W2.1~5 (5/5) + G-R-DR07 (1/1) = <strong class="font-semibold text-text-0">11/11 통과</strong> <strong class="font-semibold text-text-0">NO-GO 조건</strong>: 1건 이상 FAIL 잔존 + §3.1 분기 절차 미완료 <strong class="font-semibold text-text-0">재검토 PD 호출 조건</strong>: <del class="text-text-2 line-through">R-DR-S03-Sp03 옵션 (a) 비채택 시</del> (v1.1 PD 락으로 해소) / R-DR-08 (OnApplicationPause) 모바일 실기 차단 우회 필요 시</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. 의존성·블로커</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.1 W1·W2 내부 의존성 그래프</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>Sp02 W2 종료 (2026-05-31)
     │
     ├── A1 (D-1 사전 완화 4건 확인)
     │     - GetIdleCapHours(state) 헬퍼 머지
@@ -363,7 +209,7 @@ Sp03 D+0 킥오프 (2026-06-01)
     ▼
 #02 (Save Service, 1.5h) ─┐
                           │
-    #03 (Bulk 집계, 2h) ──┼──> #05 (IdleTicker MonoBehaviour, 1.5h)
+    #03 (Bulk 집계, 2h) ──┼──&gt; #05 (IdleTicker MonoBehaviour, 1.5h)
     #04 (Tail 리플레이, 1.5h) ─┘
     (W1 합계 7.25h, D+7 2026-06-07 완료 목표)
                           │
@@ -374,75 +220,31 @@ Sp03 D+0 킥오프 (2026-06-01)
 #07 (발화 순서, 1.5h)
     │
     ▼
-#08 (테스트 7건, 2h) ──> #09 (Smoke 10h=50PP, 0.75h) ──> #10 (PR 머지, 1h)
+#08 (테스트 7건, 2h) ──&gt; #09 (Smoke 10h=50PP, 0.75h) ──&gt; #10 (PR 머지, 1h)
     (W2 합계 6.0h, D+14 2026-06-14 완료 목표)
     │
     ▼
-Sp04 D+0 킥오프 (2026-06-15)
-```
-
-### 6.2 외부 의존성 (Sp02 W2 / 강시연 / code-lead 실측)
-
-| 의존 | 마감 | 책임 | 영향 | 상태 |
-|------|------|------|------|------|
-| **Sp02 W2 종료 (PrestigePpAccumulator + GetIdleCapHours)** | 2026-05-31 | code-lead | 미완료 시 #06 0.5h 긴급 선행 (sprint-03-dry-run §0.3 A1) | 대기 |
-| **code-lead B1 실측 (Sp03 W1 #03 시점)** | Sp03 W1 #03 작성 시 | code-lead | BuildSummary 4필드 실측 + IdleRateMul 정합 | 대기 |
-| **IdleCap 헬퍼 = `PrestigeCalculator.GetIdleCapHours(state)`** | Sp02 W2 종료 | code-lead | 시그니처 = `public static int GetIdleCapHours(in PlayerPrestigeState state)` 정확 일치 | d8 검증 ✅ |
-| **어픽스 풀 v1.3 36어픽스 vs 방치** | 2026-05-02 | 박세린 | **충돌 0** (방치 = 어픽스 미참조 / Sp04+ 이월) | ✅ 완료 |
-| 강시연 16~17화 도착 (1주 2화 페이스) | 5/9~5/16 추정 | 강시연 | Sp03 영향 0~Low (§4.1) | 대기 |
-
-### 6.3 IdleCap 헬퍼 = `PrestigeCalculator.GetIdleCapHours(state)` 정합 락
-
-> **수식**: TSV `prestige_items.tsv` #25 `IdleCapHoursFlat` = `24 + 2 × min(level, 5)`
-> **범위**: Lv0 = 24h / Lv1 = 26h / Lv2 = 28h / Lv3 = 30h / Lv4 = 32h / **Lv5+ = 34h (소프트캡)**
-
-**Sp03 #03 사용 양식**:
-```csharp
-int idleCapHours = PrestigeCalculator.GetIdleCapHours(state);  // 24~34h
-long cappedSec = Math.Min(elapsedSec, (long)idleCapHours * 3600);
-```
-
-**락**: Calculator 시그니처 불변 원칙 (Sp02 W2 PD 승인) — `GetIdleCapHours` 는 신규 메서드 추가 = 시그니처 변경 아님.
-
-### 6.4 어픽스 v1.3 36어픽스 vs 방치 = 충돌 0 검증
-
-> **참조**: idle-research v1.0 §5 정합성 10축 교차표
-
-| 축 | 어픽스 풀 v1.3 36어픽스 | 방치 시스템 | 충돌? |
-|---|----------------------|----------|-------|
-| 1 | DropRateTableSO 60행 (Sp01 W2) | `IdleRewardCalculator` read-only 호출 | ✅ 없음 (어픽스 풀과 별도) |
-| 2 | `affix_pool.tsv` 36행 (Sp04+) | Sp03 미참조 (Sp04 W2 인벤토리 도입과 함께) | ✅ 없음 |
-| 3 | StackPolicy 4종 enum (additive_crossAxis × 17 / additive_hardcap × 10 / exclusive_onlyOne / additive) | Sp03 미참조 | ✅ 없음 |
-
-**결론**: 방치 시스템은 어픽스 풀 의존도 0. Sp04 W2 어픽스 인벤토리 도입 후에도 `IdleRewardCalculator` 코드 변경 0 (드롭 로그 양식 옵션 (a) 등급만 유지 시 — **PD 락 v1.1**).
-
-### 6.5 블로커 시나리오 (PD 에스컬레이션 트리거)
-
-| # | 블로커 | 트리거 | 에스컬레이션 마감 | 대응 |
-|---|--------|--------|------------------|------|
-| **B-1** | A1 Sp02 W2 의존 4건 미머지 | D-1 (2026-05-31) | 즉시 (1h 내) | code-lead 긴급 선행 (#06 이전 0.5h 추가) |
-| **B-2** | G-DR07.3 결정론 테스트 Red (Edit Mode) | #08 작성 시 | 즉시 (1h 내) | §3.1 G-DR07.1·2 가드 grep + 정정 |
-| **B-3** | R-DR-08 OnApplicationPause Editor Play Mode 재현 불가 | #05 작성 시 | D+5 (2026-06-05) | Editor Play Mode 수동 시나리오 1개 정의 (sprint-03-dry-run §0.2 R-DR-08) + 모바일 실기 Phase 3+ 이월 명시 |
-| **B-4** | 강시연 16~17화 도착 시 어픽스 v1.4 신규 등록 (S-1) | 5/9~5/16 | 도착 24h 내 | §4.2 영향 검증 (예상 = 방치 영향 0) |
-| **B-5** | ~~R-DR-S03-Sp03 옵션 (a) 비채택 (PD 결정)~~ **Resolved v1.1 PD 락** | ~~preflight 검토 시~~ | ~~D-7 (2026-05-25)~~ | ~~옵션 (b) 채택 시 #09 +0.5h / 옵션 (c) 채택 시 #09 +1.5h~~ → **PD 옵션 (a) 락 = Sp03 부담 0h, Sp04 W2 인벤토리 도입과 함께 일괄 양식 확장 인계** |
-
-**박세린 책임 범위**: B-4 / ~~B-5~~ (Resolved) / **B-1·B-2·B-3 = code-lead 책임** (단순 보고)
-
----
-
-## 7. 변경 이력
-
-| version | 일자 | 변경 | 책임 |
-|---------|------|------|------|
-| **1.0** | **2026-05-02** | **신규 (Sp04 preflight v1.2 패턴 답습 / 7 섹션 / 게이트 11/11 / R-DR-07 가드 5건 / R-DR-S03-Sp03 신규 발견 + PD 결정 대기)** | **박세린** |
-| **1.1** | **2026-05-03** | **R-DR-S03-Sp03 옵션 (a) 등급만 PD 락 (박세린 권고와 일치) — Sp03 부담 0h, Sp04 W2 인벤토리 도입과 함께 일괄 양식 확장 인계. 갱신 5건 = §0 한 줄 맥락 + §2.3 Smoke 양식 락 표기 + §4.3 옵션 (a) Resolved 표기 + §5.4 GO/NO-GO 재검토 PD 호출 조건 항목 해소 + §6.5 B-5 Resolved 표기 + §7 변경 이력. 시간 예산 0.3h 실측.** | **박세린** |
-| 1.2 (예정) | 5/9~5/16 이후 | 강시연 16~17화 도착 시 §4.1 영향 검증 결과 반영 (예상 = 무영향) | 박세린 |
-| 1.3 (예정) | D-7 (2026-05-25) | 본격 착수 직전 점검 (Sp02 W2 종료 D-1 시점 A1 4건 머지 확인) | 박세린 |
-
----
-
-*(끝, v1.1 2026-05-03 박세린 + PD R-DR-S03-Sp03 옵션 (a) 락)*
-6:["slug","sprint-03-idle-system-preflight","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sprint-03-idle-system-preflight","d"],{"children":["__PAGE__?{\"slug\":\"sprint-03-idle-system-preflight\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-03-idle-system-preflight","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sp03 IdleSystem Preflight — D-7 본격 착수 절차서"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-03-idle-system-preflight.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"3,885"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sp03 IdleSystem Preflight — D-7 본격 착수 절차서 — 자료실"}],["$","meta","3",{"name":"description","content":"Sp02 W2 종료 (2026-05-31, PrestigePpAccumulator + GetIdleCapHours 헬퍼 머지) 직후 → Sp03 W1 #01~#05 IdleTicker MonoBehaviour + 옵션 C 하이브리드 Calculator + JSON 저장 + W2 #06~"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+Sp04 D+0 킥오프 (2026-06-15)</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.2 외부 의존성 (Sp02 W2 / 강시연 / code-lead 실측)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">의존</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">마감</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">책임</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">영향</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">상태</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Sp02 W2 종료 (PrestigePpAccumulator + GetIdleCapHours)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">2026-05-31</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">미완료 시 #06 0.5h 긴급 선행 (sprint-03-dry-run §0.3 A1)</td><td class="border border-border px-3 py-2 text-left text-text-0">대기</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">code-lead B1 실측 (Sp03 W1 #03 시점)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Sp03 W1 #03 작성 시</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">BuildSummary 4필드 실측 + IdleRateMul 정합</td><td class="border border-border px-3 py-2 text-left text-text-0">대기</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">IdleCap 헬퍼 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator.GetIdleCapHours(state)</code></strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Sp02 W2 종료</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead</td><td class="border border-border px-3 py-2 text-left text-text-0">시그니처 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">public static int GetIdleCapHours(in PlayerPrestigeState state)</code> 정확 일치</td><td class="border border-border px-3 py-2 text-left text-text-0">d8 검증 ✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">어픽스 풀 v1.3 36어픽스 vs 방치</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">2026-05-02</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">충돌 0</strong> (방치 = 어픽스 미참조 / Sp04+ 이월)</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ 완료</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">강시연 16~17화 도착 (1주 2화 페이스)</td><td class="border border-border px-3 py-2 text-left text-text-0">5/9~5/16 추정</td><td class="border border-border px-3 py-2 text-left text-text-0">강시연</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp03 영향 0~Low (§4.1)</td><td class="border border-border px-3 py-2 text-left text-text-0">대기</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.3 IdleCap 헬퍼 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator.GetIdleCapHours(state)</code> 정합 락</h3>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">수식</strong>: TSV <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items.tsv</code> #25 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleCapHoursFlat</code> = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">24 + 2 × min(level, 5)</code> <strong class="font-semibold text-text-0">범위</strong>: Lv0 = 24h / Lv1 = 26h / Lv2 = 28h / Lv3 = 30h / Lv4 = 32h / <strong class="font-semibold text-text-0">Lv5+ = 34h (소프트캡)</strong></blockquote>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">Sp03 #03 사용 양식</strong>:</p>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>int idleCapHours = PrestigeCalculator.GetIdleCapHours(state);  // 24~34h
+long cappedSec = Math.Min(elapsedSec, (long)idleCapHours * 3600);</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">락</strong>: Calculator 시그니처 불변 원칙 (Sp02 W2 PD 승인) — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GetIdleCapHours</code> 는 신규 메서드 추가 = 시그니처 변경 아님.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.4 어픽스 v1.3 36어픽스 vs 방치 = 충돌 0 검증</h3>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">참조</strong>: idle-research v1.0 §5 정합성 10축 교차표</blockquote>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">축</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">어픽스 풀 v1.3 36어픽스</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">방치 시스템</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">충돌?</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">1</td><td class="border border-border px-3 py-2 text-left text-text-0">DropRateTableSO 60행 (Sp01 W2)</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleRewardCalculator</code> read-only 호출</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ 없음 (어픽스 풀과 별도)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">2</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">affix_pool.tsv</code> 36행 (Sp04+)</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp03 미참조 (Sp04 W2 인벤토리 도입과 함께)</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ 없음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">3</td><td class="border border-border px-3 py-2 text-left text-text-0">StackPolicy 4종 enum (additive_crossAxis × 17 / additive_hardcap × 10 / exclusive_onlyOne / additive)</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp03 미참조</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ 없음</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">결론</strong>: 방치 시스템은 어픽스 풀 의존도 0. Sp04 W2 어픽스 인벤토리 도입 후에도 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleRewardCalculator</code> 코드 변경 0 (드롭 로그 양식 옵션 (a) 등급만 유지 시 — <strong class="font-semibold text-text-0">PD 락 v1.1</strong>).</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.5 블로커 시나리오 (PD 에스컬레이션 트리거)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">블로커</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">트리거</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">에스컬레이션 마감</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">대응</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">B-1</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">A1 Sp02 W2 의존 4건 미머지</td><td class="border border-border px-3 py-2 text-left text-text-0">D-1 (2026-05-31)</td><td class="border border-border px-3 py-2 text-left text-text-0">즉시 (1h 내)</td><td class="border border-border px-3 py-2 text-left text-text-0">code-lead 긴급 선행 (#06 이전 0.5h 추가)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">B-2</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">G-DR07.3 결정론 테스트 Red (Edit Mode)</td><td class="border border-border px-3 py-2 text-left text-text-0">#08 작성 시</td><td class="border border-border px-3 py-2 text-left text-text-0">즉시 (1h 내)</td><td class="border border-border px-3 py-2 text-left text-text-0">§3.1 G-DR07.1·2 가드 grep + 정정</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">B-3</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">R-DR-08 OnApplicationPause Editor Play Mode 재현 불가</td><td class="border border-border px-3 py-2 text-left text-text-0">#05 작성 시</td><td class="border border-border px-3 py-2 text-left text-text-0">D+5 (2026-06-05)</td><td class="border border-border px-3 py-2 text-left text-text-0">Editor Play Mode 수동 시나리오 1개 정의 (sprint-03-dry-run §0.2 R-DR-08) + 모바일 실기 Phase 3+ 이월 명시</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">B-4</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">강시연 16~17화 도착 시 어픽스 v1.4 신규 등록 (S-1)</td><td class="border border-border px-3 py-2 text-left text-text-0">5/9~5/16</td><td class="border border-border px-3 py-2 text-left text-text-0">도착 24h 내</td><td class="border border-border px-3 py-2 text-left text-text-0">§4.2 영향 검증 (예상 = 방치 영향 0)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">B-5</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><del class="text-text-2 line-through">R-DR-S03-Sp03 옵션 (a) 비채택 (PD 결정)</del> <strong class="font-semibold text-text-0">Resolved v1.1 PD 락</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><del class="text-text-2 line-through">preflight 검토 시</del></td><td class="border border-border px-3 py-2 text-left text-text-0"><del class="text-text-2 line-through">D-7 (2026-05-25)</del></td><td class="border border-border px-3 py-2 text-left text-text-0"><del class="text-text-2 line-through">옵션 (b) 채택 시 #09 +0.5h / 옵션 (c) 채택 시 #09 +1.5h</del> → <strong class="font-semibold text-text-0">PD 옵션 (a) 락 = Sp03 부담 0h, Sp04 W2 인벤토리 도입과 함께 일괄 양식 확장 인계</strong></td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">박세린 책임 범위</strong>: B-4 / <del class="text-text-2 line-through">B-5</del> (Resolved) / <strong class="font-semibold text-text-0">B-1·B-2·B-3 = code-lead 책임</strong> (단순 보고)</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. 변경 이력</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">version</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">일자</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">변경</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">책임</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">1.0</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">2026-05-02</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">신규 (Sp04 preflight v1.2 패턴 답습 / 7 섹션 / 게이트 11/11 / R-DR-07 가드 5건 / R-DR-S03-Sp03 신규 발견 + PD 결정 대기)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">박세린</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">1.1</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">2026-05-03</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">R-DR-S03-Sp03 옵션 (a) 등급만 PD 락 (박세린 권고와 일치) — Sp03 부담 0h, Sp04 W2 인벤토리 도입과 함께 일괄 양식 확장 인계. 갱신 5건 = §0 한 줄 맥락 + §2.3 Smoke 양식 락 표기 + §4.3 옵션 (a) Resolved 표기 + §5.4 GO/NO-GO 재검토 PD 호출 조건 항목 해소 + §6.5 B-5 Resolved 표기 + §7 변경 이력. 시간 예산 0.3h 실측.</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">박세린</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.2 (예정)</td><td class="border border-border px-3 py-2 text-left text-text-0">5/9~5/16 이후</td><td class="border border-border px-3 py-2 text-left text-text-0">강시연 16~17화 도착 시 §4.1 영향 검증 결과 반영 (예상 = 무영향)</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.3 (예정)</td><td class="border border-border px-3 py-2 text-left text-text-0">D-7 (2026-05-25)</td><td class="border border-border px-3 py-2 text-left text-text-0">본격 착수 직전 점검 (Sp02 W2 종료 D-1 시점 A1 4건 머지 확인)</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr></tbody></table></div>
+<hr class="my-6 border-border" />
+<p class="mb-3 text-text-0"><em class="italic">(끝, v1.1 2026-05-03 박세린 + PD R-DR-S03-Sp03 옵션 (a) 락)</em></p>5:["slug","sprint-03-idle-system-preflight","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","sprint-03-idle-system-preflight","d"],{"children":["__PAGE__?{\"slug\":\"sprint-03-idle-system-preflight\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-03-idle-system-preflight","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sp03 IdleSystem Preflight — D-7 본격 착수 절차서"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-03-idle-system-preflight.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"3,885"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sp03 IdleSystem Preflight — D-7 본격 착수 절차서 — 자료실"}],["$","meta","3",{"name":"description","content":"Sp02 W2 종료 (2026-05-31, PrestigePpAccumulator + GetIdleCapHours 헬퍼 머지) 직후 → Sp03 W1 #01~#05 IdleTicker MonoBehaviour + 옵션 C 하이브리드 Calculator + JSON 저장 + W2 #06~"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

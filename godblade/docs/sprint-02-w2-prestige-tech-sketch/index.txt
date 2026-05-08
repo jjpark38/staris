@@ -1,65 +1,16 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T7d51,# Sprint 02 W2 — Prestige Entity / Runtime 기술 스케치
-
-> 작성: 2026-04-21 (code-lead) · 근거: `designs/prestige_system_spec.md` v1.0 APPROVED · `designs/sprint-01-w2-importer-design.md` v1.0 APPROVED
-> **문서 상태**: **APPROVED v1.0** (PD 승인 2026-04-21)
-> **범위**: Sprint 02 W2 기술 스케치 전용 — 실구현 코드 작성 금지, C# 시그니처·의사코드·구조도만
-> **수치 경계**: 본 문서는 저장소·실행 레이어 설계만. 구체 수식·수치는 `prestige_system_spec.md` 인용 외 신규 결정 없음 (game-designer 영역).
->
-> ---
->
-> ## PD 승인 결정 (2026-04-21)
->
-> | # | 질문 | 확정 | 비고 |
-> |---|------|------|------|
-> | **Q1** | 데이터 모델 | **옵션 B — `PrestigeSlot` blittable struct + `List<PrestigeSlot>`** | read-write hot path 대응. Sprint 01 W2 DQ1(SO 옵션 A)와 다른 결정 명시 — read-only 카탈로그 vs read-write 상태의 성격 차. Sprint 03 DOTS 전환 시 `IComponentData` 1:1 이식 |
-> | **Q2** | 로컬 저장 | **JSON + `schemaVersion` 필드** | 경로: `Application.persistentDataPath/account/<accountId>/prestige.v1.json` |
-> | **Q3** | Firebase 동기 S02 포함 | **미포함 (Phase 5 이후)** | 로드맵 일관성 유지 |
-> | **Q4** | `retainRatio` 저장 위치 | **파라미터 유지** (`MigrateSeasonalToPermanent(float retainRatio)`) | Sprint 05 시즌 도입 시 재논의 가능 |
->
-> **부수 확정**:
-> - `PlayerPrestigeState` + `PrestigeCalculator` 분리 유지 (수식 변경 시그니처 불변)
-> - `PrestigeItemCatalogSO` 는 Sprint 01 W2 DQ1 옵션 A 패턴 재활용, **TsvReader 공통화의 첫 소비자**
-> - §8 컴파일러 시뮬레이션 체크리스트 **16개** (CP9-1~11 + CP-P1~P5) 필수
-> - Sprint 01 W2 설계 정합성 검증 통과 (§11 10축 교차표, 충돌 0건)
->
-> ---
->
-> ## 0. 요약 (PD 1분)
->
-> - 데이터 모델: **옵션 B (`PrestigeSlot` struct + 60-slot `List`) 권장** — Sprint 01 W2 DQ1의 "SO 옵션 A"와 **성격이 다름**(read-only 카탈로그 vs 고빈도 변경 상태). 혼동 금지.
-> - 카탈로그는 별개: `PrestigeItemCatalogSO` 30행 = 정적 정의(이름·탭·소프트캡·공식 선택자). TSV Importer로 변환.
-> - PP 채널 2개(`Permanent` / `Seasonal`) **사전 분리**. Sprint 05 시즌 도입 시 추가 코드 0.
-> - 저장: 로컬 JSON 우선, 경로 `Application.persistentDataPath/account/prestige.v1.json`. Firebase는 Phase 5+.
-> - 이벤트 훅: Sprint 01 W2 기존 3 + 신규 3 = **6개**.
-> - §8 컴파일러 시뮬레이션 체크리스트 **11 + 5 = 16개** (Sprint 01 W2 11개 재적용 + 프레스티지 특화 5개).
-> - Sprint 01 W2 설계 정합성: asmdef·네이밍·InternalsVisibleTo 패턴 1:1 일치. 충돌 0.
-
----
-
-## 1. 데이터 모델 선택
-
-### 1.1 전제: 슬롯 수 × 상태 성격
-
-- **슬롯 수**: 30항목 × 2채널 = **유저 1인당 60 슬롯**.
-- **성격**: 투자·회수·리스펙 빈도 높음. Read-mostly가 아니라 **read-write hot path**.
-- Sprint 01 W2 `DropRateTableSO` / `MilestoneRewardCatalogSO` 는 **read-only 카탈로그** → SO 적합. 프레스티지 상태는 **유저 세이브** → SO 적합도 낮음.
-
-### 1.2 3옵션 비교
-
-| 옵션 | 구조 | 장점 | 단점 | Sprint 02 적합성 |
-|------|------|------|------|---------|
-| **A. 단일 SO 60필드** | `PlayerPrestigeStateSO` 에 `permanent_00` ~ `permanent_29`, `seasonal_00` ~ `seasonal_29` 필드 60개 | Sprint 01 W2 SO 패턴 1:1 | 필드 60개 직렬화 노이즈 / 항목 추가 시 재컴파일 / 리플렉션 없이 인덱서 불가 | ❌ |
-| **B. Struct + List (권장)** | `PrestigeSlot` struct 60개를 `List<PrestigeSlot>` 에 평탄 저장 + `(channel, itemId)` 인덱서 | blittable struct → DOTS 전환 친화 / JSON 직렬화 자연 / 항목 확장 무공사 | SO 아님 → `ScriptableObject`가 아닌 POCO. 별도 저장 파이프 필요 | **✅ 권장** |
-| **C. ECS `IComponentData` + `DynamicBuffer<PrestigePointSlot>`** | DOTS 네이티브 | 수십만 유저 시뮬 시 캐시 친화 | 싱글 플레이어(유저 1명) / Sprint 02 범위 과도 / Conversion Workflow 도입 비용 | ❌ Sprint 03+ 측정 후 재검토 |
-
-### 1.3 권장 = 옵션 B
-
-```csharp
-// GodBlade.Runtime — Assets/_Project/Scripts/Runtime/Prestige/PrestigeSlot.cs
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T133aa,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">Sprint 02 W2 — Prestige Entity / Runtime 기술 스케치</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성: 2026-04-21 (code-lead) · 근거: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/prestige_system_spec.md</code> v1.0 APPROVED · <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/sprint-01-w2-importer-design.md</code> v1.0 APPROVED <strong class="font-semibold text-text-0">문서 상태</strong>: <strong class="font-semibold text-text-0">APPROVED v1.0</strong> (PD 승인 2026-04-21) <strong class="font-semibold text-text-0">범위</strong>: Sprint 02 W2 기술 스케치 전용 — 실구현 코드 작성 금지, C# 시그니처·의사코드·구조도만 <strong class="font-semibold text-text-0">수치 경계</strong>: 본 문서는 저장소·실행 레이어 설계만. 구체 수식·수치는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_system_spec.md</code> 인용 외 신규 결정 없음 (game-designer 영역).  ---  ## PD 승인 결정 (2026-04-21)  | # | 질문 | 확정 | 비고 | |---|------|------|------| | <strong class="font-semibold text-text-0">Q1</strong> | 데이터 모델 | <strong class="font-semibold text-text-0">옵션 B — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSlot</code> blittable struct + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">List&lt;PrestigeSlot&gt;</code></strong> | read-write hot path 대응. Sprint 01 W2 DQ1(SO 옵션 A)와 다른 결정 명시 — read-only 카탈로그 vs read-write 상태의 성격 차. Sprint 03 DOTS 전환 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IComponentData</code> 1:1 이식 | | <strong class="font-semibold text-text-0">Q2</strong> | 로컬 저장 | <strong class="font-semibold text-text-0">JSON + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">schemaVersion</code> 필드</strong> | 경로: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Application.persistentDataPath/account/&lt;accountId&gt;/prestige.v1.json</code> | | <strong class="font-semibold text-text-0">Q3</strong> | Firebase 동기 S02 포함 | <strong class="font-semibold text-text-0">미포함 (Phase 5 이후)</strong> | 로드맵 일관성 유지 | | <strong class="font-semibold text-text-0">Q4</strong> | <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">retainRatio</code> 저장 위치 | <strong class="font-semibold text-text-0">파라미터 유지</strong> (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MigrateSeasonalToPermanent(float retainRatio)</code>) | Sprint 05 시즌 도입 시 재논의 가능 |  <strong class="font-semibold text-text-0">부수 확정</strong>: - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerPrestigeState</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator</code> 분리 유지 (수식 변경 시그니처 불변) - <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemCatalogSO</code> 는 Sprint 01 W2 DQ1 옵션 A 패턴 재활용, <strong class="font-semibold text-text-0">TsvReader 공통화의 첫 소비자</strong> - §8 컴파일러 시뮬레이션 체크리스트 <strong class="font-semibold text-text-0">16개</strong> (CP9-1~11 + CP-P1~P5) 필수 - Sprint 01 W2 설계 정합성 검증 통과 (§11 10축 교차표, 충돌 0건)  ---  ## 0. 요약 (PD 1분)  - 데이터 모델: <strong class="font-semibold text-text-0">옵션 B (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSlot</code> struct + 60-slot <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">List</code>) 권장</strong> — Sprint 01 W2 DQ1의 &quot;SO 옵션 A&quot;와 <strong class="font-semibold text-text-0">성격이 다름</strong>(read-only 카탈로그 vs 고빈도 변경 상태). 혼동 금지. - 카탈로그는 별개: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemCatalogSO</code> 30행 = 정적 정의(이름·탭·소프트캡·공식 선택자). TSV Importer로 변환. - PP 채널 2개(<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Permanent</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Seasonal</code>) <strong class="font-semibold text-text-0">사전 분리</strong>. Sprint 05 시즌 도입 시 추가 코드 0. - 저장: 로컬 JSON 우선, 경로 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Application.persistentDataPath/account/prestige.v1.json</code>. Firebase는 Phase 5+. - 이벤트 훅: Sprint 01 W2 기존 3 + 신규 3 = <strong class="font-semibold text-text-0">6개</strong>. - §8 컴파일러 시뮬레이션 체크리스트 <strong class="font-semibold text-text-0">11 + 5 = 16개</strong> (Sprint 01 W2 11개 재적용 + 프레스티지 특화 5개). - Sprint 01 W2 설계 정합성: asmdef·네이밍·InternalsVisibleTo 패턴 1:1 일치. 충돌 0.</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. 데이터 모델 선택</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.1 전제: 슬롯 수 × 상태 성격</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">슬롯 수</strong>: 30항목 × 2채널 = <strong class="font-semibold text-text-0">유저 1인당 60 슬롯</strong>.</li><li class="mb-1"><strong class="font-semibold text-text-0">성격</strong>: 투자·회수·리스펙 빈도 높음. Read-mostly가 아니라 <strong class="font-semibold text-text-0">read-write hot path</strong>.</li><li class="mb-1">Sprint 01 W2 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateTableSO</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneRewardCatalogSO</code> 는 <strong class="font-semibold text-text-0">read-only 카탈로그</strong> → SO 적합. 프레스티지 상태는 <strong class="font-semibold text-text-0">유저 세이브</strong> → SO 적합도 낮음.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.2 3옵션 비교</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">옵션</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">구조</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">장점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">단점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sprint 02 적합성</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">A. 단일 SO 60필드</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerPrestigeStateSO</code> 에 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">permanent_00</code> ~ <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">permanent_29</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">seasonal_00</code> ~ <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">seasonal_29</code> 필드 60개</td><td class="border border-border px-3 py-2 text-left text-text-0">Sprint 01 W2 SO 패턴 1:1</td><td class="border border-border px-3 py-2 text-left text-text-0">필드 60개 직렬화 노이즈 / 항목 추가 시 재컴파일 / 리플렉션 없이 인덱서 불가</td><td class="border border-border px-3 py-2 text-left text-text-0">❌</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">B. Struct + List (권장)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSlot</code> struct 60개를 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">List&lt;PrestigeSlot&gt;</code> 에 평탄 저장 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">(channel, itemId)</code> 인덱서</td><td class="border border-border px-3 py-2 text-left text-text-0">blittable struct → DOTS 전환 친화 / JSON 직렬화 자연 / 항목 확장 무공사</td><td class="border border-border px-3 py-2 text-left text-text-0">SO 아님 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ScriptableObject</code>가 아닌 POCO. 별도 저장 파이프 필요</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">✅ 권장</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">C. ECS <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IComponentData</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DynamicBuffer&lt;PrestigePointSlot&gt;</code></strong></td><td class="border border-border px-3 py-2 text-left text-text-0">DOTS 네이티브</td><td class="border border-border px-3 py-2 text-left text-text-0">수십만 유저 시뮬 시 캐시 친화</td><td class="border border-border px-3 py-2 text-left text-text-0">싱글 플레이어(유저 1명) / Sprint 02 범위 과도 / Conversion Workflow 도입 비용</td><td class="border border-border px-3 py-2 text-left text-text-0">❌ Sprint 03+ 측정 후 재검토</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.3 권장 = 옵션 B</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>// GodBlade.Runtime — Assets/_Project/Scripts/Runtime/Prestige/PrestigeSlot.cs
 namespace GodBlade.Runtime.Prestige {
   public enum PpChannel : byte {
     Permanent = 0,
@@ -67,49 +18,29 @@ namespace GodBlade.Runtime.Prestige {
   }
 
   [System.Serializable]
-  public struct PrestigeSlot : System.IEquatable<PrestigeSlot> {
+  public struct PrestigeSlot : System.IEquatable&lt;PrestigeSlot&gt; {
     public ushort itemId;       // PrestigeItemCatalogSO 의 row index (0~29)
     public PpChannel channel;   // 1 byte
     public int investedPp;      // 누적 투자 PP (회수 시 감소)
     // Level·Bonus 는 저장하지 않음 — PrestigeCalculator 가 실시간 산출 (카탈로그 공식 변경 시 재컴파일 대응)
   }
-}
-```
-
-- `PrestigeSlot` 은 **blittable** (`byte` + `ushort` + `int`) → Sprint 03 DOTS 전환 시 `IComponentData` 로 1:1 이식 가능.
-- 저장 엔티티는 아래(§3)의 `PlayerPrestigeState` 한 클래스가 소유.
-
-### 1.4 Sprint 01 W2 DQ1(SO 옵션 A)과의 관계
-
-- **다른 축**: Sprint 01 W2 DQ1의 "SO 옵션 A"는 **카탈로그**(정적 정의) 저장 방식 결정. 본 문서의 "옵션 A/B/C"는 **유저 런타임 상태** 저장 방식 결정.
-- 프레스티지도 **카탈로그(§2)는 Sprint 01 W2 DQ1과 동일하게 SO 옵션 A** 유지 → 일관성 확보.
-
----
-
-## 2. 항목 카탈로그 (`PrestigeItemCatalogSO`)
-
-### 2.1 위치·asmdef
-
-- **파일**: `Assets/_Project/Scripts/Data/PrestigeItemCatalogSO.cs`
-- **어셈블리**: `GodBlade.Data` (Sprint 01 W2 `DropRateTableSO` 와 동일 asmdef)
-- **Addressables 주소**: `Prestige/ItemCatalog` (신규 그룹 `Prestige`, 라벨 `prestige-catalog`)
-
-### 2.2 TSV 입력 (game-designer Sprint 02 W1 산출물 가정)
-
-- 경로: `designs/prestige_items.tsv` (game-designer 소관 Sprint 02 W1)
-- 30행 × 스키마:
-  ```
-  item_id  tab  name  stat_key  soft_cap  curve_id  pre_softcap_per_pp  post_softcap_coeff  notes
-  0        Offense  공격력%   AtkPct   5   linear_then_log   0.5   2.5   "공격력 +N% 가산"
+}</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSlot</code> 은 <strong class="font-semibold text-text-0">blittable</strong> (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">byte</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ushort</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">int</code>) → Sprint 03 DOTS 전환 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IComponentData</code> 로 1:1 이식 가능.</li><li class="mb-1">저장 엔티티는 아래(§3)의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerPrestigeState</code> 한 클래스가 소유.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.4 Sprint 01 W2 DQ1(SO 옵션 A)과의 관계</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">다른 축</strong>: Sprint 01 W2 DQ1의 &quot;SO 옵션 A&quot;는 <strong class="font-semibold text-text-0">카탈로그</strong>(정적 정의) 저장 방식 결정. 본 문서의 &quot;옵션 A/B/C&quot;는 <strong class="font-semibold text-text-0">유저 런타임 상태</strong> 저장 방식 결정.</li><li class="mb-1">프레스티지도 <strong class="font-semibold text-text-0">카탈로그(§2)는 Sprint 01 W2 DQ1과 동일하게 SO 옵션 A</strong> 유지 → 일관성 확보.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. 항목 카탈로그 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemCatalogSO</code>)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.1 위치·asmdef</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">파일</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Assets/_Project/Scripts/Data/PrestigeItemCatalogSO.cs</code></li><li class="mb-1"><strong class="font-semibold text-text-0">어셈블리</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> (Sprint 01 W2 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateTableSO</code> 와 동일 asmdef)</li><li class="mb-1"><strong class="font-semibold text-text-0">Addressables 주소</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Prestige/ItemCatalog</code> (신규 그룹 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Prestige</code>, 라벨 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige-catalog</code>)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.2 TSV 입력 (game-designer Sprint 02 W1 산출물 가정)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">경로: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/prestige_items.tsv</code> (game-designer 소관 Sprint 02 W1)</li><li class="mb-1">30행 × 스키마:</li></ul>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>  item_id  tab  name  stat_key  soft_cap  curve_id  pre_softcap_per_pp  post_softcap_coeff  notes
+  0        Offense  공격력%   AtkPct   5   linear_then_log   0.5   2.5   &quot;공격력 +N% 가산&quot;
   1        Offense  치명타율  CritRate 5   linear_then_log   0.3   1.5   ...
-  ...
-  ```
-- `curve_id` 는 **공식 선택자** (열거형 키). 실제 공식은 `PrestigeCalculator` 내부 switch. 수식 튜닝 시 TSV만 갱신 + Importer 재실행으로 반영.
-
-### 2.3 SO 필드 시그니처
-
-```csharp
-// GodBlade.Data — Assets/_Project/Scripts/Data/PrestigeItemCatalogSO.cs
+  ...</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">curve_id</code> 는 <strong class="font-semibold text-text-0">공식 선택자</strong> (열거형 키). 실제 공식은 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator</code> 내부 switch. 수식 튜닝 시 TSV만 갱신 + Importer 재실행으로 반영.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.3 SO 필드 시그니처</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>// GodBlade.Data — Assets/_Project/Scripts/Data/PrestigeItemCatalogSO.cs
 namespace GodBlade.Data.Prestige {
   public enum PrestigeTab : byte { Offense = 0, Defense = 1, Utility = 2 }
   public enum PrestigeCurveId : byte { LinearThenLog = 0, /* Sprint 03+ 확장 여지 */ }
@@ -119,7 +50,7 @@ namespace GodBlade.Data.Prestige {
     public ushort itemId;              // 0~29
     public PrestigeTab tab;
     public string name;                // UI 표시용 (Sprint 04 로컬라이즈 키로 대체 예정)
-    public string statKey;             // "AtkPct", "CritRate" 등 — Sprint 03 Stat 시스템 연동 키
+    public string statKey;             // &quot;AtkPct&quot;, &quot;CritRate&quot; 등 — Sprint 03 Stat 시스템 연동 키
     public byte softCap;               // Q4 결정 = 5 (고정이지만 튜닝 여지)
     public PrestigeCurveId curveId;    // 공식 선택자
     public float preSoftCapPerPp;      // curve_id=LinearThenLog 시 의미: Lv1~soft 구간 PP당 %
@@ -127,74 +58,51 @@ namespace GodBlade.Data.Prestige {
   }
 
   [UnityEngine.CreateAssetMenu(
-    fileName = "PrestigeItemCatalog",
-    menuName = "GodBlade/Data/Prestige Item Catalog"
+    fileName = &quot;PrestigeItemCatalog&quot;,
+    menuName = &quot;GodBlade/Data/Prestige Item Catalog&quot;
   )]
   public sealed class PrestigeItemCatalogSO : UnityEngine.ScriptableObject {
-    [UnityEngine.SerializeField] List<PrestigeItemRow> rows;  // 30행
+    [UnityEngine.SerializeField] List&lt;PrestigeItemRow&gt; rows;  // 30행
 
-    [System.NonSerialized] Dictionary<ushort, int> _byItemId; // OnEnable lazy build (Sprint 01 W2 §4.2 패턴)
+    [System.NonSerialized] Dictionary&lt;ushort, int&gt; _byItemId; // OnEnable lazy build (Sprint 01 W2 §4.2 패턴)
 
-    public int Count => rows?.Count ?? 0;
+    public int Count =&gt; rows?.Count ?? 0;
     public PrestigeItemRow Get(ushort itemId) { /* lookup */ }
-    public IReadOnlyList<PrestigeItemRow> GetByTab(PrestigeTab tab);
+    public IReadOnlyList&lt;PrestigeItemRow&gt; GetByTab(PrestigeTab tab);
   }
-}
-```
-
-- `Dictionary` 직렬화 금지(§8 CP9-8) → `List` 저장 + `OnEnable` lazy build 일관.
-- `[assembly: InternalsVisibleTo("GodBlade.Editor")]` 는 `GodBlade.Data` 어셈블리 내 **한 파일에만** 선언(Sprint 01 W2 CP9-3 준수).
-
-### 2.4 Importer (`PrestigeItemImporter`)
-
-- **위치**: `Assets/Editor/Importers/PrestigeItemImporter.cs` (`GodBlade.Editor` asmdef)
-- **패턴**: Sprint 01 W2 `DropRateTableImporter` 와 1:1 동일. `TsvReader` 공통 모듈의 **첫 소비자** (Sprint 01 W2 DQ3 이월분 활성).
-- **메뉴**:
-  - `GodBlade/Data/Import Prestige Item TSV`
-  - `GodBlade/Data/Import ALL (Stage → Drop → Milestone → Affix → Prestige)` (기존 ALL 메뉴 확장)
-- **검증**: TSV 30행 강제 (29 또는 31 시 Importer 중단 + DisplayDialog). `softCap` 범위 `[1, 20]` 이외 시 ArgumentException.
-
-### 2.5 Sprint 02 W1 TSV 공통화 연계
-
-- Sprint 01 W2 DQ3 이월 과제 = `TsvReader` 공통화. 본 Importer는 그 공통화의 **첫 소비자**로 설계.
-- Sprint 02 W1 PR 순서:
-  1. `TsvReader.cs` 공통화 (Sprint 00 Stage Importer 재연결)
-  2. `PrestigeItemImporter.cs` 신규 (공통 `TsvReader` 사용)
-- 의존 보장: **1 머지 후 2 시작**. PM 에스컬레이션 대상.
-
----
-
-## 3. PP 적립·소비 로직 계층
-
-### 3.1 클래스 배치
-
-```
-GodBlade.Runtime / Assets/_Project/Scripts/Runtime/Prestige/
+}</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Dictionary</code> 직렬화 금지(§8 CP9-8) → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">List</code> 저장 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnEnable</code> lazy build 일관.</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[assembly: InternalsVisibleTo(&quot;GodBlade.Editor&quot;)]</code> 는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> 어셈블리 내 <strong class="font-semibold text-text-0">한 파일에만</strong> 선언(Sprint 01 W2 CP9-3 준수).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.4 Importer (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemImporter</code>)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">위치</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Assets/Editor/Importers/PrestigeItemImporter.cs</code> (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Editor</code> asmdef)</li><li class="mb-1"><strong class="font-semibold text-text-0">패턴</strong>: Sprint 01 W2 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateTableImporter</code> 와 1:1 동일. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 공통 모듈의 <strong class="font-semibold text-text-0">첫 소비자</strong> (Sprint 01 W2 DQ3 이월분 활성).</li><li class="mb-1"><strong class="font-semibold text-text-0">메뉴</strong>:</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade/Data/Import Prestige Item TSV</code></li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade/Data/Import ALL (Stage → Drop → Milestone → Affix → Prestige)</code> (기존 ALL 메뉴 확장)</li><li class="mb-1"><strong class="font-semibold text-text-0">검증</strong>: TSV 30행 강제 (29 또는 31 시 Importer 중단 + DisplayDialog). <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">softCap</code> 범위 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[1, 20]</code> 이외 시 ArgumentException.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.5 Sprint 02 W1 TSV 공통화 연계</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Sprint 01 W2 DQ3 이월 과제 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 공통화. 본 Importer는 그 공통화의 <strong class="font-semibold text-text-0">첫 소비자</strong>로 설계.</li><li class="mb-1">Sprint 02 W1 PR 순서:</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader.cs</code> 공통화 (Sprint 00 Stage Importer 재연결)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemImporter.cs</code> 신규 (공통 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 사용)</li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">의존 보장: <strong class="font-semibold text-text-0">1 머지 후 2 시작</strong>. PM 에스컬레이션 대상.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. PP 적립·소비 로직 계층</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.1 클래스 배치</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>GodBlade.Runtime / Assets/_Project/Scripts/Runtime/Prestige/
   PlayerPrestigeState.cs        — 유저 런타임 상태 (POCO, SerializableClass)
   PrestigeCalculator.cs          — 정적 계산기 (순수 함수)
   PrestigeSlot.cs                — §1.3 struct
   PrestigeSaveSchema.cs          — §5 직렬화 DTO
-  PrestigeBootstrap.cs           — 로드·저장 오케스트레이터 (MonoBehaviour 또는 static Service)
-```
-
-### 3.2 `PlayerPrestigeState` 시그니처
-
-```csharp
-namespace GodBlade.Runtime.Prestige {
+  PrestigeBootstrap.cs           — 로드·저장 오케스트레이터 (MonoBehaviour 또는 static Service)</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.2 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerPrestigeState</code> 시그니처</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>namespace GodBlade.Runtime.Prestige {
   public sealed class PlayerPrestigeState {
     // 계정 단위 (Q2). 현 Sprint 02는 싱글 계정 전제.
     public bool IsUnlocked { get; private set; }
     public long PermanentPp { get; private set; }       // §3.3 (A)(B)(C)(D)(E) 합산
     public long SeasonalPp  { get; private set; }       // Sprint 05 활성화 전엔 0 고정
-    public IReadOnlyList<PrestigeSlot> Slots => _slots; // 최대 60
+    public IReadOnlyList&lt;PrestigeSlot&gt; Slots =&gt; _slots; // 최대 60
 
-    readonly List<PrestigeSlot> _slots = new();          // channel × itemId 평탄 저장
+    readonly List&lt;PrestigeSlot&gt; _slots = new();          // channel × itemId 평탄 저장
 
     // —— 생명주기 ——
     public void Unlock();                                // 100층 마일스톤 훅. 이미 Unlock이면 noop.
 
     // —— PP 적립 ——
-    public void AddPermanentPp(long amount);             // amount < 0 → ArgumentException
+    public void AddPermanentPp(long amount);             // amount &lt; 0 → ArgumentException
     public void AddSeasonalPp(long amount);              // Sprint 05 전에도 호출 가능하지만 결과는 Pp 누적만.
 
     // —— PP 소비·회수 ——
@@ -206,23 +114,19 @@ namespace GodBlade.Runtime.Prestige {
                                                                  // retainRatio=0.5f 가 스펙 §6.2 결정
 
     // —— 이벤트 (UI 구독) ——
-    public event System.Action<PpChannel, long> OnPpChanged;
-    public event System.Action<ushort, PpChannel, int> OnSlotChanged;
+    public event System.Action&lt;PpChannel, long&gt; OnPpChanged;
+    public event System.Action&lt;ushort, PpChannel, int&gt; OnSlotChanged;
     public event System.Action OnUnlocked;
   }
 
   public readonly struct SpendResult {
     public readonly bool Success;
-    public readonly string FailReason;  // "INSUFFICIENT_PP" / "NOT_UNLOCKED" / "INVALID_ITEM" / "OVER_SOFTCAP_FORBIDDEN"(없음, 소프트캡은 디미니싱이지 금지 아님)
+    public readonly string FailReason;  // &quot;INSUFFICIENT_PP&quot; / &quot;NOT_UNLOCKED&quot; / &quot;INVALID_ITEM&quot; / &quot;OVER_SOFTCAP_FORBIDDEN&quot;(없음, 소프트캡은 디미니싱이지 금지 아님)
     public readonly int NewInvestedPp;
   }
-}
-```
-
-### 3.3 `PrestigeCalculator` 시그니처
-
-```csharp
-namespace GodBlade.Runtime.Prestige {
+}</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.3 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeCalculator</code> 시그니처</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>namespace GodBlade.Runtime.Prestige {
   public static class PrestigeCalculator {
     // 투자 PP → 항목 레벨 (소프트캡 전 선형, 이후 log — 스펙 §5.1 공식 인용)
     public static int CalculateLevel(int investedPp, byte softCap);
@@ -232,7 +136,7 @@ namespace GodBlade.Runtime.Prestige {
 
     // 여러 슬롯 합산 — UI 요약 표시용
     public static BuildSummary SummarizeChannel(
-      IReadOnlyList<PrestigeSlot> slots,
+      IReadOnlyList&lt;PrestigeSlot&gt; slots,
       PpChannel channel,
       PrestigeItemCatalogSO catalog);
 
@@ -243,41 +147,25 @@ namespace GodBlade.Runtime.Prestige {
       // ... 스탯 집계 필드 (Sprint 03 Stat 시스템 확정 후 재조정)
     }
   }
-}
-```
-
-- **시그니처 불변 원칙**: 공식 계수가 바뀌어도(game-designer Sprint 02 W1 튜닝 예정) `CalculateLevel` / `CalculateBonus` 의 입출력 타입은 고정. 내부 switch 분기만 교체.
-- `BuildSummary` 필드는 Sprint 03 Stat 시스템 확정 후 1차 동결. 현 W2는 Sprint 02 W1 TSV가 정한 `statKey` 집합만 반영.
-
----
-
-## 4. PP 슬롯 2채널 구조 (Q3 핵심)
-
-### 4.1 설계 목표
-
-- Sprint 02~04 기간: `Seasonal` 채널은 **UI에서 잠금 표시**(탭 노출 자체 금지 또는 회색 처리). `AddSeasonalPp` 는 호출 가능하지만 트리거 경로 없음 → 실질적으로 0 유지.
-- Sprint 05 시점: `SeasonSystem` 신설 → `OnSeasonEnd` 이벤트가 `MigrateSeasonalToPermanent(0.5f)` 호출. 본 W2에서는 **메서드 시그니처만 존재**, 호출자 없음.
-
-### 4.2 채널 경계 불변식
-
-```
-불변식 I1: IsUnlocked == false 이면 Slots.Count == 0
+}</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">시그니처 불변 원칙</strong>: 공식 계수가 바뀌어도(game-designer Sprint 02 W1 튜닝 예정) <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">CalculateLevel</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">CalculateBonus</code> 의 입출력 타입은 고정. 내부 switch 분기만 교체.</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">BuildSummary</code> 필드는 Sprint 03 Stat 시스템 확정 후 1차 동결. 현 W2는 Sprint 02 W1 TSV가 정한 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">statKey</code> 집합만 반영.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. PP 슬롯 2채널 구조 (Q3 핵심)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.1 설계 목표</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Sprint 02~04 기간: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Seasonal</code> 채널은 <strong class="font-semibold text-text-0">UI에서 잠금 표시</strong>(탭 노출 자체 금지 또는 회색 처리). <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AddSeasonalPp</code> 는 호출 가능하지만 트리거 경로 없음 → 실질적으로 0 유지.</li><li class="mb-1">Sprint 05 시점: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SeasonSystem</code> 신설 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnSeasonEnd</code> 이벤트가 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MigrateSeasonalToPermanent(0.5f)</code> 호출. 본 W2에서는 <strong class="font-semibold text-text-0">메서드 시그니처만 존재</strong>, 호출자 없음.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.2 채널 경계 불변식</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>불변식 I1: IsUnlocked == false 이면 Slots.Count == 0
 불변식 I2: Σ(slot.investedPp where channel=Permanent) ≤ PermanentPp
 불변식 I3: Σ(slot.investedPp where channel=Seasonal)  ≤ SeasonalPp
 불변식 I4: Sprint 02~04 기간 SeasonalPp == 0 이고 Seasonal 채널 슬롯 없음
-불변식 I5: MigrateSeasonalToPermanent 후 SeasonalPp == 0, Seasonal 슬롯 모두 Refund → Permanent Pp 풀로 편입 (비율 적용)
-```
-
-- 테스트(§7)에서 I1~I5 모두 검증.
-
-### 4.3 마이그레이션 알고리즘 (의사코드)
-
-```
-MigrateSeasonalToPermanent(retainRatio=0.5):
+불변식 I5: MigrateSeasonalToPermanent 후 SeasonalPp == 0, Seasonal 슬롯 모두 Refund → Permanent Pp 풀로 편입 (비율 적용)</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">테스트(§7)에서 I1~I5 모두 검증.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.3 마이그레이션 알고리즘 (의사코드)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>MigrateSeasonalToPermanent(retainRatio=0.5):
   // Step 1: Seasonal 슬롯 전부 회수 (invested pp 모음)
   seasonalInvested = Σ slot.investedPp where channel=Seasonal
   totalPool = SeasonalPp + seasonalInvested   // 미투자 + 투자 모두
-  RemoveAll(s => s.channel == Seasonal)
+  RemoveAll(s =&gt; s.channel == Seasonal)
 
   // Step 2: retainRatio 적용하여 Permanent Pp 풀에 적립
   converted = floor(totalPool * retainRatio)
@@ -286,35 +174,21 @@ MigrateSeasonalToPermanent(retainRatio=0.5):
 
   // Step 3: 이벤트 발화 (UI 갱신)
   OnPpChanged(Permanent, PermanentPp)
-  OnPpChanged(Seasonal, 0)
-```
-
-- `retainRatio` 인자화 → Sprint 05 시점에 PD가 비율 조정 가능 (기본 0.5 = 스펙 Q3).
-- 부동소수 누적 오차 방지: `long * float` 대신 `long * numerator / denominator` 정수 연산 고려(Sprint 05 재검토).
-
----
-
-## 5. 저장·직렬화
-
-### 5.1 저장 방식 비교
-
-| 방식 | 장점 | 단점 | Sprint 02 적합 |
-|------|------|------|---------|
-| **JSON (Unity `JsonUtility`)** | 사람이 읽기 쉬움 / 디버그 / 스키마 버전 필드 자연 | `Dictionary` 미지원(이미 List 구조) / long 직렬화 OK | **✅** |
-| Binary (`BinaryFormatter`) | 크기 작음 | .NET 공식 권장 중단 / 디버그 어려움 | ❌ |
-| PlayerPrefs | 편의성 | 60 슬롯·long 값에 부적합 / 문자열 크기 제한 | ❌ |
-
-### 5.2 권장 = JSON + `schemaVersion` 필드
-
-```csharp
-namespace GodBlade.Runtime.Prestige {
+  OnPpChanged(Seasonal, 0)</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">retainRatio</code> 인자화 → Sprint 05 시점에 PD가 비율 조정 가능 (기본 0.5 = 스펙 Q3).</li><li class="mb-1">부동소수 누적 오차 방지: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">long <em class="italic"> float</code> 대신 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">long </em> numerator / denominator</code> 정수 연산 고려(Sprint 05 재검토).</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. 저장·직렬화</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.1 저장 방식 비교</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">방식</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">장점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">단점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sprint 02 적합</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">JSON (Unity <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">JsonUtility</code>)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">사람이 읽기 쉬움 / 디버그 / 스키마 버전 필드 자연</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Dictionary</code> 미지원(이미 List 구조) / long 직렬화 OK</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">✅</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Binary (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">BinaryFormatter</code>)</td><td class="border border-border px-3 py-2 text-left text-text-0">크기 작음</td><td class="border border-border px-3 py-2 text-left text-text-0">.NET 공식 권장 중단 / 디버그 어려움</td><td class="border border-border px-3 py-2 text-left text-text-0">❌</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">PlayerPrefs</td><td class="border border-border px-3 py-2 text-left text-text-0">편의성</td><td class="border border-border px-3 py-2 text-left text-text-0">60 슬롯·long 값에 부적합 / 문자열 크기 제한</td><td class="border border-border px-3 py-2 text-left text-text-0">❌</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.2 권장 = JSON + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">schemaVersion</code> 필드</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>namespace GodBlade.Runtime.Prestige {
   [System.Serializable]
   public struct PrestigeSaveDto {
     public int schemaVersion;    // 현재 1. 구조 변경 시 증가.
     public bool isUnlocked;
     public long permanentPp;
     public long seasonalPp;
-    public List<PrestigeSlot> slots;
+    public List&lt;PrestigeSlot&gt; slots;
     public long savedAtUnixMs;   // 역산·디버그용
   }
 
@@ -324,73 +198,39 @@ namespace GodBlade.Runtime.Prestige {
     public static void Save(PlayerPrestigeState state, string accountId);
     public static PlayerPrestigeState Load(string accountId); // 파일 없으면 새 상태 반환
     public static PlayerPrestigeState Migrate(PrestigeSaveDto dto);
-      // schemaVersion < CURRENT_SCHEMA → 순차 마이그레이션 훅
-      // schemaVersion > CURRENT_SCHEMA → 버전 불일치 경고 + 백업 + 신규 초기화
+      // schemaVersion &lt; CURRENT_SCHEMA → 순차 마이그레이션 훅
+      // schemaVersion &gt; CURRENT_SCHEMA → 버전 불일치 경고 + 백업 + 신규 초기화
   }
-}
-```
-
-### 5.3 저장 경로
-
-```
-Application.persistentDataPath/
+}</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.3 저장 경로</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>Application.persistentDataPath/
   account/
-    <accountId>/
+    &lt;accountId&gt;/
       prestige.v1.json         ← 현 Sprint 02
-      prestige.v1.json.bak     ← 매 저장 전 이전 파일 백업 (마이그레이션 실패 대비)
-```
-
-- `accountId` 는 현재 싱글 계정 전제 = `"local"` 고정. Phase 5 Firebase 도입 시 Firebase UID 치환.
-- **계정 영구 (Q2)**: 캐릭터 교체·삭제해도 `account/<accountId>/prestige.v1.json` 이 남음 → 진전 보존.
-- 멀티 캐릭터 도입 시점에도 경로는 `account/` 하위지 `character/` 하위 아님.
-
-### 5.4 마이그레이션 훅 (schemaVersion 1 → 2 시 대비)
-
-```csharp
-public static PlayerPrestigeState Migrate(PrestigeSaveDto dto) {
+      prestige.v1.json.bak     ← 매 저장 전 이전 파일 백업 (마이그레이션 실패 대비)</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">accountId</code> 는 현재 싱글 계정 전제 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;local&quot;</code> 고정. Phase 5 Firebase 도입 시 Firebase UID 치환.</li><li class="mb-1"><strong class="font-semibold text-text-0">계정 영구 (Q2)</strong>: 캐릭터 교체·삭제해도 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">account/&lt;accountId&gt;/prestige.v1.json</code> 이 남음 → 진전 보존.</li><li class="mb-1">멀티 캐릭터 도입 시점에도 경로는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">account/</code> 하위지 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">character/</code> 하위 아님.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.4 마이그레이션 훅 (schemaVersion 1 → 2 시 대비)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>public static PlayerPrestigeState Migrate(PrestigeSaveDto dto) {
   switch (dto.schemaVersion) {
     case 1: return LoadV1(dto);
     // case 2: return LoadV2(dto);   ← Sprint 05 시즌 스키마 변경 시 추가
     default:
-      Debug.LogWarning($"[PrestigeSave] Unknown schemaVersion {dto.schemaVersion}, starting fresh.");
+      Debug.LogWarning($&quot;[PrestigeSave] Unknown schemaVersion {dto.schemaVersion}, starting fresh.&quot;);
       BackupCurruptFile(dto);
       return new PlayerPrestigeState();
   }
-}
-```
-
-### 5.5 저장 타이밍
-
-- **즉시 저장**: `Spend` / `RefundAll` / `Unlock` / `MigrateSeasonalToPermanent` 호출 직후.
-- **배치 저장**: `AddPermanentPp` / `AddSeasonalPp` 는 1초 디바운스 (방치 드립 초당 다회 호출 대비).
-- 게임 종료 훅(`OnApplicationQuit` / `OnApplicationPause(true)`) 에서 강제 flush.
-
----
-
-## 6. 이벤트 훅 연결
-
-### 6.1 Sprint 01 W2 기존 훅 (3개)
-
-| 훅 | Sprint 01 W2 상태 | 본 Sprint 02 W2 연결 |
-|------|-----|------|
-| `MilestoneGranter.Award(100)` | 구현 완료 · `GrantResult` 반환만 | **신규**: `PlayerPrestigeState.Unlock()` 호출 |
-| `MilestoneGranter.Award(200)` | §10.4 "TODO 주석만, 미발화" | **활성화**: 이벤트 발화 + `AddPermanentPp(bonus)` |
-| `OnFloorReached(floor)` | 이벤트 채널 B (§7.4) | `PrestigePpAccumulator.OnStageCompleted` 구독 추가 |
-
-### 6.2 신규 훅 (3개)
-
-| 훅 | 발화 시점 | 핸들러 |
-|------|-----------|--------|
-| `OnBossKilled(floor, bossCode)` | 10층 단위 보스 사망 | `PrestigePpAccumulator.GrantBossBonus(floor)` |
-| `OnIdleReward(elapsedSec, maxFloor)` | 앱 재진입 시 1회 | `PrestigePpAccumulator.GrantIdleDrip(elapsed, maxFloor)` *(Sprint 03 `IdleTicker` 가 실제 호출, W2는 핸들러만 존재)* |
-| `OnSeasonEnd` | Sprint 05 시즌 시스템 | `PlayerPrestigeState.MigrateSeasonalToPermanent(0.5f)` *(W2는 구독자만 등록, 발화자 없음)* |
-
-**합계 = 기존 3 + 신규 3 = 6개 훅**.
-
-### 6.3 `PrestigePpAccumulator` 스케치
-
-```csharp
-namespace GodBlade.Runtime.Prestige {
+}</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.5 저장 타이밍</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">즉시 저장</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Spend</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">RefundAll</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unlock</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MigrateSeasonalToPermanent</code> 호출 직후.</li><li class="mb-1"><strong class="font-semibold text-text-0">배치 저장</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AddPermanentPp</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AddSeasonalPp</code> 는 1초 디바운스 (방치 드립 초당 다회 호출 대비).</li><li class="mb-1">게임 종료 훅(<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnApplicationQuit</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnApplicationPause(true)</code>) 에서 강제 flush.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. 이벤트 훅 연결</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.1 Sprint 01 W2 기존 훅 (3개)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">훅</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sprint 01 W2 상태</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">본 Sprint 02 W2 연결</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneGranter.Award(100)</code></td><td class="border border-border px-3 py-2 text-left text-text-0">구현 완료 · <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GrantResult</code> 반환만</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">신규</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerPrestigeState.Unlock()</code> 호출</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneGranter.Award(200)</code></td><td class="border border-border px-3 py-2 text-left text-text-0">§10.4 &quot;TODO 주석만, 미발화&quot;</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">활성화</strong>: 이벤트 발화 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AddPermanentPp(bonus)</code></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnFloorReached(floor)</code></td><td class="border border-border px-3 py-2 text-left text-text-0">이벤트 채널 B (§7.4)</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigePpAccumulator.OnStageCompleted</code> 구독 추가</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.2 신규 훅 (3개)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">훅</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">발화 시점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">핸들러</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnBossKilled(floor, bossCode)</code></td><td class="border border-border px-3 py-2 text-left text-text-0">10층 단위 보스 사망</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigePpAccumulator.GrantBossBonus(floor)</code></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnIdleReward(elapsedSec, maxFloor)</code></td><td class="border border-border px-3 py-2 text-left text-text-0">앱 재진입 시 1회</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigePpAccumulator.GrantIdleDrip(elapsed, maxFloor)</code> <em class="italic">(Sprint 03 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleTicker</code> 가 실제 호출, W2는 핸들러만 존재)</em></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnSeasonEnd</code></td><td class="border border-border px-3 py-2 text-left text-text-0">Sprint 05 시즌 시스템</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerPrestigeState.MigrateSeasonalToPermanent(0.5f)</code> <em class="italic">(W2는 구독자만 등록, 발화자 없음)</em></td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">합계 = 기존 3 + 신규 3 = 6개 훅</strong>.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.3 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigePpAccumulator</code> 스케치</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>namespace GodBlade.Runtime.Prestige {
   public sealed class PrestigePpAccumulator {
     readonly PlayerPrestigeState _state;
     readonly MilestoneRewardCatalogSO _milestone;  // Sprint 01 W2 자산 재활용
@@ -404,211 +244,88 @@ namespace GodBlade.Runtime.Prestige {
     public void GrantMilestone(int floor);                // §3.2 (D) 마일스톤 1회성
     public void GrantDailyQuest();                        // §3.2 (E) 일일/광고 (Sprint 03+)
   }
-}
-```
-
-- 계산 공식은 `prestige_system_spec.md` §3.2 인용. 계수 하드코딩 대신 `PrestigeItemCatalogSO` 의 형제 SO(`PrestigeGainRatesSO`) 에 TSV 주입 — **Sprint 03+ 확장 여지 남김** (W2 스코프 아님).
-- **W2 범위**: `GrantIdleDrip` 은 핸들러 시그니처만. 발화자(`IdleTicker`)는 Sprint 03 방치 시스템에서 구현.
-
-### 6.4 이벤트 채널 분리 (Sprint 01 W2 §7.4 연장)
-
-```
-이벤트 채널 A: OnMonsterKilled(floor, mobKind, monsterCode)
+}</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">계산 공식은 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_system_spec.md</code> §3.2 인용. 계수 하드코딩 대신 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemCatalogSO</code> 의 형제 SO(<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeGainRatesSO</code>) 에 TSV 주입 — <strong class="font-semibold text-text-0">Sprint 03+ 확장 여지 남김</strong> (W2 스코프 아님).</li><li class="mb-1"><strong class="font-semibold text-text-0">W2 범위</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GrantIdleDrip</code> 은 핸들러 시그니처만. 발화자(<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IdleTicker</code>)는 Sprint 03 방치 시스템에서 구현.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.4 이벤트 채널 분리 (Sprint 01 W2 §7.4 연장)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>이벤트 채널 A: OnMonsterKilled(floor, mobKind, monsterCode)
   → LootRoller (Sprint 02)
   → PrestigePpAccumulator.GrantBossBonus (mobKind=Boss 시만)   ← 신규 구독
 
 이벤트 채널 B: OnFloorReached(floor)
   → MilestoneGranter.Award (Sprint 01 W2 기존)
   → PrestigePpAccumulator.OnStageCompleted                     ← 신규 구독
-  → (floor==100 && !IsUnlocked) → PlayerPrestigeState.Unlock() ← 신규 경로
+  → (floor==100 &amp;&amp; !IsUnlocked) → PlayerPrestigeState.Unlock() ← 신규 경로
   → (floor==200) → PrestigePpAccumulator.GrantMilestone(200)   ← 신규 활성화
 
 이벤트 채널 C (신규): OnSeasonEnd
   → PlayerPrestigeState.MigrateSeasonalToPermanent(0.5f)
-  → 발화자는 Sprint 05+ SeasonSystem. W2 구독자만 등록.
-```
-
-- 기존 채널 A·B 확장만으로 구조 안정. 채널 C는 Sprint 05까지 **정의만** 존재.
-
----
-
-## 7. 테스트 전략
-
-### 7.1 asmdef 배치 (Sprint 01 W2 DQ4 재활용)
-
-- **신설 asmdef**: 없음 — Sprint 01 W2 `GodBlade.Tests.Editor` 재활용.
-- **파일 추가**:
-  ```
-  Assets/_Project/Tests/Editor/
+  → 발화자는 Sprint 05+ SeasonSystem. W2 구독자만 등록.</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">기존 채널 A·B 확장만으로 구조 안정. 채널 C는 Sprint 05까지 <strong class="font-semibold text-text-0">정의만</strong> 존재.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. 테스트 전략</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.1 asmdef 배치 (Sprint 01 W2 DQ4 재활용)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">신설 asmdef</strong>: 없음 — Sprint 01 W2 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Tests.Editor</code> 재활용.</li><li class="mb-1"><strong class="font-semibold text-text-0">파일 추가</strong>:</li></ul>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>  Assets/_Project/Tests/Editor/
     PrestigeCalculatorTests.cs
     PrestigeStateInvariantTests.cs
     PrestigeSaveRoundTripTests.cs
     PrestigeSeasonMigrationTests.cs
-    PrestigeUnlockGateTests.cs
-  ```
-- `GodBlade.Tests.Editor.asmdef` 의 `references` 에 **`GodBlade.Runtime` 추가** (Sprint 01 W2에선 `GodBlade.Data` / `GodBlade.Editor` 만 포함돼 있을 가능성).
-
-### 7.2 핵심 테스트 목록 (7개)
-
-| # | 테스트 | 검증 |
-|---|--------|------|
-| T1 | `Unlock_BeforeFloor100_Throws` | 100층 미도달 상태 `Spend` 호출 → `NOT_UNLOCKED` |
-| T2 | `Unlock_AtFloor100_SetsIsUnlockedTrue` | `Award(100)` 경로 → `IsUnlocked == true` |
-| T3 | `CalculateLevel_SoftCapBoundary` | investedPp=4,5,6 시 레벨 산출 (선형→log 전환 경계) |
-| T4 | `Spend_IdempotentRefund` | 30항목 중복 투입 후 `RefundAll` 시 PP 풀 복원 |
-| T5 | `MigrateSeasonal_50PercentRetained` | Seasonal 100 PP + 투자 50 → Migrate → Permanent +75 / Seasonal 0 |
-| T6 | `SaveLoad_RoundTrip_PreservesAllSlots` | Save → Load 후 `PermanentPp` / `Slots` 완전 일치 |
-| T7 | `Invariant_SumOfInvestedPp_LessOrEqualPool` | 무작위 1000 시뮬 후 I2·I3 불변식 유지 |
-
-### 7.3 테스트 프레임워크 통합 상태
-
-- Sprint 01 W2에서 `com.unity.test-framework: 1.4.5` 확정 · `GodBlade.Tests.Editor.asmdef` 신설 확정.
-- 본 W2에서는 **참조만 추가** → Unity 첫 Edit-mode 실행으로 검증.
-
-### 7.4 Play-mode 테스트
-
-- **본 W2 범위 제외**. Addressables Play-mode 로드 테스트는 Sprint 03+ 스모크 스윗에 통합.
-
----
-
-## 8. 컴파일러 시뮬레이션 체크리스트 (§9 재적용 + 프레스티지 특화)
-
-### 8.1 Sprint 01 W2 11개 체크포인트 재적용 요약
-
-| CP | Sprint 01 W2 원문 | 프레스티지 재적용 |
-|----|-------------------|-------------------|
-| CP9-1 | asmdef references 배열 완결성 | `GodBlade.Tests.Editor.asmdef` 에 `GodBlade.Runtime` 추가 필수 |
-| CP9-2 | Editor asmdef의 `Unity.Addressables.Editor` | `PrestigeItemImporter` 가 Addressables 그룹 생성 → 동일 참조 필요 |
-| CP9-3 | `InternalsVisibleTo` 중복 금지 | `GodBlade.Data` 어셈블리 기존 한 파일 고수. 신규 `PrestigeItemCatalogSO.cs` 에 중복 선언 금지 |
-| CP9-4 | `#if UNITY_EDITOR` 가드 | `PrestigeSaveService` 에 에디터 디버그 Inspector 훅 넣을 시 주의 |
-| CP9-5 | 신규 네임스페이스 충돌 | `GodBlade.Runtime.Prestige` / `GodBlade.Data.Prestige` 서브 네임스페이스 — **rootNamespace 수정 금지**. **NOTE**: Editor asmdef는 파일명=`GodBlade.Editor` / rootNamespace=`GodBlade.EditorTools` (Sprint 00 컨벤션). `PrestigeItemImporter` 는 `namespace GodBlade.EditorTools` 사용. (scaffold sync audit 2026-04-21 D1 반영) |
-| CP9-6 | TSV CRLF/LF Trim | Sprint 01 W2 `TsvReader` 공통화 재사용 → 자동 커버 |
-| CP9-7 | BOM 트림 중복 | 공통 `TsvReader` 한 곳만 — 프레스티지 Importer는 호출만 |
-| CP9-8 | Dictionary 직렬화 금지 | `PrestigeItemCatalogSO._byItemId` 는 `[NonSerialized]` + OnEnable 빌드 |
-| CP9-9 | Enum underlying type | `PpChannel : byte`, `PrestigeTab : byte` — DOTS 친화. 단 `itemId : ushort` 로 16bit 여유 확보 |
-| CP9-10 | Editor에서 `System.Random` 금지 | Importer는 결정론. RNG는 `PrestigePpAccumulator` 런타임에서만 |
-| CP9-11 | Addressables 그룹 중복 | `settings.FindGroup("Prestige")` 선확인 후 없을 때만 생성 |
-
-### 8.2 프레스티지 특화 체크포인트 (5개, 신규)
-
-1. **[CP-P1] 새 enum asmdef 경계 using 누락**
-   - `PpChannel` 은 `GodBlade.Runtime.Prestige` 네임스페이스. `GodBlade.Data` 의 `PrestigeItemRow` 는 `PpChannel` 을 참조하지 **않음**(채널 분리는 런타임 상태 소관). 혼동 시 `using GodBlade.Runtime.Prestige;` 삽입 유혹 발생 → **금지**(역방향 참조로 asmdef 사이클).
-   - 대응: `PpChannel` 은 `GodBlade.Runtime.Prestige` 에만. Data 어셈블리에서 참조 금지.
-
-2. **[CP-P2] `PrestigeItemCatalogSO` 기본값 초기화 누락**
-   - `rows = null` 상태로 `OnEnable` 진입 시 NRE. 생성자 시점 빈 리스트 초기화 필수:
-     ```
-     [SerializeField] List<PrestigeItemRow> rows = new();  // C# 9 target-typed new
-     ```
-   - 빈 SO 생성(메뉴 `Create > GodBlade/Data/Prestige Item Catalog`) 직후 Inspector 열었을 때 NRE 방지.
-
-3. **[CP-P3] 저장 스키마 변경 시 구 JSON 호환성**
-   - Sprint 05 시즌 도입 시 `PrestigeSaveDto` 에 `seasonalRetainRatio` 등 신규 필드 추가 가능.
-   - Unity `JsonUtility` 는 누락 필드에 기본값 주입하지만, **신구 필드 혼재 테스트 없이 릴리스** 시 Editor 실행 중 유저 데이터 유실 위험.
-   - 대응: `PrestigeSaveRoundTripTests.cs` 에 **v1 JSON 파일 하드코딩 문자열 → Load → 현 상태 재현** 테스트 고정. 스키마 변경 PR 마다 이 테스트 갱신.
-
-4. **[CP-P4] `long` 오버플로**
-   - `PermanentPp` 가 `long` 이지만 방치 드립은 초당 호출 가능. Sprint 03 틱커 도입 후 `long.MaxValue` 근처까지 쌓을 시나리오는 없지만 `AddPermanentPp(long.MaxValue)` 같은 치트 입력 방어 필요.
-   - 대응: `AddPermanentPp` 에 `checked` 블록 + `amount < 0` 가드 + 누적값 상한 `1e15` 경고 로그.
-
-5. **[CP-P5] Sprint 00 회귀 2건 재발 경고 (반드시 유지)**
-   - **CS0246 (`Unity.ResourceManager` 누락)**: `PrestigeBootstrap` 이 Addressables로 `PrestigeItemCatalogSO` 로드 → `GodBlade.Runtime.asmdef` 의 `Unity.ResourceManager` 참조 확인 (Sprint 01 W2 §10.3 기 확인, 재확인 필수).
-   - **CS1061 (`InternalsVisibleTo` 오타)**: `GodBlade.Data` 내 기존 한 파일의 `[assembly: InternalsVisibleTo("GodBlade.Editor")]` 가 이미 존재 → Importer에서 내부 세터 접근 시 자동 통과. 신규 SO 파일에 중복 선언 금지(CP9-3 재강조).
-
-### 8.3 PR 머지 전 필수 절차
-
-1. Unity 6 에디터를 연 상태에서 파일 저장.
-2. Console 새 에러 **0** 확인 (Warning은 허용, Error는 금지).
-3. Edit-mode 테스트 7개(§7.2) 전부 Green.
-4. Addressables `Build > Clean Build` → `Build Player Content` 성공.
-5. 위 4개 중 하나라도 실패 시 PR 재작업 (Sprint 00 정적 리뷰 통과 후 회귀 2건 재발 방지).
-
----
-
-## 9. 리스크 · 미해결
-
-### 9.1 Sprint 03 DOTS 전환 시 런타임 레이어 재작성 비용
-
-- `PrestigeSlot` 을 blittable struct 로 설계(§1.3) → `IComponentData` 이식 1:1.
-- `PlayerPrestigeState` 클래스는 **재작성 필요** (MonoBehaviour / POCO → `IComponentData` + System 분리). 추정 **8~16h**.
-- 이벤트 기반 훅(§6)은 ECS World Event 로 리라우팅 필요 → Sprint 03 범위.
-- **완화**: Sprint 03 DOTS 전환 결정 전 프로파일러 측정 데이터 확보. 유저 1명 / 60슬롯 / 초당 1틱 시뮬은 MonoBehaviour 로 충분.
-
-### 9.2 Sprint 05 Seasonal 도입 시 이미 Permanent에 쌓인 PP 재분배 정책
-
-- 현재 정책: **Permanent는 불가역**. Seasonal은 시즌 종료 시 50% Permanent 전환.
-- 리스크: Sprint 02~04 기간 유저가 Permanent에 700+ PP 쌓음 → Sprint 05 첫 시즌 참여 동기 약화 우려.
-- 완화 옵션(Sprint 05 결정 유예):
-  - (a) 시즌 종료 시 Seasonal → Permanent 100% 전환 (스펙 Q3 변경 필요)
-  - (b) 시즌 한정 보너스 컨텐츠로 Seasonal 참여 유인
-- 현 W2 설계는 양쪽 모두 수용 가능 (파라미터 `retainRatio` 만 조정).
-
-### 9.3 30항목 × 무한 레벨 UI 표시
-
-- **본 범위 밖** (UX 설계 영역 = game-designer).
-- W2 는 `PlayerPrestigeState.OnSlotChanged` 이벤트만 제공 → UI 레이어는 Sprint 02 W2 후반부 또는 Sprint 03 에 UIToolkit/UGUI 로 소비.
-- 리스트 스크롤 vs 트리 vs 탭 — PD/game-designer 결정 대기.
-
-### 9.4 `accountId` 싱글 고정 → Firebase UID 전환 시점
-
-- 현 `"local"` 고정. Phase 5 Firebase 도입 시 `PrestigeSaveService.Load(firebaseUid)` 호출자만 변경.
-- **저장 파일 병합 정책**: 기기 1 `"local"` + Firebase 최초 로그인 시 → 어느 쪽 우선? **Phase 5 결정 유예**.
-
----
-
-## 10. PD 결정 필요 — 열린 질문
-
-### Q1. 데이터 모델 옵션 A/B/C
-- 옵션 A(단일 SO 60필드) / **B(`PrestigeSlot` struct + List)** / C(DOTS ECS)
-- 권장: **B**. read-write hot path 에 SO 부적합, DOTS는 Sprint 03+ 측정 후.
-
-### Q2. 로컬 저장 방식
-- **JSON(권장)** / Binary / PlayerPrefs
-- 권장: **JSON + schemaVersion**. 디버그·마이그레이션 용이.
-
-### Q3. Firebase 클라우드 동기 Sprint 02 포함 여부
-- **미포함(권장, Phase 5)** / Sprint 02 포함
-- 권장: **미포함**. 로컬 저장만으로 Sprint 02~04 커버 가능. Phase 5에 `PrestigeSaveService.Load(firebaseUid)` 스위치 추가.
-
-### Q4. Sprint 05 Seasonal → Permanent `retainRatio` 값 동결 시점
-- 현재: Sprint 02 코드에 기본값 `0.5f` 하드코딩
-- Sprint 05 시점에 재논의 가능하도록 **파라미터로 유지 (권장)** / Sprint 02 단계부터 SO로 분리
-- 권장: **파라미터**. 현 범위에선 하드코딩 충분. Sprint 05 시점 SO 주입 전환 과제 별도 등록.
-
----
-
-## 11. Sprint 01 W2 정합성 검증
-
-| 축 | Sprint 01 W2 기준 | 본 Sprint 02 W2 | 일치? |
-|------|-------|----------|------|
-| asmdef 구조 | `GodBlade.Data` / `GodBlade.Runtime` / `GodBlade.Editor` / `GodBlade.Tests.Editor` | 동일 4개 재활용 | ✅ |
-| 카탈로그 저장 | SO 옵션 A (개별 SO) | SO 옵션 A (`PrestigeItemCatalogSO` 단일) | ✅ |
-| `TsvReader` 공통화 | Sprint 02 이월 (DQ3) | 본 W2가 첫 소비자 | ✅ (PR 순서 보장 필요) |
-| `InternalsVisibleTo` 위치 | Data 어셈블리 한 파일 | 신규 SO는 중복 선언 금지 | ✅ |
-| Addressables 그룹 | `Rewards` | 신규 `Prestige` 그룹 | ✅ (별도 그룹, 충돌 없음) |
-| 이벤트 채널 | A(몬스터) · B(층) | A·B 확장 + C(시즌) 신설 | ✅ |
-| `Grade` / `MobKind` enum | `GodBlade.Data` | 본 문서 변경 없음 | ✅ |
-| 테스트 asmdef | `GodBlade.Tests.Editor` 신설 | 재활용 + `GodBlade.Runtime` 참조 추가 | ✅ |
-| §9 체크리스트 | 11개 | 11개 재적용 + 5개 특화 추가 = 16개 | ✅ (확장) |
-| DOTS 전환 전략 | 스키마 호환만, 도입 보류 | 동일 원칙 | ✅ |
-
-**결론**: Sprint 01 W2 v1.0 APPROVED 설계와 **구조적 충돌 0건**. 확장·재활용만 존재.
-
----
-
-## 12. 분량 · 체크 추적
-
-- 본 문서: 약 7쪽 (마크다운 렌더 기준).
-- 섹션 10개 + 정합성 검증 + 분량 메타 = 12개 섹션.
-- §8 체크리스트: **16개** (Sprint 01 W2 11 재적용 + 프레스티지 특화 5).
-- §6 이벤트 훅: **6개** (기존 3 + 신규 3).
-- 실구현 코드 줄 수: **0** (설계 시그니처·의사코드만, PD 제약 준수).
-- PD 결정 대기 열린 질문: **4개**.
-
----
-
-*(끝 — DRAFT v0.1, PD 결정 대기)*
-6:["slug","sprint-02-w2-prestige-tech-sketch","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sprint-02-w2-prestige-tech-sketch","d"],{"children":["__PAGE__?{\"slug\":\"sprint-02-w2-prestige-tech-sketch\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-02-w2-prestige-tech-sketch","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],["$","span",null,{"className":"rounded-sm bg-gold-dark px-2 py-0.5 text-[10px] font-bold text-bg-0","children":"APPROVED"}]]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint 02 W2 — Prestige Entity / Runtime 기술 스케치"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-02-w2-prestige-tech-sketch.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"3,980"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint 02 W2 — Prestige Entity / Runtime 기술 스케치 — 자료실"}],["$","meta","3",{"name":"description","content":"- 슬롯 수: 30항목 × 2채널 = 유저 1인당 60 슬롯."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+    PrestigeUnlockGateTests.cs</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Tests.Editor.asmdef</code> 의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">references</code> 에 <strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime</code> 추가</strong> (Sprint 01 W2에선 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Editor</code> 만 포함돼 있을 가능성).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.2 핵심 테스트 목록 (7개)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">테스트</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">검증</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">T1</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unlock_BeforeFloor100_Throws</code></td><td class="border border-border px-3 py-2 text-left text-text-0">100층 미도달 상태 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Spend</code> 호출 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">NOT_UNLOCKED</code></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T2</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unlock_AtFloor100_SetsIsUnlockedTrue</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Award(100)</code> 경로 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IsUnlocked == true</code></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T3</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">CalculateLevel_SoftCapBoundary</code></td><td class="border border-border px-3 py-2 text-left text-text-0">investedPp=4,5,6 시 레벨 산출 (선형→log 전환 경계)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T4</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Spend_IdempotentRefund</code></td><td class="border border-border px-3 py-2 text-left text-text-0">30항목 중복 투입 후 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">RefundAll</code> 시 PP 풀 복원</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T5</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MigrateSeasonal_50PercentRetained</code></td><td class="border border-border px-3 py-2 text-left text-text-0">Seasonal 100 PP + 투자 50 → Migrate → Permanent +75 / Seasonal 0</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T6</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SaveLoad_RoundTrip_PreservesAllSlots</code></td><td class="border border-border px-3 py-2 text-left text-text-0">Save → Load 후 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PermanentPp</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Slots</code> 완전 일치</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">T7</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Invariant_SumOfInvestedPp_LessOrEqualPool</code></td><td class="border border-border px-3 py-2 text-left text-text-0">무작위 1000 시뮬 후 I2·I3 불변식 유지</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.3 테스트 프레임워크 통합 상태</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Sprint 01 W2에서 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">com.unity.test-framework: 1.4.5</code> 확정 · <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Tests.Editor.asmdef</code> 신설 확정.</li><li class="mb-1">본 W2에서는 <strong class="font-semibold text-text-0">참조만 추가</strong> → Unity 첫 Edit-mode 실행으로 검증.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.4 Play-mode 테스트</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">본 W2 범위 제외</strong>. Addressables Play-mode 로드 테스트는 Sprint 03+ 스모크 스윗에 통합.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">8. 컴파일러 시뮬레이션 체크리스트 (§9 재적용 + 프레스티지 특화)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">8.1 Sprint 01 W2 11개 체크포인트 재적용 요약</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">CP</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sprint 01 W2 원문</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">프레스티지 재적용</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">CP9-1</td><td class="border border-border px-3 py-2 text-left text-text-0">asmdef references 배열 완결성</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Tests.Editor.asmdef</code> 에 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime</code> 추가 필수</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CP9-2</td><td class="border border-border px-3 py-2 text-left text-text-0">Editor asmdef의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.Addressables.Editor</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemImporter</code> 가 Addressables 그룹 생성 → 동일 참조 필요</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CP9-3</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">InternalsVisibleTo</code> 중복 금지</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> 어셈블리 기존 한 파일 고수. 신규 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemCatalogSO.cs</code> 에 중복 선언 금지</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CP9-4</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">#if UNITY_EDITOR</code> 가드</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSaveService</code> 에 에디터 디버그 Inspector 훅 넣을 시 주의</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CP9-5</td><td class="border border-border px-3 py-2 text-left text-text-0">신규 네임스페이스 충돌</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime.Prestige</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data.Prestige</code> 서브 네임스페이스 — <strong class="font-semibold text-text-0">rootNamespace 수정 금지</strong>. <strong class="font-semibold text-text-0">NOTE</strong>: Editor asmdef는 파일명=<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Editor</code> / rootNamespace=<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.EditorTools</code> (Sprint 00 컨벤션). <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemImporter</code> 는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">namespace GodBlade.EditorTools</code> 사용. (scaffold sync audit 2026-04-21 D1 반영)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CP9-6</td><td class="border border-border px-3 py-2 text-left text-text-0">TSV CRLF/LF Trim</td><td class="border border-border px-3 py-2 text-left text-text-0">Sprint 01 W2 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 공통화 재사용 → 자동 커버</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CP9-7</td><td class="border border-border px-3 py-2 text-left text-text-0">BOM 트림 중복</td><td class="border border-border px-3 py-2 text-left text-text-0">공통 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 한 곳만 — 프레스티지 Importer는 호출만</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CP9-8</td><td class="border border-border px-3 py-2 text-left text-text-0">Dictionary 직렬화 금지</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemCatalogSO._byItemId</code> 는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[NonSerialized]</code> + OnEnable 빌드</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CP9-9</td><td class="border border-border px-3 py-2 text-left text-text-0">Enum underlying type</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PpChannel : byte</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeTab : byte</code> — DOTS 친화. 단 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">itemId : ushort</code> 로 16bit 여유 확보</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CP9-10</td><td class="border border-border px-3 py-2 text-left text-text-0">Editor에서 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">System.Random</code> 금지</td><td class="border border-border px-3 py-2 text-left text-text-0">Importer는 결정론. RNG는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigePpAccumulator</code> 런타임에서만</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CP9-11</td><td class="border border-border px-3 py-2 text-left text-text-0">Addressables 그룹 중복</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">settings.FindGroup(&quot;Prestige&quot;)</code> 선확인 후 없을 때만 생성</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">8.2 프레스티지 특화 체크포인트 (5개, 신규)</h3>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP-P1] 새 enum asmdef 경계 using 누락</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PpChannel</code> 은 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime.Prestige</code> 네임스페이스. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> 의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemRow</code> 는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PpChannel</code> 을 참조하지 <strong class="font-semibold text-text-0">않음</strong>(채널 분리는 런타임 상태 소관). 혼동 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">using GodBlade.Runtime.Prestige;</code> 삽입 유혹 발생 → <strong class="font-semibold text-text-0">금지</strong>(역방향 참조로 asmdef 사이클).</li><li class="mb-1">대응: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PpChannel</code> 은 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime.Prestige</code> 에만. Data 어셈블리에서 참조 금지.</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP-P2] <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemCatalogSO</code> 기본값 초기화 누락</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">rows = null</code> 상태로 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnEnable</code> 진입 시 NRE. 생성자 시점 빈 리스트 초기화 필수:</li></ul>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>     [SerializeField] List&lt;PrestigeItemRow&gt; rows = new();  // C# 9 target-typed new</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">빈 SO 생성(메뉴 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Create &gt; GodBlade/Data/Prestige Item Catalog</code>) 직후 Inspector 열었을 때 NRE 방지.</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP-P3] 저장 스키마 변경 시 구 JSON 호환성</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Sprint 05 시즌 도입 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSaveDto</code> 에 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">seasonalRetainRatio</code> 등 신규 필드 추가 가능.</li><li class="mb-1">Unity <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">JsonUtility</code> 는 누락 필드에 기본값 주입하지만, <strong class="font-semibold text-text-0">신구 필드 혼재 테스트 없이 릴리스</strong> 시 Editor 실행 중 유저 데이터 유실 위험.</li><li class="mb-1">대응: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSaveRoundTripTests.cs</code> 에 <strong class="font-semibold text-text-0">v1 JSON 파일 하드코딩 문자열 → Load → 현 상태 재현</strong> 테스트 고정. 스키마 변경 PR 마다 이 테스트 갱신.</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP-P4] <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">long</code> 오버플로</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PermanentPp</code> 가 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">long</code> 이지만 방치 드립은 초당 호출 가능. Sprint 03 틱커 도입 후 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">long.MaxValue</code> 근처까지 쌓을 시나리오는 없지만 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AddPermanentPp(long.MaxValue)</code> 같은 치트 입력 방어 필요.</li><li class="mb-1">대응: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AddPermanentPp</code> 에 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">checked</code> 블록 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">amount &lt; 0</code> 가드 + 누적값 상한 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">1e15</code> 경고 로그.</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP-P5] Sprint 00 회귀 2건 재발 경고 (반드시 유지)</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">CS0246 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.ResourceManager</code> 누락)</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeBootstrap</code> 이 Addressables로 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemCatalogSO</code> 로드 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime.asmdef</code> 의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.ResourceManager</code> 참조 확인 (Sprint 01 W2 §10.3 기 확인, 재확인 필수).</li><li class="mb-1"><strong class="font-semibold text-text-0">CS1061 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">InternalsVisibleTo</code> 오타)</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> 내 기존 한 파일의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[assembly: InternalsVisibleTo(&quot;GodBlade.Editor&quot;)]</code> 가 이미 존재 → Importer에서 내부 세터 접근 시 자동 통과. 신규 SO 파일에 중복 선언 금지(CP9-3 재강조).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">8.3 PR 머지 전 필수 절차</h3>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">Unity 6 에디터를 연 상태에서 파일 저장.</li><li class="mb-1">Console 새 에러 <strong class="font-semibold text-text-0">0</strong> 확인 (Warning은 허용, Error는 금지).</li><li class="mb-1">Edit-mode 테스트 7개(§7.2) 전부 Green.</li><li class="mb-1">Addressables <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Build &gt; Clean Build</code> → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Build Player Content</code> 성공.</li><li class="mb-1">위 4개 중 하나라도 실패 시 PR 재작업 (Sprint 00 정적 리뷰 통과 후 회귀 2건 재발 방지).</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">9. 리스크 · 미해결</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">9.1 Sprint 03 DOTS 전환 시 런타임 레이어 재작성 비용</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSlot</code> 을 blittable struct 로 설계(§1.3) → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IComponentData</code> 이식 1:1.</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerPrestigeState</code> 클래스는 <strong class="font-semibold text-text-0">재작성 필요</strong> (MonoBehaviour / POCO → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IComponentData</code> + System 분리). 추정 <strong class="font-semibold text-text-0">8~16h</strong>.</li><li class="mb-1">이벤트 기반 훅(§6)은 ECS World Event 로 리라우팅 필요 → Sprint 03 범위.</li><li class="mb-1"><strong class="font-semibold text-text-0">완화</strong>: Sprint 03 DOTS 전환 결정 전 프로파일러 측정 데이터 확보. 유저 1명 / 60슬롯 / 초당 1틱 시뮬은 MonoBehaviour 로 충분.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">9.2 Sprint 05 Seasonal 도입 시 이미 Permanent에 쌓인 PP 재분배 정책</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">현재 정책: <strong class="font-semibold text-text-0">Permanent는 불가역</strong>. Seasonal은 시즌 종료 시 50% Permanent 전환.</li><li class="mb-1">리스크: Sprint 02~04 기간 유저가 Permanent에 700+ PP 쌓음 → Sprint 05 첫 시즌 참여 동기 약화 우려.</li><li class="mb-1">완화 옵션(Sprint 05 결정 유예):</li><li class="mb-1">(a) 시즌 종료 시 Seasonal → Permanent 100% 전환 (스펙 Q3 변경 필요)</li><li class="mb-1">(b) 시즌 한정 보너스 컨텐츠로 Seasonal 참여 유인</li><li class="mb-1">현 W2 설계는 양쪽 모두 수용 가능 (파라미터 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">retainRatio</code> 만 조정).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">9.3 30항목 × 무한 레벨 UI 표시</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">본 범위 밖</strong> (UX 설계 영역 = game-designer).</li><li class="mb-1">W2 는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayerPrestigeState.OnSlotChanged</code> 이벤트만 제공 → UI 레이어는 Sprint 02 W2 후반부 또는 Sprint 03 에 UIToolkit/UGUI 로 소비.</li><li class="mb-1">리스트 스크롤 vs 트리 vs 탭 — PD/game-designer 결정 대기.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">9.4 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">accountId</code> 싱글 고정 → Firebase UID 전환 시점</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">현 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;local&quot;</code> 고정. Phase 5 Firebase 도입 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSaveService.Load(firebaseUid)</code> 호출자만 변경.</li><li class="mb-1"><strong class="font-semibold text-text-0">저장 파일 병합 정책</strong>: 기기 1 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;local&quot;</code> + Firebase 최초 로그인 시 → 어느 쪽 우선? <strong class="font-semibold text-text-0">Phase 5 결정 유예</strong>.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">10. PD 결정 필요 — 열린 질문</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">Q1. 데이터 모델 옵션 A/B/C</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">옵션 A(단일 SO 60필드) / <strong class="font-semibold text-text-0">B(<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSlot</code> struct + List)</strong> / C(DOTS ECS)</li><li class="mb-1">권장: <strong class="font-semibold text-text-0">B</strong>. read-write hot path 에 SO 부적합, DOTS는 Sprint 03+ 측정 후.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">Q2. 로컬 저장 방식</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">JSON(권장)</strong> / Binary / PlayerPrefs</li><li class="mb-1">권장: <strong class="font-semibold text-text-0">JSON + schemaVersion</strong>. 디버그·마이그레이션 용이.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">Q3. Firebase 클라우드 동기 Sprint 02 포함 여부</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">미포함(권장, Phase 5)</strong> / Sprint 02 포함</li><li class="mb-1">권장: <strong class="font-semibold text-text-0">미포함</strong>. 로컬 저장만으로 Sprint 02~04 커버 가능. Phase 5에 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeSaveService.Load(firebaseUid)</code> 스위치 추가.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">Q4. Sprint 05 Seasonal → Permanent <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">retainRatio</code> 값 동결 시점</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">현재: Sprint 02 코드에 기본값 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">0.5f</code> 하드코딩</li><li class="mb-1">Sprint 05 시점에 재논의 가능하도록 <strong class="font-semibold text-text-0">파라미터로 유지 (권장)</strong> / Sprint 02 단계부터 SO로 분리</li><li class="mb-1">권장: <strong class="font-semibold text-text-0">파라미터</strong>. 현 범위에선 하드코딩 충분. Sprint 05 시점 SO 주입 전환 과제 별도 등록.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">11. Sprint 01 W2 정합성 검증</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">축</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sprint 01 W2 기준</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">본 Sprint 02 W2</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">일치?</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">asmdef 구조</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Editor</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Tests.Editor</code></td><td class="border border-border px-3 py-2 text-left text-text-0">동일 4개 재활용</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">카탈로그 저장</td><td class="border border-border px-3 py-2 text-left text-text-0">SO 옵션 A (개별 SO)</td><td class="border border-border px-3 py-2 text-left text-text-0">SO 옵션 A (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PrestigeItemCatalogSO</code> 단일)</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 공통화</td><td class="border border-border px-3 py-2 text-left text-text-0">Sprint 02 이월 (DQ3)</td><td class="border border-border px-3 py-2 text-left text-text-0">본 W2가 첫 소비자</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ (PR 순서 보장 필요)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">InternalsVisibleTo</code> 위치</td><td class="border border-border px-3 py-2 text-left text-text-0">Data 어셈블리 한 파일</td><td class="border border-border px-3 py-2 text-left text-text-0">신규 SO는 중복 선언 금지</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Addressables 그룹</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Rewards</code></td><td class="border border-border px-3 py-2 text-left text-text-0">신규 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Prestige</code> 그룹</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ (별도 그룹, 충돌 없음)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">이벤트 채널</td><td class="border border-border px-3 py-2 text-left text-text-0">A(몬스터) · B(층)</td><td class="border border-border px-3 py-2 text-left text-text-0">A·B 확장 + C(시즌) 신설</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Grade</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MobKind</code> enum</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code></td><td class="border border-border px-3 py-2 text-left text-text-0">본 문서 변경 없음</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">테스트 asmdef</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Tests.Editor</code> 신설</td><td class="border border-border px-3 py-2 text-left text-text-0">재활용 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime</code> 참조 추가</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">§9 체크리스트</td><td class="border border-border px-3 py-2 text-left text-text-0">11개</td><td class="border border-border px-3 py-2 text-left text-text-0">11개 재적용 + 5개 특화 추가 = 16개</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ (확장)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">DOTS 전환 전략</td><td class="border border-border px-3 py-2 text-left text-text-0">스키마 호환만, 도입 보류</td><td class="border border-border px-3 py-2 text-left text-text-0">동일 원칙</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">결론</strong>: Sprint 01 W2 v1.0 APPROVED 설계와 <strong class="font-semibold text-text-0">구조적 충돌 0건</strong>. 확장·재활용만 존재.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">12. 분량 · 체크 추적</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">본 문서: 약 7쪽 (마크다운 렌더 기준).</li><li class="mb-1">섹션 10개 + 정합성 검증 + 분량 메타 = 12개 섹션.</li><li class="mb-1">§8 체크리스트: <strong class="font-semibold text-text-0">16개</strong> (Sprint 01 W2 11 재적용 + 프레스티지 특화 5).</li><li class="mb-1">§6 이벤트 훅: <strong class="font-semibold text-text-0">6개</strong> (기존 3 + 신규 3).</li><li class="mb-1">실구현 코드 줄 수: <strong class="font-semibold text-text-0">0</strong> (설계 시그니처·의사코드만, PD 제약 준수).</li><li class="mb-1">PD 결정 대기 열린 질문: <strong class="font-semibold text-text-0">4개</strong>.</li></ul>
+<hr class="my-6 border-border" />
+<p class="mb-3 text-text-0"><em class="italic">(끝 — DRAFT v0.1, PD 결정 대기)</em></p>5:["slug","sprint-02-w2-prestige-tech-sketch","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","sprint-02-w2-prestige-tech-sketch","d"],{"children":["__PAGE__?{\"slug\":\"sprint-02-w2-prestige-tech-sketch\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-02-w2-prestige-tech-sketch","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],["$","span",null,{"className":"rounded-sm bg-gold-dark px-2 py-0.5 text-[10px] font-bold text-bg-0","children":"APPROVED"}]]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint 02 W2 — Prestige Entity / Runtime 기술 스케치"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-02-w2-prestige-tech-sketch.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"3,980"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint 02 W2 — Prestige Entity / Runtime 기술 스케치 — 자료실"}],["$","meta","3",{"name":"description","content":"- 슬롯 수: 30항목 × 2채널 = 유저 1인당 60 슬롯."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

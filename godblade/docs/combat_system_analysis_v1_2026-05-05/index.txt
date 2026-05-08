@@ -1,122 +1,45 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T393c,# 전투 시스템 분석 v1 — Program/Client 원본 (2019.4 LTS)
-
-**작성**: 정현우 (code-lead)
-**일자**: 2026-05-05
-**원천**: `Program/Client/Assets/Scripts/` (read-only SVN 2021 스냅샷)
-**graphify 참조**: GRAPH_REPORT.md Community 6/9 (SnowFamily.EvilOfDarkness 본 도메인) + Community 45 (EodMatrixTrail 클러스터 19 노드)
-**APPROVED**: 정현우 자율 (PD 출장 복귀 시 인수)
-
-## 1. 한 줄 결론
-
-**GodBlade 전투 시스템 = TimeEvent 기반 데이터 드리븐 (Skill+Action 이중 레이어) + 손맛 4중 메커니즘 (콤보 100 / 카메라 흔들림 / Matrix Trail 무기 궤적 / 잔상 복제) + EventManager 발행-구독.** 코드 자체는 견고하고 Unity 6 호환성 ~85%, 단 외부 의존 (Xft / Addressable Async Callback) 2건 패치 필요.
-
-## 2. 손맛 메커니즘 4중 레이어
-
-### 2.1 카메라 흔들림 (Camera Shake) — 4 진입점
-
-| 진입점 | 위치 | 트리거 |
-|--------|------|--------|
-| `EodSkillEventShakeCamera` | `Skill/EodSkillEventShakeCamera.cs` | 스킬 TimeEvent 시작 시 (param1=shakeEventKey) |
-| `EodActionEventShakeCamera` | `Action/EodActionEventShakeCamera.cs` | 액션 TimeEvent (Skill 외 일반 액션) |
-| `EodProjectileEventShakeCamera` | `Projectile/EodProjectileEventShakeCamera.cs` | 투사체 자체 이벤트 |
-| `EodEntityCombatComponent` line 180~191 | 인라인 | **타격 성공 시 hitedShake** (CSV `Projectile.hitedShake` 참조) |
-
-**모두 `EodCamera.Get.ShakeCamera(data)` 단일 함수로 수렴.** `EodGameDatascriptManager.Get.CameraShakeTable.GetData(shakeKey)` 가 데이터 원천. 데이터 테이블 = `CameraShake.csv` (Datasheets/).
-
-**제약 조건**: 길드전 / 길드 토너먼트에서는 **본인 캐릭터일 때만** 흔들림 적용 (PvP 격렬 흔들림 방지 의도). 본 게임은 싱글 RPG 라 이 분기 제거 가능.
-
-**판단**: SkillEvent / ActionEvent / ProjectileEvent / 인라인 = 4 진입점이 단일 EodCamera.Get.ShakeCamera 로 수렴 → Unity 6 포팅 시 **EodCamera 만 마이그레이션하면 4 트리거 자동 흡수**.
-
-### 2.2 콤보 시스템 (ComboHit)
-
-- `EodEntityComboHitComponent.cs` (~95줄, 작음)
-- **m_nMaxCombo = 100** (하드코딩)
-- ComboDuration = 3.0f (3초 안 안 때리면 리셋)
-- `OnHit` EventBase 발행 시 `hitUI.IncreaseHit(entity)`
-- UI: `EodUIComboHit` (`UI/EodUIComboHit.cs`) — Addressable 비동기 로드
-- **데이터 의존성 0** — 수치 변경 시 코드 수정 (라이브 시즌 변경 어려움). Sp02+ 어픽스/시즌 시 SO 로 빼야 함.
-
-### 2.3 Matrix Trail = 무기 궤적 트레일 (Xft.XWeaponTrail wrapper)
-
-- `EodMatrixTrail.cs` (`Foundation/`) — MonoBehaviour, 외부 `Xft` namespace 의존
-- 좌/우 손 2개 (`_MatrixTrailL`, `_MatrixTrailR`) — `EodEntityCombatComponent` 가 양손 동시 제어
-- `PlayTrail(playTime)` / `StropTrail()` 단순 인터페이스 (오타: Strop = Stop)
-- **Update 에서 _Height 진동 (sin 형 위아래 0.5m 진폭)** — 무기 궤적이 단순 직선이 아니라 부드러운 곡선
-- **Unity 6 리스크**: Xft 외부 라이브러리 — Asset Store 검색 결과 X-WeaponTrail 2014년 마지막 업데이트, **Unity 6 미보증**. 대체안: Unity 6 내장 TrailRenderer + Bezier 곡선 / Vertex Helper 직접 구현 (~200 LOC).
-
-### 2.4 잔상 복제 시스템 (Motion Effect)
-
-- `EodEntityMatrixEffectComponent.cs` (잘못된 명명, "Matrix" 인데 위 Matrix Trail 과 다름)
-- **본질**: 캐릭터 본체를 Animator 째 N개 Instantiate → 0.1초 간격 순차 활성화 → 이전 프레임 애니메이션 재생 → 잔상 효과 (디아블로/베요네타류 모션 블러)
-- `m_effectValueCount` 갯수 만큼 복제. 코루틴 `processMakeEffect → processStartEffect → processClearEffect` 3단 파이프
-- **현재 5초 주기 자동 테스트** (line 67~77) — 디버그 코드 잔존 → 포팅 시 제거
-- **Unity 6 리스크 중**: Animator Instantiate 후 Material 교체 코드 주석 처리 (효과용 Material 미적용). 한지우(graphics-lead) 협업 슬롯 — Stencil/Ghost Material 추가 권고.
-
-## 3. 스킬 시스템 아키텍처
-
-### 3.1 Skill 클래스 (`Skill/EodSkill.cs`, 517줄)
-
-```
-Skill
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T9921,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">전투 시스템 분석 v1 — Program/Client 원본 (2019.4 LTS)</h1>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">작성</strong>: 정현우 (code-lead) <strong class="font-semibold text-text-0">일자</strong>: 2026-05-05 <strong class="font-semibold text-text-0">원천</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Program/Client/Assets/Scripts/</code> (read-only SVN 2021 스냅샷) <strong class="font-semibold text-text-0">graphify 참조</strong>: GRAPH_REPORT.md Community 6/9 (SnowFamily.EvilOfDarkness 본 도메인) + Community 45 (EodMatrixTrail 클러스터 19 노드) <strong class="font-semibold text-text-0">APPROVED</strong>: 정현우 자율 (PD 출장 복귀 시 인수)</p>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. 한 줄 결론</h2>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">GodBlade 전투 시스템 = TimeEvent 기반 데이터 드리븐 (Skill+Action 이중 레이어) + 손맛 4중 메커니즘 (콤보 100 / 카메라 흔들림 / Matrix Trail 무기 궤적 / 잔상 복제) + EventManager 발행-구독.</strong> 코드 자체는 견고하고 Unity 6 호환성 ~85%, 단 외부 의존 (Xft / Addressable Async Callback) 2건 패치 필요.</p>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. 손맛 메커니즘 4중 레이어</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.1 카메라 흔들림 (Camera Shake) — 4 진입점</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">진입점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">위치</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">트리거</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventShakeCamera</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Skill/EodSkillEventShakeCamera.cs</code></td><td class="border border-border px-3 py-2 text-left text-text-0">스킬 TimeEvent 시작 시 (param1=shakeEventKey)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodActionEventShakeCamera</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Action/EodActionEventShakeCamera.cs</code></td><td class="border border-border px-3 py-2 text-left text-text-0">액션 TimeEvent (Skill 외 일반 액션)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodProjectileEventShakeCamera</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Projectile/EodProjectileEventShakeCamera.cs</code></td><td class="border border-border px-3 py-2 text-left text-text-0">투사체 자체 이벤트</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodEntityCombatComponent</code> line 180~191</td><td class="border border-border px-3 py-2 text-left text-text-0">인라인</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">타격 성공 시 hitedShake</strong> (CSV <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Projectile.hitedShake</code> 참조)</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">모두 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodCamera.Get.ShakeCamera(data)</code> 단일 함수로 수렴.</strong> <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodGameDatascriptManager.Get.CameraShakeTable.GetData(shakeKey)</code> 가 데이터 원천. 데이터 테이블 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">CameraShake.csv</code> (Datasheets/).</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">제약 조건</strong>: 길드전 / 길드 토너먼트에서는 <strong class="font-semibold text-text-0">본인 캐릭터일 때만</strong> 흔들림 적용 (PvP 격렬 흔들림 방지 의도). 본 게임은 싱글 RPG 라 이 분기 제거 가능.</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">판단</strong>: SkillEvent / ActionEvent / ProjectileEvent / 인라인 = 4 진입점이 단일 EodCamera.Get.ShakeCamera 로 수렴 → Unity 6 포팅 시 <strong class="font-semibold text-text-0">EodCamera 만 마이그레이션하면 4 트리거 자동 흡수</strong>.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.2 콤보 시스템 (ComboHit)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodEntityComboHitComponent.cs</code> (~95줄, 작음)</li><li class="mb-1"><strong class="font-semibold text-text-0">m_nMaxCombo = 100</strong> (하드코딩)</li><li class="mb-1">ComboDuration = 3.0f (3초 안 안 때리면 리셋)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnHit</code> EventBase 발행 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">hitUI.IncreaseHit(entity)</code></li><li class="mb-1">UI: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodUIComboHit</code> (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">UI/EodUIComboHit.cs</code>) — Addressable 비동기 로드</li><li class="mb-1"><strong class="font-semibold text-text-0">데이터 의존성 0</strong> — 수치 변경 시 코드 수정 (라이브 시즌 변경 어려움). Sp02+ 어픽스/시즌 시 SO 로 빼야 함.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.3 Matrix Trail = 무기 궤적 트레일 (Xft.XWeaponTrail wrapper)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodMatrixTrail.cs</code> (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Foundation/</code>) — MonoBehaviour, 외부 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Xft</code> namespace 의존</li><li class="mb-1">좌/우 손 2개 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">_MatrixTrailL</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">_MatrixTrailR</code>) — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodEntityCombatComponent</code> 가 양손 동시 제어</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">PlayTrail(playTime)</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">StropTrail()</code> 단순 인터페이스 (오타: Strop = Stop)</li><li class="mb-1"><strong class="font-semibold text-text-0">Update 에서 _Height 진동 (sin 형 위아래 0.5m 진폭)</strong> — 무기 궤적이 단순 직선이 아니라 부드러운 곡선</li><li class="mb-1"><strong class="font-semibold text-text-0">Unity 6 리스크</strong>: Xft 외부 라이브러리 — Asset Store 검색 결과 X-WeaponTrail 2014년 마지막 업데이트, <strong class="font-semibold text-text-0">Unity 6 미보증</strong>. 대체안: Unity 6 내장 TrailRenderer + Bezier 곡선 / Vertex Helper 직접 구현 (~200 LOC).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.4 잔상 복제 시스템 (Motion Effect)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodEntityMatrixEffectComponent.cs</code> (잘못된 명명, &quot;Matrix&quot; 인데 위 Matrix Trail 과 다름)</li><li class="mb-1"><strong class="font-semibold text-text-0">본질</strong>: 캐릭터 본체를 Animator 째 N개 Instantiate → 0.1초 간격 순차 활성화 → 이전 프레임 애니메이션 재생 → 잔상 효과 (디아블로/베요네타류 모션 블러)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">m_effectValueCount</code> 갯수 만큼 복제. 코루틴 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">processMakeEffect → processStartEffect → processClearEffect</code> 3단 파이프</li><li class="mb-1"><strong class="font-semibold text-text-0">현재 5초 주기 자동 테스트</strong> (line 67~77) — 디버그 코드 잔존 → 포팅 시 제거</li><li class="mb-1"><strong class="font-semibold text-text-0">Unity 6 리스크 중</strong>: Animator Instantiate 후 Material 교체 코드 주석 처리 (효과용 Material 미적용). 한지우(graphics-lead) 협업 슬롯 — Stencil/Ghost Material 추가 권고.</li></ul>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. 스킬 시스템 아키텍처</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.1 Skill 클래스 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Skill/EodSkill.cs</code>, 517줄)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>Skill
 ├─ owner: EodEntity
 ├─ data: GameDatascript.Skill (CSV → SO)
-├─ eventList: List<TimeEvent>  ← TimeEvent 패턴 핵심
+├─ eventList: List&lt;TimeEvent&gt;  ← TimeEvent 패턴 핵심
 ├─ cooldownTime / cooldownTimeMax
 ├─ autoCoolTime  ← 오토 모드 같은 스킬 연속 방지
 ├─ attackSpeedRatio  ← 공속 (Ability.AttackRatio × TimeCtrlSpeed)
 ├─ subSkillStartCheck / subSkillUseTiming  ← 서브 스킬 (메인 → 서브 콤보 3초 안)
 ├─ Stop() / Resume() / InitializeSKill() / Update() / BuildSkillEventLists()
-└─ ApplyCooldownTime()  ← SkillLevelUseData 테이블에서 baseCoolTime + 쿨감 % 적용
-```
-
-**핵심 패턴**:
-1. CSV `Skill.generalTypeCode` → `SkillEvent` 테이블 unitList → `SkillEventBuilder.CreateSkillEvent` 팩토리 → 13 종류 TimeEvent 인스턴스화
-2. `Update()` 에서 `elapsedTime / fLastAttackSpeedRatio` 비교 → 시간 기반 이벤트 발화
-3. `attackSpeedRatio = AttackRatio × TimeCtrlSpeed` 동시 적용 — 공속과 슬로우/배속 효과 결합
-
-### 3.2 13 SkillEvent 종류 (`SkillEventBuilder.cs`)
-
-| eSkillEventType | 클래스 | 용도 | 손맛 영향도 |
-|---|---|---|---|
-| MoveForward | `EodSkillEventMoveFoward` | 직선 이동 | 중 |
-| MoveDirection | `EodSkillEventMoveDirection` | 입력 방향 이동 | 중 |
-| MoveToNearestTarget | `EodSkillEventMoveToNearestTarget` | 최근접 타겟 돌진 | **높음** (대시 손맛) |
-| MoveForwardAutoToNearTarget | `EodSkillEventMoveDirectAutoToNearTarget` | 소용돌이 (이동 중 컨트롤) | 중 |
-| TeleportForward | `EodSkillEventTeleportFoward` | 순간이동 전방 | **높음** |
-| TeleportBack | `EodSkillEventTeleportBack` | 순간이동 후방 (백스텝) | **높음** |
-| Rotate | `EodSkillEventRotate` | 즉시 회전 (각도 지정) | 낮음 |
-| RotateDirection | `EodSkillEventRotateDirection` | 입력 방향 회전 | 낮음 |
-| RotateToNearestTarget | `EodSkillEventRotateToNearestTarget` | 최근접 타겟 자동 회전 | 중 (오토에임) |
-| CreateProjectile | `EodSkillEventCreateProjectile` | 투사체 생성 (param2=각도, socket=발사 본) | **최고** |
-| CreateMonster | `EodSkillEventCreateMonster` | 적 몬스터 소환 | 낮음 |
-| CreateAllyMonster | `EodSkillEventAllyCreateMonster` | 아군 소환 (펫) | 중 |
-| ShakeCamera | `EodSkillEventShakeCamera` | 카메라 흔들림 | **최고** |
-
-### 3.3 EntitySkillComponent (`EodEntitySkillComponent.cs`, 1794줄)
-
-- `baseSkills: List<Skill>` (기본 공격 콤보 — 인덱스 순환)
-- `equipSkills: List<Skill>` (장착 액티브 4슬롯)
-- `selectedUsingSkill: Skill` (현재 시전 중)
-- `currentBaseSkillComboIndex` (콤보 1단→2단→3단 순환)
-- `comboResetRemainTime` (콤보 리셋 카운트다운)
-- 7 EventBase 등록: FindUsableSkill / FindUsableDashSkill / FindUsableBaseSkill / GetUsableSkill / DoBaseAttack / DoAttack / GetEquipSkills
-
-**서브 스킬 흐름**:
-1. 메인 스킬 시전 → `subSkillStartCheck = true`
-2. `data.subSkillStartTime` 경과 → `subSkillUseTiming = true`
-3. UI `pUI.SetSubButtonShow(SkillLaneIndex, 3.0f)` — **3초 안 누르면 서브 발동, 안 누르면 자동 비활성**
-4. 메인-서브 = 디아블로 4 의 「2단 콤보 스킬」과 유사
-
-## 4. EventBase 발행-구독 시스템
-
-`Entity/Event/EodEntityEventType.cs` 의 **34 eType + 35 EventBase 클래스** (`EodEntityEvent.cs`)
-
-```
-EventBase (abstract)
+└─ ApplyCooldownTime()  ← SkillLevelUseData 테이블에서 baseCoolTime + 쿨감 % 적용</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">핵심 패턴</strong>:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">CSV <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Skill.generalTypeCode</code> → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SkillEvent</code> 테이블 unitList → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SkillEventBuilder.CreateSkillEvent</code> 팩토리 → 13 종류 TimeEvent 인스턴스화</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Update()</code> 에서 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">elapsedTime / fLastAttackSpeedRatio</code> 비교 → 시간 기반 이벤트 발화</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">attackSpeedRatio = AttackRatio × TimeCtrlSpeed</code> 동시 적용 — 공속과 슬로우/배속 효과 결합</li></ol>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.2 13 SkillEvent 종류 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SkillEventBuilder.cs</code>)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">eSkillEventType</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">클래스</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">용도</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">손맛 영향도</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">MoveForward</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventMoveFoward</code></td><td class="border border-border px-3 py-2 text-left text-text-0">직선 이동</td><td class="border border-border px-3 py-2 text-left text-text-0">중</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">MoveDirection</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventMoveDirection</code></td><td class="border border-border px-3 py-2 text-left text-text-0">입력 방향 이동</td><td class="border border-border px-3 py-2 text-left text-text-0">중</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">MoveToNearestTarget</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventMoveToNearestTarget</code></td><td class="border border-border px-3 py-2 text-left text-text-0">최근접 타겟 돌진</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">높음</strong> (대시 손맛)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">MoveForwardAutoToNearTarget</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventMoveDirectAutoToNearTarget</code></td><td class="border border-border px-3 py-2 text-left text-text-0">소용돌이 (이동 중 컨트롤)</td><td class="border border-border px-3 py-2 text-left text-text-0">중</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">TeleportForward</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventTeleportFoward</code></td><td class="border border-border px-3 py-2 text-left text-text-0">순간이동 전방</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">높음</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">TeleportBack</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventTeleportBack</code></td><td class="border border-border px-3 py-2 text-left text-text-0">순간이동 후방 (백스텝)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">높음</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Rotate</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventRotate</code></td><td class="border border-border px-3 py-2 text-left text-text-0">즉시 회전 (각도 지정)</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">RotateDirection</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventRotateDirection</code></td><td class="border border-border px-3 py-2 text-left text-text-0">입력 방향 회전</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">RotateToNearestTarget</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventRotateToNearestTarget</code></td><td class="border border-border px-3 py-2 text-left text-text-0">최근접 타겟 자동 회전</td><td class="border border-border px-3 py-2 text-left text-text-0">중 (오토에임)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CreateProjectile</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventCreateProjectile</code></td><td class="border border-border px-3 py-2 text-left text-text-0">투사체 생성 (param2=각도, socket=발사 본)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">최고</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CreateMonster</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventCreateMonster</code></td><td class="border border-border px-3 py-2 text-left text-text-0">적 몬스터 소환</td><td class="border border-border px-3 py-2 text-left text-text-0">낮음</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">CreateAllyMonster</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventAllyCreateMonster</code></td><td class="border border-border px-3 py-2 text-left text-text-0">아군 소환 (펫)</td><td class="border border-border px-3 py-2 text-left text-text-0">중</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">ShakeCamera</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodSkillEventShakeCamera</code></td><td class="border border-border px-3 py-2 text-left text-text-0">카메라 흔들림</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">최고</strong></td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.3 EntitySkillComponent (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodEntitySkillComponent.cs</code>, 1794줄)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">baseSkills: List&lt;Skill&gt;</code> (기본 공격 콤보 — 인덱스 순환)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">equipSkills: List&lt;Skill&gt;</code> (장착 액티브 4슬롯)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">selectedUsingSkill: Skill</code> (현재 시전 중)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">currentBaseSkillComboIndex</code> (콤보 1단→2단→3단 순환)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">comboResetRemainTime</code> (콤보 리셋 카운트다운)</li><li class="mb-1">7 EventBase 등록: FindUsableSkill / FindUsableDashSkill / FindUsableBaseSkill / GetUsableSkill / DoBaseAttack / DoAttack / GetEquipSkills</li></ul>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">서브 스킬 흐름</strong>:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">메인 스킬 시전 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">subSkillStartCheck = true</code></li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">data.subSkillStartTime</code> 경과 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">subSkillUseTiming = true</code></li><li class="mb-1">UI <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">pUI.SetSubButtonShow(SkillLaneIndex, 3.0f)</code> — <strong class="font-semibold text-text-0">3초 안 누르면 서브 발동, 안 누르면 자동 비활성</strong></li><li class="mb-1">메인-서브 = 디아블로 4 의 「2단 콤보 스킬」과 유사</li></ol>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. EventBase 발행-구독 시스템</h2>
+<p class="mb-3 text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Entity/Event/EodEntityEventType.cs</code> 의 <strong class="font-semibold text-text-0">34 eType + 35 EventBase 클래스</strong> (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodEntityEvent.cs</code>)</p>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>EventBase (abstract)
 ├─ OnDataLoaded / OnModelLoaded / ActivateEntity (생명주기)
 ├─ DoBaseAttack / DoAttack / OnSkillUsed (스킬 트리거)
 ├─ FindUsableSkill / FindUsableDashSkill / FindUsableBaseSkill / GetUsableSkill / GetEquipSkills (스킬 조회)
@@ -127,15 +50,10 @@ EventBase (abstract)
 ├─ GetSocketTransform (본 소켓 조회 = 발사 위치)
 ├─ UseAI / UseCameraEnterAI / InputChanged (제어)
 ├─ DoSetupItemInventory / EquipItems (장비)
-└─ ContentsGo / ContentsUIReset (씬)
-```
-
-`EodEntityEventManager` + `EodEntityEventPool` (오브젝트 풀) → **GC 압박 최소** 설계. Unity 6 에서도 동일 패턴 유효.
-
-## 5. 데이터 흐름
-
-```
-CSV (Datasheets/)
+└─ ContentsGo / ContentsUIReset (씬)</code></pre>
+<p class="mb-3 text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodEntityEventManager</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodEntityEventPool</code> (오브젝트 풀) → <strong class="font-semibold text-text-0">GC 압박 최소</strong> 설계. Unity 6 에서도 동일 패턴 유효.</p>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. 데이터 흐름</h2>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>CSV (Datasheets/)
   ↓ [SCSV Loader]
 EodDataTableSkill / SkillEvent / SkillType / SkillLevelup / SkillLevelUseData
 / PassiveSkill / SuccessionSkill / OccupationSkillSetting / GuildSkill (9 테이블)
@@ -144,23 +62,18 @@ EodDataTableSkill / SkillEvent / SkillType / SkillLevelup / SkillLevelUseData
   ↓ [Skill.BuildSkillEventLists]
 SkillEventBuilder.CreateSkillEvent (팩토리, switch 13 case)
   ↓
-List<TimeEvent> (스킬마다 N개)
+List&lt;TimeEvent&gt; (스킬마다 N개)
   ↓ [Update 매 프레임]
-elapsedTime 비교 → eventStartTime ≤ elapsed ≤ eventStartTime+duration → Start/Update/End
-```
-
-**v3.0 #3 DB 통합 영향**: CSV → FlatBuffer (Self-build, 정현우 50h Sp-W01~W04 분산) 로 변환. SkillEventBuilder 의 `data.param1/2/3` 파싱 로직 보존, FlatBuffer schema 만 추가.
-
-## 6. 의존성 트리
-
-```
-EodEntity (god 노드)
+elapsedTime 비교 → eventStartTime ≤ elapsed ≤ eventStartTime+duration → Start/Update/End</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">v3.0 #3 DB 통합 영향</strong>: CSV → FlatBuffer (Self-build, 정현우 50h Sp-W01~W04 분산) 로 변환. SkillEventBuilder 의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">data.param1/2/3</code> 파싱 로직 보존, FlatBuffer schema 만 추가.</p>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. 의존성 트리</h2>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>EodEntity (god 노드)
 ├─ EodEntityCombatComponent  (전투 처리, 2499줄)
 │   ├─ EodAbilityStatus  (능력치)
 │   ├─ EodMatrixTrail × 2 (좌/우)  ← Xft 외부 의존
 │   └─ EodHUDDamageManager (회피/데미지 텍스트)
 ├─ EodEntitySkillComponent  (스킬 보유, 1794줄)
-│   └─ List<Skill>  → List<TimeEvent>
+│   └─ List&lt;Skill&gt;  → List&lt;TimeEvent&gt;
 ├─ EodEntityComboHitComponent  (콤보 UI, 95줄)
 │   └─ EodUIComboHit (Addressable 비동기)
 ├─ EodEntityShakeCameraComponent  (카메라 흔들림 수신)
@@ -171,77 +84,25 @@ EodEntity (god 노드)
 ├─ EodEntityAnimationComponent  (Animator + AnimatorStateInfo)
 ├─ EodEntityModelComponent  (모델 root)
 └─ EodEntityEventManager  (발행-구독)
-    └─ EodEntityEventPool  (GC 풀)
-```
-
-**god 노드**: `EodEntity` (community 6 본 도메인). 컴포넌트 19개를 single EodEntity 가 owner. Unity 6 포팅 시 **EodEntity 부터 마이그레이션 후 컴포넌트 순차** 권고.
-
-## 7. 2019.4 → Unity 6 호환성 평가
-
-| 항목 | 사용 | Unity 6 상태 | 패치 필요 |
-|------|------|-------------|----------|
-| `MonoBehaviour` | 모든 Component | OK | X |
-| `Animator` / `AnimatorStateInfo` | EodEntityMatrixEffect / Skill | OK | X |
-| `Time.deltaTime` / `Time.realtimeSinceStartup` | 전체 | OK | X |
-| `Coroutine / IEnumerator yield return` | EodEntityMatrixEffect | OK (Awaitable 권장) | 선택 |
-| `Instantiate / Destroy` | 전체 | OK | X |
-| `Resources.Load` | 미사용 (Addressable 이미 적용) | OK | X |
-| **`Addressables.LoadAsync`** | EodUIManager.GenerateUIUnitAsync | Addressables 2.x 호환 | 콜백 패턴 → async/await 권장 |
-| **`Xft.XWeaponTrail`** | EodMatrixTrail | **미보증, 2014 stale** | **대체 또는 검증 필요** |
-| `UnityEngine.Random.Range` | Skill 회피 / 잔상 | OK | X |
-| `Vector3 / Quaternion` | 전체 | OK | X |
-| `string.Parse` (data.param1) | SkillEventBuilder | OK | FlatBuffer 후 strongly-typed 권고 |
-| `Debug.Log` 잔존 | 다수 | OK | 빌드 시 제거 권고 |
-| `Random = UnityEngine.Random` 별칭 | EodEntityCombatComponent | OK | X |
-
-**호환성 종합**: ~**85% drop-in 가능**. Xft 1건 + Addressable async/await 1건 = 2건만 패치하면 99% 동작.
-
-## 8. 라이브 안정성 (정현우 본 영역) 위험 요소
-
-1. **EodEntityCombatComponent 2499줄** — 단일 클래스 god 클래스. 라이브 패치 시 회귀 위험 높음. 포팅 시 분리 권고: `CombatStateMachine` / `DamageCalculator` / `MatrixTrailController` / `HitDetection` 4 sub-class.
-2. **EodEntitySkillComponent 1794줄** — 동일 god 클래스 위험.
-3. **EodEntityMatrixEffectComponent 디버그 코드 잔존** (5초 주기 자동 발화) — **포팅 시 즉시 제거** 안 하면 라이브 폭주 가능.
-4. **하드코딩**:
-   - `m_nMaxCombo = 100` (ComboHit)
-   - `ComboDuration = 3.0f` (ComboHit)
-   - `SetSubButtonShow 3.0f` (서브 스킬 시간)
-   - 어픽스/시즌 변동 가능성 → SO 빼기 필수.
-5. **TimeCtrlSpeed × AttackRatio 이중 곱** — 균형 무너지면 손맛 망가짐. Sp02 W1 PP-only 잠금 (메모리 `project_milestone_bonus_pct_pp_only_lock.md`) 와 정합 검증 필요 — 윤서아(game-designer) 협업 슬롯.
-
-## 9. 200F 4.255 baseline 영향 평가
-
-전투 시스템 자체는 **DPS 곡선에 직접 영향 X** (이펙트/UI 레이어). 단:
-- `attackSpeedRatio` (AttackRatio × TimeCtrlSpeed) 변동 → DPS 영향
-- `cooldownTime` 쿨감 % 적용 → DPS 영향
-- 이 2 변수는 `EodAbilityStatus` (능력치) 에서 결정 → 윤서아 영역.
-- **본 분석은 baseline 0% 영향**. 한가영(web-game-balance) 주 1회 회귀 검증과 무관.
-
-## 10. 정현우 권고
-
-1. **A안 = 그대로 가져오기 권고** (포팅 전략 v1 §3 참조)
-2. **분할 마이그레이션** Phase 4 (2027-04+) 진입 시 1주 1 컴포넌트 페이스
-3. **Xft 의존 제거 + Unity 6 내장 TrailRenderer 대체** (~200 LOC, 1주 분량)
-4. **EodEntityMatrixEffectComponent 디버그 5초 자동 발화 즉시 제거**
-5. **god 클래스 2건 (Combat 2499 / Skill 1794) 분할** Sp02 재개 (9/15) 후 Unity 측 작업 시 진행
-6. **CSV → FlatBuffer 마이그레이션** Sp-W01~W04 50h 작업과 통합 (이미 잠금)
-7. **한지우(graphics-lead) 협업 슬롯**: 잔상 복제 Stencil/Ghost Material 시드 + Camera Shake 셰이더 (모션 블러) 검토
-
-## 11. 다음 세션 첫 액션
-
-- [ ] EodCamera.cs 본체 read (ShakeCamera 함수 본체 + 흔들림 알고리즘 = sin/perlin/dampen 결정 매트릭스)
-- [ ] EodActionEventShakeCamera vs EodSkillEventShakeCamera 차이점 비교
-- [ ] EodProjectile.cs read (Damage Detection 흐름 = AttPow / DefPow / QuickDetection)
-- [ ] CSV `CameraShake.csv` 실 데이터 sample 5건 매핑 (param 의미)
-- [ ] Xft.XWeaponTrail Unity 6 호환 PoC 1h (또는 대체안)
-- [ ] 한지우 협업 발주 슬롯 Sp01 W2 종료 (5/17) 후 박세린(PM) 경유
-
----
-
-**산출물 묶음**:
-- `combat_system_porting_strategy_v1_2026-05-05.md` (A/B/C 3안)
-- `combat_system_core_assets_inventory_v1_2026-05-05.md` (~50 파일 매트릭스)
-- `combat_system_pd_briefing_1page_2026-05-05.md` (PD 출장 복귀 1쪽)
-6:["slug","combat_system_analysis_v1_2026-05-05","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","combat_system_analysis_v1_2026-05-05","d"],{"children":["__PAGE__?{\"slug\":\"combat_system_analysis_v1_2026-05-05\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","combat_system_analysis_v1_2026-05-05","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"전투 시스템 분석 v1 — Program/Client 원본 (2019.4 LTS)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/combat_system_analysis_v1_2026-05-05.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,755"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"전투 시스템 분석 v1 — Program/Client 원본 (2019.4 LTS) — 자료실"}],["$","meta","3",{"name":"description","content":"작성: 정현우 (code-lead)"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+    └─ EodEntityEventPool  (GC 풀)</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">god 노드</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodEntity</code> (community 6 본 도메인). 컴포넌트 19개를 single EodEntity 가 owner. Unity 6 포팅 시 <strong class="font-semibold text-text-0">EodEntity 부터 마이그레이션 후 컴포넌트 순차</strong> 권고.</p>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. 2019.4 → Unity 6 호환성 평가</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">사용</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Unity 6 상태</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">패치 필요</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MonoBehaviour</code></td><td class="border border-border px-3 py-2 text-left text-text-0">모든 Component</td><td class="border border-border px-3 py-2 text-left text-text-0">OK</td><td class="border border-border px-3 py-2 text-left text-text-0">X</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Animator</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AnimatorStateInfo</code></td><td class="border border-border px-3 py-2 text-left text-text-0">EodEntityMatrixEffect / Skill</td><td class="border border-border px-3 py-2 text-left text-text-0">OK</td><td class="border border-border px-3 py-2 text-left text-text-0">X</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Time.deltaTime</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Time.realtimeSinceStartup</code></td><td class="border border-border px-3 py-2 text-left text-text-0">전체</td><td class="border border-border px-3 py-2 text-left text-text-0">OK</td><td class="border border-border px-3 py-2 text-left text-text-0">X</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Coroutine / IEnumerator yield return</code></td><td class="border border-border px-3 py-2 text-left text-text-0">EodEntityMatrixEffect</td><td class="border border-border px-3 py-2 text-left text-text-0">OK (Awaitable 권장)</td><td class="border border-border px-3 py-2 text-left text-text-0">선택</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Instantiate / Destroy</code></td><td class="border border-border px-3 py-2 text-left text-text-0">전체</td><td class="border border-border px-3 py-2 text-left text-text-0">OK</td><td class="border border-border px-3 py-2 text-left text-text-0">X</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Resources.Load</code></td><td class="border border-border px-3 py-2 text-left text-text-0">미사용 (Addressable 이미 적용)</td><td class="border border-border px-3 py-2 text-left text-text-0">OK</td><td class="border border-border px-3 py-2 text-left text-text-0">X</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Addressables.LoadAsync</code></strong></td><td class="border border-border px-3 py-2 text-left text-text-0">EodUIManager.GenerateUIUnitAsync</td><td class="border border-border px-3 py-2 text-left text-text-0">Addressables 2.x 호환</td><td class="border border-border px-3 py-2 text-left text-text-0">콜백 패턴 → async/await 권장</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Xft.XWeaponTrail</code></strong></td><td class="border border-border px-3 py-2 text-left text-text-0">EodMatrixTrail</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">미보증, 2014 stale</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">대체 또는 검증 필요</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">UnityEngine.Random.Range</code></td><td class="border border-border px-3 py-2 text-left text-text-0">Skill 회피 / 잔상</td><td class="border border-border px-3 py-2 text-left text-text-0">OK</td><td class="border border-border px-3 py-2 text-left text-text-0">X</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Vector3 / Quaternion</code></td><td class="border border-border px-3 py-2 text-left text-text-0">전체</td><td class="border border-border px-3 py-2 text-left text-text-0">OK</td><td class="border border-border px-3 py-2 text-left text-text-0">X</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">string.Parse</code> (data.param1)</td><td class="border border-border px-3 py-2 text-left text-text-0">SkillEventBuilder</td><td class="border border-border px-3 py-2 text-left text-text-0">OK</td><td class="border border-border px-3 py-2 text-left text-text-0">FlatBuffer 후 strongly-typed 권고</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Debug.Log</code> 잔존</td><td class="border border-border px-3 py-2 text-left text-text-0">다수</td><td class="border border-border px-3 py-2 text-left text-text-0">OK</td><td class="border border-border px-3 py-2 text-left text-text-0">빌드 시 제거 권고</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Random = UnityEngine.Random</code> 별칭</td><td class="border border-border px-3 py-2 text-left text-text-0">EodEntityCombatComponent</td><td class="border border-border px-3 py-2 text-left text-text-0">OK</td><td class="border border-border px-3 py-2 text-left text-text-0">X</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">호환성 종합</strong>: ~<strong class="font-semibold text-text-0">85% drop-in 가능</strong>. Xft 1건 + Addressable async/await 1건 = 2건만 패치하면 99% 동작.</p>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">8. 라이브 안정성 (정현우 본 영역) 위험 요소</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">EodEntityCombatComponent 2499줄</strong> — 단일 클래스 god 클래스. 라이브 패치 시 회귀 위험 높음. 포팅 시 분리 권고: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">CombatStateMachine</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DamageCalculator</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MatrixTrailController</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">HitDetection</code> 4 sub-class.</li><li class="mb-1"><strong class="font-semibold text-text-0">EodEntitySkillComponent 1794줄</strong> — 동일 god 클래스 위험.</li><li class="mb-1"><strong class="font-semibold text-text-0">EodEntityMatrixEffectComponent 디버그 코드 잔존</strong> (5초 주기 자동 발화) — <strong class="font-semibold text-text-0">포팅 시 즉시 제거</strong> 안 하면 라이브 폭주 가능.</li><li class="mb-1"><strong class="font-semibold text-text-0">하드코딩</strong>:</li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">m_nMaxCombo = 100</code> (ComboHit)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ComboDuration = 3.0f</code> (ComboHit)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SetSubButtonShow 3.0f</code> (서브 스킬 시간)</li><li class="mb-1">어픽스/시즌 변동 가능성 → SO 빼기 필수.</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">TimeCtrlSpeed × AttackRatio 이중 곱</strong> — 균형 무너지면 손맛 망가짐. Sp02 W1 PP-only 잠금 (메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_milestone_bonus_pct_pp_only_lock.md</code>) 와 정합 검증 필요 — 윤서아(game-designer) 협업 슬롯.</li></ol>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">9. 200F 4.255 baseline 영향 평가</h2>
+<p class="mb-3 text-text-0">전투 시스템 자체는 <strong class="font-semibold text-text-0">DPS 곡선에 직접 영향 X</strong> (이펙트/UI 레이어). 단:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">attackSpeedRatio</code> (AttackRatio × TimeCtrlSpeed) 변동 → DPS 영향</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">cooldownTime</code> 쿨감 % 적용 → DPS 영향</li><li class="mb-1">이 2 변수는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EodAbilityStatus</code> (능력치) 에서 결정 → 윤서아 영역.</li><li class="mb-1"><strong class="font-semibold text-text-0">본 분석은 baseline 0% 영향</strong>. 한가영(web-game-balance) 주 1회 회귀 검증과 무관.</li></ul>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">10. 정현우 권고</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">A안 = 그대로 가져오기 권고</strong> (포팅 전략 v1 §3 참조)</li><li class="mb-1"><strong class="font-semibold text-text-0">분할 마이그레이션</strong> Phase 4 (2027-04+) 진입 시 1주 1 컴포넌트 페이스</li><li class="mb-1"><strong class="font-semibold text-text-0">Xft 의존 제거 + Unity 6 내장 TrailRenderer 대체</strong> (~200 LOC, 1주 분량)</li><li class="mb-1"><strong class="font-semibold text-text-0">EodEntityMatrixEffectComponent 디버그 5초 자동 발화 즉시 제거</strong></li><li class="mb-1"><strong class="font-semibold text-text-0">god 클래스 2건 (Combat 2499 / Skill 1794) 분할</strong> Sp02 재개 (9/15) 후 Unity 측 작업 시 진행</li><li class="mb-1"><strong class="font-semibold text-text-0">CSV → FlatBuffer 마이그레이션</strong> Sp-W01~W04 50h 작업과 통합 (이미 잠금)</li><li class="mb-1"><strong class="font-semibold text-text-0">한지우(graphics-lead) 협업 슬롯</strong>: 잔상 복제 Stencil/Ghost Material 시드 + Camera Shake 셰이더 (모션 블러) 검토</li></ol>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">11. 다음 세션 첫 액션</h2>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />EodCamera.cs 본체 read (ShakeCamera 함수 본체 + 흔들림 알고리즘 = sin/perlin/dampen 결정 매트릭스)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />EodActionEventShakeCamera vs EodSkillEventShakeCamera 차이점 비교</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />EodProjectile.cs read (Damage Detection 흐름 = AttPow / DefPow / QuickDetection)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />CSV <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">CameraShake.csv</code> 실 데이터 sample 5건 매핑 (param 의미)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />Xft.XWeaponTrail Unity 6 호환 PoC 1h (또는 대체안)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />한지우 협업 발주 슬롯 Sp01 W2 종료 (5/17) 후 박세린(PM) 경유</li></ul>
+<hr class="my-6 border-border" />
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">산출물 묶음</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">combat_system_porting_strategy_v1_2026-05-05.md</code> (A/B/C 3안)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">combat_system_core_assets_inventory_v1_2026-05-05.md</code> (~50 파일 매트릭스)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">combat_system_pd_briefing_1page_2026-05-05.md</code> (PD 출장 복귀 1쪽)</li></ul>5:["slug","combat_system_analysis_v1_2026-05-05","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","combat_system_analysis_v1_2026-05-05","d"],{"children":["__PAGE__?{\"slug\":\"combat_system_analysis_v1_2026-05-05\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","combat_system_analysis_v1_2026-05-05","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"전투 시스템 분석 v1 — Program/Client 원본 (2019.4 LTS)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/combat_system_analysis_v1_2026-05-05.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,755"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"전투 시스템 분석 v1 — Program/Client 원본 (2019.4 LTS) — 자료실"}],["$","meta","3",{"name":"description","content":"작성: 정현우 (code-lead)"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

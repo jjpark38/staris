@@ -1,105 +1,36 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T1587,# 박세린 → 윤서아 인수인계 미팅 (2026-05-05 = D+1)
-
-> 작성: 박세린(PM, 전 game-designer) · 인수: 윤서아(신규 game-designer)
-> 미팅 형식: 1쪽 안건 (~600 words) / PD 배석 권장
-> 본 문서 위치: `designs/handover_yunseoa_2026-05-05.md`
-> 인수 영역 source: 박세린 game-designer 시절 산출물 (2026-04-20 ~ 2026-05-04, 14일치)
-
----
-
-## 0. 인수 원칙 (3줄)
-
-1. 박세린 시절 잠근 **v3.0 13건 결정 + 200F 4.255 baseline + 35어픽스 + 30프레스티지 + 60일 시즌**은 절대 보존. 변경 시 박세린(PM) source 인용 + PD 재승인 의무.
-2. 윤서아는 **신규 결정권 100%** (어픽스 35→40 등 변경권). 박세린은 **source 인용 + 영향 평가**만.
-3. 충돌 시 윤서아 결정권 / 박세린(PM) source 인용 / PD 최종.
-
----
-
-## 1. 인수 영역 12블록 (메모리 source 명시)
-
-| # | 영역 | source 메모리 / 파일 | 인수 핵심 |
-|---|------|------------------|---------|
-| 1 | **GDD v1~v5** | `designs/gdd/character_5_ip_integration_v1~v5.md` | v1.3+ 갱신 권한. 웹게임 D+180 7단계 추가 별도 발주 예약 |
-| 2 | **v3.0 13건 결정** | `project_v3_0_redesign_decisions.md` | 큰 결정 7 (출시C/프롤로그본판/DB하이브리드/본문발췌/200F~1000F/4중수익/D+180) + 채용 7 |
-| 3 | **200F 4.255 baseline** | `project_sprint01_w1_results.md` | 절대 보존. 0.5% 초과 시 PD 보고. 한가영 주 1회 자동 검증 결과 흡수 |
-| 4 | **어픽스 풀 35건** | `affix_pool.tsv` + `project_sprint04_affix_pool.md` + `project_affix_pool_supplement_5_decisions.md` | 글로벌 명칭 락 + Sp04 W1 선행 3건 (5cm/작두/60fps/9860원/단군) |
-| 5 | **프레스티지 30항목** | `prestige_items.tsv` + `project_sprint02_w1_prestige_items.md` + `project_prestige_decisions.md` | UI차단 / 외부곱연산 / **MilestoneBonusPct PP-only 잠금** (C-2) |
-| 6 | **시즌 60일** | `project_sprint05_season_research.md` | 60일 / Round / Wallet 50% retain / 이월 3건 Legendary Sprint06 |
-| 7 | **무한던전 5대 결정** | `project_transcendent_reward_decisions.md` | C안 + 하이브리드 + 6등급 + Q4 미도입 + Q5 Sp05+ 유예 |
-| 8 | **방치 시스템** | `project_sprint03_idle_research.md` + `project_idle_cap_combination_sp03_pending.md` | C 하이브리드 + IdleCap × 광고 캡 결합 Sp03 W1 첫 결정 슬롯 |
-| 9 | **Sp06+ 5대 결정** | `project_sp06_plus_lever_decisions.md` | 4속성 D2 표준 / Follower Sp09 재검토 / 주간이벤트 Sp08 / 프리셋 Sp08 W2 |
-| 10 | **2권 시놉시스 v2 8대 결정** | `project_volume2_synopsis_v2_decisions.md` | B안 + 곤륜산 단일 / 무당9·개방6·소림7·곤륜파19 |
-| 11 | **강시연(scenario-writer) 산하 라인** | `feedback_writer_collaboration_protocol.md` | 1주 2화 / 2화 분할 검수 / 24~48h(최대 72h) 회신. 박세린 → 윤서아 산하 이관 |
-| 12 | **한가영(web-game-balance) 동격 협업** | `.claude/agents/web-game-balance.md` | 시트 단일 source / 한가영 흡수 자동화만. 박세린 → 윤서아 동격 이관 |
-
-추가: **캐릭터 5종 MVP** (`project_character_mvp_*.md` 5건) — knight/slayer/berserker/archon/demonhunter 정적 완료, Unity 컴파일 후속 (정현우 영역).
-
----
-
-## 2. 시트 단일 source 원칙 (절대)
-
-- `designs/affix_pool.tsv` (35어픽스)
-- `designs/prestige_items.tsv` (30항목)
-- `designs/transcendent_drop_table.tsv` (60행)
-- `designs/transcendent_milestone_reward.tsv` (22행, 14 TBD)
-- 시즌 시트 (`season_*.tsv`) Sp05+ 신설 예정
-
-윤서아 = 시트 작성권 100%. 한가영 = 흡수 + JSON/FlatBuffer 변환 + 200F 회귀 검증만 (수치 결정 0).
-
----
-
-## 3. 첫 24h 학습 시간 산정 (윤서아 자기 진단 + 박세린 권장)
-
-| 블록 | 시간 |
-|------|------|
-| v3.0 13건 결정 source 메모리 7건 풀 Read | 1.5h |
-| GDD v1~v5 풀 Read (5파일) | 2.0h |
-| 시트 4종 풀 Read (.tsv 4건) + 200F 산식 본인 검증 | 1.5h |
-| Sp02~Sp05 + Sp06+ 메모리 6건 풀 Read | 2.0h |
-| 강시연 chapter_00~17 1차 통독 | 1.5h |
-| 한가영 동격 협업 라인 인사 | 0.5h |
-| **합계** | **9.0h** |
-
-**14h 초과 시 헷지**: Sp-W01 W2 (5/25) 한가영 첫 발주 1주 지연 (5/25 → 6/1). 박세린(PM) 일정 영향 보고 의무.
-
----
-
-## 4. 5단계 프로토콜 사수 (Q→O→D→Dr→A)
-
-윤서아의 모든 신규 결정 (어픽스 35→40, 프레스티지 30→35, 시즌 곡선 변경 등):
-1. PD에게 옵션 2~3개 제시
-2. PD 선택 받음
-3. 초안 작성
-4. PD 최종 승인
-5. 박세린(PM) 메모리 신설 + MEMORY.md 인덱스 1줄
-
-박세린 시절 게임 디자인 페르소나 잔존 위험 — **윤서아 신규 결정 = 윤서아 단독**, 박세린은 source 인용 + 영향 평가만.
-
----
-
-## 5. 다음 액션 (D+1 미팅 직후)
-
-1. 윤서아 9h 학습 (5/5~5/14 9일, 일평균 1h)
-2. **5/14 D+10 김민준 + 차도윤 모노레포 1:1 합의** 박세린(PM) 옵저버 / 윤서아 옵저버 권장
-3. **5/18 D+14 정현우 + 차도윤 + 한가영 FlatBuffer 3자 합의** 윤서아 옵저버
-4. **5/18 Sp-W01 킥오프 동시 윤서아 W1 첫 발주** (PM 박세린 발주 — 200F~1000F 곡선 첫 스케치 7 TodoWrite 9h)
-
----
-
-## 6. 호칭
-
-- 윤서아 → 박세린 = "박팀장님" (PM 호칭, 영구)
-- 박세린 → 윤서아 = "서아"
-- PD → 양쪽 = "박세린"/"윤서아" (혼선 방지)
-
----
-
-**미팅 종료 시 PD 승인 항목**: 본 인계 12블록 100% 인수 동의 + 9h 학습 시간 + 5/18 Sp-W01 W1 첫 발주 GO.
-6:["slug","handover_yunseoa_2026-05-05","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","handover_yunseoa_2026-05-05","d"],{"children":["__PAGE__?{\"slug\":\"handover_yunseoa_2026-05-05\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","handover_yunseoa_2026-05-05","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"박세린 → 윤서아 인수인계 미팅 (2026-05-05 = D+1)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/handover_yunseoa_2026-05-05.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"741"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"박세린 → 윤서아 인수인계 미팅 (2026-05-05 = D+1) — 자료실"}],["$","meta","3",{"name":"description","content":"1. 박세린 시절 잠근 v3.0 13건 결정 + 200F 4.255 baseline + 35어픽스 + 30프레스티지 + 60일 시즌은 절대 보존. 변경 시 박세린(PM) source 인용 + PD 재승인 의무."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T3cb5,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">박세린 → 윤서아 인수인계 미팅 (2026-05-05 = D+1)</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성: 박세린(PM, 전 game-designer) · 인수: 윤서아(신규 game-designer) 미팅 형식: 1쪽 안건 (~600 words) / PD 배석 권장 본 문서 위치: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/handover_yunseoa_2026-05-05.md</code> 인수 영역 source: 박세린 game-designer 시절 산출물 (2026-04-20 ~ 2026-05-04, 14일치)</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">0. 인수 원칙 (3줄)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">박세린 시절 잠근 <strong class="font-semibold text-text-0">v3.0 13건 결정 + 200F 4.255 baseline + 35어픽스 + 30프레스티지 + 60일 시즌</strong>은 절대 보존. 변경 시 박세린(PM) source 인용 + PD 재승인 의무.</li><li class="mb-1">윤서아는 <strong class="font-semibold text-text-0">신규 결정권 100%</strong> (어픽스 35→40 등 변경권). 박세린은 <strong class="font-semibold text-text-0">source 인용 + 영향 평가</strong>만.</li><li class="mb-1">충돌 시 윤서아 결정권 / 박세린(PM) source 인용 / PD 최종.</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. 인수 영역 12블록 (메모리 source 명시)</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">영역</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">source 메모리 / 파일</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">인수 핵심</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">1</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">GDD v1~v5</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/gdd/character_5_ip_integration_v1~v5.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">v1.3+ 갱신 권한. 웹게임 D+180 7단계 추가 별도 발주 예약</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">2</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">v3.0 13건 결정</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_v3_0_redesign_decisions.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">큰 결정 7 (출시C/프롤로그본판/DB하이브리드/본문발췌/200F~1000F/4중수익/D+180) + 채용 7</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">3</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">200F 4.255 baseline</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint01_w1_results.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">절대 보존. 0.5% 초과 시 PD 보고. 한가영 주 1회 자동 검증 결과 흡수</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">4</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">어픽스 풀 35건</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">affix_pool.tsv</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint04_affix_pool.md</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_affix_pool_supplement_5_decisions.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">글로벌 명칭 락 + Sp04 W1 선행 3건 (5cm/작두/60fps/9860원/단군)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">5</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">프레스티지 30항목</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items.tsv</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint02_w1_prestige_items.md</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_prestige_decisions.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">UI차단 / 외부곱연산 / <strong class="font-semibold text-text-0">MilestoneBonusPct PP-only 잠금</strong> (C-2)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">6</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">시즌 60일</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint05_season_research.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">60일 / Round / Wallet 50% retain / 이월 3건 Legendary Sprint06</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">7</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">무한던전 5대 결정</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_transcendent_reward_decisions.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">C안 + 하이브리드 + 6등급 + Q4 미도입 + Q5 Sp05+ 유예</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">8</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">방치 시스템</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint03_idle_research.md</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_idle_cap_combination_sp03_pending.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">C 하이브리드 + IdleCap × 광고 캡 결합 Sp03 W1 첫 결정 슬롯</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">9</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Sp06+ 5대 결정</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sp06_plus_lever_decisions.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">4속성 D2 표준 / Follower Sp09 재검토 / 주간이벤트 Sp08 / 프리셋 Sp08 W2</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">10</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">2권 시놉시스 v2 8대 결정</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_volume2_synopsis_v2_decisions.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">B안 + 곤륜산 단일 / 무당9·개방6·소림7·곤륜파19</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">11</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">강시연(scenario-writer) 산하 라인</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">feedback_writer_collaboration_protocol.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">1주 2화 / 2화 분할 검수 / 24~48h(최대 72h) 회신. 박세린 → 윤서아 산하 이관</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">12</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">한가영(web-game-balance) 동격 협업</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">.claude/agents/web-game-balance.md</code></td><td class="border border-border px-3 py-2 text-left text-text-0">시트 단일 source / 한가영 흡수 자동화만. 박세린 → 윤서아 동격 이관</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0">추가: <strong class="font-semibold text-text-0">캐릭터 5종 MVP</strong> (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_character_mvp_*.md</code> 5건) — knight/slayer/berserker/archon/demonhunter 정적 완료, Unity 컴파일 후속 (정현우 영역).</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. 시트 단일 source 원칙 (절대)</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/affix_pool.tsv</code> (35어픽스)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/prestige_items.tsv</code> (30항목)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/transcendent_drop_table.tsv</code> (60행)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/transcendent_milestone_reward.tsv</code> (22행, 14 TBD)</li><li class="mb-1">시즌 시트 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">season_*.tsv</code>) Sp05+ 신설 예정</li></ul>
+<p class="mb-3 text-text-0">윤서아 = 시트 작성권 100%. 한가영 = 흡수 + JSON/FlatBuffer 변환 + 200F 회귀 검증만 (수치 결정 0).</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. 첫 24h 학습 시간 산정 (윤서아 자기 진단 + 박세린 권장)</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">블록</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시간</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">v3.0 13건 결정 source 메모리 7건 풀 Read</td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">GDD v1~v5 풀 Read (5파일)</td><td class="border border-border px-3 py-2 text-left text-text-0">2.0h</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">시트 4종 풀 Read (.tsv 4건) + 200F 산식 본인 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Sp02~Sp05 + Sp06+ 메모리 6건 풀 Read</td><td class="border border-border px-3 py-2 text-left text-text-0">2.0h</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">강시연 chapter_00~17 1차 통독</td><td class="border border-border px-3 py-2 text-left text-text-0">1.5h</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">한가영 동격 협업 라인 인사</td><td class="border border-border px-3 py-2 text-left text-text-0">0.5h</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">합계</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">9.0h</strong></td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">14h 초과 시 헷지</strong>: Sp-W01 W2 (5/25) 한가영 첫 발주 1주 지연 (5/25 → 6/1). 박세린(PM) 일정 영향 보고 의무.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. 5단계 프로토콜 사수 (Q→O→D→Dr→A)</h2>
+<p class="mb-3 text-text-0">윤서아의 모든 신규 결정 (어픽스 35→40, 프레스티지 30→35, 시즌 곡선 변경 등):</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">PD에게 옵션 2~3개 제시</li><li class="mb-1">PD 선택 받음</li><li class="mb-1">초안 작성</li><li class="mb-1">PD 최종 승인</li><li class="mb-1">박세린(PM) 메모리 신설 + MEMORY.md 인덱스 1줄</li></ol>
+<p class="mb-3 text-text-0">박세린 시절 게임 디자인 페르소나 잔존 위험 — <strong class="font-semibold text-text-0">윤서아 신규 결정 = 윤서아 단독</strong>, 박세린은 source 인용 + 영향 평가만.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. 다음 액션 (D+1 미팅 직후)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">윤서아 9h 학습 (5/5~5/14 9일, 일평균 1h)</li><li class="mb-1"><strong class="font-semibold text-text-0">5/14 D+10 김민준 + 차도윤 모노레포 1:1 합의</strong> 박세린(PM) 옵저버 / 윤서아 옵저버 권장</li><li class="mb-1"><strong class="font-semibold text-text-0">5/18 D+14 정현우 + 차도윤 + 한가영 FlatBuffer 3자 합의</strong> 윤서아 옵저버</li><li class="mb-1"><strong class="font-semibold text-text-0">5/18 Sp-W01 킥오프 동시 윤서아 W1 첫 발주</strong> (PM 박세린 발주 — 200F~1000F 곡선 첫 스케치 7 TodoWrite 9h)</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. 호칭</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">윤서아 → 박세린 = &quot;박팀장님&quot; (PM 호칭, 영구)</li><li class="mb-1">박세린 → 윤서아 = &quot;서아&quot;</li><li class="mb-1">PD → 양쪽 = &quot;박세린&quot;/&quot;윤서아&quot; (혼선 방지)</li></ul>
+<hr class="my-6 border-border" />
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">미팅 종료 시 PD 승인 항목</strong>: 본 인계 12블록 100% 인수 동의 + 9h 학습 시간 + 5/18 Sp-W01 W1 첫 발주 GO.</p>5:["slug","handover_yunseoa_2026-05-05","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","handover_yunseoa_2026-05-05","d"],{"children":["__PAGE__?{\"slug\":\"handover_yunseoa_2026-05-05\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","handover_yunseoa_2026-05-05","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"박세린 → 윤서아 인수인계 미팅 (2026-05-05 = D+1)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/handover_yunseoa_2026-05-05.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"741"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"박세린 → 윤서아 인수인계 미팅 (2026-05-05 = D+1) — 자료실"}],["$","meta","3",{"name":"description","content":"1. 박세린 시절 잠근 v3.0 13건 결정 + 200F 4.255 baseline + 35어픽스 + 30프레스티지 + 60일 시즌은 절대 보존. 변경 시 박세린(PM) source 인용 + PD 재승인 의무."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

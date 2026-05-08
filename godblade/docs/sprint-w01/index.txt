@@ -1,129 +1,46 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T4582,# Sprint W01 (2026-05-10 ~ 2026-05-23) — 옵션 C 정정 D+0 = 5/10
-
-> 기간: **2026-05-10 (Sun 00:00) ~ 2026-05-23 (Sat 23:59)** (14일)
-> 킥오프 일자: **D+0 = 2026-05-10 (Sun)** · 종료: **D+14 = 2026-05-24 (Sun 00:00)**
-> v3.0 옵션 C + **2026-05-08 PD 6 ok 일괄 (1차)** + **2026-05-08 PD 6 잠금 (2차, 본 정정)** = 옵션 C 본의 정합 = 5/8 모노레포 / 5/9 FlatBuffer 3자 + 5 Lead 인사 / **5/10 W1-02 시작 = D+0**.
-> 직전 헤더 (D+0 = 5/16, -8일 시프트) 폐기 사유 = PD 옵션 C 명시와 충돌 (D+0 = 5/10 = -14일 본의). 본 정정 = 추가 -6일.
-> 소유자: `project-manager` (박세린). 실행: `web-game-lead` (차도윤, W1 메인) + `web-game-balance` (한가영, W2 첫 발주) + `web-game-engine` (임재훈, W2 사전 검토). 결정: PD.
->
-> **선행 자산**: 윤서아 인수인계 (5/5 D+1 미팅) 완료 + 박세린 GDD v1~v5 100% 인수 + v3.0 13건 결정 잠금 + **모노레포 합의 5/8 (D-2 오늘)** + **FlatBuffer 3자 합의 5/9 (D-1)** + **5 Lead 인사 5/9 09:00 (D-1)**.
-
----
-
-## 0. PD 잠금 source (2026-05-08 1·2차 일괄)
-
-### 1차 (오늘 오전, 6건)
-| # | PD 잠금 결정 | 본 문서 영향 |
-|---|------------|-------------|
-| 1 | 옵션 C — 5/8 모노레포 / 5/9 FlatBuffer 3자 / 5/10 W1-02 시작 / D+0 = 5/10 | 헤더 + W1 일자 정합 |
-| 2 | rex-dialogue 트리거 보강 의무자 = **윤서아** (game-designer 단일) | #W1-04 → #W1-04a (윤서아) + #W1-04b (차도윤) 분리 |
-| 3 | 윤서아 진척 50% 미만 시 W2-04 Phaser 임베드 PoC 동반 이월 OK | #PM-03 (D+6 = 5/16 게이트) 자동 트리거 |
-| 4 | 박세린 윤서아 비공개 핑 1회 권한 OK (압박 0 톤) | 본 세션 5/8 1회 사용 완료 |
-| 5 | D+6 게이트 검증 신설 OK (윤서아 50% 게이트) | `sprints/sp_w01_d_plus_6_yoonseoa_50pct_gate.md` 5/16 정정 |
-| 6 | R-V3-9 박세린 일일 알림 누락 self-마킹 OK | §5 R-V3-9 + #PM-04 (5/8~5/16 self-내부) |
-
-### 2차 (오늘 오후, 6건 — 본 정정 source)
-| # | PD 잠금 결정 | 본 문서 영향 |
-|---|------------|-------------|
-| 1 | Mount 방식 = **옵션 C 라우트별 분기** — `/play` direct mount + `/` 88.1KB First Load 보존 | #W1-05 라우트 + 인증 갱신 |
-| 2 | JWT TTL = **김민준안** (24h NextAuth + 15분 hop `/api/game/token`) | #W1-05 인증 토큰 갱신 |
-| 3 | Phaser mount owner = **김민준+차도윤 90분 1:1 자율 합의** (오늘 5/8) | §6 D-2 슬롯 박힘, PD 사후 보고 |
-| 4 | Unity6/ 신규 2건 경로 승인 OK = `Unity6/Editor/FlatBuffer/BuildPipeline.cs` (Sp-W02) + `Unity6/Runtime/FlatBuffer/AffixPoolLoader.cs` (Sp-W03) | 5/9 FlatBuffer 3자 합의 후 정현우 신설 (본 PM 영역 0, 경로 승인 통보만) |
-| 5 | 5 Lead 인사 = **본인 옵션 3 채택 (압축)** — 5/9 (Sat) 09:00~09:05 | #W1-01 → 5/9 09:00 슬롯 박힘 |
-| 6 | sprint-w01.md 시프트 정정 = -8일 폐기 후 **옵션 C 본의 D+0 = 5/10** | 본 문서 헤더 + 일자 일괄 재시프트 (총 -14일) |
-
----
-
-## 0.1 선행 자산 (5/10 D+0 시점)
-
-### 인계 완료
-- `designs/handover_yunseoa_2026-05-05.md` 미팅 완료 (5/5 D+1) — 윤서아 12블록 100% 인수
-- `project_phase_2_3_roadmap_v3_0.md` (본 PM 작성, 2026-05-04) — 옵션 C 일정 baseline
-- `project_v3_0_redesign_decisions.md` (2026-05-04) — 13건 결정 source 잠금
-- 윤서아 학습 진행 중 (5/5~ 자율 페이스, 9~14h 예상) — 200F 4.255 baseline 본인 검증 + GDD v1~v5 풀 Read
-
-### 인프라 합의 (D-2 / D-1 일자)
-- **모노레포 셋업 = D-2 (5/8 오늘)** — 김민준 + 차도윤 90분 1:1 (윤서아 옵저버) → `web/` + `webgame/` + `packages/shared` 3축 확정. 4 의제 (폴더트리+pnpm / tsconfig path / JWT / Mount) + 추가 의제 ⑤ (Phaser mount owner). 의제 ③·④·⑤ = PD 잠금 통보, 의제 ①·② = 자율 합의.
-- **FlatBuffer 중간 레이어 설계 = D-1 (5/9)** — 정현우 + 차도윤 + 한가영 3자 (윤서아 옵저버). 정현우 사전 1h 학습 완료 통지 + Unity6/ 신규 2건 경로 승인 #4 통보 + W3 분기점 자율 합의 의제 박힘.
-- **5 Lead 인사 = D-1 (5/9) 09:00~09:05** — 윤서아 + 정현우 + 김민준 + 차도윤 + 박세린(PM). FlatBuffer 3자 합의 직전. PD 옵저버 default (1인 파트타임 자유, 본인 사후 1쪽 보고).
-
-### 박세린 시트 단일 source (윤서아 인수)
-- `designs/affix_pool.tsv` (35어픽스) / `prestige_items.tsv` (30항목) / `transcendent_drop_table.tsv` (60행) / `transcendent_milestone_reward.tsv` (22행)
-
-### 웹 1차 출시 (D+0~D+5 메인 세션 대행 완료)
-- `project_web_lead_d_plus_5_complete_2026-05-09.md` — web/ 통합 웹앱 88.1KB First Load + HTTP 200 PASS
-
----
-
-## 1. 이월 후보
-
-- (Sp01 마무리 5/9 종료 후 확정 — 본 W1 D+0 5/10과 동일 주말)
-- D+0 5/10(일) 오전 회고에서 채움 — Sp01 #W2-01~W2-10 미완 항목 원문 복사 + `[from Sprint 01]` 태그
-- 예상: Sp01 W2 코드 작업 10h 집중 R1 적중 시 #W2-09 테스트 5개 / #W2-08 Granter 빈 리스트 스텁 이월 가능
-
----
-
-## 2. 목표 (3건)
-
-1. **W1 (5/10 ~ 5/16) Phaser 3 boilerplate + 시나리오 모드 1F~3F 트리거 + 진입 라우트** — 차도윤 메인 (`webgame/` Vite + Phaser 3 + rex-dialogue + 강시연 chapter_00~03 발췌). 김민준 = `packages/shared` + `/play` 라우트 + 24h JWT + 15분 hop 토큰. **윤서아 = rex-dialogue 트리거 보강 (PD 1차 #2)**.
-2. **W2 (5/17 ~ 5/23) 한가영 첫 발주 (윤서아 시트 흡수 매퍼) + 임재훈 첫 발주 사전 검토** — 한가영 = `affix_pool.tsv` (35어픽스) + `prestige_items.tsv` (30항목) → JSON / FlatBuffer 자동 변환 매퍼 1쪽 + 200F 4.255 baseline 0.12% 편차 보존 검증. 임재훈 = Sp-W02 (5/24 첫 발주) 사전 검토 1쪽.
-3. **D+14 (5/23 Sat) 통합 검증 — 차도윤 + 한가영 + 임재훈 1주차 결과 W1·W2 GO/HOLD 판정** — 60fps 1F~3F 시나리오 + 윤서아 시트 흡수 100% + 200F 4.255 baseline 0.12% 편차 보존 + `/play` 옵션 C direct mount KPI (`/` 88.1KB First Load 보존) 검증.
-
----
-
-## 3. 작업 (TodoWrite 초기 리스트)
-
-### W1 (5/10 ~ 5/16) — Phaser 3 + 시나리오 1F~3F + 옵션 C 라우트 분기
-
-- [ ] **#W1-01 D+0 킥오프 GO 판정** — 5/10(일) 오전. 5 Lead 인사는 5/9 09:00 (D-1) 선행 완료 (PD 2차 #5). (담당: project-manager, 0.5h, 의존: 5/8 모노레포 + 5/9 FlatBuffer 합의 완료)
-- [ ] **#W1-02 webgame/ Phaser 3 boilerplate** — 모노레포 5/8 합의 결과 위에 `webgame/package.json` + `vite.config.ts` + `tsconfig.json` + `index.html` + `src/main.ts` Phaser 3 boilerplate. (담당: 차도윤, 2.5h, 의존: #W1-01)
-- [ ] **#W1-03 Phaser 3 60fps Smoke Test** — `webgame/src/scenes/SmokeScene.ts` + 1000 sprite 렌더 + Chrome DevTools Performance 60.0fps 유지. (담당: 차도윤, 1.5h, 의존: #W1-02)
-- [ ] **#W1-04a rex-dialogue 트리거 보강 (윤서아 영역, PD 1차 #2)** — 강시연 chapter_00~03 본문 발췌 → 게임 트리거 보강 (조건/플래그/분기). v1.1 → v1.2 챕터 매핑 정정 동시 진행 가능. (담당: **윤서아**, 2.0h, 의존: #W1-02, **D+6 5/16 50% 게이트**)
-- [ ] **#W1-04b rex-dialogue plugin 통합 (차도윤 영역)** — 윤서아 보강 결과 받아 Phaser scene 통합. 박세린 검수 권장 (DV2 라인). (담당: 차도윤, 1.5h, 의존: #W1-04a)
-- [ ] **#W1-05 진입 라우트 옵션 C 분기 + 24h JWT + 15분 hop (PD 2차 #1+#2)** — `web/src/app/play/[mode]/page.tsx` direct mount (Phaser 600KB+ Next.js dynamic import `ssr:false`). `/api/game/token` 15분 hop 발급 (김민준) + Phaser 검증 (차도윤). NextAuth 24h session 베이스. payload = `sub/role/iat/exp/iss/aud`. **`/` 88.1KB First Load 보존 KPI 검증 의무**. (담당: 김민준 + 차도윤 공동, 2.5h, 의존: #W1-02 + 5/8 1:1 의제 ⑤ 자율 합의 결과)
-- [ ] **#W1-06 W1 통합 검증 1쪽 + W2 GO/HOLD 판정** — 60fps 1F~3F + Phaser 빌드 + Vite HMR + `/play` direct mount + `/` 88.1KB 보존 + JWT 24h+15분 동작 검증 1쪽. PM·PD 회신. (담당: 차도윤, 0.5h, 의존: #W1-02 ~ #W1-05)
-
-### W2 (5/17 ~ 5/23) — 한가영 흡수 매퍼 + 임재훈 사전 검토
-
-- [ ] **#W2-01 한가영 첫 발주 — 윤서아 시트 흡수 매퍼 1쪽** — `designs/web-platform/sp_w01_w2_balance_absorption.md` 신설. `affix_pool.tsv` (35어픽스) + `prestige_items.tsv` (30항목) → JSON 자동 변환 + 200F 4.255 baseline 0.12% 편차 보존 검증. (담당: 한가영, 3.0h, 의존: #W1-06 GO)
-- [ ] **#W2-02 TsvReader 김민준 협업** — `packages/shared/src/tsv-reader.ts` 신설. 김민준 = web/ 측 / 차도윤 = webgame/ 측 / 한가영 = 결과 흡수. (담당: 김민준 + 차도윤 + 한가영 공동, 2.0h, 의존: #W2-01)
-- [ ] **#W2-03 임재훈 첫 발주 사전 검토 1쪽** — Sp-W02 (5/24) 본 발주 직전 사전 검토. Phaser 3 60fps + 1만 entity 풀링 패턴 + Pixel 6 / iPhone 12 / Desktop device 매트릭스 1쪽. (담당: 임재훈, 1.5h, 의존: #W1-06 GO)
-- [ ] **#W2-04 Phaser 임베드 시트 흡수 PoC** — 차도윤이 한가영 매퍼 결과 (JSON) 를 Phaser 게임 루프에 임베드. 어픽스 1건 (예: 스킬 데미지 +5%) Phaser scene 적용 검증. **단 D+6 5/16 윤서아 50% 미만 시 동반 이월 OK (PD 1차 #3)**. (담당: 차도윤, 2.0h, 의존: #W2-01 + #W1-04a 50%↑)
-- [ ] **#W2-05 디아블로 다크 톤 한지우 4 가드레일 적용** — Phaser 내부 SCSS / Pixi 테마 별도. 한지우 시안 1쪽 인용. (담당: 차도윤, 1.0h, 의존: #W1-04b)
-
-### 정비 (PM)
-
-- [ ] **#PM-01 D+7 중간 점검** — 5/17 (월) 오전. W1 GO/HOLD 판정 결과 + W2 첫날 블로커 스캔. (담당: project-manager, 0.5h)
-- [ ] **#PM-02 D+14 종료 회고 + Sp-W02 킥오프 착수** — 5/24 (일) 오전. 본 문서 종료 섹션 + `sprints/sprint-w02.md` 킥오프. (담당: project-manager, 1.0h, 의존: #W2-04)
-- [ ] **#PM-03 D+6 윤서아 50% 게이트 검증 (PD 1차 #5)** — 5/16 (토) 오전. `sprints/sp_w01_d_plus_6_yoonseoa_50pct_gate.md` 검증 실행. 50% 미만 시 한가영 W2-01 + 차도윤 W2-04 동반 이월 자동 트리거. (담당: project-manager, 0.5h, 의존: #W1-04a)
-- [ ] **#PM-04 윤서아 self-내부 알림 5/8~5/16 매일 1줄 (R-V3-9 회복)** — 윤서아 사적 발언 "일일 알림 부담" 반영하여 self-내부 (윤서아에게 발송 X). 학습 진척 % + 페이스 톤 1줄. (담당: project-manager, 0.1h × 9일 = 0.9h)
-- [ ] **#PM-05 5/9 FlatBuffer 3자 슬롯 옵저버 + 1쪽 보고** — 정현우+차도윤+한가영 합의 결과 PD 사후 보고. (담당: project-manager, 0.5h, 의존: 5/9 09:30~)
-- [ ] **#PM-06 5/9 09:00 5 Lead 인사 슬롯 organize + PD 1쪽 사후 보고 (PD 2차 #5)** — 5분 인사 + PD 옵저버 default + 사후 1쪽. (담당: project-manager, 0.3h)
-- [ ] **#PM-07 5/8 1:1 결과 1쪽 보고 통합 (PD 2차 #3)** — 김민준+차도윤 90분 1:1 (의제 ①~⑤) 결과 sprints/ 4 트랙 라인 통합. (담당: project-manager, 0.5h, 의존: 5/8 1:1 종료)
-
-**총 작업 수**: 18건 (W1 7건 + W2 5건 + PM 7건 — PD 2차 잠금 #3+#5 반영하여 PM-05/06/07 신규 추가)
-**총 예상 공수**: **W1 11h + W2 9.5h + PM 4.7h = 25.2h** (중앙값)
-- 하한 21h · 상한 30h. 주 10~15h × 2주 = 20~30h 상한 내.
-
----
-
-## 4. 의존성
-
-### 선행 완료/예정
-- 윤서아 인수인계 미팅 (5/5 = D-5) 완료 + 학습 진행 중
-- **모노레포 셋업 = D-2 (5/8 오늘)** — 김민준+차도윤 1:1 (의제 ①~⑤)
-- **FlatBuffer 중간 레이어 설계 = D-1 (5/9)** — 정현우+차도윤+한가영 3자
-- **5 Lead 인사 = D-1 (5/9 09:00)** — 윤서아+정현우+김민준+차도윤+박세린
-- web/ 1차 출시 직전 상태 (D+0~D+5 메인 세션 대행)
-- v3.0 13건 결정 source 잠금
-
-### 본 스프린트 내 순차 그래프
-```
-[D-2 5/8] 모노레포 1:1 (의제 ①~⑤)
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T9375,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">Sprint W01 (2026-05-10 ~ 2026-05-23) — 옵션 C 정정 D+0 = 5/10</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">기간: <strong class="font-semibold text-text-0">2026-05-10 (Sun 00:00) ~ 2026-05-23 (Sat 23:59)</strong> (14일) 킥오프 일자: <strong class="font-semibold text-text-0">D+0 = 2026-05-10 (Sun)</strong> · 종료: <strong class="font-semibold text-text-0">D+14 = 2026-05-24 (Sun 00:00)</strong> v3.0 옵션 C + <strong class="font-semibold text-text-0">2026-05-08 PD 6 ok 일괄 (1차)</strong> + <strong class="font-semibold text-text-0">2026-05-08 PD 6 잠금 (2차, 본 정정)</strong> = 옵션 C 본의 정합 = 5/8 모노레포 / 5/9 FlatBuffer 3자 + 5 Lead 인사 / <strong class="font-semibold text-text-0">5/10 W1-02 시작 = D+0</strong>. 직전 헤더 (D+0 = 5/16, -8일 시프트) 폐기 사유 = PD 옵션 C 명시와 충돌 (D+0 = 5/10 = -14일 본의). 본 정정 = 추가 -6일. 소유자: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project-manager</code> (박세린). 실행: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">web-game-lead</code> (차도윤, W1 메인) + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">web-game-balance</code> (한가영, W2 첫 발주) + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">web-game-engine</code> (임재훈, W2 사전 검토). 결정: PD.  <strong class="font-semibold text-text-0">선행 자산</strong>: 윤서아 인수인계 (5/5 D+1 미팅) 완료 + 박세린 GDD v1~v5 100% 인수 + v3.0 13건 결정 잠금 + <strong class="font-semibold text-text-0">모노레포 합의 5/8 (D-2 오늘)</strong> + <strong class="font-semibold text-text-0">FlatBuffer 3자 합의 5/9 (D-1)</strong> + <strong class="font-semibold text-text-0">5 Lead 인사 5/9 09:00 (D-1)</strong>.</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">0. PD 잠금 source (2026-05-08 1·2차 일괄)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1차 (오늘 오전, 6건)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">PD 잠금 결정</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">본 문서 영향</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">1</td><td class="border border-border px-3 py-2 text-left text-text-0">옵션 C — 5/8 모노레포 / 5/9 FlatBuffer 3자 / 5/10 W1-02 시작 / D+0 = 5/10</td><td class="border border-border px-3 py-2 text-left text-text-0">헤더 + W1 일자 정합</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">2</td><td class="border border-border px-3 py-2 text-left text-text-0">rex-dialogue 트리거 보강 의무자 = <strong class="font-semibold text-text-0">윤서아</strong> (game-designer 단일)</td><td class="border border-border px-3 py-2 text-left text-text-0">#W1-04 → #W1-04a (윤서아) + #W1-04b (차도윤) 분리</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">3</td><td class="border border-border px-3 py-2 text-left text-text-0">윤서아 진척 50% 미만 시 W2-04 Phaser 임베드 PoC 동반 이월 OK</td><td class="border border-border px-3 py-2 text-left text-text-0">#PM-03 (D+6 = 5/16 게이트) 자동 트리거</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">4</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린 윤서아 비공개 핑 1회 권한 OK (압박 0 톤)</td><td class="border border-border px-3 py-2 text-left text-text-0">본 세션 5/8 1회 사용 완료</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">5</td><td class="border border-border px-3 py-2 text-left text-text-0">D+6 게이트 검증 신설 OK (윤서아 50% 게이트)</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/sp_w01_d_plus_6_yoonseoa_50pct_gate.md</code> 5/16 정정</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">6</td><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-9 박세린 일일 알림 누락 self-마킹 OK</td><td class="border border-border px-3 py-2 text-left text-text-0">§5 R-V3-9 + #PM-04 (5/8~5/16 self-내부)</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2차 (오늘 오후, 6건 — 본 정정 source)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">PD 잠금 결정</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">본 문서 영향</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">1</td><td class="border border-border px-3 py-2 text-left text-text-0">Mount 방식 = <strong class="font-semibold text-text-0">옵션 C 라우트별 분기</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/play</code> direct mount + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/</code> 88.1KB First Load 보존</td><td class="border border-border px-3 py-2 text-left text-text-0">#W1-05 라우트 + 인증 갱신</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">2</td><td class="border border-border px-3 py-2 text-left text-text-0">JWT TTL = <strong class="font-semibold text-text-0">김민준안</strong> (24h NextAuth + 15분 hop <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/api/game/token</code>)</td><td class="border border-border px-3 py-2 text-left text-text-0">#W1-05 인증 토큰 갱신</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">3</td><td class="border border-border px-3 py-2 text-left text-text-0">Phaser mount owner = <strong class="font-semibold text-text-0">김민준+차도윤 90분 1:1 자율 합의</strong> (오늘 5/8)</td><td class="border border-border px-3 py-2 text-left text-text-0">§6 D-2 슬롯 박힘, PD 사후 보고</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">4</td><td class="border border-border px-3 py-2 text-left text-text-0">Unity6/ 신규 2건 경로 승인 OK = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity6/Editor/FlatBuffer/BuildPipeline.cs</code> (Sp-W02) + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity6/Runtime/FlatBuffer/AffixPoolLoader.cs</code> (Sp-W03)</td><td class="border border-border px-3 py-2 text-left text-text-0">5/9 FlatBuffer 3자 합의 후 정현우 신설 (본 PM 영역 0, 경로 승인 통보만)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">5</td><td class="border border-border px-3 py-2 text-left text-text-0">5 Lead 인사 = <strong class="font-semibold text-text-0">본인 옵션 3 채택 (압축)</strong> — 5/9 (Sat) 09:00~09:05</td><td class="border border-border px-3 py-2 text-left text-text-0">#W1-01 → 5/9 09:00 슬롯 박힘</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">6</td><td class="border border-border px-3 py-2 text-left text-text-0">sprint-w01.md 시프트 정정 = -8일 폐기 후 <strong class="font-semibold text-text-0">옵션 C 본의 D+0 = 5/10</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">본 문서 헤더 + 일자 일괄 재시프트 (총 -14일)</td></tr></tbody></table></div>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">0.1 선행 자산 (5/10 D+0 시점)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">인계 완료</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/handover_yunseoa_2026-05-05.md</code> 미팅 완료 (5/5 D+1) — 윤서아 12블록 100% 인수</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_phase_2_3_roadmap_v3_0.md</code> (본 PM 작성, 2026-05-04) — 옵션 C 일정 baseline</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_v3_0_redesign_decisions.md</code> (2026-05-04) — 13건 결정 source 잠금</li><li class="mb-1">윤서아 학습 진행 중 (5/5~ 자율 페이스, 9~14h 예상) — 200F 4.255 baseline 본인 검증 + GDD v1~v5 풀 Read</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">인프라 합의 (D-2 / D-1 일자)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">모노레포 셋업 = D-2 (5/8 오늘)</strong> — 김민준 + 차도윤 90분 1:1 (윤서아 옵저버) → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">web/</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">webgame/</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared</code> 3축 확정. 4 의제 (폴더트리+pnpm / tsconfig path / JWT / Mount) + 추가 의제 ⑤ (Phaser mount owner). 의제 ③·④·⑤ = PD 잠금 통보, 의제 ①·② = 자율 합의.</li><li class="mb-1"><strong class="font-semibold text-text-0">FlatBuffer 중간 레이어 설계 = D-1 (5/9)</strong> — 정현우 + 차도윤 + 한가영 3자 (윤서아 옵저버). 정현우 사전 1h 학습 완료 통지 + Unity6/ 신규 2건 경로 승인 #4 통보 + W3 분기점 자율 합의 의제 박힘.</li><li class="mb-1"><strong class="font-semibold text-text-0">5 Lead 인사 = D-1 (5/9) 09:00~09:05</strong> — 윤서아 + 정현우 + 김민준 + 차도윤 + 박세린(PM). FlatBuffer 3자 합의 직전. PD 옵저버 default (1인 파트타임 자유, 본인 사후 1쪽 보고).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">박세린 시트 단일 source (윤서아 인수)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/affix_pool.tsv</code> (35어픽스) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items.tsv</code> (30항목) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">transcendent_drop_table.tsv</code> (60행) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">transcendent_milestone_reward.tsv</code> (22행)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">웹 1차 출시 (D+0~D+5 메인 세션 대행 완료)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_web_lead_d_plus_5_complete_2026-05-09.md</code> — web/ 통합 웹앱 88.1KB First Load + HTTP 200 PASS</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. 이월 후보</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">(Sp01 마무리 5/9 종료 후 확정 — 본 W1 D+0 5/10과 동일 주말)</li><li class="mb-1">D+0 5/10(일) 오전 회고에서 채움 — Sp01 #W2-01~W2-10 미완 항목 원문 복사 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[from Sprint 01]</code> 태그</li><li class="mb-1">예상: Sp01 W2 코드 작업 10h 집중 R1 적중 시 #W2-09 테스트 5개 / #W2-08 Granter 빈 리스트 스텁 이월 가능</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. 목표 (3건)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">W1 (5/10 ~ 5/16) Phaser 3 boilerplate + 시나리오 모드 1F~3F 트리거 + 진입 라우트</strong> — 차도윤 메인 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">webgame/</code> Vite + Phaser 3 + rex-dialogue + 강시연 chapter_00~03 발췌). 김민준 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/play</code> 라우트 + 24h JWT + 15분 hop 토큰. <strong class="font-semibold text-text-0">윤서아 = rex-dialogue 트리거 보강 (PD 1차 #2)</strong>.</li><li class="mb-1"><strong class="font-semibold text-text-0">W2 (5/17 ~ 5/23) 한가영 첫 발주 (윤서아 시트 흡수 매퍼) + 임재훈 첫 발주 사전 검토</strong> — 한가영 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">affix_pool.tsv</code> (35어픽스) + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items.tsv</code> (30항목) → JSON / FlatBuffer 자동 변환 매퍼 1쪽 + 200F 4.255 baseline 0.12% 편차 보존 검증. 임재훈 = Sp-W02 (5/24 첫 발주) 사전 검토 1쪽.</li><li class="mb-1"><strong class="font-semibold text-text-0">D+14 (5/23 Sat) 통합 검증 — 차도윤 + 한가영 + 임재훈 1주차 결과 W1·W2 GO/HOLD 판정</strong> — 60fps 1F~3F 시나리오 + 윤서아 시트 흡수 100% + 200F 4.255 baseline 0.12% 편차 보존 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/play</code> 옵션 C direct mount KPI (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/</code> 88.1KB First Load 보존) 검증.</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. 작업 (TodoWrite 초기 리스트)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">W1 (5/10 ~ 5/16) — Phaser 3 + 시나리오 1F~3F + 옵션 C 라우트 분기</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W1-01 D+0 킥오프 GO 판정</strong> — 5/10(일) 오전. 5 Lead 인사는 5/9 09:00 (D-1) 선행 완료 (PD 2차 #5). (담당: project-manager, 0.5h, 의존: 5/8 모노레포 + 5/9 FlatBuffer 합의 완료)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W1-02 webgame/ Phaser 3 boilerplate</strong> — 모노레포 5/8 합의 결과 위에 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">webgame/package.json</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">vite.config.ts</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">tsconfig.json</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">index.html</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">src/main.ts</code> Phaser 3 boilerplate. (담당: 차도윤, 2.5h, 의존: #W1-01)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W1-03 Phaser 3 60fps Smoke Test</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">webgame/src/scenes/SmokeScene.ts</code> + 1000 sprite 렌더 + Chrome DevTools Performance 60.0fps 유지. (담당: 차도윤, 1.5h, 의존: #W1-02)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W1-04a rex-dialogue 트리거 보강 (윤서아 영역, PD 1차 #2)</strong> — 강시연 chapter_00~03 본문 발췌 → 게임 트리거 보강 (조건/플래그/분기). v1.1 → v1.2 챕터 매핑 정정 동시 진행 가능. (담당: <strong class="font-semibold text-text-0">윤서아</strong>, 2.0h, 의존: #W1-02, <strong class="font-semibold text-text-0">D+6 5/16 50% 게이트</strong>)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W1-04b rex-dialogue plugin 통합 (차도윤 영역)</strong> — 윤서아 보강 결과 받아 Phaser scene 통합. 박세린 검수 권장 (DV2 라인). (담당: 차도윤, 1.5h, 의존: #W1-04a)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W1-05 진입 라우트 옵션 C 분기 + 24h JWT + 15분 hop (PD 2차 #1+#2)</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">web/src/app/play/[mode]/page.tsx</code> direct mount (Phaser 600KB+ Next.js dynamic import <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ssr:false</code>). <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/api/game/token</code> 15분 hop 발급 (김민준) + Phaser 검증 (차도윤). NextAuth 24h session 베이스. payload = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sub/role/iat/exp/iss/aud</code>. <strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/</code> 88.1KB First Load 보존 KPI 검증 의무</strong>. (담당: 김민준 + 차도윤 공동, 2.5h, 의존: #W1-02 + 5/8 1:1 의제 ⑤ 자율 합의 결과)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W1-06 W1 통합 검증 1쪽 + W2 GO/HOLD 판정</strong> — 60fps 1F~3F + Phaser 빌드 + Vite HMR + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/play</code> direct mount + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/</code> 88.1KB 보존 + JWT 24h+15분 동작 검증 1쪽. PM·PD 회신. (담당: 차도윤, 0.5h, 의존: #W1-02 ~ #W1-05)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">W2 (5/17 ~ 5/23) — 한가영 흡수 매퍼 + 임재훈 사전 검토</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W2-01 한가영 첫 발주 — 윤서아 시트 흡수 매퍼 1쪽</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/web-platform/sp_w01_w2_balance_absorption.md</code> 신설. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">affix_pool.tsv</code> (35어픽스) + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_items.tsv</code> (30항목) → JSON 자동 변환 + 200F 4.255 baseline 0.12% 편차 보존 검증. (담당: 한가영, 3.0h, 의존: #W1-06 GO)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W2-02 TsvReader 김민준 협업</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared/src/tsv-reader.ts</code> 신설. 김민준 = web/ 측 / 차도윤 = webgame/ 측 / 한가영 = 결과 흡수. (담당: 김민준 + 차도윤 + 한가영 공동, 2.0h, 의존: #W2-01)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W2-03 임재훈 첫 발주 사전 검토 1쪽</strong> — Sp-W02 (5/24) 본 발주 직전 사전 검토. Phaser 3 60fps + 1만 entity 풀링 패턴 + Pixel 6 / iPhone 12 / Desktop device 매트릭스 1쪽. (담당: 임재훈, 1.5h, 의존: #W1-06 GO)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W2-04 Phaser 임베드 시트 흡수 PoC</strong> — 차도윤이 한가영 매퍼 결과 (JSON) 를 Phaser 게임 루프에 임베드. 어픽스 1건 (예: 스킬 데미지 +5%) Phaser scene 적용 검증. <strong class="font-semibold text-text-0">단 D+6 5/16 윤서아 50% 미만 시 동반 이월 OK (PD 1차 #3)</strong>. (담당: 차도윤, 2.0h, 의존: #W2-01 + #W1-04a 50%↑)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#W2-05 디아블로 다크 톤 한지우 4 가드레일 적용</strong> — Phaser 내부 SCSS / Pixi 테마 별도. 한지우 시안 1쪽 인용. (담당: 차도윤, 1.0h, 의존: #W1-04b)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">정비 (PM)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#PM-01 D+7 중간 점검</strong> — 5/17 (월) 오전. W1 GO/HOLD 판정 결과 + W2 첫날 블로커 스캔. (담당: project-manager, 0.5h)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#PM-02 D+14 종료 회고 + Sp-W02 킥오프 착수</strong> — 5/24 (일) 오전. 본 문서 종료 섹션 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/sprint-w02.md</code> 킥오프. (담당: project-manager, 1.0h, 의존: #W2-04)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#PM-03 D+6 윤서아 50% 게이트 검증 (PD 1차 #5)</strong> — 5/16 (토) 오전. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/sp_w01_d_plus_6_yoonseoa_50pct_gate.md</code> 검증 실행. 50% 미만 시 한가영 W2-01 + 차도윤 W2-04 동반 이월 자동 트리거. (담당: project-manager, 0.5h, 의존: #W1-04a)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#PM-04 윤서아 self-내부 알림 5/8~5/16 매일 1줄 (R-V3-9 회복)</strong> — 윤서아 사적 발언 &quot;일일 알림 부담&quot; 반영하여 self-내부 (윤서아에게 발송 X). 학습 진척 % + 페이스 톤 1줄. (담당: project-manager, 0.1h × 9일 = 0.9h)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#PM-05 5/9 FlatBuffer 3자 슬롯 옵저버 + 1쪽 보고</strong> — 정현우+차도윤+한가영 합의 결과 PD 사후 보고. (담당: project-manager, 0.5h, 의존: 5/9 09:30~)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#PM-06 5/9 09:00 5 Lead 인사 슬롯 organize + PD 1쪽 사후 보고 (PD 2차 #5)</strong> — 5분 인사 + PD 옵저버 default + 사후 1쪽. (담당: project-manager, 0.3h)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">#PM-07 5/8 1:1 결과 1쪽 보고 통합 (PD 2차 #3)</strong> — 김민준+차도윤 90분 1:1 (의제 ①~⑤) 결과 sprints/ 4 트랙 라인 통합. (담당: project-manager, 0.5h, 의존: 5/8 1:1 종료)</li></ul>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">총 작업 수</strong>: 18건 (W1 7건 + W2 5건 + PM 7건 — PD 2차 잠금 #3+#5 반영하여 PM-05/06/07 신규 추가) <strong class="font-semibold text-text-0">총 예상 공수</strong>: <strong class="font-semibold text-text-0">W1 11h + W2 9.5h + PM 4.7h = 25.2h</strong> (중앙값)</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">하한 21h · 상한 30h. 주 10~15h × 2주 = 20~30h 상한 내.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. 의존성</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">선행 완료/예정</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">윤서아 인수인계 미팅 (5/5 = D-5) 완료 + 학습 진행 중</li><li class="mb-1"><strong class="font-semibold text-text-0">모노레포 셋업 = D-2 (5/8 오늘)</strong> — 김민준+차도윤 1:1 (의제 ①~⑤)</li><li class="mb-1"><strong class="font-semibold text-text-0">FlatBuffer 중간 레이어 설계 = D-1 (5/9)</strong> — 정현우+차도윤+한가영 3자</li><li class="mb-1"><strong class="font-semibold text-text-0">5 Lead 인사 = D-1 (5/9 09:00)</strong> — 윤서아+정현우+김민준+차도윤+박세린</li><li class="mb-1">web/ 1차 출시 직전 상태 (D+0~D+5 메인 세션 대행)</li><li class="mb-1">v3.0 13건 결정 source 잠금</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">본 스프린트 내 순차 그래프</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[D-2 5/8] 모노레포 1:1 (의제 ①~⑤)
        │
 [D-1 5/9 09:00] 5 Lead 인사 5분
        │
@@ -143,92 +60,40 @@
                                   ├─ #W2-02 TsvReader 3자
                                   └─ #W2-04 Phaser 임베드 PoC (윤서아 50% 게이트 의존)
                                           │
-                                    #PM-02 Sp-W02 킥오프 (5/24)
-```
-
-### 블로커 후보
-- **B-W1 — 모노레포 셋업 (5/8 오늘) 미완 시 W1-02 + W1-05 차단**. PM = **본 세션 5/8 즉시 알림 박힘** (D-2 정합).
-- **B-W2 — FlatBuffer 설계 합의 (5/9) 미완 시 W2-01 한가영 매퍼 + Sp-W02 W3 분기점 차단**. PM = **5/8 사전 알림 + 5/9 옵저버 의무**.
-- **B-W3 — 윤서아 학습 14h 초과 시 한가영 첫 발주 1주 지연 (R-V3-2)**: 박세린 self-내부 알림 5/8~5/16 + **5/16 D+6 50% 미만 시 W2-01 + W2-04 5/24 (Sp-W02 W1) 이월** (PD 1차 #3+#5).
-
-### Sp-W02 이월 원칙
-- 차도윤 무한 모드 1F~50F (Tilemap + 오브젝트 풀링)
-- 임재훈 1000F 부하 테스트 (10,000 entity / 60fps Pixel 6 / iPhone 12 / Desktop)
-- 한가영 60일 시즌 곡선 흡수
-- **D+6 50% 게이트 미달 시 #W2-01 + #W2-04 자동 이월 (PD 1차 #3)**
-- Firestore 세이브 sync (Sp-W04 예약)
-- 결제 통합 (Sp-W06~07 예약)
-
----
-
-## 5. 리스크 (4건)
-
-1. **R-W01-1 — 차도윤 신규 채용 첫 스프린트 학습 곡선 +20% (Phaser 3 + rex-dialogue + 모노레포 동시)**
-   - 대응: W1 종료 (5/16 토 저녁) PM이 5/17~5/23 일자별 분배 시뮬레이션 1회. **5/21 (수)까지 #W2-04 Phaser 임베드 PoC 미도달 시 #W2-05 다크 톤 적용 Sp-W02 W1 이월**.
-
-2. **R-W01-2 — 한가영 윤서아 시트 흡수 200F 4.255 baseline 편차 0.5% 초과 가능성**
-   - 대응: 한가영 매퍼 결과 **5/21 (수) 1차 검증** + 0.5% 초과 시 즉시 PD 보고 + 윤서아 시트 변경 발주.
-
-3. **R-W01-3 — 모노레포 5/8 + FlatBuffer 5/9 + 5 Lead 인사 5/9 + 24h+15분 JWT 라우트 옵션 C — 4건 인프라 연쇄 합의 동시 실패 시 W1 전체 지연**
-   - 대응: PM = **5/8 + 5/9 + 5/10 3회 사전 알림 + 옵저버 의무**. 합의 미완 시 5/10 D+0 PD 즉시 에스컬레이션.
-
-4. **R-V3-9 — PM 박세린 일일 알림 누락 self-마킹 (PD 1차 #6)**
-   - 사유: 5/5 D+1 메모리 "D+1~D+10 매일 1줄" 박았으나 5/6~5/7 2일 누락 가능성.
-   - self-게으름 명시: 0.1h/일 = 6분 작업 누락.
-   - 회복 액션: **#PM-04 윤서아 self-내부 알림 5/8~5/16 매일 1줄 의무**. 누락 시 self-Yellow → self-Red 자동 승급. 2일 연속 누락 = PD 1줄 보고.
-
----
-
-## 6. 종료 섹션 (D+14 = 2026-05-24 Sun 채움)
-
-### 완료
-- (D+14에 작성)
-
-### 미완 / 이월
-- (D+14에 작성 — 이월은 `sprint-w02.md` 상단 "이월 후보" 블록에 원문 + `[from Sprint W01]` 태그)
-
-### 회고
-- 잘된 것:
-- 안된 것:
-- 다음 액션:
-
-### D+14 체크리스트 (2026-05-24 Sun)
-- [ ] W1 통합 검증 1쪽 보고서(`#W1-06` 산출물) 보존
-- [ ] `webgame/` Vite + Phaser 3 boilerplate 60fps Smoke Test 통과 콘솔 캡처
-- [ ] `packages/shared` 공동 소유 폴더 김민준+차도윤 합의 결과 commit 확인
-- [ ] **윤서아 rex-dialogue 트리거 보강 결과 D+6 50% 게이트 통과 검증** (PD 1차 #2+#5)
-- [ ] 시나리오 1F~3F rex-dialogue 강시연 본문 발췌 100% 인용 검증 (DV2 라인)
-- [ ] **`/play` direct mount + `/` 88.1KB First Load 보존 KPI 검증** (PD 2차 #1)
-- [ ] **24h NextAuth + 15분 hop `/api/game/token` payload 동작 + iss/aud 검증** (PD 2차 #2)
-- [ ] 한가영 흡수 매퍼 35+30=65건 100% 흡수 + 200F 4.255 baseline 0.5% 미만 편차 검증
-- [ ] 임재훈 사전 검토 1쪽 Sp-W02 (5/24) 첫 발주 baseline 잠금
-- [ ] 디아블로 다크 톤 한지우 4 가드레일 Phaser 적용 시안 검증
-- [ ] **R-V3-9 PM 일일 알림 5/8~5/16 9일 누락 0건 검증** (PD 1차 #6)
-- [ ] `sprint-w02.md` 킥오프 문서 착수
-
----
-
-## 7. 이벤트 로그 요청 블록
-
-> [PD 요청] 2026-05-24 종료 시점에 아래 1줄을 `CLAUDE.md` "이벤트 로그" 섹션에 추가:
->
-> `- 2026-05-24: Sprint W01 완료 (옵션 C 정합 D+0 = 5/10). 모노레포(5/8) + FlatBuffer 3자(5/9) + 5 Lead 인사(5/9) + Phaser 3 boilerplate + 시나리오 1F~3F (윤서아 트리거 보강) + /play 옵션 C direct mount + 24h+15분 JWT + 한가영 첫 발주 + 임재훈 사전 검토 + Sp-W02 킥오프.`
-
----
-
-## 8. 5단계 프로토콜 사수 (Q→O→D→Dr→A)
-
-본 스프린트 내 모든 신규 결정:
-1. PD에게 옵션 2~3개 제시
-2. PD 선택 받음
-3. 초안 작성
-4. PD 최종 승인
-5. 박세린(PM) 메모리 신설 + MEMORY.md 인덱스 1줄
-
-박세린 시절 game-designer 페르소나 잔존 위험 — 본인 = 일정·의존성·블로킹·번다운만, 게임 디자인 결정 0 (윤서아 위임).
-
-**예외**: 2026-05-08 PD "6 ok" 1차 + "6 잠금" 2차 = 5단계 외 default 채택 → 박세린 자율 마킹 권한 적용 (메모리 `feedback_team_dna_top_1_percent_24h.md` 결정 속도 1단계).
-6:["slug","sprint-w01","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sprint-w01","d"],{"children":["__PAGE__?{\"slug\":\"sprint-w01\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-w01","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint W01 (2026-05-10 ~ 2026-05-23) — 옵션 C 정정 D+0 = 5/10"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/sprint-w01.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"2,583"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint W01 (2026-05-10 ~ 2026-05-23) — 옵션 C 정정 D+0 = 5/10 — 자료실"}],["$","meta","3",{"name":"description","content":"- designs/handover_yunseoa_2026-05-05.md 미팅 완료 (5/5 D+1) — 윤서아 12블록 100% 인수"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+                                    #PM-02 Sp-W02 킥오프 (5/24)</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">블로커 후보</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">B-W1 — 모노레포 셋업 (5/8 오늘) 미완 시 W1-02 + W1-05 차단</strong>. PM = <strong class="font-semibold text-text-0">본 세션 5/8 즉시 알림 박힘</strong> (D-2 정합).</li><li class="mb-1"><strong class="font-semibold text-text-0">B-W2 — FlatBuffer 설계 합의 (5/9) 미완 시 W2-01 한가영 매퍼 + Sp-W02 W3 분기점 차단</strong>. PM = <strong class="font-semibold text-text-0">5/8 사전 알림 + 5/9 옵저버 의무</strong>.</li><li class="mb-1"><strong class="font-semibold text-text-0">B-W3 — 윤서아 학습 14h 초과 시 한가영 첫 발주 1주 지연 (R-V3-2)</strong>: 박세린 self-내부 알림 5/8~5/16 + <strong class="font-semibold text-text-0">5/16 D+6 50% 미만 시 W2-01 + W2-04 5/24 (Sp-W02 W1) 이월</strong> (PD 1차 #3+#5).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">Sp-W02 이월 원칙</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">차도윤 무한 모드 1F~50F (Tilemap + 오브젝트 풀링)</li><li class="mb-1">임재훈 1000F 부하 테스트 (10,000 entity / 60fps Pixel 6 / iPhone 12 / Desktop)</li><li class="mb-1">한가영 60일 시즌 곡선 흡수</li><li class="mb-1"><strong class="font-semibold text-text-0">D+6 50% 게이트 미달 시 #W2-01 + #W2-04 자동 이월 (PD 1차 #3)</strong></li><li class="mb-1">Firestore 세이브 sync (Sp-W04 예약)</li><li class="mb-1">결제 통합 (Sp-W06~07 예약)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. 리스크 (4건)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">R-W01-1 — 차도윤 신규 채용 첫 스프린트 학습 곡선 +20% (Phaser 3 + rex-dialogue + 모노레포 동시)</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">대응: W1 종료 (5/16 토 저녁) PM이 5/17~5/23 일자별 분배 시뮬레이션 1회. <strong class="font-semibold text-text-0">5/21 (수)까지 #W2-04 Phaser 임베드 PoC 미도달 시 #W2-05 다크 톤 적용 Sp-W02 W1 이월</strong>.</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">R-W01-2 — 한가영 윤서아 시트 흡수 200F 4.255 baseline 편차 0.5% 초과 가능성</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">대응: 한가영 매퍼 결과 <strong class="font-semibold text-text-0">5/21 (수) 1차 검증</strong> + 0.5% 초과 시 즉시 PD 보고 + 윤서아 시트 변경 발주.</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">R-W01-3 — 모노레포 5/8 + FlatBuffer 5/9 + 5 Lead 인사 5/9 + 24h+15분 JWT 라우트 옵션 C — 4건 인프라 연쇄 합의 동시 실패 시 W1 전체 지연</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">대응: PM = <strong class="font-semibold text-text-0">5/8 + 5/9 + 5/10 3회 사전 알림 + 옵저버 의무</strong>. 합의 미완 시 5/10 D+0 PD 즉시 에스컬레이션.</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">R-V3-9 — PM 박세린 일일 알림 누락 self-마킹 (PD 1차 #6)</strong></li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">사유: 5/5 D+1 메모리 &quot;D+1~D+10 매일 1줄&quot; 박았으나 5/6~5/7 2일 누락 가능성.</li><li class="mb-1">self-게으름 명시: 0.1h/일 = 6분 작업 누락.</li><li class="mb-1">회복 액션: <strong class="font-semibold text-text-0">#PM-04 윤서아 self-내부 알림 5/8~5/16 매일 1줄 의무</strong>. 누락 시 self-Yellow → self-Red 자동 승급. 2일 연속 누락 = PD 1줄 보고.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. 종료 섹션 (D+14 = 2026-05-24 Sun 채움)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">완료</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">(D+14에 작성)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">미완 / 이월</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">(D+14에 작성 — 이월은 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-w02.md</code> 상단 &quot;이월 후보&quot; 블록에 원문 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[from Sprint W01]</code> 태그)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">회고</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">잘된 것:</li><li class="mb-1">안된 것:</li><li class="mb-1">다음 액션:</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">D+14 체크리스트 (2026-05-24 Sun)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />W1 통합 검증 1쪽 보고서(<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">#W1-06</code> 산출물) 보존</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">webgame/</code> Vite + Phaser 3 boilerplate 60fps Smoke Test 통과 콘솔 캡처</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared</code> 공동 소유 폴더 김민준+차도윤 합의 결과 commit 확인</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">윤서아 rex-dialogue 트리거 보강 결과 D+6 50% 게이트 통과 검증</strong> (PD 1차 #2+#5)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />시나리오 1F~3F rex-dialogue 강시연 본문 발췌 100% 인용 검증 (DV2 라인)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/play</code> direct mount + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/</code> 88.1KB First Load 보존 KPI 검증</strong> (PD 2차 #1)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">24h NextAuth + 15분 hop <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/api/game/token</code> payload 동작 + iss/aud 검증</strong> (PD 2차 #2)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />한가영 흡수 매퍼 35+30=65건 100% 흡수 + 200F 4.255 baseline 0.5% 미만 편차 검증</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />임재훈 사전 검토 1쪽 Sp-W02 (5/24) 첫 발주 baseline 잠금</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />디아블로 다크 톤 한지우 4 가드레일 Phaser 적용 시안 검증</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">R-V3-9 PM 일일 알림 5/8~5/16 9일 누락 0건 검증</strong> (PD 1차 #6)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-w02.md</code> 킥오프 문서 착수</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. 이벤트 로그 요청 블록</h2>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">[PD 요청] 2026-05-24 종료 시점에 아래 1줄을 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">CLAUDE.md</code> &quot;이벤트 로그&quot; 섹션에 추가:  <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">- 2026-05-24: Sprint W01 완료 (옵션 C 정합 D+0 = 5/10). 모노레포(5/8) + FlatBuffer 3자(5/9) + 5 Lead 인사(5/9) + Phaser 3 boilerplate + 시나리오 1F~3F (윤서아 트리거 보강) + /play 옵션 C direct mount + 24h+15분 JWT + 한가영 첫 발주 + 임재훈 사전 검토 + Sp-W02 킥오프.</code></blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">8. 5단계 프로토콜 사수 (Q→O→D→Dr→A)</h2>
+<p class="mb-3 text-text-0">본 스프린트 내 모든 신규 결정:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">PD에게 옵션 2~3개 제시</li><li class="mb-1">PD 선택 받음</li><li class="mb-1">초안 작성</li><li class="mb-1">PD 최종 승인</li><li class="mb-1">박세린(PM) 메모리 신설 + MEMORY.md 인덱스 1줄</li></ol>
+<p class="mb-3 text-text-0">박세린 시절 game-designer 페르소나 잔존 위험 — 본인 = 일정·의존성·블로킹·번다운만, 게임 디자인 결정 0 (윤서아 위임).</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">예외</strong>: 2026-05-08 PD &quot;6 ok&quot; 1차 + &quot;6 잠금&quot; 2차 = 5단계 외 default 채택 → 박세린 자율 마킹 권한 적용 (메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">feedback_team_dna_top_1_percent_24h.md</code> 결정 속도 1단계).</p>5:["slug","sprint-w01","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","sprint-w01","d"],{"children":["__PAGE__?{\"slug\":\"sprint-w01\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-w01","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint W01 (2026-05-10 ~ 2026-05-23) — 옵션 C 정정 D+0 = 5/10"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/sprint-w01.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"2,583"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint W01 (2026-05-10 ~ 2026-05-23) — 옵션 C 정정 D+0 = 5/10 — 자료실"}],["$","meta","3",{"name":"description","content":"- designs/handover_yunseoa_2026-05-05.md 미팅 완료 (5/5 D+1) — 윤서아 12블록 100% 인수"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

@@ -1,92 +1,35 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T100a,# Sp-W01 D+6 윤서아 50% 게이트 검증 (2026-05-16 Sat)
-
-> 신설: 2026-05-08 PD 6 ok 1차 일괄 #5 (박세린 자율 신설)
-> 일자 정정: 2026-05-08 PD 2차 잠금 #6 (옵션 C 정합 D+0 = 5/10 → D+6 = **5/16**)
-> 검증 일자: **2026-05-16 (Sat) 오전**
-> 검증자: **project-manager (박세린)**
-> 대상: **윤서아 (game-designer) — rex-dialogue 트리거 보강 (#W1-04a)**
-> 트리거: **50% 미만 시 #W2-01 한가영 + #W2-04 차도윤 동반 이월 자동 (PD 1차 #3+#5)**
-
----
-
-## 1. 배경
-
-PD 1차 잠금 #2 = rex-dialogue 트리거 보강 의무자 = **윤서아** (PM 승진 후 game-designer 단일).
-- 박세린은 game-designer 시절 페르소나 잔존하지만 결정권 0 → 윤서아 위임.
-- 윤서아 인수 9~14h 학습 (5/5~) 진행 + 5/10 D+0 W1 첫 발주.
-- #W1-04a 예상 공수 2.0h. D+0 (5/10) ~ D+6 (5/16) 가용 6일 × 윤서아 페이스 = 50%↑ 기대치.
-
-**박세린 비공개 핑 결과 (5/8 1회 사용, PD 1차 #4)**:
-- 진척 4 항목 (200F baseline / GDD v1~v5 / 시트 4종 / v3.0 13건) = 자가 추정 60~70% 진행 (5/8 시점)
-- 페이스 톤 = 안정형 + 후반 집중형 자가 인식 일치
-- 5/14 80% 자가 추정 = 보수적 (윤서아 페이스 기준 90%↑ 가능)
-- rex-dialogue 트리거 보강 D+6~D+10 슬롯 의향 = OK (페이스 자유 보존)
-- 톤 = 압박 0 / "PM 핑 1회는 도움됨, 일일 알림은 부담" 사적 발언 1건 → R-V3-9 회복 액션 설계 시 반영 (1줄 알림은 self-구속, 윤서아에게 일일 강제 X — 박세린 self-내부 알림으로 변경)
-
----
-
-## 2. 검증 항목 (5/16 Sat 오전 30분)
-
-| # | 항목 | PASS 기준 | 측정 방법 |
-|---|------|---------|---------|
-| 1 | rex-dialogue 트리거 보강 진척 % | **50%↑** | 강시연 chapter_00~03 본문 발췌 → 트리거 보강 (조건/플래그/분기) 작성 분량 / 전체 분량 |
-| 2 | v1.1 → v1.2 챕터 매핑 정정 진행 | **시작↑ (50% 가중치 X)** | `project_yoonseoa_v1_1_chapter_remap_2026-05-04.md` D+25 슬롯 진행 여부 |
-| 3 | 차도윤 #W1-04b plugin 통합 가능성 | **D+10 5/20 받을 수 있는 분량 확보** | 윤서아 → 차도윤 인계 가능 분량 |
-| 4 | 윤서아 페이스 톤 self-보고 | **GO 또는 HOLD 자가 판단** | 윤서아 1줄 self-회신 (강제 X) |
-
----
-
-## 3. 결과 분기
-
-### A. 50%↑ PASS (정상 진행)
-- #W1-04a 5/20 (D+10) 차도윤 인계
-- #W1-04b 5/21~5/22 차도윤 plugin 통합
-- #W2-01 한가영 첫 발주 5/17 정상 시작
-- #W2-04 차도윤 Phaser 임베드 PoC 5/21~5/22 정상 시작
-- R-V3-9 self-Yellow → Green
-
-### B. 30~49% (Yellow 경계)
-- #W1-04a Sp-W02 W1 (5/24 시작) 1주 이월
-- #W1-04b 동반 이월
-- #W2-01 한가영 첫 발주 = **GO** (시트 흡수는 트리거 보강과 독립)
-- #W2-04 차도윤 Phaser 임베드 PoC = **HOLD → Sp-W02 W1 이월** (PD 1차 #3 자동 트리거)
-- PM 1쪽 PD 보고 + 윤서아 비공개 핑 추가 1회 권한 신청 슬롯
-
-### C. 30% 미만 (Red)
-- #W1-04a + #W1-04b + #W2-04 모두 Sp-W02 W1 이월
-- #W2-01 한가영 = **GO** (단 윤서아 시트 흡수 결과 검증 차질 가능)
-- PM 24h 내 PD 에스컬레이션 (R-V3-2 Yellow → Red 승급)
-- R-V3-3 Green → Yellow 자동 강등 (시나리오 진행 지연 재발동)
-
----
-
-## 4. 박세린 회복 액션 (R-V3-9)
-
-5/16 검증과 별개로 박세린 self-알림 의무:
-
-- **5/8~5/16 윤서아 self-내부 알림 = 1줄 (윤서아에게 강제 X)** — 메모리에만 박힘
-- 누락 0 = R-V3-9 self-Yellow → Green
-- 2일 연속 누락 = self-Yellow → self-Red + PD 1줄 보고 의무
-
----
-
-## 5. 5/16 산출물
-
-- 검증 1쪽 (본 문서 §3 결과 표시 + 분기 A/B/C 마킹)
-- PD 1쪽 보고 (B/C 시 즉시 / A 시 D+14 종합 보고에 합산)
-- Sp-W02 이월 후보 자동 등록 (B/C 시)
-
----
-
-## 6. Why
-
-PD 1차 잠금 #5 = D+6 게이트 검증 신설 + PD 2차 잠금 #6 = 옵션 C 정합 D+0 = 5/10 → D+6 = **5/16** 일자 정합.
-박세린 자율 신설 권한 + R-V3-9 self-마킹. 윤서아 페이스 자유 보존 + 50% 게이트로 W2 Phaser 임베드 차질 사전 방지.
-6:["slug","sp_w01_d_plus_6_yoonseoa_50pct_gate","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sp_w01_d_plus_6_yoonseoa_50pct_gate","d"],{"children":["__PAGE__?{\"slug\":\"sp_w01_d_plus_6_yoonseoa_50pct_gate\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sp_w01_d_plus_6_yoonseoa_50pct_gate","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sp-W01 D+6 윤서아 50% 게이트 검증 (2026-05-16 Sat)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/sp_w01_d_plus_6_yoonseoa_50pct_gate.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"643"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sp-W01 D+6 윤서아 50% 게이트 검증 (2026-05-16 Sat) — 자료실"}],["$","meta","3",{"name":"description","content":"PD 1차 잠금 #2 = rex-dialogue 트리거 보강 의무자 = 윤서아 (PM 승진 후 game-designer 단일)."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T20ff,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">Sp-W01 D+6 윤서아 50% 게이트 검증 (2026-05-16 Sat)</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">신설: 2026-05-08 PD 6 ok 1차 일괄 #5 (박세린 자율 신설) 일자 정정: 2026-05-08 PD 2차 잠금 #6 (옵션 C 정합 D+0 = 5/10 → D+6 = <strong class="font-semibold text-text-0">5/16</strong>) 검증 일자: <strong class="font-semibold text-text-0">2026-05-16 (Sat) 오전</strong> 검증자: <strong class="font-semibold text-text-0">project-manager (박세린)</strong> 대상: <strong class="font-semibold text-text-0">윤서아 (game-designer) — rex-dialogue 트리거 보강 (#W1-04a)</strong> 트리거: <strong class="font-semibold text-text-0">50% 미만 시 #W2-01 한가영 + #W2-04 차도윤 동반 이월 자동 (PD 1차 #3+#5)</strong></blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. 배경</h2>
+<p class="mb-3 text-text-0">PD 1차 잠금 #2 = rex-dialogue 트리거 보강 의무자 = <strong class="font-semibold text-text-0">윤서아</strong> (PM 승진 후 game-designer 단일).</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">박세린은 game-designer 시절 페르소나 잔존하지만 결정권 0 → 윤서아 위임.</li><li class="mb-1">윤서아 인수 9~14h 학습 (5/5~) 진행 + 5/10 D+0 W1 첫 발주.</li><li class="mb-1">#W1-04a 예상 공수 2.0h. D+0 (5/10) ~ D+6 (5/16) 가용 6일 × 윤서아 페이스 = 50%↑ 기대치.</li></ul>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">박세린 비공개 핑 결과 (5/8 1회 사용, PD 1차 #4)</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">진척 4 항목 (200F baseline / GDD v1~v5 / 시트 4종 / v3.0 13건) = 자가 추정 60~70% 진행 (5/8 시점)</li><li class="mb-1">페이스 톤 = 안정형 + 후반 집중형 자가 인식 일치</li><li class="mb-1">5/14 80% 자가 추정 = 보수적 (윤서아 페이스 기준 90%↑ 가능)</li><li class="mb-1">rex-dialogue 트리거 보강 D+6~D+10 슬롯 의향 = OK (페이스 자유 보존)</li><li class="mb-1">톤 = 압박 0 / &quot;PM 핑 1회는 도움됨, 일일 알림은 부담&quot; 사적 발언 1건 → R-V3-9 회복 액션 설계 시 반영 (1줄 알림은 self-구속, 윤서아에게 일일 강제 X — 박세린 self-내부 알림으로 변경)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. 검증 항목 (5/16 Sat 오전 30분)</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">PASS 기준</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">측정 방법</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">1</td><td class="border border-border px-3 py-2 text-left text-text-0">rex-dialogue 트리거 보강 진척 %</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">50%↑</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">강시연 chapter_00~03 본문 발췌 → 트리거 보강 (조건/플래그/분기) 작성 분량 / 전체 분량</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">2</td><td class="border border-border px-3 py-2 text-left text-text-0">v1.1 → v1.2 챕터 매핑 정정 진행</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">시작↑ (50% 가중치 X)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_yoonseoa_v1_1_chapter_remap_2026-05-04.md</code> D+25 슬롯 진행 여부</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">3</td><td class="border border-border px-3 py-2 text-left text-text-0">차도윤 #W1-04b plugin 통합 가능성</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">D+10 5/20 받을 수 있는 분량 확보</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">윤서아 → 차도윤 인계 가능 분량</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">4</td><td class="border border-border px-3 py-2 text-left text-text-0">윤서아 페이스 톤 self-보고</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">GO 또는 HOLD 자가 판단</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">윤서아 1줄 self-회신 (강제 X)</td></tr></tbody></table></div>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. 결과 분기</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">A. 50%↑ PASS (정상 진행)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">#W1-04a 5/20 (D+10) 차도윤 인계</li><li class="mb-1">#W1-04b 5/21~5/22 차도윤 plugin 통합</li><li class="mb-1">#W2-01 한가영 첫 발주 5/17 정상 시작</li><li class="mb-1">#W2-04 차도윤 Phaser 임베드 PoC 5/21~5/22 정상 시작</li><li class="mb-1">R-V3-9 self-Yellow → Green</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">B. 30~49% (Yellow 경계)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">#W1-04a Sp-W02 W1 (5/24 시작) 1주 이월</li><li class="mb-1">#W1-04b 동반 이월</li><li class="mb-1">#W2-01 한가영 첫 발주 = <strong class="font-semibold text-text-0">GO</strong> (시트 흡수는 트리거 보강과 독립)</li><li class="mb-1">#W2-04 차도윤 Phaser 임베드 PoC = <strong class="font-semibold text-text-0">HOLD → Sp-W02 W1 이월</strong> (PD 1차 #3 자동 트리거)</li><li class="mb-1">PM 1쪽 PD 보고 + 윤서아 비공개 핑 추가 1회 권한 신청 슬롯</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">C. 30% 미만 (Red)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">#W1-04a + #W1-04b + #W2-04 모두 Sp-W02 W1 이월</li><li class="mb-1">#W2-01 한가영 = <strong class="font-semibold text-text-0">GO</strong> (단 윤서아 시트 흡수 결과 검증 차질 가능)</li><li class="mb-1">PM 24h 내 PD 에스컬레이션 (R-V3-2 Yellow → Red 승급)</li><li class="mb-1">R-V3-3 Green → Yellow 자동 강등 (시나리오 진행 지연 재발동)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. 박세린 회복 액션 (R-V3-9)</h2>
+<p class="mb-3 text-text-0">5/16 검증과 별개로 박세린 self-알림 의무:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">5/8~5/16 윤서아 self-내부 알림 = 1줄 (윤서아에게 강제 X)</strong> — 메모리에만 박힘</li><li class="mb-1">누락 0 = R-V3-9 self-Yellow → Green</li><li class="mb-1">2일 연속 누락 = self-Yellow → self-Red + PD 1줄 보고 의무</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. 5/16 산출물</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">검증 1쪽 (본 문서 §3 결과 표시 + 분기 A/B/C 마킹)</li><li class="mb-1">PD 1쪽 보고 (B/C 시 즉시 / A 시 D+14 종합 보고에 합산)</li><li class="mb-1">Sp-W02 이월 후보 자동 등록 (B/C 시)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. Why</h2>
+<p class="mb-3 text-text-0">PD 1차 잠금 #5 = D+6 게이트 검증 신설 + PD 2차 잠금 #6 = 옵션 C 정합 D+0 = 5/10 → D+6 = <strong class="font-semibold text-text-0">5/16</strong> 일자 정합. 박세린 자율 신설 권한 + R-V3-9 self-마킹. 윤서아 페이스 자유 보존 + 50% 게이트로 W2 Phaser 임베드 차질 사전 방지.</p>5:["slug","sp_w01_d_plus_6_yoonseoa_50pct_gate","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","sp_w01_d_plus_6_yoonseoa_50pct_gate","d"],{"children":["__PAGE__?{\"slug\":\"sp_w01_d_plus_6_yoonseoa_50pct_gate\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sp_w01_d_plus_6_yoonseoa_50pct_gate","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sp-W01 D+6 윤서아 50% 게이트 검증 (2026-05-16 Sat)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/sp_w01_d_plus_6_yoonseoa_50pct_gate.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"643"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sp-W01 D+6 윤서아 50% 게이트 검증 (2026-05-16 Sat) — 자료실"}],["$","meta","3",{"name":"description","content":"PD 1차 잠금 #2 = rex-dialogue 트리거 보강 의무자 = 윤서아 (PM 승진 후 game-designer 단일)."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

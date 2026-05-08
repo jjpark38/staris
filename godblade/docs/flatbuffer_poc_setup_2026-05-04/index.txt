@@ -1,34 +1,18 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T2672,# FlatBuffer PoC Setup (정현우, 2026-05-04 D+0 당김 발주)
-
-> 작성: 2026-05-04 (정현우 code-lead) · PD가 5/12~5/14 PoC 1h 슬롯을 D+0 당김
-> 상위: `designs/flatbuffer_intermediate_layer_2026-05-18.md` §7 위험 1 + §8 다음 액션 + §10
-> 잠금 source: `project_flatbuffer_self_build_decision_2026-05-04.md` (옵션 B Self-build 잠금 / 외주 폐기)
-> 범위: flatc + GitHub Actions + Unity Editor batch 검증 절차 1쪽 + 결과 기록
-> 산출물 동반: `designs/flatbuffer_schema_draft_v0_1.fbs` + `designs/flatbuffer_github_actions_draft.yml`
-
----
-
-## 1. PoC 목적 (3건)
-
-1. **flatc 컴파일러 검증** — Linux/Windows binary 다운로드 + `.fbs` 컴파일 성공 + C# / TypeScript binding 생성
-2. **GitHub Actions CI 통합 가능성** — `flatc` ubuntu-latest 실행 + Unity Editor batch mode (`game-ci/unity-builder@v4`) 호출 + 한가영 검증 라인 인터페이스
-3. **실패 시 차선 (Protobuf)** — FlatBuffer 검증 실패 시 fallback 비용·리스크 1쪽
-
----
-
-## 2. flatc 검증 절차 (정현우 로컬 + CI)
-
-### 2.1 로컬 검증 (Windows, 정현우 박세린 합의 - 본인 메인 OS)
-
-```powershell
-# 1. flatc 24.3.25 Windows binary 다운로드
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T50b4,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">FlatBuffer PoC Setup (정현우, 2026-05-04 D+0 당김 발주)</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성: 2026-05-04 (정현우 code-lead) · PD가 5/12~5/14 PoC 1h 슬롯을 D+0 당김 상위: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/flatbuffer_intermediate_layer_2026-05-18.md</code> §7 위험 1 + §8 다음 액션 + §10 잠금 source: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_flatbuffer_self_build_decision_2026-05-04.md</code> (옵션 B Self-build 잠금 / 외주 폐기) 범위: flatc + GitHub Actions + Unity Editor batch 검증 절차 1쪽 + 결과 기록 산출물 동반: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/flatbuffer_schema_draft_v0_1.fbs</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/flatbuffer_github_actions_draft.yml</code></blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. PoC 목적 (3건)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">flatc 컴파일러 검증</strong> — Linux/Windows binary 다운로드 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">.fbs</code> 컴파일 성공 + C# / TypeScript binding 생성</li><li class="mb-1"><strong class="font-semibold text-text-0">GitHub Actions CI 통합 가능성</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">flatc</code> ubuntu-latest 실행 + Unity Editor batch mode (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">game-ci/unity-builder@v4</code>) 호출 + 한가영 검증 라인 인터페이스</li><li class="mb-1"><strong class="font-semibold text-text-0">실패 시 차선 (Protobuf)</strong> — FlatBuffer 검증 실패 시 fallback 비용·리스크 1쪽</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. flatc 검증 절차 (정현우 로컬 + CI)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.1 로컬 검증 (Windows, 정현우 박세린 합의 - 본인 메인 OS)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code># 1. flatc 24.3.25 Windows binary 다운로드
 # https://github.com/google/flatbuffers/releases/download/v24.3.25/Windows.flatc.binary.zip
-# 압축 해제 -> C:\tools\flatc\flatc.exe
-# PATH 등록 -> 새 터미널에서 검증
+# 압축 해제 -&gt; C:\tools\flatc\flatc.exe
+# PATH 등록 -&gt; 새 터미널에서 검증
 flatc --version
 # 기대 출력: flatc version 24.3.25
 
@@ -39,45 +23,23 @@ flatc --ts -o generated\typescript designs\flatbuffer_schema_draft_v0_1.fbs
 
 # 3. 생성 파일 확인
 # generated\csharp\GodBlade\Schema\*.cs (table 1개당 1 파일)
-# generated\typescript\god-blade\schema\*.ts
-```
-
-**기대 결과**:
-- C# 파일 8~10개 생성 (AffixPool / PrestigeItems / TranscendentMilestone / GodBladeData + 각 enum + helper)
-- TS 파일 동일 구조
-- 0 오류
-
-**위험**: Windows binary 가 Linux 와 다른 별도 검증 필요. 실패 시 Docker `google/flatbuffers` 이미지 fallback.
-
-### 2.2 CI 검증 (GitHub Actions, 차도윤 + 임재훈 인계 의제)
-
-`designs/flatbuffer_github_actions_draft.yml` 참조. 4 job 구성:
-1. **flatc-compile** — `.fbs` -> C# / TS binding 생성
-2. **unity-so-export** — `game-ci/unity-builder@v4` Unity 6000.0.23f1 batch mode + `FlatBufferImporter.RunCI()` 호출
-3. **phaser-json-export** — `webgame/` 측 Vite 빌드 + binary export (차도윤 영역)
-4. **balance-regression** — Unity binary ↔ Phaser binary diff + 200F 4.255 baseline 검증 (한가영 영역, Sp-W01 W2 활성화)
-
-**위험 3건** (yaml 하단 주석 참조):
-- `game-ci/unity-builder` Unity 6000.0.23f1 호환성 — D+14 합의 시 검증 필요
-- flatc Windows binary 별도 검증
-- 한가영 도구 미작성 → Sp-W01 W2 (5/25) 1:1 PoC 4h 후 활성화
-
----
-
-## 3. Unity Editor batch mode 호출 절차 (정현우 영역)
-
-### 3.1 신규 파일 (Sp-W01 W1, D+14 합의 후 작성)
-
-```
-Unity6/Assets/Editor/FlatBuffer/
+# generated\typescript\god-blade\schema\*.ts</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">기대 결과</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">C# 파일 8~10개 생성 (AffixPool / PrestigeItems / TranscendentMilestone / GodBladeData + 각 enum + helper)</li><li class="mb-1">TS 파일 동일 구조</li><li class="mb-1">0 오류</li></ul>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">위험</strong>: Windows binary 가 Linux 와 다른 별도 검증 필요. 실패 시 Docker <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">google/flatbuffers</code> 이미지 fallback.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.2 CI 검증 (GitHub Actions, 차도윤 + 임재훈 인계 의제)</h3>
+<p class="mb-3 text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/flatbuffer_github_actions_draft.yml</code> 참조. 4 job 구성:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">flatc-compile</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">.fbs</code> -&gt; C# / TS binding 생성</li><li class="mb-1"><strong class="font-semibold text-text-0">unity-so-export</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">game-ci/unity-builder@v4</code> Unity 6000.0.23f1 batch mode + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">FlatBufferImporter.RunCI()</code> 호출</li><li class="mb-1"><strong class="font-semibold text-text-0">phaser-json-export</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">webgame/</code> 측 Vite 빌드 + binary export (차도윤 영역)</li><li class="mb-1"><strong class="font-semibold text-text-0">balance-regression</strong> — Unity binary ↔ Phaser binary diff + 200F 4.255 baseline 검증 (한가영 영역, Sp-W01 W2 활성화)</li></ol>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">위험 3건</strong> (yaml 하단 주석 참조):</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">game-ci/unity-builder</code> Unity 6000.0.23f1 호환성 — D+14 합의 시 검증 필요</li><li class="mb-1">flatc Windows binary 별도 검증</li><li class="mb-1">한가영 도구 미작성 → Sp-W01 W2 (5/25) 1:1 PoC 4h 후 활성화</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. Unity Editor batch mode 호출 절차 (정현우 영역)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.1 신규 파일 (Sp-W01 W1, D+14 합의 후 작성)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>Unity6/Assets/Editor/FlatBuffer/
 ├── FlatBufferImporter.cs        # CI 진입점 + Layer 3a SO export
-└── FlatBufferImporter.asmdef    # references: GodBlade.Data + Generated FlatBuffer C# binding
-```
-
-### 3.2 진입점 시그니처
-
-```csharp
-// Unity6/Assets/Editor/FlatBuffer/FlatBufferImporter.cs (Sp-W01 W1 작성, 본 PoC 는 시그니처만)
+└── FlatBufferImporter.asmdef    # references: GodBlade.Data + Generated FlatBuffer C# binding</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.2 진입점 시그니처</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>// Unity6/Assets/Editor/FlatBuffer/FlatBufferImporter.cs (Sp-W01 W1 작성, 본 PoC 는 시그니처만)
 namespace GodBlade.EditorTools
 {
     public static class FlatBufferImporter
@@ -87,55 +49,25 @@ namespace GodBlade.EditorTools
         public static void RunCI()
         {
             // 1. designs/flatbuffer_schema_draft_v0_1.fbs 로드
-            // 2. Datasheets/*.tsv -> FlatBufferBuilder 변환 (TsvReader 통합 - Sp02 이월)
-            // 3. godblade_data.bin export -> Unity6/Assets/_Project/Generated/
+            // 2. Datasheets/*.tsv -&gt; FlatBufferBuilder 변환 (TsvReader 통합 - Sp02 이월)
+            // 3. godblade_data.bin export -&gt; Unity6/Assets/_Project/Generated/
             // 4. SO 3개 (AffixPool / PrestigeItems / TranscendentMilestone) 생성 + Addressables 등록
             // 5. exit code 0 (정상) / 1 (실패)
         }
     }
-}
-```
-
-**Sp01 W2 Importer 와 영역 분리**:
-- W2 Importer (`DropRateTableImporter` / `MilestoneRewardImporter` / `AffixPoolImporter`) = TSV 직접 파싱 → SO
-- 본 FlatBufferImporter = TSV → FlatBuffer binary → SO (중간 레이어 추가)
-- Sp-W01 W1 (5/18~5/24) = FlatBufferImporter 신설 + Sp01 W2 Importer 3종 호출 wrapper 화 (TsvReader Sp02 공통화 시 흡수)
-
----
-
-## 4. 차선 검토 — Protobuf fallback 비용·리스크 1쪽
-
-### 4.1 FlatBuffer 검증 실패 trigger 조건
-
-- flatc Windows binary 실행 실패 (Docker fallback 도 실패)
-- `game-ci/unity-builder` Unity 6 호환성 0 (self-hosted runner 도 실패)
-- C# binding zero-copy 검증 시 메모리 leak 발견
-
-### 4.2 Protobuf 차선 비교
-
-| 항목 | FlatBuffer (현 채택) | Protobuf (차선) |
-|------|---------------------|-----------------|
-| CLI | flatc | protoc |
-| Unity binding | Google C# (FlatBuffers.dll) | protobuf-net (3rd party) |
-| Web binding | flatbuffers JS | protobuf.js |
-| zero-copy | O | X (전체 deserialize 필수) |
-| 빌드 검증 | O (스키마 위반 시 컴파일 실패) | O |
-| 학습 곡선 | 중 | 저 (industry-standard) |
-| 차도윤 모노레포 통합 | flatbuffers JS npm | protobufjs npm |
-| 한가영 0 편차 검증 | binary diff 직접 비교 | JSON 변환 후 diff |
-| 라이브 안정성 | A (zero-copy = 메모리 0) | B (런타임 reflection) |
-
-### 4.3 Protobuf 전환 비용
-
-- 정현우 50h 재작업 필요 (schema.fbs → schema.proto / FlatBufferImporter → ProtobufImporter)
-- 차도윤 30h 재작업 필요 (Phaser export 재구현)
-- 한가영 도구 재작성 (binary diff → JSON diff)
-- **총 ~80h 재작업 + 일정 1~2주 추가 지연**
-
-### 4.4 결정 트리
-
-```
-flatc 로컬 검증 PASS?
+}</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">Sp01 W2 Importer 와 영역 분리</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">W2 Importer (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateTableImporter</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneRewardImporter</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AffixPoolImporter</code>) = TSV 직접 파싱 → SO</li><li class="mb-1">본 FlatBufferImporter = TSV → FlatBuffer binary → SO (중간 레이어 추가)</li><li class="mb-1">Sp-W01 W1 (5/18~5/24) = FlatBufferImporter 신설 + Sp01 W2 Importer 3종 호출 wrapper 화 (TsvReader Sp02 공통화 시 흡수)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. 차선 검토 — Protobuf fallback 비용·리스크 1쪽</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.1 FlatBuffer 검증 실패 trigger 조건</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">flatc Windows binary 실행 실패 (Docker fallback 도 실패)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">game-ci/unity-builder</code> Unity 6 호환성 0 (self-hosted runner 도 실패)</li><li class="mb-1">C# binding zero-copy 검증 시 메모리 leak 발견</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.2 Protobuf 차선 비교</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">FlatBuffer (현 채택)</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Protobuf (차선)</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">CLI</td><td class="border border-border px-3 py-2 text-left text-text-0">flatc</td><td class="border border-border px-3 py-2 text-left text-text-0">protoc</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Unity binding</td><td class="border border-border px-3 py-2 text-left text-text-0">Google C# (FlatBuffers.dll)</td><td class="border border-border px-3 py-2 text-left text-text-0">protobuf-net (3rd party)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Web binding</td><td class="border border-border px-3 py-2 text-left text-text-0">flatbuffers JS</td><td class="border border-border px-3 py-2 text-left text-text-0">protobuf.js</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">zero-copy</td><td class="border border-border px-3 py-2 text-left text-text-0">O</td><td class="border border-border px-3 py-2 text-left text-text-0">X (전체 deserialize 필수)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">빌드 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">O (스키마 위반 시 컴파일 실패)</td><td class="border border-border px-3 py-2 text-left text-text-0">O</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">학습 곡선</td><td class="border border-border px-3 py-2 text-left text-text-0">중</td><td class="border border-border px-3 py-2 text-left text-text-0">저 (industry-standard)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">차도윤 모노레포 통합</td><td class="border border-border px-3 py-2 text-left text-text-0">flatbuffers JS npm</td><td class="border border-border px-3 py-2 text-left text-text-0">protobufjs npm</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">한가영 0 편차 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">binary diff 직접 비교</td><td class="border border-border px-3 py-2 text-left text-text-0">JSON 변환 후 diff</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">라이브 안정성</td><td class="border border-border px-3 py-2 text-left text-text-0">A (zero-copy = 메모리 0)</td><td class="border border-border px-3 py-2 text-left text-text-0">B (런타임 reflection)</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.3 Protobuf 전환 비용</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">정현우 50h 재작업 필요 (schema.fbs → schema.proto / FlatBufferImporter → ProtobufImporter)</li><li class="mb-1">차도윤 30h 재작업 필요 (Phaser export 재구현)</li><li class="mb-1">한가영 도구 재작성 (binary diff → JSON diff)</li><li class="mb-1"><strong class="font-semibold text-text-0">총 ~80h 재작업 + 일정 1~2주 추가 지연</strong></li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.4 결정 트리</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>flatc 로컬 검증 PASS?
   ├─ YES → CI 검증 PASS?
   │         ├─ YES → FlatBuffer 채택 잠금 (D+14 v1.0 APPROVED)
   │         └─ NO  → self-hosted runner 검증
@@ -143,57 +75,23 @@ flatc 로컬 검증 PASS?
   │                    └─ FAIL → Protobuf 차선 검토 PD 보고
   └─ NO  → Docker google/flatbuffers 이미지 fallback
             ├─ PASS → FlatBuffer 채택 (Docker 의존)
-            └─ FAIL → Protobuf 차선 검토 PD 보고
-```
-
----
-
-## 5. PoC 결과 (2026-05-04 D+0 당김 시점)
-
-### 5.1 본 세션 진행 (정현우 code-lead 작성)
-
-| 항목 | 상태 | 비고 |
-|------|------|------|
-| schema.fbs draft v0.1 작성 | DONE | 3 table + 4 enum + 1 root_type. affix 35/prestige 30/milestone 22 hard-coded |
-| GitHub Actions yaml draft | DONE | 4 job + Slack 알림 + game-ci/unity-builder@v4 채택 |
-| flatc 로컬 Windows 검증 | TODO | 정현우 로컬 PowerShell 5/12 실행 예정 (PD 발주가 본 세션 완료 전제 시 즉시 실행 가능) |
-| flatc CI ubuntu 검증 | TODO | D+14 합의 후 .github/workflows/ 실파일 생성 시 검증 |
-| Unity Editor batch mode 검증 | TODO | Sp-W01 W1 (5/18~5/24) FlatBufferImporter.cs 작성 후 |
-| Protobuf 차선 비교표 | DONE | §4.2 (FlatBuffer 우세 8/9 항목) |
-
-### 5.2 본 PoC 잠정 평가
-
-**FlatBuffer 채택 권장 유지** — schema.fbs draft 작성에서 flatc 문법 / table 구조 / enum / file_identifier 모두 spec 정합 100%. 위험 3건 모두 헷지 가능 (Docker / self-hosted runner / 한가영 도구 Sp-W01 W2 슬롯).
-
-**옵션 B Self-build 잠금** 그대로 유지. 외주 회피 사유 동일 (한가영 0 편차 원칙 검증 인계 부담 + 모노레포 공동 소유).
-
----
-
-## 6. D+14 (5/18) 3자 합의 의제 5건
-
-1. **PoC 결과 공유** — 본 문서 §5 + flatc 로컬 검증 결과 (정현우 5/12~5/14 추가 실행분)
-2. **schema.fbs draft v0.1 검수** — 차도윤 Phaser 측 호환성 / 한가영 baseline 보존 라인 정합 / 정현우 Unity SO export 정합
-3. **한가영 0 편차 검증 도구 자동화 일정** — `tools/balance/diff_binary.ts` + `regression_200F.ts` Sp-W01 W2 (5/25) 4h PoC 일정 잠금
-4. **일정 영향** — Self-build 채택 시 정현우 Sp02 재개 (9/15) 1~2주 지연 위험 (10/01까지 슬립 가능 vs 데드라인). 박세린(PM) 보고 동반
-5. **`.github/workflows/flatbuffer-build.yml` 실파일 생성 시점** — Sp-W01 W1 (5/24) 직후 정현우 PR + 차도윤 review
-
----
-
-## 7. 분업 인계 사항
-
-- **정현우 → 차도윤**: 본 schema.fbs draft + yaml draft 5/5 인계 (메인 세션 경유). Phaser 측 flatbuffers JS 통합 검증 의제 5/12~5/14 차도윤 자체 PoC 권장
-- **정현우 → 한가영**: yaml job 4 (balance-regression) 인터페이스 5/5 인계. 본 yaml 의 `--baseline 4.255 --max-deviation 0.005` 인자가 한가영 0 편차 원칙 sync. 한가영 검증 도구 (`diff_binary.ts` / `regression_200F.ts`) 작성 시 본 인터페이스 보존 의무
-- **정현우 → 박세린(PM)**: 일정 영향 — 본 PoC 는 Sp01 W2 본 작업 (5/11~5/17) 과 영역 충돌 0 (영역: flatc CLI + yaml draft vs SO Importer). 단 flatc 로컬 검증 1h (5/12~5/14) 슬롯 보존 필요. Sp02 재개 (9/15) 1~2주 지연 위험은 D+14 합의 후 PD 결정
-- **정현우 → 김민준 (web-lead)**: `packages/shared/` 모노레포 schema.fbs 위치 확정 합의 5/18. 본 draft 는 `designs/` 임시 위치, 본 위치는 `packages/shared/schema.fbs` 이전 예정
-
----
-
-## 8. 다음 세션 첫 액션 (정현우)
-
-1. **5/12 (월) 1h** — flatc Windows binary 다운로드 + 본 schema.fbs draft 로컬 컴파일 검증 + 결과 §5.1 갱신
-2. **5/15 (목)** — 외주 vs Self-build 회신 (메모리 source = 이미 옵션 B 잠금이라 본 회신은 PoC 결과 동반 confirm)
-3. **5/18 (월 D+14)** — 정현우 + 차도윤 + 한가영 3자 합의 의제 5건 (§6) 진행 + 본 문서 v1.0 APPROVED + `flatbuffer_intermediate_layer_2026-05-18.md` v1.0 APPROVED 갱신
-6:["slug","flatbuffer_poc_setup_2026-05-04","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","flatbuffer_poc_setup_2026-05-04","d"],{"children":["__PAGE__?{\"slug\":\"flatbuffer_poc_setup_2026-05-04\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","flatbuffer_poc_setup_2026-05-04","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"FlatBuffer PoC Setup (정현우, 2026-05-04 D+0 당김 발주)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/flatbuffer_poc_setup_2026-05-04.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,334"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"FlatBuffer PoC Setup (정현우, 2026-05-04 D+0 당김 발주) — 자료실"}],["$","meta","3",{"name":"description","content":"1. flatc 컴파일러 검증 — Linux/Windows binary 다운로드 + .fbs 컴파일 성공 + C# / TypeScript binding 생성"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+            └─ FAIL → Protobuf 차선 검토 PD 보고</code></pre>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. PoC 결과 (2026-05-04 D+0 당김 시점)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.1 본 세션 진행 (정현우 code-lead 작성)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">상태</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비고</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">schema.fbs draft v0.1 작성</td><td class="border border-border px-3 py-2 text-left text-text-0">DONE</td><td class="border border-border px-3 py-2 text-left text-text-0">3 table + 4 enum + 1 root_type. affix 35/prestige 30/milestone 22 hard-coded</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">GitHub Actions yaml draft</td><td class="border border-border px-3 py-2 text-left text-text-0">DONE</td><td class="border border-border px-3 py-2 text-left text-text-0">4 job + Slack 알림 + game-ci/unity-builder@v4 채택</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">flatc 로컬 Windows 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">TODO</td><td class="border border-border px-3 py-2 text-left text-text-0">정현우 로컬 PowerShell 5/12 실행 예정 (PD 발주가 본 세션 완료 전제 시 즉시 실행 가능)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">flatc CI ubuntu 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">TODO</td><td class="border border-border px-3 py-2 text-left text-text-0">D+14 합의 후 .github/workflows/ 실파일 생성 시 검증</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Unity Editor batch mode 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">TODO</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp-W01 W1 (5/18~5/24) FlatBufferImporter.cs 작성 후</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Protobuf 차선 비교표</td><td class="border border-border px-3 py-2 text-left text-text-0">DONE</td><td class="border border-border px-3 py-2 text-left text-text-0">§4.2 (FlatBuffer 우세 8/9 항목)</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.2 본 PoC 잠정 평가</h3>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">FlatBuffer 채택 권장 유지</strong> — schema.fbs draft 작성에서 flatc 문법 / table 구조 / enum / file_identifier 모두 spec 정합 100%. 위험 3건 모두 헷지 가능 (Docker / self-hosted runner / 한가영 도구 Sp-W01 W2 슬롯).</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">옵션 B Self-build 잠금</strong> 그대로 유지. 외주 회피 사유 동일 (한가영 0 편차 원칙 검증 인계 부담 + 모노레포 공동 소유).</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. D+14 (5/18) 3자 합의 의제 5건</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">PoC 결과 공유</strong> — 본 문서 §5 + flatc 로컬 검증 결과 (정현우 5/12~5/14 추가 실행분)</li><li class="mb-1"><strong class="font-semibold text-text-0">schema.fbs draft v0.1 검수</strong> — 차도윤 Phaser 측 호환성 / 한가영 baseline 보존 라인 정합 / 정현우 Unity SO export 정합</li><li class="mb-1"><strong class="font-semibold text-text-0">한가영 0 편차 검증 도구 자동화 일정</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">tools/balance/diff_binary.ts</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">regression_200F.ts</code> Sp-W01 W2 (5/25) 4h PoC 일정 잠금</li><li class="mb-1"><strong class="font-semibold text-text-0">일정 영향</strong> — Self-build 채택 시 정현우 Sp02 재개 (9/15) 1~2주 지연 위험 (10/01까지 슬립 가능 vs 데드라인). 박세린(PM) 보고 동반</li><li class="mb-1"><strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">.github/workflows/flatbuffer-build.yml</code> 실파일 생성 시점</strong> — Sp-W01 W1 (5/24) 직후 정현우 PR + 차도윤 review</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. 분업 인계 사항</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">정현우 → 차도윤</strong>: 본 schema.fbs draft + yaml draft 5/5 인계 (메인 세션 경유). Phaser 측 flatbuffers JS 통합 검증 의제 5/12~5/14 차도윤 자체 PoC 권장</li><li class="mb-1"><strong class="font-semibold text-text-0">정현우 → 한가영</strong>: yaml job 4 (balance-regression) 인터페이스 5/5 인계. 본 yaml 의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">--baseline 4.255 --max-deviation 0.005</code> 인자가 한가영 0 편차 원칙 sync. 한가영 검증 도구 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">diff_binary.ts</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">regression_200F.ts</code>) 작성 시 본 인터페이스 보존 의무</li><li class="mb-1"><strong class="font-semibold text-text-0">정현우 → 박세린(PM)</strong>: 일정 영향 — 본 PoC 는 Sp01 W2 본 작업 (5/11~5/17) 과 영역 충돌 0 (영역: flatc CLI + yaml draft vs SO Importer). 단 flatc 로컬 검증 1h (5/12~5/14) 슬롯 보존 필요. Sp02 재개 (9/15) 1~2주 지연 위험은 D+14 합의 후 PD 결정</li><li class="mb-1"><strong class="font-semibold text-text-0">정현우 → 김민준 (web-lead)</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared/</code> 모노레포 schema.fbs 위치 확정 합의 5/18. 본 draft 는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/</code> 임시 위치, 본 위치는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared/schema.fbs</code> 이전 예정</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">8. 다음 세션 첫 액션 (정현우)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">5/12 (월) 1h</strong> — flatc Windows binary 다운로드 + 본 schema.fbs draft 로컬 컴파일 검증 + 결과 §5.1 갱신</li><li class="mb-1"><strong class="font-semibold text-text-0">5/15 (목)</strong> — 외주 vs Self-build 회신 (메모리 source = 이미 옵션 B 잠금이라 본 회신은 PoC 결과 동반 confirm)</li><li class="mb-1"><strong class="font-semibold text-text-0">5/18 (월 D+14)</strong> — 정현우 + 차도윤 + 한가영 3자 합의 의제 5건 (§6) 진행 + 본 문서 v1.0 APPROVED + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">flatbuffer_intermediate_layer_2026-05-18.md</code> v1.0 APPROVED 갱신</li></ol>5:["slug","flatbuffer_poc_setup_2026-05-04","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","flatbuffer_poc_setup_2026-05-04","d"],{"children":["__PAGE__?{\"slug\":\"flatbuffer_poc_setup_2026-05-04\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","flatbuffer_poc_setup_2026-05-04","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"FlatBuffer PoC Setup (정현우, 2026-05-04 D+0 당김 발주)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/flatbuffer_poc_setup_2026-05-04.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,334"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"FlatBuffer PoC Setup (정현우, 2026-05-04 D+0 당김 발주) — 자료실"}],["$","meta","3",{"name":"description","content":"1. flatc 컴파일러 검증 — Linux/Windows binary 다운로드 + .fbs 컴파일 성공 + C# / TypeScript binding 생성"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

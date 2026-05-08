@@ -1,60 +1,26 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T24a7,# FlatBuffer 중간 레이어 설계 (정현우 + 차도윤 + 한가영 D+14 3자 합의)
-
-> 작성: 2026-05-04 (정현우 code-lead leading) · 차도윤 + 한가영 페르소나 인용
-> 버전: **v0.2 갱신** (2026-05-04 PD default 채택으로 옵션 B Self-build 잠금 / 외주 옵션 폐기 / D+14 3자 합의는 잔존)
-> 상위 참조: `project_v3_0_redesign_decisions.md` #3 DB 통합 + `project_flatbuffer_self_build_decision_2026-05-04.md` (B 잠금 source) · `designs/web-platform/v2_0_redesign_web_tech.md` §4 모노레포 / §5 통합 인터페이스 #3 / §6 (FlatBuffer 빌드 산출 → Unity·Web 동시 임베드) · `project_sprint01_w1_results.md` (200F 4.255 baseline / 0.12% 편차)
-> 범위: Datasheets/TSV → FlatBuffer → Unity SO + Phaser JSON 3 layer 빌드 파이프라인 1쪽
-> v0.1 → v0.2 변경: §1 TL;DR + §6 옵션 비교 → 결정 표 + §8 다음 액션 + §10 정현우 PoC 자체 검증 슬롯 추가
-
----
-
-## 1. TL;DR (3줄)
-
-1. **FlatBuffer 중간 레이어 = Datasheets/TSV → `.fbs` 스키마 → Unity SO export + Phaser JSON export 3 layer 빌드 파이프라인** — `packages/shared/schema.fbs` 단일 source / Unity·Web 동시 임베드 / sync 0 cost
-2. **3자 영역 분리** — 정현우 (Unity SO importer + TsvReader 통합) / 차도윤 (Phaser JSON 임베드 + 모노레포 packages/shared 갱신) / 한가영 (200F 4.255 baseline 회귀 검증 + 0 편차 원칙)
-3. **외주 ~40h 발주 시점 = 정현우 5/15 회신 — 자체 평가 후 Self-build 헷지 (정현우 + 차도윤 ~80h)** 옵션 동시 평가. D+14 3자 합의 후 PD 결정
-
----
-
-## 2. v3.0 #3 DB 통합 결정 인용
-
-`project_v3_0_redesign_decisions.md` #3:
-
-> **하이브리드** (Firestore=게임 진실 / Supabase=웹 메타·UGC·결제 / **FlatBuffer=Datasheets/TSV → Unity·Web 동시 임베드**)
-
-**근거 인용** — 김민준 권장 / 박세린 v1.1 §1 분리 정합 / Unity Phase 5 무재작업.
-
-본 문서는 FlatBuffer layer 의 빌드 파이프라인·영역 분리·외주 발주 시점 3자 합의를 다룬다. Firestore / Supabase 영역은 차도윤 + 김민준 별도 합의 (본 문서 범위 밖).
-
----
-
-## 3. FlatBuffer 선택 이유 3건
-
-| 후보 | 빌드 검증 | Unity 호환 | Web 호환 | 스키마 진화 | 평가 |
-|------|----------|----------|----------|------------|------|
-| Cap'n Proto | A (capnp 컴파일) | B (Unity binding 미성숙) | A (capnp-ts) | A | 비추 (Unity 약점) |
-| Protobuf | A (protoc) | A (protobuf-net) | A (protobuf.js) | A | 보류 (런타임 reflection 약점) |
-| **FlatBuffer** ★ | **A (flatc)** | **A (Google C# binding 검증)** | **A (flatbuffers JS)** | **A (forward/backward)** | **채택** |
-| JSON 직접 | C (스키마 검증 0) | A | A | C | 비추 (검증 없음) |
-| MessagePack | B (스키마 옵션) | B | A | B | 비추 (Unity 약점) |
-
-**FlatBuffer 채택 3 사유**:
-1. **빌드 타임 검증** — `flatc` 컴파일러가 `.fbs` 스키마 위반 즉시 빌드 실패 → 한가영 0 편차 원칙 sync
-2. **Unity·Web 동시 호환** — Google C# binding (`FlatBuffers.dll`) + flatbuffers JS 양 클라 1급 지원
-3. **zero-copy parsing** — Unity 런타임 메모리 부담 0 (정현우 라이브 안정성 원칙) / Phaser 임베드 시 초기 parse 비용 0
-
-차도윤 발화 가정 인용: "도윤입니다. flatbuffers JS 패키지 검증했고 모노레포 `packages/shared` 에 `.fbs` 단일 source 박을 수 있습니다. Phaser asset preload 시 binary 1회 fetch + zero-copy 로 60fps 영향 0. 임재훈 부하 테스트 통과 가정."
-
----
-
-## 4. 빌드 파이프라인 3 layer
-
-```
-[Layer 1] Datasheets/*.tsv (윤서아 시트 single source)
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T5e77,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">FlatBuffer 중간 레이어 설계 (정현우 + 차도윤 + 한가영 D+14 3자 합의)</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성: 2026-05-04 (정현우 code-lead leading) · 차도윤 + 한가영 페르소나 인용 버전: <strong class="font-semibold text-text-0">v0.2 갱신</strong> (2026-05-04 PD default 채택으로 옵션 B Self-build 잠금 / 외주 옵션 폐기 / D+14 3자 합의는 잔존) 상위 참조: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_v3_0_redesign_decisions.md</code> #3 DB 통합 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_flatbuffer_self_build_decision_2026-05-04.md</code> (B 잠금 source) · <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/web-platform/v2_0_redesign_web_tech.md</code> §4 모노레포 / §5 통합 인터페이스 #3 / §6 (FlatBuffer 빌드 산출 → Unity·Web 동시 임베드) · <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint01_w1_results.md</code> (200F 4.255 baseline / 0.12% 편차) 범위: Datasheets/TSV → FlatBuffer → Unity SO + Phaser JSON 3 layer 빌드 파이프라인 1쪽 v0.1 → v0.2 변경: §1 TL;DR + §6 옵션 비교 → 결정 표 + §8 다음 액션 + §10 정현우 PoC 자체 검증 슬롯 추가</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. TL;DR (3줄)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">FlatBuffer 중간 레이어 = Datasheets/TSV → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">.fbs</code> 스키마 → Unity SO export + Phaser JSON export 3 layer 빌드 파이프라인</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared/schema.fbs</code> 단일 source / Unity·Web 동시 임베드 / sync 0 cost</li><li class="mb-1"><strong class="font-semibold text-text-0">3자 영역 분리</strong> — 정현우 (Unity SO importer + TsvReader 통합) / 차도윤 (Phaser JSON 임베드 + 모노레포 packages/shared 갱신) / 한가영 (200F 4.255 baseline 회귀 검증 + 0 편차 원칙)</li><li class="mb-1"><strong class="font-semibold text-text-0">외주 ~40h 발주 시점 = 정현우 5/15 회신 — 자체 평가 후 Self-build 헷지 (정현우 + 차도윤 ~80h)</strong> 옵션 동시 평가. D+14 3자 합의 후 PD 결정</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. v3.0 #3 DB 통합 결정 인용</h2>
+<p class="mb-3 text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_v3_0_redesign_decisions.md</code> #3:</p>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">하이브리드</strong> (Firestore=게임 진실 / Supabase=웹 메타·UGC·결제 / <strong class="font-semibold text-text-0">FlatBuffer=Datasheets/TSV → Unity·Web 동시 임베드</strong>)</blockquote>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">근거 인용</strong> — 김민준 권장 / 박세린 v1.1 §1 분리 정합 / Unity Phase 5 무재작업.</p>
+<p class="mb-3 text-text-0">본 문서는 FlatBuffer layer 의 빌드 파이프라인·영역 분리·외주 발주 시점 3자 합의를 다룬다. Firestore / Supabase 영역은 차도윤 + 김민준 별도 합의 (본 문서 범위 밖).</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. FlatBuffer 선택 이유 3건</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">후보</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">빌드 검증</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Unity 호환</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Web 호환</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">스키마 진화</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">평가</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">Cap&#39;n Proto</td><td class="border border-border px-3 py-2 text-left text-text-0">A (capnp 컴파일)</td><td class="border border-border px-3 py-2 text-left text-text-0">B (Unity binding 미성숙)</td><td class="border border-border px-3 py-2 text-left text-text-0">A (capnp-ts)</td><td class="border border-border px-3 py-2 text-left text-text-0">A</td><td class="border border-border px-3 py-2 text-left text-text-0">비추 (Unity 약점)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Protobuf</td><td class="border border-border px-3 py-2 text-left text-text-0">A (protoc)</td><td class="border border-border px-3 py-2 text-left text-text-0">A (protobuf-net)</td><td class="border border-border px-3 py-2 text-left text-text-0">A (protobuf.js)</td><td class="border border-border px-3 py-2 text-left text-text-0">A</td><td class="border border-border px-3 py-2 text-left text-text-0">보류 (런타임 reflection 약점)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">FlatBuffer</strong> ★</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">A (flatc)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">A (Google C# binding 검증)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">A (flatbuffers JS)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">A (forward/backward)</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">채택</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">JSON 직접</td><td class="border border-border px-3 py-2 text-left text-text-0">C (스키마 검증 0)</td><td class="border border-border px-3 py-2 text-left text-text-0">A</td><td class="border border-border px-3 py-2 text-left text-text-0">A</td><td class="border border-border px-3 py-2 text-left text-text-0">C</td><td class="border border-border px-3 py-2 text-left text-text-0">비추 (검증 없음)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">MessagePack</td><td class="border border-border px-3 py-2 text-left text-text-0">B (스키마 옵션)</td><td class="border border-border px-3 py-2 text-left text-text-0">B</td><td class="border border-border px-3 py-2 text-left text-text-0">A</td><td class="border border-border px-3 py-2 text-left text-text-0">B</td><td class="border border-border px-3 py-2 text-left text-text-0">비추 (Unity 약점)</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">FlatBuffer 채택 3 사유</strong>:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">빌드 타임 검증</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">flatc</code> 컴파일러가 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">.fbs</code> 스키마 위반 즉시 빌드 실패 → 한가영 0 편차 원칙 sync</li><li class="mb-1"><strong class="font-semibold text-text-0">Unity·Web 동시 호환</strong> — Google C# binding (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">FlatBuffers.dll</code>) + flatbuffers JS 양 클라 1급 지원</li><li class="mb-1"><strong class="font-semibold text-text-0">zero-copy parsing</strong> — Unity 런타임 메모리 부담 0 (정현우 라이브 안정성 원칙) / Phaser 임베드 시 초기 parse 비용 0</li></ol>
+<p class="mb-3 text-text-0">차도윤 발화 가정 인용: &quot;도윤입니다. flatbuffers JS 패키지 검증했고 모노레포 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared</code> 에 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">.fbs</code> 단일 source 박을 수 있습니다. Phaser asset preload 시 binary 1회 fetch + zero-copy 로 60fps 영향 0. 임재훈 부하 테스트 통과 가정.&quot;</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. 빌드 파이프라인 3 layer</h2>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[Layer 1] Datasheets/*.tsv (윤서아 시트 single source)
               |
               | TsvReader (정현우 + 김민준 공동 소유, Sp02 이월)
               v
@@ -69,85 +35,29 @@
    Unity6/Assets/.../GeneratedSO/.asset       webgame/public/data/*.bin
               |                                       |
               v                                       v
-   AddressablesGroup (라이브 핫픽스)         Phaser asset preload (Vite manifest)
-```
-
-**한가영 검증 라인** (Layer 2 → Layer 3 사이):
-- `tools/balance/regression_200F.ts` — 한가영이 Layer 3a (Unity) ↔ Layer 3b (Phaser) 양측 binary 로드 후 200F 4.255 baseline 0.12% 편차 보존 검증
-- 편차 0.5% 초과 시 빌드 실패 + Slack 알림 (한가영 페르소나 "0 편차 원칙")
-
----
-
-## 5. 3자 영역 분리
-
-| 영역 | 정현우 | 차도윤 | 한가영 | 비고 |
-|------|----|----|----|----|
-| `Datasheets/*.tsv` 작성 | — | — | — | **윤서아 단일 source** (한가영 흡수만) |
-| `packages/shared/schema.fbs` 작성 | ⭐ leading | ⭐ co-owner | — | 모노레포 공동 소유 (김민준 패턴) |
-| `flatc` 컴파일러 CI/CD 통합 | ⭐ | — | — | 정현우 GitHub Actions 영역 |
-| TsvReader → FlatBuffer 변환 | ⭐ | — | — | Sp02 이월 TsvReader 활용 |
-| Unity SO export (Layer 3a) | ⭐ | — | — | Sp01 W2 Importer baseline 보존 |
-| Phaser JSON 임베드 (Layer 3b) | — | ⭐ | — | Vite manifest 통합 |
-| 200F 4.255 baseline 회귀 | — | — | ⭐ | 주 1회 자동 검증 |
-| 0 편차 원칙 검증 (Unity ↔ Phaser binary diff) | — | — | ⭐ | 편차 0.5% 초과 시 빌드 실패 |
-| 모노레포 `packages/shared` 갱신 | — | ⭐ | — | 김민준 1:1 합의 의무 |
-| 충돌 시 | 박세린(PM) 중재 → PD | | | |
-
-**한가영 발화 가정 인용**: "가영입니다. 200F 4.255 / 0.12% 편차 baseline (`project_sprint01_w1_results.md` W1-04) 절대 보존 원칙입니다. Layer 3a Unity binary 와 Layer 3b Phaser binary 의 affix_pool 35건 / prestige_items 30항목 / transcendent_milestone 22건 100% 동일 검증. 편차 0.5% 초과 시 즉시 차도윤 + 윤서아 보고 + 빌드 실패 처리."
-
----
-
-## 6. 외주 ~40h 발주 시점 vs Self-build 헷지
-
-### 옵션 A — 외주 ~40h 발주 (직전 정현우 회신 = 2026-05-15)
-
-| 항목 | 내역 |
-|------|------|
-| 작업 범위 | flatc 컴파일러 CI/CD 통합 + TsvReader → fbs 자동 변환 + Unity·Phaser dual export 보일러플레이트 |
-| 외주 비용 | ~40h × 시간당 비용 = 별도 PD 결정 |
-| 장점 | 정현우 본업 (Sp01 W2 Importer 마무리 + Sp02 재개) 간섭 0 / 차도윤 Sp-W01 킥오프 5/18 간섭 0 |
-| 단점 | 외주 검수 부담 + 한가영 0 편차 원칙 검증 외주 인계 부담 |
-| 발주 시점 | **5/15 정현우 회신** — D+14 3자 합의 (5/18) 직전 PD 결정 |
-
-### 옵션 B — Self-build (정현우 + 차도윤 ~80h)
-
-| 항목 | 내역 |
-|------|------|
-| 작업 범위 | 정현우 ~50h (CI/CD + Unity export) + 차도윤 ~30h (Phaser 임베드 + 모노레포 통합) |
-| 일정 | Sp-W01 (5/18~5/31) 14h + Sp-W02 (6/1~6/14) 14h × 2주 정현우 분산 |
-| 장점 | 외주 검수 0 / 한가영 검증 라인 인하우스 / 향후 유지보수 용이 |
-| 단점 | 정현우 Sp02 재개 (9/15) 일정 1~2주 지연 위험 / 차도윤 Sp-W01~W02 30h 추가 |
-| 발주 시점 | D+14 (5/18) 합의 후 즉시 |
-
-**정현우 권장**: 본인 의견은 **옵션 B (Self-build) 약간 우세**. 사유 — 한가영 0 편차 원칙 검증 라인이 외주 인계 가능 단계가 아님 + 모노레포 `packages/shared` 가 김민준·차도윤 공동 소유라 외주 갱신 권한 모호. 단 PD 결정 우선.
-
----
-
-## 7. 위험 가정 2건
-
-1. **flatc 컴파일러 GitHub Actions 통합 미검증** → 헷지: D+14 합의 전 정현우 PoC 1h (5/12~5/14) — flatc Linux binary CI 실행 + Unity Editor batch mode 호출 검증. 실패 시 Protobuf 차선 검토
-2. **한가영 0 편차 원칙 검증 자동화 도구 부재** → 헷지: Sp-W01 W2 (5/25 한가영 첫 발주) 시 차도윤 + 한가영 1:1 — Unity binary ↔ Phaser binary diff 도구 (`tools/balance/diff_binary.ts`) 자체 PoC 4h. 미완 시 수동 diff 1주 운영 + Sp-W02 자동화
-
----
-
-## 8. 다음 액션
-
-- **5/12~5/14 (정현우 PoC 1h)**: flatc + GitHub Actions + Unity Editor batch 검증
-- **5/15 (정현우 회신)**: 외주 vs Self-build 평가 PD 인계
-- **5/18 (D+14 3자 합의)**: 정현우 + 차도윤 + 한가영 합의 + PD 옵션 A/B 결정 → `v1.0 APPROVED` 갱신
-- **5/25 (한가영 첫 발주 Sp-W01 W2)**: 차도윤 + 한가영 1:1 — diff 도구 PoC + 200F 회귀 자동화 첫 실행
-
----
-
-## 9. 분업 인계 사항
-
-- **정현우 → 차도윤**: `packages/shared/schema.fbs` 첫 draft 5/15 인계 (affix_pool / prestige_items / transcendent_milestone 3종 우선)
-- **정현우 → 한가영**: Unity binary export 위치 (`Unity6/Assets/.../GeneratedBinary/*.bin`) 5/15 인계
-- **차도윤 → 한가영**: Phaser binary 위치 (`webgame/public/data/*.bin`) 5/18 인계
-- **3자 → 박세린(PM)**: 일정 영향 보고 (Self-build 채택 시 정현우 Sp02 재개 1~2주 지연 위험)
-- **3자 → 김민준 (web-lead)**: `packages/shared/schema.fbs` 모노레포 갱신 합의 5/18
-- **3자 → 윤서아 (game-designer)**: Datasheets/TSV 변경 시 schema.fbs 갱신 의무 인지 5/18
-6:["slug","flatbuffer_intermediate_layer_2026-05-18","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","flatbuffer_intermediate_layer_2026-05-18","d"],{"children":["__PAGE__?{\"slug\":\"flatbuffer_intermediate_layer_2026-05-18\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","flatbuffer_intermediate_layer_2026-05-18","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"FlatBuffer 중간 레이어 설계 (정현우 + 차도윤 + 한가영 D+14 3자 합의)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/flatbuffer_intermediate_layer_2026-05-18.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,349"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"FlatBuffer 중간 레이어 설계 (정현우 + 차도윤 + 한가영 D+14 3자 합의) — 자료실"}],["$","meta","3",{"name":"description","content":"1. FlatBuffer 중간 레이어 = Datasheets/TSV → .fbs 스키마 → Unity SO export + Phaser JSON export 3 layer 빌드 파이프라인 — packages/shared/schema.fbs 단일 source / Unity·Web 동시 임"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+   AddressablesGroup (라이브 핫픽스)         Phaser asset preload (Vite manifest)</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">한가영 검증 라인</strong> (Layer 2 → Layer 3 사이):</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">tools/balance/regression_200F.ts</code> — 한가영이 Layer 3a (Unity) ↔ Layer 3b (Phaser) 양측 binary 로드 후 200F 4.255 baseline 0.12% 편차 보존 검증</li><li class="mb-1">편차 0.5% 초과 시 빌드 실패 + Slack 알림 (한가영 페르소나 &quot;0 편차 원칙&quot;)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. 3자 영역 분리</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">영역</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">정현우</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">차도윤</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">한가영</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비고</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Datasheets/*.tsv</code> 작성</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">윤서아 단일 source</strong> (한가영 흡수만)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared/schema.fbs</code> 작성</td><td class="border border-border px-3 py-2 text-left text-text-0">⭐ leading</td><td class="border border-border px-3 py-2 text-left text-text-0">⭐ co-owner</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">모노레포 공동 소유 (김민준 패턴)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">flatc</code> 컴파일러 CI/CD 통합</td><td class="border border-border px-3 py-2 text-left text-text-0">⭐</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">정현우 GitHub Actions 영역</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">TsvReader → FlatBuffer 변환</td><td class="border border-border px-3 py-2 text-left text-text-0">⭐</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp02 이월 TsvReader 활용</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Unity SO export (Layer 3a)</td><td class="border border-border px-3 py-2 text-left text-text-0">⭐</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp01 W2 Importer baseline 보존</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Phaser JSON 임베드 (Layer 3b)</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">⭐</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">Vite manifest 통합</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">200F 4.255 baseline 회귀</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">⭐</td><td class="border border-border px-3 py-2 text-left text-text-0">주 1회 자동 검증</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">0 편차 원칙 검증 (Unity ↔ Phaser binary diff)</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">⭐</td><td class="border border-border px-3 py-2 text-left text-text-0">편차 0.5% 초과 시 빌드 실패</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">모노레포 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared</code> 갱신</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">⭐</td><td class="border border-border px-3 py-2 text-left text-text-0">—</td><td class="border border-border px-3 py-2 text-left text-text-0">김민준 1:1 합의 의무</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">충돌 시</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린(PM) 중재 → PD</td><td class="border border-border px-3 py-2 text-left text-text-0"></td><td class="border border-border px-3 py-2 text-left text-text-0"></td><td class="border border-border px-3 py-2 text-left text-text-0"></td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">한가영 발화 가정 인용</strong>: &quot;가영입니다. 200F 4.255 / 0.12% 편차 baseline (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint01_w1_results.md</code> W1-04) 절대 보존 원칙입니다. Layer 3a Unity binary 와 Layer 3b Phaser binary 의 affix_pool 35건 / prestige_items 30항목 / transcendent_milestone 22건 100% 동일 검증. 편차 0.5% 초과 시 즉시 차도윤 + 윤서아 보고 + 빌드 실패 처리.&quot;</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. 외주 ~40h 발주 시점 vs Self-build 헷지</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">옵션 A — 외주 ~40h 발주 (직전 정현우 회신 = 2026-05-15)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">내역</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">작업 범위</td><td class="border border-border px-3 py-2 text-left text-text-0">flatc 컴파일러 CI/CD 통합 + TsvReader → fbs 자동 변환 + Unity·Phaser dual export 보일러플레이트</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">외주 비용</td><td class="border border-border px-3 py-2 text-left text-text-0">~40h × 시간당 비용 = 별도 PD 결정</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">장점</td><td class="border border-border px-3 py-2 text-left text-text-0">정현우 본업 (Sp01 W2 Importer 마무리 + Sp02 재개) 간섭 0 / 차도윤 Sp-W01 킥오프 5/18 간섭 0</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">단점</td><td class="border border-border px-3 py-2 text-left text-text-0">외주 검수 부담 + 한가영 0 편차 원칙 검증 외주 인계 부담</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">발주 시점</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">5/15 정현우 회신</strong> — D+14 3자 합의 (5/18) 직전 PD 결정</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">옵션 B — Self-build (정현우 + 차도윤 ~80h)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">내역</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">작업 범위</td><td class="border border-border px-3 py-2 text-left text-text-0">정현우 ~50h (CI/CD + Unity export) + 차도윤 ~30h (Phaser 임베드 + 모노레포 통합)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">일정</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp-W01 (5/18~5/31) 14h + Sp-W02 (6/1~6/14) 14h × 2주 정현우 분산</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">장점</td><td class="border border-border px-3 py-2 text-left text-text-0">외주 검수 0 / 한가영 검증 라인 인하우스 / 향후 유지보수 용이</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">단점</td><td class="border border-border px-3 py-2 text-left text-text-0">정현우 Sp02 재개 (9/15) 일정 1~2주 지연 위험 / 차도윤 Sp-W01~W02 30h 추가</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">발주 시점</td><td class="border border-border px-3 py-2 text-left text-text-0">D+14 (5/18) 합의 후 즉시</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">정현우 권장</strong>: 본인 의견은 <strong class="font-semibold text-text-0">옵션 B (Self-build) 약간 우세</strong>. 사유 — 한가영 0 편차 원칙 검증 라인이 외주 인계 가능 단계가 아님 + 모노레포 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared</code> 가 김민준·차도윤 공동 소유라 외주 갱신 권한 모호. 단 PD 결정 우선.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. 위험 가정 2건</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">flatc 컴파일러 GitHub Actions 통합 미검증</strong> → 헷지: D+14 합의 전 정현우 PoC 1h (5/12~5/14) — flatc Linux binary CI 실행 + Unity Editor batch mode 호출 검증. 실패 시 Protobuf 차선 검토</li><li class="mb-1"><strong class="font-semibold text-text-0">한가영 0 편차 원칙 검증 자동화 도구 부재</strong> → 헷지: Sp-W01 W2 (5/25 한가영 첫 발주) 시 차도윤 + 한가영 1:1 — Unity binary ↔ Phaser binary diff 도구 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">tools/balance/diff_binary.ts</code>) 자체 PoC 4h. 미완 시 수동 diff 1주 운영 + Sp-W02 자동화</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">8. 다음 액션</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">5/12~5/14 (정현우 PoC 1h)</strong>: flatc + GitHub Actions + Unity Editor batch 검증</li><li class="mb-1"><strong class="font-semibold text-text-0">5/15 (정현우 회신)</strong>: 외주 vs Self-build 평가 PD 인계</li><li class="mb-1"><strong class="font-semibold text-text-0">5/18 (D+14 3자 합의)</strong>: 정현우 + 차도윤 + 한가영 합의 + PD 옵션 A/B 결정 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">v1.0 APPROVED</code> 갱신</li><li class="mb-1"><strong class="font-semibold text-text-0">5/25 (한가영 첫 발주 Sp-W01 W2)</strong>: 차도윤 + 한가영 1:1 — diff 도구 PoC + 200F 회귀 자동화 첫 실행</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">9. 분업 인계 사항</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">정현우 → 차도윤</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared/schema.fbs</code> 첫 draft 5/15 인계 (affix_pool / prestige_items / transcendent_milestone 3종 우선)</li><li class="mb-1"><strong class="font-semibold text-text-0">정현우 → 한가영</strong>: Unity binary export 위치 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity6/Assets/.../GeneratedBinary/*.bin</code>) 5/15 인계</li><li class="mb-1"><strong class="font-semibold text-text-0">차도윤 → 한가영</strong>: Phaser binary 위치 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">webgame/public/data/*.bin</code>) 5/18 인계</li><li class="mb-1"><strong class="font-semibold text-text-0">3자 → 박세린(PM)</strong>: 일정 영향 보고 (Self-build 채택 시 정현우 Sp02 재개 1~2주 지연 위험)</li><li class="mb-1"><strong class="font-semibold text-text-0">3자 → 김민준 (web-lead)</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">packages/shared/schema.fbs</code> 모노레포 갱신 합의 5/18</li><li class="mb-1"><strong class="font-semibold text-text-0">3자 → 윤서아 (game-designer)</strong>: Datasheets/TSV 변경 시 schema.fbs 갱신 의무 인지 5/18</li></ul>5:["slug","flatbuffer_intermediate_layer_2026-05-18","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","flatbuffer_intermediate_layer_2026-05-18","d"],{"children":["__PAGE__?{\"slug\":\"flatbuffer_intermediate_layer_2026-05-18\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","flatbuffer_intermediate_layer_2026-05-18","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"FlatBuffer 중간 레이어 설계 (정현우 + 차도윤 + 한가영 D+14 3자 합의)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/flatbuffer_intermediate_layer_2026-05-18.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,349"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"FlatBuffer 중간 레이어 설계 (정현우 + 차도윤 + 한가영 D+14 3자 합의) — 자료실"}],["$","meta","3",{"name":"description","content":"1. FlatBuffer 중간 레이어 = Datasheets/TSV → .fbs 스키마 → Unity SO export + Phaser JSON export 3 layer 빌드 파이프라인 — packages/shared/schema.fbs 단일 source / Unity·Web 동시 임"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

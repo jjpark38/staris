@@ -1,134 +1,49 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T1e0e,# R-V3 5건 모니터링 갱신 (2026-05-05)
-
-> 작성: 2026-05-05 (project-manager 박세린, PM 자율 권한)
-> 근거: 메모리 `project_phase_2_3_roadmap_v3_0.md` §리스크 + 본 세션 권1 33화 paste + Sp01 W2 13파일 정적 완료
-> **목적**: v3.0 격변 후 5건 신규 리스크 일일 모니터링 갱신 (Yellow→Green 회복 마킹 자율)
-> **PD 결정 필요**: 0건 (자율 마킹)
-> **상위 문서**: `project_phase_2_3_roadmap_v3_0.md` (불변)
-
----
-
-## §0 PD 30초 요약
-
-1. **R-V3-3 (시나리오 진행 지연) Yellow → Green** — 권1 33화 누적 60% / D+25 마감 ✓ 安全 PASS
-2. **R-V3-4 (웹게임 D+180 출시 = 33화 작성 전제) Red → Yellow** — 33화 ≥ 25화 = 50F 통과 / 50F→25F 헷지 미발동
-3. **R-V3-1 (Sp02~Sp05 PAUSE 4개월 → 정현우 Unity 모멘텀 손실) Yellow → Green** — Sp01 W2 13파일 정적 완료 + FlatBuffer D+14 슬롯 박힘
-4. **R-V3-2 (윤서아 인수 9h → 14h 초과 시 Sp-W01 W2 1주 지연) Yellow 유지** — D+1 (5/5) 인수 미팅 진행 / D+14 재평가
-5. **R-V3-5 (1000F+ 정지 = 코어 유저 이탈) Yellow 유지** — Sp05 시즌 시스템 D+15 6차 출시 후 재평가
-6. **종합**: 3건 회복 (Green 2 + Yellow 1) / 2건 유지 → v3.0 격변 위험 1차 안정화
-
----
-
-## §1 R-V3 5건 갱신 표
-
-| # | 리스크 | v3.0 (5/4) | v1.4 (5/5) | 변경 | 변경 사유 |
-|---|------|-----------|-----------|------|---------|
-| **R-V3-1** | Sp02~Sp05 PAUSE 4개월 → 정현우 Unity 모멘텀 손실 | Yellow | **Green** | ↓ 회복 | Sp01 W2 13파일 정적 완료 (메모리 `project_volume1_chapter_21_30_paste_2026-05-05.md` 정현우 산출물) + FlatBuffer D+14 3자 합의 슬롯 박힘 + Sp-W04~W06 부분 참여 슬롯 박힘 |
-| **R-V3-2** | 윤서아 인수 9h 학습 14h 초과 시 Sp-W01 W2 한가영 첫 발주 1주 지연 | Yellow | Yellow 유지 | = | D+1 (5/5) 인수 미팅 진행 중 / 5/18 D+14 Sp-W01 킥오프 직전 재평가 / 박세린 일일 알림 1쪽 |
-| **R-V3-3** | 시나리오 진행 지연 (33화 작성 전제 미달) | Yellow | **Green** | ↓ 회복 | 권1 33화 누적 60% PASS / D+25 1~10화 마감 ✓ 安全 / 권1 D+78 완결 추정 / 1주 2화 페이스 안정 |
-| **R-V3-4** | 웹게임 D+180 출시 = 강시연 33화 작성 전제 | Red (헷지 50F→25F 자동 다운그레이드) | **Yellow** | ↓ 회복 | 33화 ≥ 25화 = 50F 통과 가능 / 50F→25F 헷지 미발동 / D+105 (Sp-W08) 출시 시점 65화+ 추정 (D+105=2026-08-19, 33+(105-0)/3.5=63화 추정) |
-| **R-V3-5** | 1000F+ 정지 = 코어 유저 이탈 위험 | Yellow (Tier 100 영원의 증표 + 시즌 50% retain) | Yellow 유지 | = | Sp05 시즌 시스템 D+15 6차 출시 후 재평가 / 200F 4.255 baseline 보존 (메모리 `project_sprint01_w1_results.md` 절대 보존) |
-
----
-
-## §2 회복 근거 상세
-
-### 2.1 R-V3-1 Yellow → Green (정현우 Unity 모멘텀)
-
-**v3.0 가정**: Sp02~Sp05 PAUSE 4개월 (5/18~9/15) = 정현우 Unity 모멘텀 손실 위험.
-
-**5/5 회복 근거**:
-1. Sp01 W2 13파일 정적 완료 (메모리 `project_volume1_chapter_21_30_paste_2026-05-05.md`) = Unity Importer baseline 확보
-2. FlatBuffer D+14 (5/18) 3자 합의 슬롯 박힘 (메모리 `project_flatbuffer_self_build_decision_2026-05-04.md`) = 정현우 50h Self-build 슬롯
-3. Sp-W04~W06 (Sp-W01~W08 중간) 부분 참여 슬롯 = 웹게임 FlatBuffer / glTF export 영역 협업
-
-**잔존 가정**: 9/15 Sp02 재개 시점 1주 워밍업 (9/15~9/22) 권장.
-
-### 2.2 R-V3-3 Yellow → Green (시나리오 진행)
-
-**v3.0 가정**: D+30 7차 출시 = 권1 1~10화 minimum 入稿 / 강시연 33화 작성 전제.
-
-**5/5 회복 근거**:
-1. 권1 33화 누적 (chapter_00~20 + 21~30 + 39 + 50) = 60% 진행
-2. D+25 마감 (1~10화 minimum) = 33화 누적 ≫ 10화 = 23화 여유 PASS
-3. 1주 2화 페이스 (메모리 `feedback_writer_collaboration_protocol.md`) = 권1 잔여 22화 / 11주 = D+78 권1 完 추정
-4. PD 페이스 자유 (메모리 v1.3 #4) 보존
-
-**잔존 가정**: PD 본업 병행 10~15h/주 가정 슬립 시 권1 完 D+78 → D+90+ 가능. R-V3-3 재 Yellow 가능.
-
-### 2.3 R-V3-4 Red → Yellow (웹게임 출시 시나리오 전제)
-
-**v3.0 가정**: 웹게임 1차 출시 (D+105 = 2026-09-01, 메모리 `project_phase_2_3_roadmap_v3_0.md` §일정) = 강시연 33화 작성 전제 / 미달 시 50F→25F 자동 다운그레이드 헷지.
-
-**5/5 회복 근거**:
-1. D+0 누적 33화 ≥ 25화 = 25F 헷지 발동선 통과
-2. D+105 추정 진행 = 33+(105-0)/3.5=63화 (1주 2화 페이스) = 50F 충분 통과
-3. 50F 발동선 (50화) D+0+(50-33)*3.5=D+59 (2026-07-04) 추정 = D+105 출시 PASS
-
-**잔존 가정**: PD 페이스 슬립 시 D+105 50화 미달 가능 (D+105 = 33+(105/3.5)=63화 추정 vs 슬립 시 33+(105-30)/3.5=54화). 50F 헷지 발동 가능성 잠재.
-
----
-
-## §3 R-V3-2 / R-V3-5 Yellow 유지 근거
-
-### 3.1 R-V3-2 (윤서아 인수)
-
-- D+1 (5/5) 인수 미팅 진행 중 / 산출 결과 미확정
-- 9h 학습 가정 vs 14h 초과 시 Sp-W01 W2 (5/25) 한가영 첫 발주 1주 지연
-- D+14 (5/18) Sp-W01 킥오프 직전 재평가 슬롯 박힘
-- 박세린 일일 알림 1쪽 (메모리 `project_phase_2_3_roadmap_v3_0.md` §리스크 R-V3-2)
-
-### 3.2 R-V3-5 (1000F+ 정지)
-
-- Sp05 시즌 시스템 D+15 6차 출시 후 재평가
-- 200F 4.255 baseline (메모리 `project_sprint01_w1_results.md`) 절대 보존 / 한가영 주 1회 자동 검증
-- 1000F+ 도달 = D+90+ 추정 (코어 유저 진입 후) → R-V3-5 Yellow 그대로
-
----
-
-## §4 신규 리스크 후보 (모니터링 슬롯, 박세린 자율)
-
-| 후보 # | 리스크 | 상태 | 발동 트리거 |
-|--------|------|------|----------|
-| R-V3-6 (후보) | PD 본문 페이스 슬립 (10~15h/주 가정 미달) | Yellow 잠재 | D+25 入稿 시 1~10화 미달 시 발동 |
-| R-V3-7 (후보) | chapter mv 7건 D+15 김민준 발주 미처리 → /novel 라우트 wire-up 지연 | Green | D+15 김민준 처리 PASS 시 해소 / 미처리 시 D+30 7차 출시 wire-up 지연 |
-| R-V3-8 (후보) | 류재현 비용 한도 5~9% 초과 (월 $82 → $164+) | Green | 한도 10%+ 초과 시 자동 트리거 (메모리 `project_ai_cost_d_plus_15_decision_slot.md`) |
-
-> 후보 3건 = 박세린 자율 모니터링. PD 결정 슬롯 직접 영향 X. 발동 시 신규 메모리 박세린 자율 신설.
-
----
-
-## §5 박세린 자율 권한 처리 (메인 세션 가정 0)
-
-본 세션 = PD "알아서 진행해줘" 자율 잠금. 박세린 PM 자율 권한 발동:
-
-1. ✓ R-V3-1 / R-V3-3 / R-V3-4 회복 자율 마킹
-2. ✓ R-V3-2 / R-V3-5 유지 마킹
-3. ✓ 신규 리스크 후보 R-V3-6~8 박세린 자율 모니터링 슬롯 박힘
-4. ✓ PD 결정 필요 = 0건
-
-> 본 갱신 = `project_phase_2_3_roadmap_v3_0.md` 메모리 §리스크 정합 갱신, 메모리 변경 0 (메모리 = v3.0 결정 source 영구 보존).
-
----
-
-## §6 다음 PM 액션
-
-| 일자 | 액션 | 비고 |
-|------|------|------|
-| D+1 (5/5) | 본 갱신 + 3 산출물 일괄 박세린 자율 작성 | ✓ 본 세션 |
-| D+10 (5/14) | R-V3-2 (윤서아 인수) 첫 점검 | 박세린 |
-| D+14 (5/18) | R-V3-2 D+14 재평가 + Sp-W01 킥오프 | 박세린 |
-| D+15 (5/19) | R-V3-8 (류재현 비용) D+15 PD 결정 슬롯 알림 | 박세린 |
-| D+25 (5/29) | R-V3-6 (PD 페이스 슬립) D+25 入稿 마감 알림 | 박세린 |
-| D+30 (6/4) | R-V3-7 (chapter mv) 7차 출시 wire-up 검증 | 박세린 |
-| D+45 (6/19) | R-V3-1 / R-V3-2 / R-V3-3 30일 종합 회고 1쪽 | 박세린 |
-| D+105 (8/19) | R-V3-4 D+105 웹게임 출시 시점 시나리오 진행 점검 | 박세린 |
-| 9/15 (D+131) | R-V3-1 Sp02 재개 시점 정현우 워밍업 1주 검증 | 박세린 |
-6:["slug","r_v3_status_update_2026-05-05","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","r_v3_status_update_2026-05-05","d"],{"children":["__PAGE__?{\"slug\":\"r_v3_status_update_2026-05-05\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","r_v3_status_update_2026-05-05","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"R-V3 5건 모니터링 갱신 (2026-05-05)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/r_v3_status_update_2026-05-05.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,156"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"R-V3 5건 모니터링 갱신 (2026-05-05) — 자료실"}],["$","meta","3",{"name":"description","content":"1. R-V3-3 (시나리오 진행 지연) Yellow → Green — 권1 33화 누적 60% / D+25 마감 ✓ 安全 PASS"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T490b,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">R-V3 5건 모니터링 갱신 (2026-05-05)</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성: 2026-05-05 (project-manager 박세린, PM 자율 권한) 근거: 메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_phase_2_3_roadmap_v3_0.md</code> §리스크 + 본 세션 권1 33화 paste + Sp01 W2 13파일 정적 완료 <strong class="font-semibold text-text-0">목적</strong>: v3.0 격변 후 5건 신규 리스크 일일 모니터링 갱신 (Yellow→Green 회복 마킹 자율) <strong class="font-semibold text-text-0">PD 결정 필요</strong>: 0건 (자율 마킹) <strong class="font-semibold text-text-0">상위 문서</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_phase_2_3_roadmap_v3_0.md</code> (불변)</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§0 PD 30초 요약</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">R-V3-3 (시나리오 진행 지연) Yellow → Green</strong> — 권1 33화 누적 60% / D+25 마감 ✓ 安全 PASS</li><li class="mb-1"><strong class="font-semibold text-text-0">R-V3-4 (웹게임 D+180 출시 = 33화 작성 전제) Red → Yellow</strong> — 33화 ≥ 25화 = 50F 통과 / 50F→25F 헷지 미발동</li><li class="mb-1"><strong class="font-semibold text-text-0">R-V3-1 (Sp02~Sp05 PAUSE 4개월 → 정현우 Unity 모멘텀 손실) Yellow → Green</strong> — Sp01 W2 13파일 정적 완료 + FlatBuffer D+14 슬롯 박힘</li><li class="mb-1"><strong class="font-semibold text-text-0">R-V3-2 (윤서아 인수 9h → 14h 초과 시 Sp-W01 W2 1주 지연) Yellow 유지</strong> — D+1 (5/5) 인수 미팅 진행 / D+14 재평가</li><li class="mb-1"><strong class="font-semibold text-text-0">R-V3-5 (1000F+ 정지 = 코어 유저 이탈) Yellow 유지</strong> — Sp05 시즌 시스템 D+15 6차 출시 후 재평가</li><li class="mb-1"><strong class="font-semibold text-text-0">종합</strong>: 3건 회복 (Green 2 + Yellow 1) / 2건 유지 → v3.0 격변 위험 1차 안정화</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§1 R-V3 5건 갱신 표</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">리스크</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">v3.0 (5/4)</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">v1.4 (5/5)</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">변경</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">변경 사유</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">R-V3-1</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Sp02~Sp05 PAUSE 4개월 → 정현우 Unity 모멘텀 손실</td><td class="border border-border px-3 py-2 text-left text-text-0">Yellow</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Green</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">↓ 회복</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp01 W2 13파일 정적 완료 (메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_volume1_chapter_21_30_paste_2026-05-05.md</code> 정현우 산출물) + FlatBuffer D+14 3자 합의 슬롯 박힘 + Sp-W04~W06 부분 참여 슬롯 박힘</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">R-V3-2</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">윤서아 인수 9h 학습 14h 초과 시 Sp-W01 W2 한가영 첫 발주 1주 지연</td><td class="border border-border px-3 py-2 text-left text-text-0">Yellow</td><td class="border border-border px-3 py-2 text-left text-text-0">Yellow 유지</td><td class="border border-border px-3 py-2 text-left text-text-0">=</td><td class="border border-border px-3 py-2 text-left text-text-0">D+1 (5/5) 인수 미팅 진행 중 / 5/18 D+14 Sp-W01 킥오프 직전 재평가 / 박세린 일일 알림 1쪽</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">R-V3-3</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">시나리오 진행 지연 (33화 작성 전제 미달)</td><td class="border border-border px-3 py-2 text-left text-text-0">Yellow</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Green</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">↓ 회복</td><td class="border border-border px-3 py-2 text-left text-text-0">권1 33화 누적 60% PASS / D+25 1~10화 마감 ✓ 安全 / 권1 D+78 완결 추정 / 1주 2화 페이스 안정</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">R-V3-4</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">웹게임 D+180 출시 = 강시연 33화 작성 전제</td><td class="border border-border px-3 py-2 text-left text-text-0">Red (헷지 50F→25F 자동 다운그레이드)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">Yellow</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">↓ 회복</td><td class="border border-border px-3 py-2 text-left text-text-0">33화 ≥ 25화 = 50F 통과 가능 / 50F→25F 헷지 미발동 / D+105 (Sp-W08) 출시 시점 65화+ 추정 (D+105=2026-08-19, 33+(105-0)/3.5=63화 추정)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">R-V3-5</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">1000F+ 정지 = 코어 유저 이탈 위험</td><td class="border border-border px-3 py-2 text-left text-text-0">Yellow (Tier 100 영원의 증표 + 시즌 50% retain)</td><td class="border border-border px-3 py-2 text-left text-text-0">Yellow 유지</td><td class="border border-border px-3 py-2 text-left text-text-0">=</td><td class="border border-border px-3 py-2 text-left text-text-0">Sp05 시즌 시스템 D+15 6차 출시 후 재평가 / 200F 4.255 baseline 보존 (메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint01_w1_results.md</code> 절대 보존)</td></tr></tbody></table></div>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§2 회복 근거 상세</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.1 R-V3-1 Yellow → Green (정현우 Unity 모멘텀)</h3>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">v3.0 가정</strong>: Sp02~Sp05 PAUSE 4개월 (5/18~9/15) = 정현우 Unity 모멘텀 손실 위험.</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">5/5 회복 근거</strong>:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">Sp01 W2 13파일 정적 완료 (메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_volume1_chapter_21_30_paste_2026-05-05.md</code>) = Unity Importer baseline 확보</li><li class="mb-1">FlatBuffer D+14 (5/18) 3자 합의 슬롯 박힘 (메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_flatbuffer_self_build_decision_2026-05-04.md</code>) = 정현우 50h Self-build 슬롯</li><li class="mb-1">Sp-W04~W06 (Sp-W01~W08 중간) 부분 참여 슬롯 = 웹게임 FlatBuffer / glTF export 영역 협업</li></ol>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">잔존 가정</strong>: 9/15 Sp02 재개 시점 1주 워밍업 (9/15~9/22) 권장.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.2 R-V3-3 Yellow → Green (시나리오 진행)</h3>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">v3.0 가정</strong>: D+30 7차 출시 = 권1 1~10화 minimum 入稿 / 강시연 33화 작성 전제.</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">5/5 회복 근거</strong>:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">권1 33화 누적 (chapter_00~20 + 21~30 + 39 + 50) = 60% 진행</li><li class="mb-1">D+25 마감 (1~10화 minimum) = 33화 누적 ≫ 10화 = 23화 여유 PASS</li><li class="mb-1">1주 2화 페이스 (메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">feedback_writer_collaboration_protocol.md</code>) = 권1 잔여 22화 / 11주 = D+78 권1 完 추정</li><li class="mb-1">PD 페이스 자유 (메모리 v1.3 #4) 보존</li></ol>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">잔존 가정</strong>: PD 본업 병행 10~15h/주 가정 슬립 시 권1 完 D+78 → D+90+ 가능. R-V3-3 재 Yellow 가능.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.3 R-V3-4 Red → Yellow (웹게임 출시 시나리오 전제)</h3>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">v3.0 가정</strong>: 웹게임 1차 출시 (D+105 = 2026-09-01, 메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_phase_2_3_roadmap_v3_0.md</code> §일정) = 강시연 33화 작성 전제 / 미달 시 50F→25F 자동 다운그레이드 헷지.</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">5/5 회복 근거</strong>:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">D+0 누적 33화 ≥ 25화 = 25F 헷지 발동선 통과</li><li class="mb-1">D+105 추정 진행 = 33+(105-0)/3.5=63화 (1주 2화 페이스) = 50F 충분 통과</li><li class="mb-1">50F 발동선 (50화) D+0+(50-33)*3.5=D+59 (2026-07-04) 추정 = D+105 출시 PASS</li></ol>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">잔존 가정</strong>: PD 페이스 슬립 시 D+105 50화 미달 가능 (D+105 = 33+(105/3.5)=63화 추정 vs 슬립 시 33+(105-30)/3.5=54화). 50F 헷지 발동 가능성 잠재.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§3 R-V3-2 / R-V3-5 Yellow 유지 근거</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.1 R-V3-2 (윤서아 인수)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">D+1 (5/5) 인수 미팅 진행 중 / 산출 결과 미확정</li><li class="mb-1">9h 학습 가정 vs 14h 초과 시 Sp-W01 W2 (5/25) 한가영 첫 발주 1주 지연</li><li class="mb-1">D+14 (5/18) Sp-W01 킥오프 직전 재평가 슬롯 박힘</li><li class="mb-1">박세린 일일 알림 1쪽 (메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_phase_2_3_roadmap_v3_0.md</code> §리스크 R-V3-2)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.2 R-V3-5 (1000F+ 정지)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Sp05 시즌 시스템 D+15 6차 출시 후 재평가</li><li class="mb-1">200F 4.255 baseline (메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_sprint01_w1_results.md</code>) 절대 보존 / 한가영 주 1회 자동 검증</li><li class="mb-1">1000F+ 도달 = D+90+ 추정 (코어 유저 진입 후) → R-V3-5 Yellow 그대로</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§4 신규 리스크 후보 (모니터링 슬롯, 박세린 자율)</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">후보 #</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">리스크</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">상태</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">발동 트리거</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-6 (후보)</td><td class="border border-border px-3 py-2 text-left text-text-0">PD 본문 페이스 슬립 (10~15h/주 가정 미달)</td><td class="border border-border px-3 py-2 text-left text-text-0">Yellow 잠재</td><td class="border border-border px-3 py-2 text-left text-text-0">D+25 入稿 시 1~10화 미달 시 발동</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-7 (후보)</td><td class="border border-border px-3 py-2 text-left text-text-0">chapter mv 7건 D+15 김민준 발주 미처리 → /novel 라우트 wire-up 지연</td><td class="border border-border px-3 py-2 text-left text-text-0">Green</td><td class="border border-border px-3 py-2 text-left text-text-0">D+15 김민준 처리 PASS 시 해소 / 미처리 시 D+30 7차 출시 wire-up 지연</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-8 (후보)</td><td class="border border-border px-3 py-2 text-left text-text-0">류재현 비용 한도 5~9% 초과 (월 $82 → $164+)</td><td class="border border-border px-3 py-2 text-left text-text-0">Green</td><td class="border border-border px-3 py-2 text-left text-text-0">한도 10%+ 초과 시 자동 트리거 (메모리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_ai_cost_d_plus_15_decision_slot.md</code>)</td></tr></tbody></table></div>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">후보 3건 = 박세린 자율 모니터링. PD 결정 슬롯 직접 영향 X. 발동 시 신규 메모리 박세린 자율 신설.</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§5 박세린 자율 권한 처리 (메인 세션 가정 0)</h2>
+<p class="mb-3 text-text-0">본 세션 = PD &quot;알아서 진행해줘&quot; 자율 잠금. 박세린 PM 자율 권한 발동:</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">✓ R-V3-1 / R-V3-3 / R-V3-4 회복 자율 마킹</li><li class="mb-1">✓ R-V3-2 / R-V3-5 유지 마킹</li><li class="mb-1">✓ 신규 리스크 후보 R-V3-6~8 박세린 자율 모니터링 슬롯 박힘</li><li class="mb-1">✓ PD 결정 필요 = 0건</li></ol>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">본 갱신 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project_phase_2_3_roadmap_v3_0.md</code> 메모리 §리스크 정합 갱신, 메모리 변경 0 (메모리 = v3.0 결정 source 영구 보존).</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§6 다음 PM 액션</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">일자</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">액션</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비고</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+1 (5/5)</td><td class="border border-border px-3 py-2 text-left text-text-0">본 갱신 + 3 산출물 일괄 박세린 자율 작성</td><td class="border border-border px-3 py-2 text-left text-text-0">✓ 본 세션</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+10 (5/14)</td><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-2 (윤서아 인수) 첫 점검</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+14 (5/18)</td><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-2 D+14 재평가 + Sp-W01 킥오프</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+15 (5/19)</td><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-8 (류재현 비용) D+15 PD 결정 슬롯 알림</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+25 (5/29)</td><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-6 (PD 페이스 슬립) D+25 入稿 마감 알림</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+30 (6/4)</td><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-7 (chapter mv) 7차 출시 wire-up 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+45 (6/19)</td><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-1 / R-V3-2 / R-V3-3 30일 종합 회고 1쪽</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+105 (8/19)</td><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-4 D+105 웹게임 출시 시점 시나리오 진행 점검</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">9/15 (D+131)</td><td class="border border-border px-3 py-2 text-left text-text-0">R-V3-1 Sp02 재개 시점 정현우 워밍업 1주 검증</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린</td></tr></tbody></table></div>5:["slug","r_v3_status_update_2026-05-05","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","r_v3_status_update_2026-05-05","d"],{"children":["__PAGE__?{\"slug\":\"r_v3_status_update_2026-05-05\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","r_v3_status_update_2026-05-05","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"R-V3 5건 모니터링 갱신 (2026-05-05)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/r_v3_status_update_2026-05-05.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,156"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"R-V3 5건 모니터링 갱신 (2026-05-05) — 자료실"}],["$","meta","3",{"name":"description","content":"1. R-V3-3 (시나리오 진행 지연) Yellow → Green — 권1 33화 누적 60% / D+25 마감 ✓ 安全 PASS"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

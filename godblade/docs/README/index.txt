@@ -1,120 +1,45 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T1135,# Sprints — 운영 규칙
-
-> 본 규칙은 2026-04-20 Sprint 00 킥오프 시 PD 구두 승인 예정. 이후 변경은 PD 결정.
-> 소유자: `project-manager`. 작업 실행: `game-designer` / `code-lead`. 결정권: PD.
-
----
-
-## 1. 스프린트 주기
-
-- **격주 월요일 00:00 킥오프**, **14일째 월요일 00:00 종료** (= 다음 스프린트 킥오프와 동시).
-- 종료·킥오프 월요일 오전은 회고 + 킥오프 문서 작성에 사용 (정식 작업은 오후부터).
-- 1인 파트타임 기준 주 10~15h 가용. 총 스프린트 공수 상한 = 20~30h.
-
-### 달력 매핑 (확정분)
-
-| 스프린트 | 시작 (월요일 00:00) | 종료 (월요일 00:00, 14일째) |
-|---------|---------------------|---------------------|
-| Sprint 00 | 2026-04-20 | 2026-05-04 |
-| Sprint 01 | 2026-05-04 | 2026-05-18 |
-| Sprint 02 | 2026-05-18 | 2026-06-01 |
-| Sprint 03 | 2026-06-01 | 2026-06-15 |
-
-> 경계는 공유: Sprint N의 종료 시각 = Sprint N+1의 킥오프 시각 (둘 다 같은 월요일 00:00). 회고/킥오프 문서 작성은 그 월요일 오전 한 번에 묶어 처리.
-
----
-
-## 2. 파일 명명 규칙
-
-- `sprint-NN.md` — `NN`은 두 자리 제로패딩, 00부터 시작.
-- 예: `sprint-00.md`, `sprint-01.md`, … `sprint-25.md`.
-- 위치: `sprints/` 직하. 하위 폴더 금지.
-
----
-
-## 3. 문서 구조 (정규 템플릿)
-
-`sprint-00.md`의 구조를 정규 템플릿으로 고정.
-
-### 킥오프 섹션 (D+0 작성)
-1. 제목 + 기간 (`# Sprint NN (YYYY-MM-DD ~ YYYY-MM-DD)`)
-2. 한 줄 맥락 (Phase 단계 + 이전 스프린트 연결 고리)
-3. **이월 후보 블록** (Sprint 01부터) — 이전 스프린트 미완 항목 원문 복사 + `[from Sprint NN-1]` 태그
-4. **목표 (최대 3줄)**
-5. **작업 (TodoWrite 초기 리스트)** — 체크박스 + 담당자 + 공수
-6. **의존성** — "A 없으면 B 못 함" 순차 그래프
-7. **리스크 (최대 3건)** — 대응책 포함
-
-### 종료 섹션 (D+14 작성)
-8. **완료** — 체크된 작업 요약
-9. **미완 / 이월** — 다음 스프린트 상단으로 복사할 항목
-10. **회고** — 잘됨 / 안됨 / 다음 액션
-11. **D+14 체크리스트** — 종료일에 실제 확인할 항목 (킥오프 시 미리 선예약)
-
----
-
-## 4. 책임 분담
-
-| 섹션 | 소유 |
-|------|------|
-| 킥오프 섹션 (1~7) 작성 | `project-manager` |
-| 종료 섹션 (8~11) 통합 | `project-manager` |
-| 목표·범위 결정 | PD |
-| 작업 실행 (코드) | `code-lead` |
-| 작업 실행 (기획/밸런스) | `game-designer` |
-| 리스크 판정 / 이월 승인 | PD (PM이 초안 제시) |
-
-PM은 **결정권 없음**. 분쟁·블로킹은 즉시 PD에게 에스컬레이션 (24h 이내).
-
----
-
-## 5. 미완 이월 규칙
-
-- Sprint NN 종료 시 미완 항목은 `sprint-NN.md` "미완 / 이월" 블록에 기록.
-- 동일 항목을 `sprint-(NN+1).md` 상단 **"이월 후보"** 블록에 **원문 복사** + 태그 `[from Sprint NN]` 부여.
-- 이월 2회 연속 시(=`[from Sprint NN-2]`) PD 에스컬레이션 필수 — 범위 조정 또는 폐기 결정.
-
-예시:
-```markdown
-## 이월 후보
-- [ ] CSV → ScriptableObject 임포트 에디터 스크립트 작성 `[from Sprint 00]` (담당: code-lead, 잔여 1h)
-```
-
----
-
-## 6. 체크인 리듬
-
-| 시점 | 활동 | 필수 여부 |
-|------|------|----------|
-| D+0 (월) | 킥오프 — PM이 문서 작성, PD 구두 승인 | 필수 |
-| D+7 (월) | 중간 점검 — 번다운 확인, 블로킹 유무 | **선택** (PD 판단) |
-| D+14 (월 00:00) | 스프린트 종료 = 다음 스프린트 킥오프 | 필수 |
-| D+14 월요일 오전 | 회고 + 다음 스프린트 킥오프 문서 작성 | 필수 |
-
-주간 체크인은 생략(1인 파트타임). 블로킹 발생 시 수시 에스컬레이션.
-
----
-
-## 7. 이벤트 로그 연동
-
-스프린트 종료 시 PM은 PD에게 다음을 요청한다:
-- 주요 블로킹/결정사항을 **1줄 요약**으로 `CLAUDE.md` "이벤트 로그" 섹션에 추가.
-- 형식: `- YYYY-MM-DD: Sprint NN 완료. <3~10단어 요약>.`
-- PD 트리거 — PM은 초안 문장만 제공, 파일 수정은 PD가 직접.
-
----
-
-## 8. 참고
-
-- 원본 `Program/`, `Datasheets/`, `Dump20210311.sql`, `data_extracted/`, `Unity6_scaffold/` 의 scaffold 코드 = **read-only**.
-- 모든 신규 코드는 `Unity6/` 하위.
-- 에이전트 정의: `.claude/agents/*.md`.
-- 프로젝트 맥락: `CLAUDE.md`.
-6:["slug","README","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","README","d"],{"children":["__PAGE__?{\"slug\":\"README\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","README","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprints — 운영 규칙"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/README.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"610"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprints — 운영 규칙 — 자료실"}],["$","meta","3",{"name":"description","content":"- 격주 월요일 00:00 킥오프, 14일째 월요일 00:00 종료 (= 다음 스프린트 킥오프와 동시)."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T359b,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">Sprints — 운영 규칙</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">본 규칙은 2026-04-20 Sprint 00 킥오프 시 PD 구두 승인 예정. 이후 변경은 PD 결정. 소유자: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project-manager</code>. 작업 실행: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">game-designer</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">code-lead</code>. 결정권: PD.</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. 스프린트 주기</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">격주 월요일 00:00 킥오프</strong>, <strong class="font-semibold text-text-0">14일째 월요일 00:00 종료</strong> (= 다음 스프린트 킥오프와 동시).</li><li class="mb-1">종료·킥오프 월요일 오전은 회고 + 킥오프 문서 작성에 사용 (정식 작업은 오후부터).</li><li class="mb-1">1인 파트타임 기준 주 10~15h 가용. 총 스프린트 공수 상한 = 20~30h.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">달력 매핑 (확정분)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">스프린트</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시작 (월요일 00:00)</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">종료 (월요일 00:00, 14일째)</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">Sprint 00</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-04-20</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-05-04</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Sprint 01</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-05-04</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-05-18</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Sprint 02</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-05-18</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-06-01</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Sprint 03</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-06-01</td><td class="border border-border px-3 py-2 text-left text-text-0">2026-06-15</td></tr></tbody></table></div>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">경계는 공유: Sprint N의 종료 시각 = Sprint N+1의 킥오프 시각 (둘 다 같은 월요일 00:00). 회고/킥오프 문서 작성은 그 월요일 오전 한 번에 묶어 처리.</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. 파일 명명 규칙</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-NN.md</code> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">NN</code>은 두 자리 제로패딩, 00부터 시작.</li><li class="mb-1">예: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-00.md</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-01.md</code>, … <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-25.md</code>.</li><li class="mb-1">위치: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/</code> 직하. 하위 폴더 금지.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. 문서 구조 (정규 템플릿)</h2>
+<p class="mb-3 text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-00.md</code>의 구조를 정규 템플릿으로 고정.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">킥오프 섹션 (D+0 작성)</h3>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">제목 + 기간 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light"># Sprint NN (YYYY-MM-DD ~ YYYY-MM-DD)</code>)</li><li class="mb-1">한 줄 맥락 (Phase 단계 + 이전 스프린트 연결 고리)</li><li class="mb-1"><strong class="font-semibold text-text-0">이월 후보 블록</strong> (Sprint 01부터) — 이전 스프린트 미완 항목 원문 복사 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[from Sprint NN-1]</code> 태그</li><li class="mb-1"><strong class="font-semibold text-text-0">목표 (최대 3줄)</strong></li><li class="mb-1"><strong class="font-semibold text-text-0">작업 (TodoWrite 초기 리스트)</strong> — 체크박스 + 담당자 + 공수</li><li class="mb-1"><strong class="font-semibold text-text-0">의존성</strong> — &quot;A 없으면 B 못 함&quot; 순차 그래프</li><li class="mb-1"><strong class="font-semibold text-text-0">리스크 (최대 3건)</strong> — 대응책 포함</li></ol>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">종료 섹션 (D+14 작성)</h3>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">완료</strong> — 체크된 작업 요약</li><li class="mb-1"><strong class="font-semibold text-text-0">미완 / 이월</strong> — 다음 스프린트 상단으로 복사할 항목</li><li class="mb-1"><strong class="font-semibold text-text-0">회고</strong> — 잘됨 / 안됨 / 다음 액션</li><li class="mb-1"><strong class="font-semibold text-text-0">D+14 체크리스트</strong> — 종료일에 실제 확인할 항목 (킥오프 시 미리 선예약)</li></ol>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. 책임 분담</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">섹션</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">소유</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">킥오프 섹션 (1~7) 작성</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project-manager</code></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">종료 섹션 (8~11) 통합</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">project-manager</code></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">목표·범위 결정</td><td class="border border-border px-3 py-2 text-left text-text-0">PD</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">작업 실행 (코드)</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">code-lead</code></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">작업 실행 (기획/밸런스)</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">game-designer</code></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">리스크 판정 / 이월 승인</td><td class="border border-border px-3 py-2 text-left text-text-0">PD (PM이 초안 제시)</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0">PM은 <strong class="font-semibold text-text-0">결정권 없음</strong>. 분쟁·블로킹은 즉시 PD에게 에스컬레이션 (24h 이내).</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. 미완 이월 규칙</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Sprint NN 종료 시 미완 항목은 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-NN.md</code> &quot;미완 / 이월&quot; 블록에 기록.</li><li class="mb-1">동일 항목을 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-(NN+1).md</code> 상단 <strong class="font-semibold text-text-0">&quot;이월 후보&quot;</strong> 블록에 <strong class="font-semibold text-text-0">원문 복사</strong> + 태그 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[from Sprint NN]</code> 부여.</li><li class="mb-1">이월 2회 연속 시(=<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[from Sprint NN-2]</code>) PD 에스컬레이션 필수 — 범위 조정 또는 폐기 결정.</li></ul>
+<p class="mb-3 text-text-0">예시:</p>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>## 이월 후보
+- [ ] CSV → ScriptableObject 임포트 에디터 스크립트 작성 `[from Sprint 00]` (담당: code-lead, 잔여 1h)</code></pre>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. 체크인 리듬</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">시점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">활동</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">필수 여부</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+0 (월)</td><td class="border border-border px-3 py-2 text-left text-text-0">킥오프 — PM이 문서 작성, PD 구두 승인</td><td class="border border-border px-3 py-2 text-left text-text-0">필수</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+7 (월)</td><td class="border border-border px-3 py-2 text-left text-text-0">중간 점검 — 번다운 확인, 블로킹 유무</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">선택</strong> (PD 판단)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+14 (월 00:00)</td><td class="border border-border px-3 py-2 text-left text-text-0">스프린트 종료 = 다음 스프린트 킥오프</td><td class="border border-border px-3 py-2 text-left text-text-0">필수</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">D+14 월요일 오전</td><td class="border border-border px-3 py-2 text-left text-text-0">회고 + 다음 스프린트 킥오프 문서 작성</td><td class="border border-border px-3 py-2 text-left text-text-0">필수</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0">주간 체크인은 생략(1인 파트타임). 블로킹 발생 시 수시 에스컬레이션.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. 이벤트 로그 연동</h2>
+<p class="mb-3 text-text-0">스프린트 종료 시 PM은 PD에게 다음을 요청한다:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">주요 블로킹/결정사항을 <strong class="font-semibold text-text-0">1줄 요약</strong>으로 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">CLAUDE.md</code> &quot;이벤트 로그&quot; 섹션에 추가.</li><li class="mb-1">형식: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">- YYYY-MM-DD: Sprint NN 완료. &lt;3~10단어 요약&gt;.</code></li><li class="mb-1">PD 트리거 — PM은 초안 문장만 제공, 파일 수정은 PD가 직접.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">8. 참고</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">원본 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Program/</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Datasheets/</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Dump20210311.sql</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">data_extracted/</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity6_scaffold/</code> 의 scaffold 코드 = <strong class="font-semibold text-text-0">read-only</strong>.</li><li class="mb-1">모든 신규 코드는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity6/</code> 하위.</li><li class="mb-1">에이전트 정의: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">.claude/agents/*.md</code>.</li><li class="mb-1">프로젝트 맥락: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">CLAUDE.md</code>.</li></ul>5:["slug","README","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","README","d"],{"children":["__PAGE__?{\"slug\":\"README\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","README","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprints — 운영 규칙"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/README.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"610"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprints — 운영 규칙 — 자료실"}],["$","meta","3",{"name":"description","content":"- 격주 월요일 00:00 킥오프, 14일째 월요일 00:00 종료 (= 다음 스프린트 킥오프와 동시)."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

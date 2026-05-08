@@ -1,92 +1,47 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T698b,# Sprint 01 W2 — Transcendent Drop / Milestone / Affix Importer + Runtime Lookup 기술 설계
-
-> 작성: 2026-04-21 (code-lead) · 근거: `transcendent_drop_table_README.md` v1.0 APPROVED, `transcendent_reward_draft.md` v1.0 APPROVED
-> **문서 상태**: **APPROVED v1.0** (PD 승인 2026-04-21)
-> **범위**: Sprint 01 W2 기술 설계 전용 — 실구현 코드 제외
-> **CP 추적**: CP1(§3) · CP2(§4) · CP3(§4·§8) · CP4(§5) · CP5(§6) · CP6 = CP5 이월 원칙 내장 · CP7(§7)
->
-> ---
->
-> ## PD 승인 결정 (2026-04-21)
->
-> | # | 질문 | 확정 |
-> |---|------|------|
-> | **DQ1** | SO 구조 | **옵션 A** — 개별 SO 3개 (`DropRateTableSO` / `MilestoneRewardCatalogSO` / `AffixPoolSO`) |
-> | **DQ2** | 메뉴 진입점 | **개별 4개 + ALL 메뉴 1개** |
-> | **DQ3** | `TsvReader` 공통화 | **Sprint 02 이월** — W2에선 Stage Importer 재건드림 금지 (Sprint 00 회귀 방지) |
-> | **DQ4** | 테스트 asmdef | **신설 `GodBlade.Tests.Editor`** |
->
-> **블로커 해소**: `com.unity.test-framework: 1.4.5` 는 `Unity6/Packages/manifest.json:10` 에 이미 존재 (packages-lock 자동 1.4.6 해석).
->
-> **§9 컴파일러 시뮬레이션 체크리스트 11개(CP9-1~CP9-11) 필수** — PR 머지 전 Console 새 에러 0 확인 원칙.
-
----
-
-## 0. 한 줄 요약
-
-TSV 3종을 Sprint 00 메뉴 방식 Importer 패턴 그대로 복제·확장하여 **ScriptableObject 3개(옵션 A)** 로 변환, 런타임은 `Dictionary<(floor_bucket_id, mobKind, grade), float>` 단일 해시 O(1) 조회. Grade 리매핑은 Data 어셈블리의 `GradeRemap` 정적 클래스가 단일 진실. DOTS `BlobAssetReference`는 Sprint 02 이후 판단(지금 도입하면 마이그레이션 2회).
-
----
-
-## 1. 데이터 모델 결정
-
-### 1.1 3 옵션 비교
-
-| 옵션 | 구조 | 장점 | 단점 | W2 적합성 |
-|------|------|------|------|-----------|
-| **A. 개별 SO 3개** | `DropRateTableSO` + `MilestoneRewardCatalogSO` + `AffixPoolSO` | Sprint 00 `TranscendentStageCatalogSO` 패턴 1:1 재활용 / 각 TSV 변경 시 영향 분리 / Addressables 주소 단순 | SO 3개 로딩 필요 (방치형 부팅 1회) | **권장** |
-| B. 통합 SO 1개 | `RewardDatabaseSO` 단일체 | 한 번 로드 / FK 조합 쉬움 | 60+22+6 = 88행 단일 덩어리 → diff noise / TSV별 빌드 타임 격리 불가 | 과결합 |
-| C. DOTS BlobAssetReference | `BlobArray<DropRow>` 3종 | 수천 아이템 드롭 롤 시 캐시 친화 / GC 0 | W2 범위 초과 / 에디터 도구·마이그레이션 비용 큼 / 측정 없이 도입 원칙 위반 | **기각** (증거 없음) |
-
-### 1.2 권장안 = 옵션 A + DOTS 스키마 사전 호환
-
-- **A 채택** 이유: Sprint 00 `TranscendentStageCatalogSO` → Importer → Addressables 경로가 이미 검증됨(2건 회귀 포함). 같은 패턴 3회 복제가 가장 싼 길.
-- **DOTS 호환 배려**: `DropRateRow` 같은 row 타입을 `[System.Serializable] struct`로 잡고 모든 필드 `blittable`(int/enum/float)로 유지 → Sprint 02+ `BlobArray<DropRateRow>`로 **이사 가능** (SO → Blob 전환 시 필드 매핑 1:1).
-- **무엇을 하지 않는가**: Grade 리매핑 결과까지 저장 (런타임 enum은 신규 6등급만, 원본 4등급은 Importer가 변환 후 버림).
-
-### 1.3 SO 세 개 필드 초안 (요약)
-
-```
-DropRateTableSO
-  List<DropRateRow> rows                           // 60행
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T10317,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">Sprint 01 W2 — Transcendent Drop / Milestone / Affix Importer + Runtime Lookup 기술 설계</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성: 2026-04-21 (code-lead) · 근거: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">transcendent_drop_table_README.md</code> v1.0 APPROVED, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">transcendent_reward_draft.md</code> v1.0 APPROVED <strong class="font-semibold text-text-0">문서 상태</strong>: <strong class="font-semibold text-text-0">APPROVED v1.0</strong> (PD 승인 2026-04-21) <strong class="font-semibold text-text-0">범위</strong>: Sprint 01 W2 기술 설계 전용 — 실구현 코드 제외 <strong class="font-semibold text-text-0">CP 추적</strong>: CP1(§3) · CP2(§4) · CP3(§4·§8) · CP4(§5) · CP5(§6) · CP6 = CP5 이월 원칙 내장 · CP7(§7)  ---  ## PD 승인 결정 (2026-04-21)  | # | 질문 | 확정 | |---|------|------| | <strong class="font-semibold text-text-0">DQ1</strong> | SO 구조 | <strong class="font-semibold text-text-0">옵션 A</strong> — 개별 SO 3개 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateTableSO</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneRewardCatalogSO</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AffixPoolSO</code>) | | <strong class="font-semibold text-text-0">DQ2</strong> | 메뉴 진입점 | <strong class="font-semibold text-text-0">개별 4개 + ALL 메뉴 1개</strong> | | <strong class="font-semibold text-text-0">DQ3</strong> | <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 공통화 | <strong class="font-semibold text-text-0">Sprint 02 이월</strong> — W2에선 Stage Importer 재건드림 금지 (Sprint 00 회귀 방지) | | <strong class="font-semibold text-text-0">DQ4</strong> | 테스트 asmdef | <strong class="font-semibold text-text-0">신설 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Tests.Editor</code></strong> |  <strong class="font-semibold text-text-0">블로커 해소</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">com.unity.test-framework: 1.4.5</code> 는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity6/Packages/manifest.json:10</code> 에 이미 존재 (packages-lock 자동 1.4.6 해석).  <strong class="font-semibold text-text-0">§9 컴파일러 시뮬레이션 체크리스트 11개(CP9-1~CP9-11) 필수</strong> — PR 머지 전 Console 새 에러 0 확인 원칙.</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">0. 한 줄 요약</h2>
+<p class="mb-3 text-text-0">TSV 3종을 Sprint 00 메뉴 방식 Importer 패턴 그대로 복제·확장하여 <strong class="font-semibold text-text-0">ScriptableObject 3개(옵션 A)</strong> 로 변환, 런타임은 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Dictionary&lt;(floor_bucket_id, mobKind, grade), float&gt;</code> 단일 해시 O(1) 조회. Grade 리매핑은 Data 어셈블리의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GradeRemap</code> 정적 클래스가 단일 진실. DOTS <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">BlobAssetReference</code>는 Sprint 02 이후 판단(지금 도입하면 마이그레이션 2회).</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. 데이터 모델 결정</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.1 3 옵션 비교</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">옵션</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">구조</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">장점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">단점</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">W2 적합성</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">A. 개별 SO 3개</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateTableSO</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneRewardCatalogSO</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AffixPoolSO</code></td><td class="border border-border px-3 py-2 text-left text-text-0">Sprint 00 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageCatalogSO</code> 패턴 1:1 재활용 / 각 TSV 변경 시 영향 분리 / Addressables 주소 단순</td><td class="border border-border px-3 py-2 text-left text-text-0">SO 3개 로딩 필요 (방치형 부팅 1회)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">권장</strong></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">B. 통합 SO 1개</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">RewardDatabaseSO</code> 단일체</td><td class="border border-border px-3 py-2 text-left text-text-0">한 번 로드 / FK 조합 쉬움</td><td class="border border-border px-3 py-2 text-left text-text-0">60+22+6 = 88행 단일 덩어리 → diff noise / TSV별 빌드 타임 격리 불가</td><td class="border border-border px-3 py-2 text-left text-text-0">과결합</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">C. DOTS BlobAssetReference</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">BlobArray&lt;DropRow&gt;</code> 3종</td><td class="border border-border px-3 py-2 text-left text-text-0">수천 아이템 드롭 롤 시 캐시 친화 / GC 0</td><td class="border border-border px-3 py-2 text-left text-text-0">W2 범위 초과 / 에디터 도구·마이그레이션 비용 큼 / 측정 없이 도입 원칙 위반</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">기각</strong> (증거 없음)</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.2 권장안 = 옵션 A + DOTS 스키마 사전 호환</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">A 채택</strong> 이유: Sprint 00 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageCatalogSO</code> → Importer → Addressables 경로가 이미 검증됨(2건 회귀 포함). 같은 패턴 3회 복제가 가장 싼 길.</li><li class="mb-1"><strong class="font-semibold text-text-0">DOTS 호환 배려</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateRow</code> 같은 row 타입을 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[System.Serializable] struct</code>로 잡고 모든 필드 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">blittable</code>(int/enum/float)로 유지 → Sprint 02+ <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">BlobArray&lt;DropRateRow&gt;</code>로 <strong class="font-semibold text-text-0">이사 가능</strong> (SO → Blob 전환 시 필드 매핑 1:1).</li><li class="mb-1"><strong class="font-semibold text-text-0">무엇을 하지 않는가</strong>: Grade 리매핑 결과까지 저장 (런타임 enum은 신규 6등급만, 원본 4등급은 Importer가 변환 후 버림).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.3 SO 세 개 필드 초안 (요약)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>DropRateTableSO
+  List&lt;DropRateRow&gt; rows                           // 60행
   struct DropRateRow { int floorMin; int floorMax; MobKind mob; Grade grade; float rate; }
-  [NonSerialized] Dictionary<(int,MobKind,Grade),float> _lookup  // OnEnable lazy build
-  [NonSerialized] List<(int min, int max)> _bucketIndex          // 경계 검색용
+  [NonSerialized] Dictionary&lt;(int,MobKind,Grade),float&gt; _lookup  // OnEnable lazy build
+  [NonSerialized] List&lt;(int min, int max)&gt; _bucketIndex          // 경계 검색용
 
 MilestoneRewardCatalogSO
-  List<MilestoneRewardRow> rows                    // 22행
+  List&lt;MilestoneRewardRow&gt; rows                    // 22행
   struct MilestoneRewardRow {
     int floor; string milestoneName;
-    RewardType type; string rewardCode;  // "TBD_" 허용
+    RewardType type; string rewardCode;  // &quot;TBD_&quot; 허용
     int count; Grade? gradeFallback; string notes;
   }
-  IReadOnlyList<MilestoneRewardRow> GetRowsAtFloor(int floor)
+  IReadOnlyList&lt;MilestoneRewardRow&gt; GetRowsAtFloor(int floor)
 
 AffixPoolSO
-  List<AffixSkeletonRow> rows                      // 6행
+  List&lt;AffixSkeletonRow&gt; rows                      // 6행
   struct AffixSkeletonRow {
     Grade grade; int affixSlotCount;
     int prefixSlotCount; int suffixSlotCount;
     float valueRollMinPct; float valueRollMaxPct;
     string legacyGradeMap;  // read-only 메모 (Sprint 02 주입 힌트)
     int rerollCostGold;
-  }
-```
-
-모두 `GodBlade.Data` 어셈블리. Sprint 00 SO와 같은 `[CreateAssetMenu]` 부착, Addressables 주소는 §2.4.
-
----
-
-## 2. Importer 클래스 설계
-
-### 2.1 파일 레이아웃 (전부 Editor 어셈블리)
-
-```
-Assets/Editor/
+  }</code></pre>
+<p class="mb-3 text-text-0">모두 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> 어셈블리. Sprint 00 SO와 같은 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[CreateAssetMenu]</code> 부착, Addressables 주소는 §2.4.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. Importer 클래스 설계</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.1 파일 레이아웃 (전부 Editor 어셈블리)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>Assets/Editor/
   GodBlade.Editor.asmdef                                (기존)
   Importers/
     TranscendentStageImporter.cs                        (Sprint 00 — 손대지 않음)
@@ -96,70 +51,36 @@ Assets/Editor/
     RewardImportAll.cs                                  (신규, 4개 메뉴 순차 실행)
     Shared/
       TsvReader.cs                                      (신규, 3개 Importer 공통)
-      GradeParser.cs                                    (신규, "Rare"→Grade.Rare(신규 Epic 의미 NOT 원본!))
-```
-
-### 2.2 ScriptedImporter vs MenuItem — **MenuItem 채택**
-
-- Sprint 00 `TranscendentStageImporter`가 `[MenuItem]` 방식 검증 완료. 단일 패턴 유지.
-- ScriptedImporter는 TSV가 Assets/ 내부에 놓여야 함. 본 프로젝트 TSV는 `designs/` 폴더(저장소 루트, Unity 프로젝트 외부). 이식 비용 없음.
-- 대신 메뉴 4개로 엔지니어 선택권 제공:
-  - `GodBlade/Data/Import Transcendent Stage TSV` (Sprint 00 기존)
-  - `GodBlade/Data/Import Drop Rate Table TSV` (신규)
-  - `GodBlade/Data/Import Milestone Reward TSV` (신규)
-  - `GodBlade/Data/Import Affix Pool TSV` (신규)
-  - `GodBlade/Data/Import ALL (Stage → Drop → Milestone → Affix)` (신규, 의존 순서 보장)
-
-### 2.3 의존 순서 = `Import ALL` 한 진입점이 보장
-
-```
-[1] TranscendentStageImporter.Import()   (Sprint 00)     — Stage SO 200개 + Catalog
+      GradeParser.cs                                    (신규, &quot;Rare&quot;→Grade.Rare(신규 Epic 의미 NOT 원본!))</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.2 ScriptedImporter vs MenuItem — <strong class="font-semibold text-text-0">MenuItem 채택</strong></h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Sprint 00 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageImporter</code>가 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[MenuItem]</code> 방식 검증 완료. 단일 패턴 유지.</li><li class="mb-1">ScriptedImporter는 TSV가 Assets/ 내부에 놓여야 함. 본 프로젝트 TSV는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/</code> 폴더(저장소 루트, Unity 프로젝트 외부). 이식 비용 없음.</li><li class="mb-1">대신 메뉴 4개로 엔지니어 선택권 제공:</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade/Data/Import Transcendent Stage TSV</code> (Sprint 00 기존)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade/Data/Import Drop Rate Table TSV</code> (신규)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade/Data/Import Milestone Reward TSV</code> (신규)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade/Data/Import Affix Pool TSV</code> (신규)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade/Data/Import ALL (Stage → Drop → Milestone → Affix)</code> (신규, 의존 순서 보장)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.3 의존 순서 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Import ALL</code> 한 진입점이 보장</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[1] TranscendentStageImporter.Import()   (Sprint 00)     — Stage SO 200개 + Catalog
 [2] DropRateTableImporter.Import()                       — Stage에 의존하지 않음(독립)
 [3] MilestoneRewardImporter.Import()                     — floor→Stage FK 없음(Grant 시 lookup)
-[4] AffixPoolImporter.Import()                           — 독립
-```
-
-- 실제로 Stage SO에 대한 **컴파일 타임 의존은 없음**(보상 TSV는 floor만 들고 있음). 런타임 Granter가 catalog.GetByFloor()로 조회.
-- 따라서 순서 강제는 "안전 마진"일 뿐. 메뉴로 개별 실행도 무방.
-
-### 2.4 공통 Const 규약 (Sprint 00과 동일 룩&필)
-
-```
-OUT_DIR       = "Assets/_Project/Data/Rewards"
-ADDR_GROUP    = "Rewards"
-ADDR_LABEL    = "reward-table"
+[4] AffixPoolImporter.Import()                           — 독립</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">실제로 Stage SO에 대한 <strong class="font-semibold text-text-0">컴파일 타임 의존은 없음</strong>(보상 TSV는 floor만 들고 있음). 런타임 Granter가 catalog.GetByFloor()로 조회.</li><li class="mb-1">따라서 순서 강제는 &quot;안전 마진&quot;일 뿐. 메뉴로 개별 실행도 무방.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.4 공통 Const 규약 (Sprint 00과 동일 룩&amp;필)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>OUT_DIR       = &quot;Assets/_Project/Data/Rewards&quot;
+ADDR_GROUP    = &quot;Rewards&quot;
+ADDR_LABEL    = &quot;reward-table&quot;
 Addresses:
-  "Rewards/DropRateTable"
-  "Rewards/MilestoneRewardCatalog"
-  "Rewards/AffixPool"
-```
-
-### 2.5 `TsvReader` 공통화 (Sprint 00 private Row 승격)
-
-- Sprint 00 `TranscendentStageImporter` 내부 `Row` / `ReadTsv` / `ValidateHeader` 3개를 `Shared/TsvReader.cs` 로 **추출**.
-- Sprint 00 Importer는 동작 불변 — 새 공통 모듈을 호출하도록 **최소 편집** (Sprint 00 검증 자산 파괴 금지).
-- 공통 API 시그니처:
-  ```csharp
-  public static class TsvReader {
+  &quot;Rewards/DropRateTable&quot;
+  &quot;Rewards/MilestoneRewardCatalog&quot;
+  &quot;Rewards/AffixPool&quot;</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.5 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 공통화 (Sprint 00 private Row 승격)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Sprint 00 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageImporter</code> 내부 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Row</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ReadTsv</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ValidateHeader</code> 3개를 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Shared/TsvReader.cs</code> 로 <strong class="font-semibold text-text-0">추출</strong>.</li><li class="mb-1">Sprint 00 Importer는 동작 불변 — 새 공통 모듈을 호출하도록 <strong class="font-semibold text-text-0">최소 편집</strong> (Sprint 00 검증 자산 파괴 금지).</li><li class="mb-1">공통 API 시그니처:</li></ul>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>  public static class TsvReader {
     public struct Row { string Get(string k); int I(string k); float F(string k); double D(string k); }
-    public static List<Row> Read(string path, string[] expectedHeaders);   // BOM trim + ValidateHeader 포함
-  }
-  ```
-- **주의 (§9 재발 방지)**: TsvReader.cs는 `Editor/Importers/Shared/` 에 두므로 Editor 어셈블리 포함. Data 어셈블리에서 참조 금지.
-
----
-
-## 3. Grade 리매핑 (CP1 대응)
-
-### 3.1 위치 = `GodBlade.Data` 어셈블리 (`Assets/_Project/Scripts/Data/GradeRemap.cs`)
-
-- 이유: `Grade` enum은 런타임 전역 표준. Runtime·Editor·Data 모두 참조.
-- `GodBlade.Data.asmdef` 는 `references: []` 빈 배열 유지 가능(의존 없음).
-
-### 3.2 Enum 구조 초안
-
-```csharp
-namespace GodBlade.Data {
+    public static List&lt;Row&gt; Read(string path, string[] expectedHeaders);   // BOM trim + ValidateHeader 포함
+  }</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">주의 (§9 재발 방지)</strong>: TsvReader.cs는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Editor/Importers/Shared/</code> 에 두므로 Editor 어셈블리 포함. Data 어셈블리에서 참조 금지.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. Grade 리매핑 (CP1 대응)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.1 위치 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> 어셈블리 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Assets/_Project/Scripts/Data/GradeRemap.cs</code>)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">이유: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Grade</code> enum은 런타임 전역 표준. Runtime·Editor·Data 모두 참조.</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data.asmdef</code> 는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">references: []</code> 빈 배열 유지 가능(의존 없음).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.2 Enum 구조 초안</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>namespace GodBlade.Data {
   public enum Grade {
     Common     = 0,   // 원본 Normal
     Magic      = 1,   // 신규 (원본 없음, Sprint 02 Normal 복제)
@@ -196,135 +117,68 @@ namespace GodBlade.Data {
     public string SourceTsv { get; }
     public int RowNumber { get; }
   }
-}
-```
-
-### 3.3 리매핑 테이블 (하드코딩, Dictionary)
-
-| 원본 리터럴(XML, Sprint 02 주입용) | 신규 Grade | 주의 |
-|------|------|------|
-| `"Normal"`    | `Grade.Common`    | 1:1 |
-| `"Superior"`  | `Grade.Rare`      | 상향 1단계 |
-| `"Rare"`      | `Grade.Epic`      | ★ 원본 Rare ≠ 신규 Rare. **코멘트 3줄** 필수 |
-| `"Unique"`    | `Grade.Legendary` | 1:1 |
-| 그 외(`"Magic"`/`"Mythic"`/대소문자 변형/오타) | **`UnknownGradeException`** 발생 |
-
-### 3.4 Unknown 정책
-
-- Importer는 Row 단위로 try/catch 하지 **않음**. 첫 Unknown 만나면 즉시 `UnknownGradeException` throw → Importer 중단 + `EditorUtility.DisplayDialog` + 콘솔 Error.
-- 이유: 조용한 0 채움(Sprint 00에서 BOM으로 한 번 당했음)보다 "큰 소리로 실패"가 낫다. PD 일관 방침.
-- `Literal`, `SourceTsv`, `RowNumber` 세 필드 포함 → 엔지니어가 10초 안에 수정 위치 파악.
-
----
-
-## 4. 드롭 테이블 Lookup (CP2·CP3 대응)
-
-### 4.1 자료구조 = `Dictionary<Key, float>`
-
-```csharp
-readonly struct DropRateKey : System.IEquatable<DropRateKey> {
+}</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.3 리매핑 테이블 (하드코딩, Dictionary)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">원본 리터럴(XML, Sprint 02 주입용)</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">신규 Grade</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">주의</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;Normal&quot;</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Grade.Common</code></td><td class="border border-border px-3 py-2 text-left text-text-0">1:1</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;Superior&quot;</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Grade.Rare</code></td><td class="border border-border px-3 py-2 text-left text-text-0">상향 1단계</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;Rare&quot;</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Grade.Epic</code></td><td class="border border-border px-3 py-2 text-left text-text-0">★ 원본 Rare ≠ 신규 Rare. <strong class="font-semibold text-text-0">코멘트 3줄</strong> 필수</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;Unique&quot;</code></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Grade.Legendary</code></td><td class="border border-border px-3 py-2 text-left text-text-0">1:1</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">그 외(<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;Magic&quot;</code>/<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;Mythic&quot;</code>/대소문자 변형/오타)</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">UnknownGradeException</code></strong> 발생</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.4 Unknown 정책</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Importer는 Row 단위로 try/catch 하지 <strong class="font-semibold text-text-0">않음</strong>. 첫 Unknown 만나면 즉시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">UnknownGradeException</code> throw → Importer 중단 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">EditorUtility.DisplayDialog</code> + 콘솔 Error.</li><li class="mb-1">이유: 조용한 0 채움(Sprint 00에서 BOM으로 한 번 당했음)보다 &quot;큰 소리로 실패&quot;가 낫다. PD 일관 방침.</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Literal</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SourceTsv</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">RowNumber</code> 세 필드 포함 → 엔지니어가 10초 안에 수정 위치 파악.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. 드롭 테이블 Lookup (CP2·CP3 대응)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.1 자료구조 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Dictionary&lt;Key, float&gt;</code></h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>readonly struct DropRateKey : System.IEquatable&lt;DropRateKey&gt; {
   public readonly byte BucketId;   // 0~4, 5개 버킷 (1-30, 31-80, 81-130, 131-180, 181-200)
   public readonly byte MobKind;    // Normal=0 / Boss=1
   public readonly byte Grade;      // 0~5
-  // GetHashCode = BucketId | (MobKind<<4) | (Grade<<5)  → 컴팩트
-  public bool Equals(DropRateKey o) => ...
+  // GetHashCode = BucketId | (MobKind&lt;&lt;4) | (Grade&lt;&lt;5)  → 컴팩트
+  public bool Equals(DropRateKey o) =&gt; ...
 }
 
-Dictionary<DropRateKey, float> _lookup   // 60 엔트리 (5×2×6)
-```
-
-### 4.2 왜 Dictionary인가 (vs 다차원 배열)
-
-| 접근 | Dictionary | `float[5,2,6]` |
-|------|-----------|----------------|
-| 조회 O(1) | 해시 + EqualityComparer | 직접 인덱싱 (더 빠름) |
-| 누락 검증 | `TryGetValue` false → 0 감지 쉬움 | 0.0 가 "미정"인지 "진짜 0"인지 모호 |
-| 직렬화 | SO에는 `List<DropRateRow>` 저장, OnEnable에서 Dictionary 빌드 | 다차원 배열은 Unity 직렬화 불가 → 래핑 필요 |
-| 확장 | mobKind 추가 쉬움 | 상수 5/2/6 고정 — 추가 시 리팩터 |
-
-**선택: Dictionary + OnEnable lazy build** (Sprint 00 `TranscendentStageCatalogSO._byCode` 패턴 그대로).
-
-### 4.3 Floor → BucketId 변환 (CP3 경계값)
-
-```csharp
-static byte FloorToBucket(int floor) {
-  if (floor <=  30) return 0;
-  if (floor <=  80) return 1;
-  if (floor <= 130) return 2;
-  if (floor <= 180) return 3;
+Dictionary&lt;DropRateKey, float&gt; _lookup   // 60 엔트리 (5×2×6)</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.2 왜 Dictionary인가 (vs 다차원 배열)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">접근</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Dictionary</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">float[5,2,6]</code></th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">조회 O(1)</td><td class="border border-border px-3 py-2 text-left text-text-0">해시 + EqualityComparer</td><td class="border border-border px-3 py-2 text-left text-text-0">직접 인덱싱 (더 빠름)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">누락 검증</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TryGetValue</code> false → 0 감지 쉬움</td><td class="border border-border px-3 py-2 text-left text-text-0">0.0 가 &quot;미정&quot;인지 &quot;진짜 0&quot;인지 모호</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">직렬화</td><td class="border border-border px-3 py-2 text-left text-text-0">SO에는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">List&lt;DropRateRow&gt;</code> 저장, OnEnable에서 Dictionary 빌드</td><td class="border border-border px-3 py-2 text-left text-text-0">다차원 배열은 Unity 직렬화 불가 → 래핑 필요</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">확장</td><td class="border border-border px-3 py-2 text-left text-text-0">mobKind 추가 쉬움</td><td class="border border-border px-3 py-2 text-left text-text-0">상수 5/2/6 고정 — 추가 시 리팩터</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">선택: Dictionary + OnEnable lazy build</strong> (Sprint 00 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageCatalogSO._byCode</code> 패턴 그대로).</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.3 Floor → BucketId 변환 (CP3 경계값)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>static byte FloorToBucket(int floor) {
+  if (floor &lt;=  30) return 0;
+  if (floor &lt;=  80) return 1;
+  if (floor &lt;= 130) return 2;
+  if (floor &lt;= 180) return 3;
   return 4;  // 181~200
-}
-```
-
-- 이분 탐색 불필요 — 버킷 5개. 상수 분기가 캐시·분기예측에 최선.
-- 경계 규칙: `min <= floor <= max` (양끝 포함) — Sprint 01 W1 README §6-CP3 과 일치.
-- `DropRateRow.floorMin` / `floorMax` 는 **검증용**으로만 저장 (런타임 조회는 BucketId만 씀). 불변성 자기검증 로그로 활용.
-
-### 4.4 런타임 API 초안 (`DropRateTableSO` 메서드)
-
-```csharp
-public float GetDropRate(int floor, MobKind mob, Grade grade);
+}</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">이분 탐색 불필요 — 버킷 5개. 상수 분기가 캐시·분기예측에 최선.</li><li class="mb-1">경계 규칙: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">min &lt;= floor &lt;= max</code> (양끝 포함) — Sprint 01 W1 README §6-CP3 과 일치.</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateRow.floorMin</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">floorMax</code> 는 <strong class="font-semibold text-text-0">검증용</strong>으로만 저장 (런타임 조회는 BucketId만 씀). 불변성 자기검증 로그로 활용.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.4 런타임 API 초안 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateTableSO</code> 메서드)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>public float GetDropRate(int floor, MobKind mob, Grade grade);
 // floor 1~200 → BucketId → key → dict. miss면 0.0 + Debug.LogWarning(한 번만).
 
 public Grade RollGrade(int floor, MobKind mob, System.Random rng);
-// 6등급 weighted pick. 내부에서 GetDropRate 6회 + 누적분포 생성 (캐시 고려는 Sprint 02 측정 후).
-```
-
-### 4.5 드롭률 합 자기검증 (Importer)
-
-- Import 끝에서 **5개 버킷 × 2개 mobKind = 10개 합**을 계산.
-- `|sum - 1.000| > 0.001` → `Debug.LogError` + `Dialog` (런타임 Crash 금지, Editor 전용 Alert).
-- 로그 포맷: `[DropRateTableImporter] SUM ERROR bucket=81-130 mob=Normal sum=0.9997 expected=1.000`
-
----
-
-## 5. TBD_ 플레이스홀더 처리 (CP4)
-
-### 5.1 감지
-
-- `MilestoneRewardRow.rewardCode` 가 `string` 타입. `reward_code` 컬럼이 `1`(정수 문자열), `TBD_EQUIP_POOL`, `TBD_REROLL`, `TBD_TITLE_100` 등 혼재.
-- Importer가 prefix 검사:
-  ```
-  bool isPlaceholder = rewardCode.StartsWith("TBD_", StringComparison.Ordinal);
-  ```
-- 현재 TSV 22행 중 `TBD_*` = 14행 (필수 Skip 아님, **표시**만 함).
-
-### 5.2 정책 = **로드는 하되 런타임 Grant는 Skip + Warn**
-
-- Import 단계: 모든 row를 SO에 저장 (placeholder 포함). 데이터 손실 없음.
-- 런타임 `MilestoneGranter.Award(floor)` 내부에서 row.IsPlaceholder = true면:
-  ```
-  Debug.LogWarning($"[MilestoneGranter] TBD reward skipped: floor={floor} code={rewardCode}");
-  continue;  // 다음 row 진행
-  ```
-- 이유: Sprint 02에서 `ItemInfo.xml` 매핑 완료되면 TSV만 갱신 + Importer 재실행하면 자동 활성. 코드 변경 0.
-
-### 5.3 TODO / Issue 스텁
-
-- `MilestoneRewardRow` 구조체에 `public bool IsPlaceholder` 계산 프로퍼티 부착.
-- 코드 주석 고정 형식:
-  ```
-  // TODO(Sprint 02): TBD_EQUIP_POOL → RewardItemInfo.xml StageGeneralCode=5001 계열 매핑
+// 6등급 weighted pick. 내부에서 GetDropRate 6회 + 누적분포 생성 (캐시 고려는 Sprint 02 측정 후).</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.5 드롭률 합 자기검증 (Importer)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Import 끝에서 <strong class="font-semibold text-text-0">5개 버킷 × 2개 mobKind = 10개 합</strong>을 계산.</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">|sum - 1.000| &gt; 0.001</code> → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Debug.LogError</code> + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Dialog</code> (런타임 Crash 금지, Editor 전용 Alert).</li><li class="mb-1">로그 포맷: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[DropRateTableImporter] SUM ERROR bucket=81-130 mob=Normal sum=0.9997 expected=1.000</code></li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. TBD_ 플레이스홀더 처리 (CP4)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.1 감지</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneRewardRow.rewardCode</code> 가 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">string</code> 타입. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">reward_code</code> 컬럼이 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">1</code>(정수 문자열), <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TBD_EQUIP_POOL</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TBD_REROLL</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TBD_TITLE_100</code> 등 혼재.</li><li class="mb-1">Importer가 prefix 검사:</li></ul>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>  bool isPlaceholder = rewardCode.StartsWith(&quot;TBD_&quot;, StringComparison.Ordinal);</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">현재 TSV 22행 중 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TBD_*</code> = 14행 (필수 Skip 아님, <strong class="font-semibold text-text-0">표시</strong>만 함).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.2 정책 = <strong class="font-semibold text-text-0">로드는 하되 런타임 Grant는 Skip + Warn</strong></h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Import 단계: 모든 row를 SO에 저장 (placeholder 포함). 데이터 손실 없음.</li><li class="mb-1">런타임 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneGranter.Award(floor)</code> 내부에서 row.IsPlaceholder = true면:</li></ul>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>  Debug.LogWarning($&quot;[MilestoneGranter] TBD reward skipped: floor={floor} code={rewardCode}&quot;);
+  continue;  // 다음 row 진행</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">이유: Sprint 02에서 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ItemInfo.xml</code> 매핑 완료되면 TSV만 갱신 + Importer 재실행하면 자동 활성. 코드 변경 0.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5.3 TODO / Issue 스텁</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneRewardRow</code> 구조체에 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">public bool IsPlaceholder</code> 계산 프로퍼티 부착.</li><li class="mb-1">코드 주석 고정 형식:</li></ul>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>  // TODO(Sprint 02): TBD_EQUIP_POOL → RewardItemInfo.xml StageGeneralCode=5001 계열 매핑
   //                  TBD_REROLL     → 신규 아이템 등록 (game-designer 협업)
-  //                  TBD_TITLE_*    → 칭호 시스템 설계 후 (Sprint 04+)
-  ```
-- PM에게 Sprint 02 킥오프 때 "TBD 14건 치환 과제" 별도 티켓 등록 요청.
-
----
-
-## 6. 어픽스 뼈대만 W2 처리 (CP5)
-
-### 6.1 W2 범위 = `AffixPoolSO` 6행만
-
-- `AffixSkeletonRow` 6개(Common ~ Mythic) 필드 전부 채워짐.
-- **실수치 풀 없음**: `OptionItemRandom` 211행은 W2에서 **건드리지 않음**. XML 파서 구현 **금지**(PD 명시 제약).
-
-### 6.2 Sprint 02 확장 시 마이그레이션 0 설계
-
-```csharp
-public sealed class AffixPoolSO : ScriptableObject {
-  public List<AffixSkeletonRow> rows;          // W2: 6행 (grade → slot 뼈대)
-  public List<AffixValueEntry> valueEntries;   // W2: 빈 리스트. Sprint 02가 211행 채움.
+  //                  TBD_TITLE_*    → 칭호 시스템 설계 후 (Sprint 04+)</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">PM에게 Sprint 02 킥오프 때 &quot;TBD 14건 치환 과제&quot; 별도 티켓 등록 요청.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. 어픽스 뼈대만 W2 처리 (CP5)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.1 W2 범위 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AffixPoolSO</code> 6행만</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AffixSkeletonRow</code> 6개(Common ~ Mythic) 필드 전부 채워짐.</li><li class="mb-1"><strong class="font-semibold text-text-0">실수치 풀 없음</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OptionItemRandom</code> 211행은 W2에서 <strong class="font-semibold text-text-0">건드리지 않음</strong>. XML 파서 구현 <strong class="font-semibold text-text-0">금지</strong>(PD 명시 제약).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.2 Sprint 02 확장 시 마이그레이션 0 설계</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>public sealed class AffixPoolSO : ScriptableObject {
+  public List&lt;AffixSkeletonRow&gt; rows;          // W2: 6행 (grade → slot 뼈대)
+  public List&lt;AffixValueEntry&gt; valueEntries;   // W2: 빈 리스트. Sprint 02가 211행 채움.
 }
 
 [System.Serializable]
@@ -337,36 +191,22 @@ public struct AffixValueEntry {
   public float valueMax;
   public int rate;                  // 10000 분율
   // ... 6컬럼 나머지
-}
-```
-
-- 핵심: `AffixValueEntry` 구조체를 **W2에 미리 선언** → Sprint 02에선 필드 추가 없이 `valueEntries` List에 push만.
-- SO 파일 `.asset` 직렬화 포맷 안정 → PR diff 깨끗.
-
-### 6.3 Sprint 02에서 필요한 것 (인지만, W2는 구현 안 함)
-
-- `OptionInfo.xml` XLS-XML 파서 (SpreadsheetML 2003, Sprint 00 `extract_transcendent_stage.py`와 같은 포맷).
-- `OptionRandomGroupID` 와 `AffixSkeletonRow.grade` 매핑 규칙 (game-designer와 재협의 — 원본은 직업별 풀, 신규는 Grade별 풀로 축소).
-
----
-
-## 7. 마일스톤 독립 경로 (CP7)
-
-### 7.1 `MilestoneGranter` 위치·API
-
-- **위치**: `Assets/_Project/Scripts/Runtime/Rewards/MilestoneGranter.cs`, 어셈블리 `GodBlade.Runtime`.
-- **네임스페이스**: `GodBlade.Runtime.Rewards` (신규 서브 네임스페이스 — Runtime rootNamespace와 충돌 없음, §9 체크 포인트).
-
-### 7.2 API 초안
-
-```csharp
-namespace GodBlade.Runtime.Rewards {
+}</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">핵심: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AffixValueEntry</code> 구조체를 <strong class="font-semibold text-text-0">W2에 미리 선언</strong> → Sprint 02에선 필드 추가 없이 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">valueEntries</code> List에 push만.</li><li class="mb-1">SO 파일 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">.asset</code> 직렬화 포맷 안정 → PR diff 깨끗.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">6.3 Sprint 02에서 필요한 것 (인지만, W2는 구현 안 함)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OptionInfo.xml</code> XLS-XML 파서 (SpreadsheetML 2003, Sprint 00 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">extract_transcendent_stage.py</code>와 같은 포맷).</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OptionRandomGroupID</code> 와 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AffixSkeletonRow.grade</code> 매핑 규칙 (game-designer와 재협의 — 원본은 직업별 풀, 신규는 Grade별 풀로 축소).</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. 마일스톤 독립 경로 (CP7)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.1 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneGranter</code> 위치·API</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">위치</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Assets/_Project/Scripts/Runtime/Rewards/MilestoneGranter.cs</code>, 어셈블리 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime</code>.</li><li class="mb-1"><strong class="font-semibold text-text-0">네임스페이스</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime.Rewards</code> (신규 서브 네임스페이스 — Runtime rootNamespace와 충돌 없음, §9 체크 포인트).</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.2 API 초안</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>namespace GodBlade.Runtime.Rewards {
   public sealed class MilestoneGranter {
     private readonly MilestoneRewardCatalogSO _catalog;
     public MilestoneGranter(MilestoneRewardCatalogSO catalog) { ... }
 
     // 드롭 Roll과 독립. FloorReached 이벤트 채널 한 번만 호출.
-    public IReadOnlyList<GrantResult> Award(int floor);
+    public IReadOnlyList&lt;GrantResult&gt; Award(int floor);
 
     public readonly struct GrantResult {
       public readonly MilestoneRewardRow Row;
@@ -374,155 +214,65 @@ namespace GodBlade.Runtime.Rewards {
       public readonly string SkipReason;
     }
   }
-}
-```
-
-### 7.3 로드 시점
-
-- `GodBlade.Runtime` 내 `RewardBootstrap` (미존재, Sprint 01 W2 추가) 이 Addressables에서 3개 SO를 병렬 로드.
-- Sprint 00 `SmokeTester`의 `AsyncOperationHandle<T>` 패턴 재사용. 3개 핸들 `WhenAll` 유사 동시 대기.
-
-### 7.4 드롭 Roll과 중복 지급 방지 (이벤트 채널 분리)
-
-```
-이벤트 채널 A: OnMonsterKilled(floor, mobKind, monsterCode)
+}</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.3 로드 시점</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime</code> 내 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">RewardBootstrap</code> (미존재, Sprint 01 W2 추가) 이 Addressables에서 3개 SO를 병렬 로드.</li><li class="mb-1">Sprint 00 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SmokeTester</code>의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AsyncOperationHandle&lt;T&gt;</code> 패턴 재사용. 3개 핸들 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">WhenAll</code> 유사 동시 대기.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.4 드롭 Roll과 중복 지급 방지 (이벤트 채널 분리)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>이벤트 채널 A: OnMonsterKilled(floor, mobKind, monsterCode)
   → LootRoller (드롭 Roll: DropRateTableSO + AffixPoolSO)
 
 이벤트 채널 B: OnFloorReached(floor) ← 층 클리어 1회만 발화
-  → MilestoneGranter.Award(floor) ← 10/50/100/150/200에만 실제 지급
-```
-
-- 두 채널이 서로 호출하지 않음(결합 없음).
-- `MilestoneRewardCatalogSO` 는 floor 키를 Set으로 미리 캐시(`_milestoneFloors`) → `OnFloorReached`가 매번 전체 스캔 안 하도록. 22행이라 성능 이슈 없지만 방어적.
-
----
-
-## 8. 테스트 전략 (CP3 보강)
-
-### 8.1 Edit 모드 = 본 스프린트 타겟
-
-- `com.unity.test-framework` 1.4.5 (scaffold manifest 이미 포함 가정) 활용.
-- Play 모드는 Addressables 로드 필요 → W2 범위 초과. Sprint 02에서 Play-mode smoke.
-
-### 8.2 파일 배치
-
-```
-Assets/_Project/Tests/Editor/
+  → MilestoneGranter.Award(floor) ← 10/50/100/150/200에만 실제 지급</code></pre>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">두 채널이 서로 호출하지 않음(결합 없음).</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneRewardCatalogSO</code> 는 floor 키를 Set으로 미리 캐시(<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">_milestoneFloors</code>) → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnFloorReached</code>가 매번 전체 스캔 안 하도록. 22행이라 성능 이슈 없지만 방어적.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">8. 테스트 전략 (CP3 보강)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">8.1 Edit 모드 = 본 스프린트 타겟</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">com.unity.test-framework</code> 1.4.5 (scaffold manifest 이미 포함 가정) 활용.</li><li class="mb-1">Play 모드는 Addressables 로드 필요 → W2 범위 초과. Sprint 02에서 Play-mode smoke.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">8.2 파일 배치</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>Assets/_Project/Tests/Editor/
   GodBlade.Tests.Editor.asmdef           (신규, testFramework 참조)
   DropRateTableLookupTests.cs
   GradeRemapTests.cs
-  MilestoneCatalogTests.cs
-```
-
-**§9 재발 경고**: `asmdef.references`에 `UnityEngine.TestRunner`, `UnityEditor.TestRunner`, `GodBlade.Data`, `GodBlade.Runtime`, `GodBlade.Editor` 명시. `defineConstraints: ["UNITY_INCLUDE_TESTS"]`.
-
-### 8.3 Floor 경계값 테스트 8개 (CP3)
-
-```
-[TestCase(30, 0)] [TestCase(31, 1)]
+  MilestoneCatalogTests.cs</code></pre>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">§9 재발 경고</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">asmdef.references</code>에 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">UnityEngine.TestRunner</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">UnityEditor.TestRunner</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Editor</code> 명시. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">defineConstraints: [&quot;UNITY_INCLUDE_TESTS&quot;]</code>.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">8.3 Floor 경계값 테스트 8개 (CP3)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[TestCase(30, 0)] [TestCase(31, 1)]
 [TestCase(80, 1)] [TestCase(81, 2)]
 [TestCase(130, 2)] [TestCase(131, 3)]
 [TestCase(180, 3)] [TestCase(181, 4)]
-public void FloorToBucket_BoundariesAreInclusiveOnLower(int floor, int expectedBucket);
-```
-
-추가 테스트:
-- `DropRate_SumIsOnePerBucket_PerMobKind` (10개 합계)
-- `GradeRemap_RareLegacy_MapsToEpic_NotRare` (★ 의미 충돌 가드)
-- `GradeRemap_UnknownLiteral_Throws`
-- `MilestoneRow_TbdPrefix_IsPlaceholderTrue`
-- `MilestoneCatalog_Floor200_HasSixRows`
-
----
-
-## 9. 정적 분석 한계 + 컴파일러 시뮬레이션 체크리스트
-
-> **PD 명시 요청 섹션**. 2026-04-21 Sprint 00 회귀 2건(CS0246 `ResourceManager` 네임스페이스 누락 / CS1061 멤버 접근 실패)이 정적 리뷰를 통과했지만 실컴파일에서 드러났다. W2 PR 제출 전 다음 **11개 체크 포인트** 를 코드 작성자가 직접 확인한다.
-
-### 9.1 체크 포인트 (11개)
-
-1. **[CP9-1] asmdef references 배열 완결성** — 신규 테스트 asmdef `GodBlade.Tests.Editor.asmdef` 에 다음 누락 재발 금지:
-   - `UnityEngine.TestRunner`
-   - `UnityEditor.TestRunner`
-   - `GodBlade.Data` / `GodBlade.Runtime` / `GodBlade.Editor`
-   - (Sprint 00 재발 사례) `Unity.ResourceManager` — Addressables `AsyncOperationHandle<T>` 건드리면 필수
-2. **[CP9-2] Editor asmdef의 `Unity.Addressables.Editor` 유지** — 기존 `GodBlade.Editor.asmdef` 은 이미 포함. 신규 Importer들이 `AddressableAssetSettingsDefaultObject` 를 건드리면 이 참조 없으면 CS0246.
-3. **[CP9-3] `internal` 멤버 + `[InternalsVisibleTo]`** — 새 SO 중 Editor만 쓸 세터가 있으면 `TranscendentStageSO.cs` 상단의 `[assembly: InternalsVisibleTo("GodBlade.Editor")]` 패턴 복제. 새 SO 파일마다 중복 선언은 **금지** (중복 정의 CS0579). 한 파일에만.
-4. **[CP9-4] `#if UNITY_EDITOR` 가드 경계** — Data asmdef는 Editor 전용 심볼 참조 금지. `UnityEditor.*` 사용 블록은 반드시 `#if UNITY_EDITOR` 로 감싸거나 Editor 어셈블리로 이동.
-5. **[CP9-5] 신규 네임스페이스 충돌** — `GodBlade.Runtime.Rewards` / `GodBlade.Data.Rewards`(X, 하위 안 만듦) / `GodBlade.EditorTools.Rewards`(X, 평탄 유지) 중 **Runtime만** 하위 네임스페이스 도입. rootNamespace가 `GodBlade.Runtime` 이므로 파일 최상단 `namespace GodBlade.Runtime.Rewards`로 명시. 자동 삽입 방지 위해 asmdef `rootNamespace` 수정 금지.
-   > **NOTE (2026-04-21 scaffold sync audit 반영)**: Editor asmdef의 **파일명은 `GodBlade.Editor`** 이나 **rootNamespace / 파일 내 네임스페이스는 `GodBlade.EditorTools`** (Sprint 00 scaffold 컨벤션 유지). 본 문서에서 `GodBlade.Editor.*` 표기는 asmdef **이름** 기준이며, 실제 코드 작성 시 `namespace GodBlade.EditorTools` / `GodBlade.EditorTools.Rewards` 사용. asmdef `rootNamespace` 수정 금지.
-6. **[CP9-6] TSV `Split('\t')` CRLF/LF 처리** — `File.ReadAllLines` 는 플랫폼 개행을 자동 분리하나, Windows TSV를 LF만 남기는 편집기에서 복사된 경우 마지막 줄에 `\r` 잔여. Row 파싱 후 `Trim()` 1회:
-   ```
-   for (int c = 0; c < max; c++) row.Fields[header[c]] = cells[c].Trim();
-   ```
-   Sprint 00 `TranscendentStageImporter.ReadTsv` 에 없음 — 공통 `TsvReader` 추출 시 함께 보강.
-7. **[CP9-7] BOM 트림 중복 적용** — 공통 `TsvReader` 한 곳만 BOM trim. Sprint 00 기존 함수에서 제거(중복 작업 방지 — 단 테스트 돌려 회귀 없음 확인 후 제거).
-8. **[CP9-8] Dictionary 직렬화 금지** — Unity는 `Dictionary<K,V>` 직렬화 안 함. SO는 반드시 `List<Row>` 로 저장, `[NonSerialized]` Dictionary는 `OnEnable`에서 빌드. Sprint 00 Catalog 패턴 유지.
-9. **[CP9-9] Enum underlying type 고정** — `Grade : int` 기본이지만, DOTS 전환 고려하면 `byte` 로 선언 가능. **W2에서는 int 유지** (Unity Inspector 표시, Serialize compatibility 안정). Sprint 02+ DOTS 전환 시 한 번에 byte로.
-10. **[CP9-10] `System.Random` 는 런타임 전용 / Editor Import 단계는 rng 금지** — Importer는 결정론적(input TSV만). rng 사용 zero. `LootRoller`(Sprint 02)에서 도입.
-11. **[CP9-11] Addressables 그룹 중복 생성 방지** — 신규 `Rewards` 그룹을 Stage 그룹과 별도로 만들 것. `settings.FindGroup("Rewards")` 로 기존 확인 후 없으면 생성. Sprint 00 `TranscendentStageImporter.RegisterAddressables` 패턴 복제.
-
-### 9.2 Sprint 00 회귀 2건 재발 경고 (반드시 읽기)
-
-- **회귀 A (CS0246)**: Runtime asmdef가 `Unity.ResourceManager` 미참조 → `AsyncOperationHandle<T>` 타입 해석 실패. → **CP9-1, CP9-2 확인 필수**.
-- **회귀 B (CS1061)**: Editor 메뉴에서 Data asmdef의 private 세터 호출 → `InternalsVisibleTo` 선언 파일 오타 / 어셈블리 이름 불일치 → **CP9-3 확인 필수**.
-- 두 건 모두 정적 리뷰 통과, 실컴파일에서 검출. 본 설계 W2 코드 작성자는 **Unity 에디터 연 상태로 파일 저장 → Console 새 에러 0 확인 후 PR 올림**.
-
----
-
-## 10. 리스크 · 미해결
-
-### 10.1 W2 내 발견 가능 추가 회귀 후보 3건
-
-- **R-W2-1**: TSV 마지막 행 개행 누락 시 `File.ReadAllLines`가 마지막 row 누락 없이 반환하나, 에디터에 따라 `\r` 미포함 라인이 `null` 로 해석되는 예외. `IsNullOrWhiteSpace` 필터는 Sprint 00에 있음 — 회귀 방지 유지.
-- **R-W2-2**: `TsvReader` 공통화 시 Sprint 00 `TranscendentStageImporter` 가 깨질 가능성. **대응**: 1차 PR은 공통화 **없이** 새 3개 Importer 단독 구현, 2차 PR에서 공통화 리팩터(독립 테스트). PD 결정 DQ3 참조.
-- **R-W2-3**: `System.ValueTuple` (`(int,MobKind,Grade)`) 를 딕셔너리 키로 쓰면 기본 비교자가 box 유발. → `readonly struct DropRateKey : IEquatable<>` 로 대체(§4.1 초안 반영). Sprint 00 딕셔너리는 `<int, SO>` 단일키라 해당 없음.
-
-### 10.2 Sprint 02 이월 경계선 (W2 하지 않는 것)
-
-| 항목 | W2 범위 | Sprint 02 |
-|------|---------|-----------|
-| `TranscendentStageReward` 3459행 주입 | ❌ | ✅ |
-| `OptionItemRandom` 211행 주입 | ❌ | ✅ |
-| XML 파서 구현 | ❌ | ✅ |
-| Grade 리매핑 코드(`GradeRemap.TryFromLegacy`) | ✅ **작성만** | Sprint 02에서 **호출** 시작 |
-| TBD_ 치환 | ❌ (Skip+Warn만) | ✅ |
-| `LootRoller` (드롭 Roll 실행) | ❌ | ✅ |
-| `AffixRoller` (어픽스 실수치 추첨) | ❌ | ✅ |
-| Addressables 플레이모드 로드 테스트 | ❌ | ✅ |
-| 프레스티지 PP 적립 훅 | ❌ | `prestige_system_spec.md` v1.0 Sprint 02 |
-
-### 10.3 `Unity.ResourceManager` asmdef 참조 재확인
-
-- `GodBlade.Runtime.asmdef` 에 이미 포함(확인 완료, 파일 라인 5 `"Unity.ResourceManager"`).
-- `GodBlade.Editor.asmdef` 에도 포함(파일 라인 9 `"Unity.ResourceManager"`).
-- **신규** `GodBlade.Tests.Editor.asmdef` 에도 복사 → CP9-1 핵심 항목.
-
-### 10.4 시즌 리셋 / 프레스티지 호환성 (스키마 수준만 인지)
-
-- `prestige_system_spec.md` v1.0 의 PP `permanent/seasonal` 2채널은 W2 구현 **제외**.
-- 단, `MilestoneRewardRow.notes` 에 `floor=200`의 `"GodBlade" 칭호 → 시즌 프레스티지 트리거` 기록 보존. `MilestoneGranter.Award(200)` 구현 시 **별도 이벤트 미발화, TODO(Sprint 02) 주석만**.
-
----
-
-## 11. PD 결정 대기 열린 질문 (4건)
-
-| # | 질문 | 옵션 | code-lead 추천 |
-|---|------|------|----------------|
-| **DQ1** | SO 구조는 옵션 A(개별 3개) / B(통합) / C(DOTS Blob) 중? | A / B / C | **A**. DOTS는 Sprint 02 이후 측정 기반 재검토. |
-| **DQ2** | Importer 진입점은 개별 메뉴 4개 + ALL 메뉴 1개 / 개별만 / ALL만? | 개별+ALL / 개별만 / ALL만 | **개별+ALL**. 엔지니어 선택권 + 원자 실행 모두 제공. |
-| **DQ3** | `TsvReader` 공통화를 W2에 포함 / Sprint 02로 이월? | 포함 / 이월 | **이월**. R-W2-2 회귀 위험 — W2 1차 PR은 Sprint 00 건드리지 않음. W2 말 별도 리팩터 PR. |
-| **DQ4** | 테스트 asmdef 신설 / 기존 Editor asmdef 재활용? | 신설 / 재활용 | **신설** (`GodBlade.Tests.Editor`). `testFramework` / `defineConstraints` 격리. |
-
----
-
-## 12. 분량 · CP 추적
-
-- 본 문서 약 7쪽 (마크다운 렌더 기준).
-- CP1(§3 GradeRemap) / CP2(§4.1-4.4 Dict Lookup) / CP3(§4.3, §8.3 경계값) / CP4(§5 TBD) / CP5(§6 어픽스 뼈대) / CP6(§6.2 W2 범위 제한 = CP5 이월 원칙) / CP7(§7 독립 채널) **전부 커버**.
-- §9 정적 분석 체크 포인트 **11개**.
-- 실구현 코드 줄 수: **0** (설계 전용 — PD 제약 준수).
-6:["slug","sprint-01-w2-importer-design","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sprint-01-w2-importer-design","d"],{"children":["__PAGE__?{\"slug\":\"sprint-01-w2-importer-design\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-01-w2-importer-design","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],["$","span",null,{"className":"rounded-sm bg-gold-dark px-2 py-0.5 text-[10px] font-bold text-bg-0","children":"APPROVED"}]]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint 01 W2 — Transcendent Drop / Milestone / Affix Importer + Runtime Lookup 기술 설계"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-01-w2-importer-design.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"3,262"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint 01 W2 — Transcendent Drop / Milestone / Affix Importer + Runtime Lookup 기술 설계 — 자료실"}],["$","meta","3",{"name":"description","content":"TSV 3종을 Sprint 00 메뉴 방식 Importer 패턴 그대로 복제·확장하여 ScriptableObject 3개(옵션 A) 로 변환, 런타임은 Dictionary<(floor_bucket_id, mobKind, grade), float> 단일 해시 O(1) 조회. Grade 리"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+public void FloorToBucket_BoundariesAreInclusiveOnLower(int floor, int expectedBucket);</code></pre>
+<p class="mb-3 text-text-0">추가 테스트:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRate_SumIsOnePerBucket_PerMobKind</code> (10개 합계)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GradeRemap_RareLegacy_MapsToEpic_NotRare</code> (★ 의미 충돌 가드)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GradeRemap_UnknownLiteral_Throws</code></li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneRow_TbdPrefix_IsPlaceholderTrue</code></li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneCatalog_Floor200_HasSixRows</code></li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">9. 정적 분석 한계 + 컴파일러 시뮬레이션 체크리스트</h2>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">PD 명시 요청 섹션</strong>. 2026-04-21 Sprint 00 회귀 2건(CS0246 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ResourceManager</code> 네임스페이스 누락 / CS1061 멤버 접근 실패)이 정적 리뷰를 통과했지만 실컴파일에서 드러났다. W2 PR 제출 전 다음 <strong class="font-semibold text-text-0">11개 체크 포인트</strong> 를 코드 작성자가 직접 확인한다.</blockquote>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">9.1 체크 포인트 (11개)</h3>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP9-1] asmdef references 배열 완결성</strong> — 신규 테스트 asmdef <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Tests.Editor.asmdef</code> 에 다음 누락 재발 금지:</li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">UnityEngine.TestRunner</code></li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">UnityEditor.TestRunner</code></li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Editor</code></li><li class="mb-1">(Sprint 00 재발 사례) <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.ResourceManager</code> — Addressables <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AsyncOperationHandle&lt;T&gt;</code> 건드리면 필수</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP9-2] Editor asmdef의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.Addressables.Editor</code> 유지</strong> — 기존 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Editor.asmdef</code> 은 이미 포함. 신규 Importer들이 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AddressableAssetSettingsDefaultObject</code> 를 건드리면 이 참조 없으면 CS0246.</li><li class="mb-1"><strong class="font-semibold text-text-0">[CP9-3] <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">internal</code> 멤버 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[InternalsVisibleTo]</code></strong> — 새 SO 중 Editor만 쓸 세터가 있으면 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageSO.cs</code> 상단의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[assembly: InternalsVisibleTo(&quot;GodBlade.Editor&quot;)]</code> 패턴 복제. 새 SO 파일마다 중복 선언은 <strong class="font-semibold text-text-0">금지</strong> (중복 정의 CS0579). 한 파일에만.</li><li class="mb-1"><strong class="font-semibold text-text-0">[CP9-4] <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">#if UNITY_EDITOR</code> 가드 경계</strong> — Data asmdef는 Editor 전용 심볼 참조 금지. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">UnityEditor.*</code> 사용 블록은 반드시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">#if UNITY_EDITOR</code> 로 감싸거나 Editor 어셈블리로 이동.</li><li class="mb-1"><strong class="font-semibold text-text-0">[CP9-5] 신규 네임스페이스 충돌</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime.Rewards</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data.Rewards</code>(X, 하위 안 만듦) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.EditorTools.Rewards</code>(X, 평탄 유지) 중 <strong class="font-semibold text-text-0">Runtime만</strong> 하위 네임스페이스 도입. rootNamespace가 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime</code> 이므로 파일 최상단 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">namespace GodBlade.Runtime.Rewards</code>로 명시. 자동 삽입 방지 위해 asmdef <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">rootNamespace</code> 수정 금지.</li></ol>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">NOTE (2026-04-21 scaffold sync audit 반영)</strong>: Editor asmdef의 <strong class="font-semibold text-text-0">파일명은 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Editor</code></strong> 이나 <strong class="font-semibold text-text-0">rootNamespace / 파일 내 네임스페이스는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.EditorTools</code></strong> (Sprint 00 scaffold 컨벤션 유지). 본 문서에서 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Editor.*</code> 표기는 asmdef <strong class="font-semibold text-text-0">이름</strong> 기준이며, 실제 코드 작성 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">namespace GodBlade.EditorTools</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.EditorTools.Rewards</code> 사용. asmdef <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">rootNamespace</code> 수정 금지.</blockquote>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP9-6] TSV <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Split(&#39;\t&#39;)</code> CRLF/LF 처리</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">File.ReadAllLines</code> 는 플랫폼 개행을 자동 분리하나, Windows TSV를 LF만 남기는 편집기에서 복사된 경우 마지막 줄에 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">\r</code> 잔여. Row 파싱 후 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Trim()</code> 1회:</li></ol>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>   for (int c = 0; c &lt; max; c++) row.Fields[header[c]] = cells[c].Trim();</code></pre>
+<p class="mb-3 text-text-0">Sprint 00 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageImporter.ReadTsv</code> 에 없음 — 공통 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 추출 시 함께 보강.</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">[CP9-7] BOM 트림 중복 적용</strong> — 공통 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 한 곳만 BOM trim. Sprint 00 기존 함수에서 제거(중복 작업 방지 — 단 테스트 돌려 회귀 없음 확인 후 제거).</li><li class="mb-1"><strong class="font-semibold text-text-0">[CP9-8] Dictionary 직렬화 금지</strong> — Unity는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Dictionary&lt;K,V&gt;</code> 직렬화 안 함. SO는 반드시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">List&lt;Row&gt;</code> 로 저장, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[NonSerialized]</code> Dictionary는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnEnable</code>에서 빌드. Sprint 00 Catalog 패턴 유지.</li><li class="mb-1"><strong class="font-semibold text-text-0">[CP9-9] Enum underlying type 고정</strong> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Grade : int</code> 기본이지만, DOTS 전환 고려하면 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">byte</code> 로 선언 가능. <strong class="font-semibold text-text-0">W2에서는 int 유지</strong> (Unity Inspector 표시, Serialize compatibility 안정). Sprint 02+ DOTS 전환 시 한 번에 byte로.</li><li class="mb-1"><strong class="font-semibold text-text-0">[CP9-10] <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">System.Random</code> 는 런타임 전용 / Editor Import 단계는 rng 금지</strong> — Importer는 결정론적(input TSV만). rng 사용 zero. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">LootRoller</code>(Sprint 02)에서 도입.</li><li class="mb-1"><strong class="font-semibold text-text-0">[CP9-11] Addressables 그룹 중복 생성 방지</strong> — 신규 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Rewards</code> 그룹을 Stage 그룹과 별도로 만들 것. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">settings.FindGroup(&quot;Rewards&quot;)</code> 로 기존 확인 후 없으면 생성. Sprint 00 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageImporter.RegisterAddressables</code> 패턴 복제.</li></ol>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">9.2 Sprint 00 회귀 2건 재발 경고 (반드시 읽기)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">회귀 A (CS0246)</strong>: Runtime asmdef가 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.ResourceManager</code> 미참조 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AsyncOperationHandle&lt;T&gt;</code> 타입 해석 실패. → <strong class="font-semibold text-text-0">CP9-1, CP9-2 확인 필수</strong>.</li><li class="mb-1"><strong class="font-semibold text-text-0">회귀 B (CS1061)</strong>: Editor 메뉴에서 Data asmdef의 private 세터 호출 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">InternalsVisibleTo</code> 선언 파일 오타 / 어셈블리 이름 불일치 → <strong class="font-semibold text-text-0">CP9-3 확인 필수</strong>.</li><li class="mb-1">두 건 모두 정적 리뷰 통과, 실컴파일에서 검출. 본 설계 W2 코드 작성자는 <strong class="font-semibold text-text-0">Unity 에디터 연 상태로 파일 저장 → Console 새 에러 0 확인 후 PR 올림</strong>.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">10. 리스크 · 미해결</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">10.1 W2 내 발견 가능 추가 회귀 후보 3건</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">R-W2-1</strong>: TSV 마지막 행 개행 누락 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">File.ReadAllLines</code>가 마지막 row 누락 없이 반환하나, 에디터에 따라 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">\r</code> 미포함 라인이 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">null</code> 로 해석되는 예외. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">IsNullOrWhiteSpace</code> 필터는 Sprint 00에 있음 — 회귀 방지 유지.</li><li class="mb-1"><strong class="font-semibold text-text-0">R-W2-2</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 공통화 시 Sprint 00 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageImporter</code> 가 깨질 가능성. <strong class="font-semibold text-text-0">대응</strong>: 1차 PR은 공통화 <strong class="font-semibold text-text-0">없이</strong> 새 3개 Importer 단독 구현, 2차 PR에서 공통화 리팩터(독립 테스트). PD 결정 DQ3 참조.</li><li class="mb-1"><strong class="font-semibold text-text-0">R-W2-3</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">System.ValueTuple</code> (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">(int,MobKind,Grade)</code>) 를 딕셔너리 키로 쓰면 기본 비교자가 box 유발. → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">readonly struct DropRateKey : IEquatable&lt;&gt;</code> 로 대체(§4.1 초안 반영). Sprint 00 딕셔너리는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&lt;int, SO&gt;</code> 단일키라 해당 없음.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">10.2 Sprint 02 이월 경계선 (W2 하지 않는 것)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">W2 범위</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">Sprint 02</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageReward</code> 3459행 주입</td><td class="border border-border px-3 py-2 text-left text-text-0">❌</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OptionItemRandom</code> 211행 주입</td><td class="border border-border px-3 py-2 text-left text-text-0">❌</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">XML 파서 구현</td><td class="border border-border px-3 py-2 text-left text-text-0">❌</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Grade 리매핑 코드(<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GradeRemap.TryFromLegacy</code>)</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ <strong class="font-semibold text-text-0">작성만</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Sprint 02에서 <strong class="font-semibold text-text-0">호출</strong> 시작</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">TBD_ 치환</td><td class="border border-border px-3 py-2 text-left text-text-0">❌ (Skip+Warn만)</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">LootRoller</code> (드롭 Roll 실행)</td><td class="border border-border px-3 py-2 text-left text-text-0">❌</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AffixRoller</code> (어픽스 실수치 추첨)</td><td class="border border-border px-3 py-2 text-left text-text-0">❌</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Addressables 플레이모드 로드 테스트</td><td class="border border-border px-3 py-2 text-left text-text-0">❌</td><td class="border border-border px-3 py-2 text-left text-text-0">✅</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">프레스티지 PP 적립 훅</td><td class="border border-border px-3 py-2 text-left text-text-0">❌</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_system_spec.md</code> v1.0 Sprint 02</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">10.3 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.ResourceManager</code> asmdef 참조 재확인</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime.asmdef</code> 에 이미 포함(확인 완료, 파일 라인 5 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;Unity.ResourceManager&quot;</code>).</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Editor.asmdef</code> 에도 포함(파일 라인 9 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;Unity.ResourceManager&quot;</code>).</li><li class="mb-1"><strong class="font-semibold text-text-0">신규</strong> <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Tests.Editor.asmdef</code> 에도 복사 → CP9-1 핵심 항목.</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">10.4 시즌 리셋 / 프레스티지 호환성 (스키마 수준만 인지)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">prestige_system_spec.md</code> v1.0 의 PP <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">permanent/seasonal</code> 2채널은 W2 구현 <strong class="font-semibold text-text-0">제외</strong>.</li><li class="mb-1">단, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneRewardRow.notes</code> 에 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">floor=200</code>의 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">&quot;GodBlade&quot; 칭호 → 시즌 프레스티지 트리거</code> 기록 보존. <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneGranter.Award(200)</code> 구현 시 <strong class="font-semibold text-text-0">별도 이벤트 미발화, TODO(Sprint 02) 주석만</strong>.</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">11. PD 결정 대기 열린 질문 (4건)</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">질문</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">옵션</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">code-lead 추천</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">DQ1</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">SO 구조는 옵션 A(개별 3개) / B(통합) / C(DOTS Blob) 중?</td><td class="border border-border px-3 py-2 text-left text-text-0">A / B / C</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">A</strong>. DOTS는 Sprint 02 이후 측정 기반 재검토.</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">DQ2</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Importer 진입점은 개별 메뉴 4개 + ALL 메뉴 1개 / 개별만 / ALL만?</td><td class="border border-border px-3 py-2 text-left text-text-0">개별+ALL / 개별만 / ALL만</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">개별+ALL</strong>. 엔지니어 선택권 + 원자 실행 모두 제공.</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">DQ3</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TsvReader</code> 공통화를 W2에 포함 / Sprint 02로 이월?</td><td class="border border-border px-3 py-2 text-left text-text-0">포함 / 이월</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">이월</strong>. R-W2-2 회귀 위험 — W2 1차 PR은 Sprint 00 건드리지 않음. W2 말 별도 리팩터 PR.</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">DQ4</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">테스트 asmdef 신설 / 기존 Editor asmdef 재활용?</td><td class="border border-border px-3 py-2 text-left text-text-0">신설 / 재활용</td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">신설</strong> (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Tests.Editor</code>). <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">testFramework</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">defineConstraints</code> 격리.</td></tr></tbody></table></div>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">12. 분량 · CP 추적</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">본 문서 약 7쪽 (마크다운 렌더 기준).</li><li class="mb-1">CP1(§3 GradeRemap) / CP2(§4.1-4.4 Dict Lookup) / CP3(§4.3, §8.3 경계값) / CP4(§5 TBD) / CP5(§6 어픽스 뼈대) / CP6(§6.2 W2 범위 제한 = CP5 이월 원칙) / CP7(§7 독립 채널) <strong class="font-semibold text-text-0">전부 커버</strong>.</li><li class="mb-1">§9 정적 분석 체크 포인트 <strong class="font-semibold text-text-0">11개</strong>.</li><li class="mb-1">실구현 코드 줄 수: <strong class="font-semibold text-text-0">0</strong> (설계 전용 — PD 제약 준수).</li></ul>5:["slug","sprint-01-w2-importer-design","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","sprint-01-w2-importer-design","d"],{"children":["__PAGE__?{\"slug\":\"sprint-01-w2-importer-design\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-01-w2-importer-design","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],["$","span",null,{"className":"rounded-sm bg-gold-dark px-2 py-0.5 text-[10px] font-bold text-bg-0","children":"APPROVED"}]]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint 01 W2 — Transcendent Drop / Milestone / Affix Importer + Runtime Lookup 기술 설계"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-01-w2-importer-design.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"3,262"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint 01 W2 — Transcendent Drop / Milestone / Affix Importer + Runtime Lookup 기술 설계 — 자료실"}],["$","meta","3",{"name":"description","content":"TSV 3종을 Sprint 00 메뉴 방식 Importer 패턴 그대로 복제·확장하여 ScriptableObject 3개(옵션 A) 로 변환, 런타임은 Dictionary<(floor_bucket_id, mobKind, grade), float> 단일 해시 O(1) 조회. Grade 리"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

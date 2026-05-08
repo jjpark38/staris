@@ -1,129 +1,41 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T1573,# GodBlade (Eternal Guardians) 글로벌 출시 로드맵
-
-> 작성일: 2026-04-20
-> 목표: 10년 전 멀티 RPG → 최신 Unity 6 + 싱글 플레이어 + 글로벌 출시
-> 체제: 1인 파트타임 (본업 병행)
-> 예상 총 기간: 약 24~30개월
-
----
-
-## 핵심 전략 결정 사항
-
-| 항목 | 결정 |
-|------|------|
-| 타겟 플랫폼 | PC (Steam) + 모바일 (iOS/Android) |
-| 개발 체제 | 1인 파트타임 |
-| 온라인 범위 | 최소 백엔드 (클라우드 세이브 + 글로벌 랭킹) |
-| 수익 모델 | Steam: 유료 / 모바일: 유료 + 광고 |
-| 게임 모드 | 싱글 플레이어 중심 |
-| 1차 출시 언어 | 한국어, 영어, 중국어 간체, 일본어, 스페인어 |
-
----
-
-## Phase 1 — 현황 파악 (2~4주)
-
-10년 전 코드를 다시 이해하는 단계. 한 번에 다 보려 하지 말고 "지도"부터.
-
-1. 클라이언트 Unity 버전 확인 (`ProjectSettings/ProjectVersion.txt`)
-2. 디렉토리 구조 한 페이지 요약
-3. 주요 게임 시스템 인벤토리 (전투/인벤토리/퀘스트/스킬 등)
-4. 서버 15개 역할 분류 (싱글에 필요 / 폐기 / 일부 흡수)
-5. DB 스키마 카테고리별 분류
-6. **Phase 1 결과물**: `GodBlade_현황지도.md` (폴더에 저장)
-
-## Phase 2 — 싱글 전용 설계 재정립 (2~3주)
-
-1. 멀티/온라인 종속 시스템 폐기 목록 확정 (PvP, 길드, 파티, 거래, 채팅 등)
-2. 싱글 플레이용 콘텐츠 볼륨 결정 (메인 스토리 X시간, 사이드 X개)
-3. 진행 구조 재설계 (오픈월드 / 챕터 / 스테이지)
-4. 글로벌 시장 호환성 점검 (캐릭터/스토리/UI가 서구권에 통하는지)
-5. **Phase 2 결과물**: `GodBlade_싱글GDD_v1.md`
-
-## Phase 3 — Unity 6 LTS 마이그레이션 (2~4개월)
-
-1. Unity 6 LTS 신규 프로젝트 생성 (별도 폴더, 원본은 그대로 보존)
-2. 의존성 패키지 정리 (UniRx → UniTask 등 모던 대체)
-3. 에셋 단계적 import (텍스처/모델/사운드 → 셰이더 → 프리팹 → 씬)
-4. URP(Universal Render Pipeline)로 셰이더 마이그레이션
-5. 구 API 일괄 업데이트 (`OnLevelWasLoaded`, `WWW`, 구 Input 등)
-6. 메인 씬 1개 동작 복구 → 점진 확장
-7. **Phase 3 결과물**: Unity 6에서 메인 씬 + 1개 전투 씬 동작
-
-## Phase 4 — 싱글 로직 리빌드 (3~6개월)
-
-1. 서버에서 처리하던 전투 검증 → 클라 ScriptableObject + 매니저
-2. 인벤토리/장비/성장 → 로컬 데이터 모델
-3. 퀘스트/대화 → 데이터 드리븐 시스템 (가능하면 Yarn Spinner 등)
-4. 세이브 시스템 (로컬: `Application.persistentDataPath` + 무결성 해시)
-5. 밸런스 데이터를 ScriptableObject 또는 CSV로 분리
-6. **Phase 4 결과물**: 처음~중간 보스까지 싱글 플레이 가능
-
-## Phase 5 — 최소 백엔드 구축 (2~4주)
-
-1. Firebase vs Supabase 결정 (기본 추천: Firebase — 모바일 통합 쉬움)
-2. 인증: 구글/애플/스팀 계정 연동
-3. 클라우드 세이브 (자동 동기화 + 충돌 해결 정책)
-4. 글로벌 랭킹 (스피드런 / 점수 / 업적)
-5. 원격 설정 (Remote Config) — 밸런스 핫픽스용
-6. 기존 C# 서버 15개는 `_archive_2021/`로 이동 (히스토리 보존)
-7. **Phase 5 결과물**: 동작하는 클라우드 세이브 + 1개 랭킹 보드
-
-## Phase 6 — 로컬라이제이션 & 폴리싱 (2~3개월)
-
-1. Unity Localization 패키지 셋업 (StringTable / AssetTable)
-2. 모든 하드코딩 텍스트 → 키 기반 추출
-3. 1차 번역 (영어 — 전문 번역가 또는 LLM 기반 + 네이티브 검수)
-4. 2차 번역 (중국어 간체, 일본어, 스페인어 — 매출 비중 큰 순)
-5. 폰트: 다국어 폰트 (Noto Sans 계열) + CJK 별도 폰트
-6. UI 레이아웃: 영문이 한국어보다 1.5배 길어지는 문제 대응
-7. QA: 각 언어별 글자 깨짐, 잘림, 줄바꿈 체크
-8. **Phase 6 결과물**: 5개 언어 완전 로컬라이즈된 빌드
-
-## Phase 7 — 출시 & 마케팅 (1~2개월)
-
-1. **Steam**:
-   - Steamworks 등록 ($100), 스토어 페이지 작성
-   - Next Fest 체험판으로 위시리스트 확보 (가장 강력한 마케팅)
-   - 트레일러, 스크린샷, 게임플레이 GIF
-2. **모바일**:
-   - 필리핀/캐나다 소프트런칭으로 리텐션/광고수익 측정
-   - ASO (앱스토어 최적화) 키워드 연구
-   - AdMob/Unity Ads 통합
-3. **공통**:
-   - 인디 인플루언서/스트리머 200명 리스트, 키 배포
-   - Reddit r/IndieGaming, r/IndieDev 자연스러운 노출
-   - Press Kit (presskit.com 같은 도구 활용)
-4. **출시 후**:
-   - 첫 7일 안의 리뷰/이슈 대응 → 핫픽스
-   - 1~3개월차 첫 업데이트 (콘텐츠 추가, 이슈 정리)
-
----
-
-## 비용 예산 가이드 (인디 1인 기준)
-
-| 항목 | 비용 | 비고 |
-|------|------|------|
-| Steamworks 등록 | $100 / 게임 | 1회성 |
-| Apple Developer | $99 / 년 | |
-| Google Play Console | $25 / 1회성 | |
-| Firebase | $0~$25 / 월 | Spark/Blaze 플랜 |
-| Unity Personal | $0 | 매출 $200K 미만 시 무료 |
-| 번역 (5개언어) | $1,500~$5,000 | 텍스트량에 따라 |
-| 트레일러 외주 | $0~$2,000 | DIY 가능 |
-| **최소 합계** | **약 $2,000** | 자기 노동 시간 제외 |
-
----
-
-## 다음 액션
-
-**지금 바로 → Phase 1 - Step 1**: Unity 클라이언트 버전 확인 + 폴더 구조 한 장 요약
-
-진행하면서 이 문서는 계속 업데이트합니다. 막히는 곳이 생기면 그 단계만 깊게 파고들 수 있게요.
-6:["slug","global-launch-roadmap","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","global-launch-roadmap","d"],{"children":["__PAGE__?{\"slug\":\"global-launch-roadmap\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","global-launch-roadmap","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"roadmap"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"GodBlade (Eternal Guardians) 글로벌 출시 로드맵"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"GodBlade_글로벌출시_로드맵.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"748"}]," · category:"," ",["$","b",null,{"children":"roadmap"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"GodBlade (Eternal Guardians) 글로벌 출시 로드맵 — 자료실"}],["$","meta","3",{"name":"description","content":"10년 전 코드를 다시 이해하는 단계. 한 번에 다 보려 하지 말고 \"지도\"부터."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T3163,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">GodBlade (Eternal Guardians) 글로벌 출시 로드맵</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성일: 2026-04-20 목표: 10년 전 멀티 RPG → 최신 Unity 6 + 싱글 플레이어 + 글로벌 출시 체제: 1인 파트타임 (본업 병행) 예상 총 기간: 약 24~30개월</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">핵심 전략 결정 사항</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">결정</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">타겟 플랫폼</td><td class="border border-border px-3 py-2 text-left text-text-0">PC (Steam) + 모바일 (iOS/Android)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">개발 체제</td><td class="border border-border px-3 py-2 text-left text-text-0">1인 파트타임</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">온라인 범위</td><td class="border border-border px-3 py-2 text-left text-text-0">최소 백엔드 (클라우드 세이브 + 글로벌 랭킹)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">수익 모델</td><td class="border border-border px-3 py-2 text-left text-text-0">Steam: 유료 / 모바일: 유료 + 광고</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">게임 모드</td><td class="border border-border px-3 py-2 text-left text-text-0">싱글 플레이어 중심</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">1차 출시 언어</td><td class="border border-border px-3 py-2 text-left text-text-0">한국어, 영어, 중국어 간체, 일본어, 스페인어</td></tr></tbody></table></div>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">Phase 1 — 현황 파악 (2~4주)</h2>
+<p class="mb-3 text-text-0">10년 전 코드를 다시 이해하는 단계. 한 번에 다 보려 하지 말고 &quot;지도&quot;부터.</p>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">클라이언트 Unity 버전 확인 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ProjectSettings/ProjectVersion.txt</code>)</li><li class="mb-1">디렉토리 구조 한 페이지 요약</li><li class="mb-1">주요 게임 시스템 인벤토리 (전투/인벤토리/퀘스트/스킬 등)</li><li class="mb-1">서버 15개 역할 분류 (싱글에 필요 / 폐기 / 일부 흡수)</li><li class="mb-1">DB 스키마 카테고리별 분류</li><li class="mb-1"><strong class="font-semibold text-text-0">Phase 1 결과물</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade_현황지도.md</code> (폴더에 저장)</li></ol>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">Phase 2 — 싱글 전용 설계 재정립 (2~3주)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">멀티/온라인 종속 시스템 폐기 목록 확정 (PvP, 길드, 파티, 거래, 채팅 등)</li><li class="mb-1">싱글 플레이용 콘텐츠 볼륨 결정 (메인 스토리 X시간, 사이드 X개)</li><li class="mb-1">진행 구조 재설계 (오픈월드 / 챕터 / 스테이지)</li><li class="mb-1">글로벌 시장 호환성 점검 (캐릭터/스토리/UI가 서구권에 통하는지)</li><li class="mb-1"><strong class="font-semibold text-text-0">Phase 2 결과물</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade_싱글GDD_v1.md</code></li></ol>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">Phase 3 — Unity 6 LTS 마이그레이션 (2~4개월)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">Unity 6 LTS 신규 프로젝트 생성 (별도 폴더, 원본은 그대로 보존)</li><li class="mb-1">의존성 패키지 정리 (UniRx → UniTask 등 모던 대체)</li><li class="mb-1">에셋 단계적 import (텍스처/모델/사운드 → 셰이더 → 프리팹 → 씬)</li><li class="mb-1">URP(Universal Render Pipeline)로 셰이더 마이그레이션</li><li class="mb-1">구 API 일괄 업데이트 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">OnLevelWasLoaded</code>, <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">WWW</code>, 구 Input 등)</li><li class="mb-1">메인 씬 1개 동작 복구 → 점진 확장</li><li class="mb-1"><strong class="font-semibold text-text-0">Phase 3 결과물</strong>: Unity 6에서 메인 씬 + 1개 전투 씬 동작</li></ol>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">Phase 4 — 싱글 로직 리빌드 (3~6개월)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">서버에서 처리하던 전투 검증 → 클라 ScriptableObject + 매니저</li><li class="mb-1">인벤토리/장비/성장 → 로컬 데이터 모델</li><li class="mb-1">퀘스트/대화 → 데이터 드리븐 시스템 (가능하면 Yarn Spinner 등)</li><li class="mb-1">세이브 시스템 (로컬: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Application.persistentDataPath</code> + 무결성 해시)</li><li class="mb-1">밸런스 데이터를 ScriptableObject 또는 CSV로 분리</li><li class="mb-1"><strong class="font-semibold text-text-0">Phase 4 결과물</strong>: 처음~중간 보스까지 싱글 플레이 가능</li></ol>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">Phase 5 — 최소 백엔드 구축 (2~4주)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">Firebase vs Supabase 결정 (기본 추천: Firebase — 모바일 통합 쉬움)</li><li class="mb-1">인증: 구글/애플/스팀 계정 연동</li><li class="mb-1">클라우드 세이브 (자동 동기화 + 충돌 해결 정책)</li><li class="mb-1">글로벌 랭킹 (스피드런 / 점수 / 업적)</li><li class="mb-1">원격 설정 (Remote Config) — 밸런스 핫픽스용</li><li class="mb-1">기존 C# 서버 15개는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">_archive_2021/</code>로 이동 (히스토리 보존)</li><li class="mb-1"><strong class="font-semibold text-text-0">Phase 5 결과물</strong>: 동작하는 클라우드 세이브 + 1개 랭킹 보드</li></ol>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">Phase 6 — 로컬라이제이션 &amp; 폴리싱 (2~3개월)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1">Unity Localization 패키지 셋업 (StringTable / AssetTable)</li><li class="mb-1">모든 하드코딩 텍스트 → 키 기반 추출</li><li class="mb-1">1차 번역 (영어 — 전문 번역가 또는 LLM 기반 + 네이티브 검수)</li><li class="mb-1">2차 번역 (중국어 간체, 일본어, 스페인어 — 매출 비중 큰 순)</li><li class="mb-1">폰트: 다국어 폰트 (Noto Sans 계열) + CJK 별도 폰트</li><li class="mb-1">UI 레이아웃: 영문이 한국어보다 1.5배 길어지는 문제 대응</li><li class="mb-1">QA: 각 언어별 글자 깨짐, 잘림, 줄바꿈 체크</li><li class="mb-1"><strong class="font-semibold text-text-0">Phase 6 결과물</strong>: 5개 언어 완전 로컬라이즈된 빌드</li></ol>
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">Phase 7 — 출시 &amp; 마케팅 (1~2개월)</h2>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">Steam</strong>:</li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Steamworks 등록 ($100), 스토어 페이지 작성</li><li class="mb-1">Next Fest 체험판으로 위시리스트 확보 (가장 강력한 마케팅)</li><li class="mb-1">트레일러, 스크린샷, 게임플레이 GIF</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">모바일</strong>:</li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">필리핀/캐나다 소프트런칭으로 리텐션/광고수익 측정</li><li class="mb-1">ASO (앱스토어 최적화) 키워드 연구</li><li class="mb-1">AdMob/Unity Ads 통합</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">공통</strong>:</li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">인디 인플루언서/스트리머 200명 리스트, 키 배포</li><li class="mb-1">Reddit r/IndieGaming, r/IndieDev 자연스러운 노출</li><li class="mb-1">Press Kit (presskit.com 같은 도구 활용)</li></ul>
+<ol class="mb-3 ml-5 list-decimal text-text-0"><li class="mb-1"><strong class="font-semibold text-text-0">출시 후</strong>:</li></ol>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">첫 7일 안의 리뷰/이슈 대응 → 핫픽스</li><li class="mb-1">1~3개월차 첫 업데이트 (콘텐츠 추가, 이슈 정리)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">비용 예산 가이드 (인디 1인 기준)</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비용</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비고</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">Steamworks 등록</td><td class="border border-border px-3 py-2 text-left text-text-0">$100 / 게임</td><td class="border border-border px-3 py-2 text-left text-text-0">1회성</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Apple Developer</td><td class="border border-border px-3 py-2 text-left text-text-0">$99 / 년</td><td class="border border-border px-3 py-2 text-left text-text-0"></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Google Play Console</td><td class="border border-border px-3 py-2 text-left text-text-0">$25 / 1회성</td><td class="border border-border px-3 py-2 text-left text-text-0"></td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Firebase</td><td class="border border-border px-3 py-2 text-left text-text-0">$0~$25 / 월</td><td class="border border-border px-3 py-2 text-left text-text-0">Spark/Blaze 플랜</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Unity Personal</td><td class="border border-border px-3 py-2 text-left text-text-0">$0</td><td class="border border-border px-3 py-2 text-left text-text-0">매출 $200K 미만 시 무료</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">번역 (5개언어)</td><td class="border border-border px-3 py-2 text-left text-text-0">$1,500~$5,000</td><td class="border border-border px-3 py-2 text-left text-text-0">텍스트량에 따라</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">트레일러 외주</td><td class="border border-border px-3 py-2 text-left text-text-0">$0~$2,000</td><td class="border border-border px-3 py-2 text-left text-text-0">DIY 가능</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">최소 합계</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">약 $2,000</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">자기 노동 시간 제외</td></tr></tbody></table></div>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">다음 액션</h2>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">지금 바로 → Phase 1 - Step 1</strong>: Unity 클라이언트 버전 확인 + 폴더 구조 한 장 요약</p>
+<p class="mb-3 text-text-0">진행하면서 이 문서는 계속 업데이트합니다. 막히는 곳이 생기면 그 단계만 깊게 파고들 수 있게요.</p>5:["slug","global-launch-roadmap","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","global-launch-roadmap","d"],{"children":["__PAGE__?{\"slug\":\"global-launch-roadmap\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","global-launch-roadmap","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"roadmap"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"GodBlade (Eternal Guardians) 글로벌 출시 로드맵"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"GodBlade_글로벌출시_로드맵.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"748"}]," · category:"," ",["$","b",null,{"children":"roadmap"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"GodBlade (Eternal Guardians) 글로벌 출시 로드맵 — 자료실"}],["$","meta","3",{"name":"description","content":"10년 전 코드를 다시 이해하는 단계. 한 번에 다 보려 하지 말고 \"지도\"부터."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null

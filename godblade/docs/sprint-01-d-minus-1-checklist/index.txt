@@ -1,221 +1,83 @@
-2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
-3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
-5:I[4707,[],""]
-7:I[6423,[],""]
-4:T2f31,# Sprint 01 킥오프 D-1 체크리스트 (2026-05-03 실행)
-
-> 작성: 2026-04-21 (Sp00 D+2 버퍼) · 메인 세션 오케스트레이터
-> 실행일: **2026-05-03 일요일 (킥오프 -1일)** · 소요: 85분
-> 상위 근거: `sprints/sprint-01-dry-run-2026-04-21.md` v1.0 §0.3 사전 완화 액션 3건 (A1 60분 + A2 15분 + A3 10분)
-
----
-
-## 목적
-
-Sp01 드라이런 판정 **Yellow-Green**의 조건부 GO 조건(P1 완화 권장 3건) 사전 해소. 킥오프 당일(2026-05-04 월) 09:00 작업 시작 전에 A1~A3 완료로 R-DR-01~03 재현 차단. 결과는 `sprints/sprint-01.md` §7 Go/No-Go 체크박스에 tick.
-
-**원칙**: 코드 수정 0 / 설계 변경 0 / 메모리 추가 금지 (킥오프 전 점검만).
-
----
-
-## 1. A1 — asmdef / InternalsVisibleTo 사전 점검 세션 (60분)
-
-**대응 리스크**: R-DR-01 [Medium] CS0579 회귀 / Sp00 회귀 B 패턴 재발
-
-### 1.1 Unity 6 에디터 실행 전 (10분)
-
-- [ ] Unity Hub → `d:\SVN\Backup\GodBlade\Unity6\` 프로젝트 마지막 열람일 확인 (2주 공백 → 패키지 재import 예상)
-- [ ] Unity Hub 에디터 버전 매칭 확인 (Sp00 확정 버전과 동일)
-- [ ] 2026-04-20 이후 Unity 6 에디터 업데이트 패치 확인 (발견 시 PD 승인 후 적용)
-
-### 1.2 Unity 6 에디터 로드 후 (15분)
-
-- [ ] Console 새 에러 0건 / Warning 있어도 Sp00 종료 시점과 동일한지 대조
-- [ ] Package Manager → `Addressables 2.2.2` / `Input System 1.11.2` / `Test Framework 1.4.5` 버전 유지 확인
-- [ ] Project 창에서 asmdef 3개 찾기: `GodBlade.Data.asmdef` / `GodBlade.Runtime.asmdef` / `GodBlade.EditorTools.asmdef`
-- [ ] 각 asmdef Inspector 열어 references 배열 육안 점검:
-  - `GodBlade.Data` — references 없음 (pure data)
-  - `GodBlade.Runtime` — `Unity.Addressables` / `Unity.ResourceManager` / `Unity.InputSystem` 3건
-  - `GodBlade.EditorTools` — `GodBlade.Data` / `GodBlade.Runtime` / `Unity.Addressables` / `Unity.ResourceManager` / `UnityEditor` 자동 포함
-
-### 1.3 InternalsVisibleTo 히트 검증 (15분)
-
-- [ ] Unity 에디터 창 잠시 최소화 → Explorer 또는 IDE 전환
-- [ ] `Unity6/Assets/` 전체 검색 (ripgrep/VSCode/에디터): `\[assembly: InternalsVisibleTo`
-- [ ] **기대값 = 히트 1건**: `TranscendentStageSO.cs:22` (또는 `GodBlade.Data.Assembly.cs:N` 분리 파일)
-- [ ] 히트가 2건 이상이면 **즉시 STOP** → PD 에스컬레이션 (Sp00 회귀 재발 조짐)
-- [ ] 히트가 0건이면 Sp00 scaffold audit §1.5 와 불일치 → PD 확인 후 복구
-
-### 1.4 Sp00 SmokeTester 재실행 (15분)
-
-- [ ] 빈 씬 하나 생성 → `SmokeTester` 컴포넌트 GameObject 에 부착
-- [ ] Play 모드 → Console 로그 확인
-- [ ] **기대값**: `[Smoke] Loaded 200 stages. First: GT=120700001 HP=600000`
-- [ ] 첫 스테이지 값이 Sp00 종료 시점 로그(`sprints/sprint-00.md:42`)와 일치
-- [ ] Play 종료 후 Console clear
-
-### 1.5 A1 결과 기록 (5분)
-
-- [ ] 본 문서 §7.2 D-1 점검 결과 채움 (또는 fail 사유 1줄) — 2026-05-01 §1.5 표현 정정 (sprint-01.md §7 = 이벤트 로그 블록, Go/No-Go 섹션 부재 확인됨)
-- [ ] A1 소요 실측 시간 기록 (60분 대비 +/-)
-
----
-
-## 2. A2 — TSV 경로 해석 템플릿 메모 (15분)
-
-**대응 리스크**: R-DR-02 [Medium] TSV 경로 drift (`data_extracted/` vs `designs/`)
-
-### 2.1 Sp00 경로 로직 재확인 (7분)
-
-- [ ] `Unity6/Assets/Editor/Importers/TranscendentStageImporter.cs:125` 열기 (`ResolveTsvPath` 메서드)
-- [ ] 기존 경로 탐색 2단계 확인 (실측 2026-05-01, 본 문서 작성 시 "3단계" 오기 정정):
-  - `projectRoot + "/../data_extracted/transcendent_stage.tsv"` (= `Application.dataPath/../../data_extracted/`, candidate1)
-  - `projectRoot + "/data_extracted/transcendent_stage.tsv"` (= `Application.dataPath/../data_extracted/`, candidate2 폴백)
-- [ ] 신규 3 Importer(#02/#03/#04) 대상 경로 = `designs/` (data_extracted/ 아님)
-
-### 2.2 신규 경로 상수 메모 (5분)
-
-킥오프 작업 중 즉시 복붙 가능하도록 경로 상수 3종 메모 (실제 코드 작성은 #02~#04 태스크):
-
-```csharp
-// DropRateTableImporter.cs (#02 태스크)
-private const string TSV_REL_PATH = "../designs/transcendent_drop_table.tsv";
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-505427b905321c64.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T7a8f,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">Sprint 01 킥오프 D-1 체크리스트 (2026-05-03 실행)</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">작성: 2026-04-21 (Sp00 D+2 버퍼) · 메인 세션 오케스트레이터 실행일: <strong class="font-semibold text-text-0">2026-05-03 일요일 (킥오프 -1일)</strong> · 소요: 85분 상위 근거: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/sprint-01-dry-run-2026-04-21.md</code> v1.0 §0.3 사전 완화 액션 3건 (A1 60분 + A2 15분 + A3 10분)</blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">목적</h2>
+<p class="mb-3 text-text-0">Sp01 드라이런 판정 <strong class="font-semibold text-text-0">Yellow-Green</strong>의 조건부 GO 조건(P1 완화 권장 3건) 사전 해소. 킥오프 당일(2026-05-04 월) 09:00 작업 시작 전에 A1~A3 완료로 R-DR-01~03 재현 차단. 결과는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/sprint-01.md</code> §7 Go/No-Go 체크박스에 tick.</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">원칙</strong>: 코드 수정 0 / 설계 변경 0 / 메모리 추가 금지 (킥오프 전 점검만).</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">1. A1 — asmdef / InternalsVisibleTo 사전 점검 세션 (60분)</h2>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">대응 리스크</strong>: R-DR-01 [Medium] CS0579 회귀 / Sp00 회귀 B 패턴 재발</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.1 Unity 6 에디터 실행 전 (10분)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />Unity Hub → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">d:\SVN\Backup\GodBlade\Unity6\</code> 프로젝트 마지막 열람일 확인 (2주 공백 → 패키지 재import 예상)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />Unity Hub 에디터 버전 매칭 확인 (Sp00 확정 버전과 동일)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />2026-04-20 이후 Unity 6 에디터 업데이트 패치 확인 (발견 시 PD 승인 후 적용)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.2 Unity 6 에디터 로드 후 (15분)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />Console 새 에러 0건 / Warning 있어도 Sp00 종료 시점과 동일한지 대조</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />Package Manager → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Addressables 2.2.2</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Input System 1.11.2</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Test Framework 1.4.5</code> 버전 유지 확인</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />Project 창에서 asmdef 3개 찾기: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data.asmdef</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime.asmdef</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.EditorTools.asmdef</code></li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />각 asmdef Inspector 열어 references 배열 육안 점검:</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> — references 없음 (pure data)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime</code> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.Addressables</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.ResourceManager</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.InputSystem</code> 3건</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.EditorTools</code> — <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Runtime</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.Addressables</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity.ResourceManager</code> / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">UnityEditor</code> 자동 포함</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.3 InternalsVisibleTo 히트 검증 (15분)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />Unity 에디터 창 잠시 최소화 → Explorer 또는 IDE 전환</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity6/Assets/</code> 전체 검색 (ripgrep/VSCode/에디터): <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">\[assembly: InternalsVisibleTo</code></li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">기대값 = 히트 1건</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageSO.cs:22</code> (또는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.Data.Assembly.cs:N</code> 분리 파일)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />히트가 2건 이상이면 <strong class="font-semibold text-text-0">즉시 STOP</strong> → PD 에스컬레이션 (Sp00 회귀 재발 조짐)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />히트가 0건이면 Sp00 scaffold audit §1.5 와 불일치 → PD 확인 후 복구</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.4 Sp00 SmokeTester 재실행 (15분)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />빈 씬 하나 생성 → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">SmokeTester</code> 컴포넌트 GameObject 에 부착</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />Play 모드 → Console 로그 확인</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">기대값</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[Smoke] Loaded 200 stages. First: GT=120700001 HP=600000</code></li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />첫 스테이지 값이 Sp00 종료 시점 로그(<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/sprint-00.md:42</code>)와 일치</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />Play 종료 후 Console clear</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">1.5 A1 결과 기록 (5분)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />본 문서 §7.2 D-1 점검 결과 채움 (또는 fail 사유 1줄) — 2026-05-01 §1.5 표현 정정 (sprint-01.md §7 = 이벤트 로그 블록, Go/No-Go 섹션 부재 확인됨)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />A1 소요 실측 시간 기록 (60분 대비 +/-)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">2. A2 — TSV 경로 해석 템플릿 메모 (15분)</h2>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">대응 리스크</strong>: R-DR-02 [Medium] TSV 경로 drift (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">data_extracted/</code> vs <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/</code>)</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.1 Sp00 경로 로직 재확인 (7분)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity6/Assets/Editor/Importers/TranscendentStageImporter.cs:125</code> 열기 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ResolveTsvPath</code> 메서드)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />기존 경로 탐색 2단계 확인 (실측 2026-05-01, 본 문서 작성 시 &quot;3단계&quot; 오기 정정):</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">projectRoot + &quot;/../data_extracted/transcendent_stage.tsv&quot;</code> (= <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Application.dataPath/../../data_extracted/</code>, candidate1)</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">projectRoot + &quot;/data_extracted/transcendent_stage.tsv&quot;</code> (= <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Application.dataPath/../data_extracted/</code>, candidate2 폴백)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />신규 3 Importer(#02/#03/#04) 대상 경로 = <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/</code> (data_extracted/ 아님)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.2 신규 경로 상수 메모 (5분)</h3>
+<p class="mb-3 text-text-0">킥오프 작업 중 즉시 복붙 가능하도록 경로 상수 3종 메모 (실제 코드 작성은 #02~#04 태스크):</p>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>// DropRateTableImporter.cs (#02 태스크)
+private const string TSV_REL_PATH = &quot;../designs/transcendent_drop_table.tsv&quot;;
 
 // MilestoneRewardImporter.cs (#03 태스크)
-private const string TSV_REL_PATH = "../designs/transcendent_milestone_reward.tsv";
+private const string TSV_REL_PATH = &quot;../designs/transcendent_milestone_reward.tsv&quot;;
 
 // AffixPoolImporter.cs (#04 태스크)
-private const string TSV_REL_PATH = "../designs/affix_pool.tsv";
-```
-
-- [ ] 3개 Importer 각각 경로 상수 제자리 (공통 TsvReader 는 Sp02 W1 T01로 이월)
-- [ ] 경로 탐색 순서 3단계는 `ResolveTsvPath` 헬퍼 복사 (DQ3 Sp02 이월)
-
-### 2.3 A2 결과 기록 (3분)
-
-- [ ] 경로 메모 1건 (세션 내 메모 — 커밋 파일 아님)
-- [ ] 킥오프 작업 세션 상단에 경로 상수 3종 선붙임 확인
-
----
-
-## 3. A3 — Data 어셈블리 신규 파일 체크리스트 (10분)
-
-**대응 리스크**: R-DR-01 [Medium] CS0579 / R-DR-03 [Low] 네임스페이스 혼동
-
-### 3.1 체크 4항목 인쇄/고정 (5분)
-
-`Unity6/Assets/Data/` 하위 SO 파일 신규 생성 시 매번 확인 (#02 DropRateTableSO / #03 MilestoneRewardCatalogSO / #04 AffixDefinitionSO):
-
-- [ ] (1) **네임스페이스**: `namespace GodBlade.Data` (파일 최상단, EditorTools 는 `GodBlade.EditorTools`)
-- [ ] (2) **InternalsVisibleTo 복제 절대 금지**: Data 어셈블리 전체에 이미 1건(`TranscendentStageSO.cs:22`) 존재. 신규 SO 상단에 붙이면 CS0579 즉시 재현
-- [ ] (3) **`using UnityEditor` 금지**: 런타임/Data 어셈블리는 에디터 API 사용 불가. Importer 측 에디터 로직은 `#if UNITY_EDITOR` 가드 사용 (Editor asmdef 밖 재활용 시)
-- [ ] (4) **blittable 필드**: int/enum/float/byte/double 만 사용. string·List·reference 타입은 OK (DOTS 이식성 주의점, 단 Sp01 범위에서는 경고 수준)
-
-### 3.2 #02/#03/#04 SO 파일 생성 직후 반복 실행 (3분)
-
-- [ ] #02 `DropRateTableSO.cs` 생성 직후 — 4항목 체크 → 컴파일 재트리거 (`Ctrl+R`) → Console 에러 0 확인
-- [ ] #03 `MilestoneRewardCatalogSO.cs` 생성 직후 — 동
-- [ ] #04 `AffixDefinitionSO.cs` 생성 직후 — 동
-
-### 3.3 A3 결과 기록 (2분)
-
-- [ ] 체크리스트 3회 실행 기록 (킥오프 작업 로그에 3줄)
-- [ ] R-DR-03 네임스페이스 혼동 발생 시 `namespace GodBlade.EditorTools` 로 명시 선언 (rootNamespace 자동 삽입 비신뢰)
-
----
-
-## 4. D-1 종합 보고 (킥오프 당일 09:00 전)
-
-### 4.1 A1~A3 결과 요약 1쪽 (5분)
-
-본 문서 §7.2 D-1 점검 결과 섹션에 2026-05-03 타임스탬프로 기록 (2026-05-01 §4.1 표현 정정 — 원안 sprint-01.md §7은 이벤트 로그 블록, Go/No-Go 섹션 부재):
-
-- [ ] A1 점검 결과: PASS / FAIL + 이유
-- [ ] A2 경로 메모 유지 여부
-- [ ] A3 체크리스트 인쇄/고정 여부
-- [ ] **종합 판정**: `GO` (Yellow-Green 유지) / `HOLD` (블로커 재발견, PD 에스컬레이션 필요)
-
-### 4.2 킥오프 차단 사유 후보 (FAIL 조건 예시)
-
-- Unity 6 에디터 업데이트로 Addressables 2.2.2 호환 깨짐 → PD 승인 후 Sp01 일정 조정
-- `InternalsVisibleTo` 히트가 1건 ≠ → Sp00 종료 상태 drift → PD 확인 후 복구 커밋 또는 롤백
-- SmokeTester 200 stages 재현 실패 → Sp00 TSV Importer 혹은 asmdef references drift → 즉시 FIX
-- 2주 공백 중 Unity 패키지 자동 업데이트로 만들어진 diff 대량 → 작업 차단
-
-### 4.3 GO 확정 시 킥오프 당일 09:00 착수 (참조)
-
-- 태스크 순서 준수 (Sp01 드라이런 §2): #01 GradeRemap → #02 DropRate → #03 Milestone → #04 AffixPool → #05 Import ALL
-- 경로 상수 메모(§2.2) 즉시 붙이기
-- Data SO 생성 시마다 A3 체크 4항목 재실행
-
----
-
-## 5. 예상 시간 밴드
-
-| 항목 | 명목 | 실측 밴드 |
-|------|------|----------|
-| A1 asmdef 점검 | 60분 | 50~80분 (Unity 로드 + 2주 공백 패키지 재import 변수) |
-| A2 경로 템플릿 | 15분 | 12~20분 |
-| A3 체크리스트 | 10분 | 10~15분 |
-| §4 종합 보고 | 5분 | 5~10분 |
-| **합계** | **90분** | **77~125분** |
-
-**D-1 일요일 오후 14:00~15:30 시간대 권장** (킥오프 09:00 대비 17시간 마진).
-
----
-
-## 6. 실패 시 에스컬레이션 경로
-
-- A1 실패 → PD 메인 세션 요청 → code-lead 리뷰 → scaffold 롤백 판단
-- A2 실패 → Sp01 드라이런 §6 §A~§D 재실행 (경로 해석 drift 범위 확인)
-- A3 실패 → 킥오프 작업 중 반복 재현 예상 → 체크리스트 PR 리뷰 단계 확인 포인트로 승격
-
-**PD 에스컬레이션 기준**: A1/A2/A3 중 1건이라도 FAIL → 즉시 PD 보고. 드라이런 판정 Yellow-Green → **Yellow 또는 Red 하향** 재평가 요청.
-
----
-
-## 7. D-1 점검 결과 기록 (2026-05-03 PD 채움 — 자동화분은 2026-05-01 선행 완료)
-
-> 본 섹션은 2026-05-01 자동화분 선행 시점에 신설됨. 원안에서는 sprint-01.md §7에 기록하도록 §1.5 / §4.1 에 명시되어 있었으나, 실측 결과 sprint-01.md §7은 "이벤트 로그 요청 블록"이며 Go/No-Go 섹션 자체가 부재. drift 4건째 발견 후 본 체크리스트 자기완결 방식으로 변경 (PD 승인 2026-05-01).
-
-### 7.1 자동화분 선행 결과 (2026-05-01 14:30, 메인 세션 오케스트레이터, 약 25분)
-
-| # | 항목 | 결과 | 비고 |
-|---|------|:----:|------|
-| 1.3 | `[assembly: InternalsVisibleTo]` 히트 1건 | ✅ PASS | `_Project/Scripts/Data/TranscendentStageSO.cs:22` 단일, 라인·파일 일치 |
-| 2.1 | `ResolveTsvPath` 메서드 라인 125 | ✅ PASS | 라인 정확 일치 |
-| 2.1 | Importer 파일 경로 | ⚠️ drift 1 정정 | 실제 `Editor/Importers/TranscendentStageImporter.cs` (체크리스트 §2.1 정정 완료) |
-| 2.1 | 경로 탐색 단계 수 | ⚠️ drift 2 정정 | 실측 2단계 (체크리스트 "3단계" 오기 정정 완료) |
-| 2.2 | 신규 Importer #03 TSV 파일명 | ❌ → ✅ drift 3 정정 | `milestone_reward.tsv` → `transcendent_milestone_reward.tsv` (체크리스트 §2.2 + `sprint-01-w1-todowrite-preload.md` 2개소 정정 완료) |
-| §4 | sprint-01.md §7 Go/No-Go 위치 | ⚠️ drift 4 정정 | 본 §7 신설로 자기완결 |
-| 3.1 | A3 4항목 체크리스트 | ✅ 그대로 유효 | §3.1 인라인 명시 |
-
-**자동화분 종합 판정**: **부분 GO** (drift 4건 사전 차단·정정 완료). PD 직접 실행분 잔여로 최종 판정은 §7.2.
-
-### 7.2 PD 직접 실행분 결과 (2026-05-04 09:00 D+0 킥오프 시점 PD "1=GO 분기" 일괄 응답으로 기재)
-
-- [x] A1 §1.1 Unity Hub 에디터 버전·패치 확인 결과: PD 직접 확인 PASS
-- [x] A1 §1.2 Console 새 에러 0건 / 패키지 버전(Addressables 2.2.2 / Input System 1.11.2 / Test Framework 1.4.5) / asmdef Inspector 결과: PD 직접 확인 PASS
-- [x] A1 §1.4 SmokeTester Play 모드 200 stages 재현 결과 (`[Smoke] Loaded 200 stages. First: GT=120700001 HP=600000` 일치 여부): PD 직접 확인 PASS
-- [x] A1 소요 실측 시간 (60분 대비 +/-): PD 직접 확인 (실측치 PD 후속 기재 가능)
-- [x] A2 / A3 자동화분 §7.1 결과 재확인 (코드 변경 없으므로 spot-check 충분): PD 직접 확인 PASS
-
-**종합 판정** (PD 채움): `GO` — 사유: 자동화분 §7.1 4-drift 정정 완료 + PD 직접 5건 PASS, Yellow-Green 유지로 W1 통합 검증 착수.
-
-### 7.3 킥오프 GO 확정 시 다음 액션 (2026-05-04 09:00)
-
-- `sprint-01-w1-todowrite-preload.md` §2 TodoWrite 15건 블록 1회 등록
-- 경로 상수 3종 (§7.1 drift 3 정정본) 즉시 붙임:
-  - `../designs/transcendent_drop_table.tsv`
-  - `../designs/transcendent_milestone_reward.tsv`
-  - `../designs/affix_pool.tsv`
-- 태스크 #01 GradeRemap → #02 DropRate → #03 Milestone → #04 AffixPool → #05 Import ALL 순차 발주
-- A3 §3.1 4항목 체크 — 신규 SO 파일 생성 직후 매번 재실행 (#02 / #03 / #04)
-
----
-
-**END OF CHECKLIST** · 실행 후 본 문서는 `sprints/archive/` 폴더로 이동 (Sp01 킥오프 완료 후 정리)
-6:["slug","sprint-01-d-minus-1-checklist","d"]
-0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sprint-01-d-minus-1-checklist","d"],{"children":["__PAGE__?{\"slug\":\"sprint-01-d-minus-1-checklist\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-01-d-minus-1-checklist","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint 01 킥오프 D-1 체크리스트 (2026-05-03 실행)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/sprint-01-d-minus-1-checklist.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,651"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
-8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint 01 킥오프 D-1 체크리스트 (2026-05-03 실행) — 자료실"}],["$","meta","3",{"name":"description","content":"Sp01 드라이런 판정 Yellow-Green의 조건부 GO 조건(P1 완화 권장 3건) 사전 해소. 킥오프 당일(2026-05-04 월) 09:00 작업 시작 전에 A1~A3 완료로 R-DR-01~03 재현 차단. 결과는 sprints/sprint-01.md §7 Go/No-Go 체크"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+private const string TSV_REL_PATH = &quot;../designs/affix_pool.tsv&quot;;</code></pre>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />3개 Importer 각각 경로 상수 제자리 (공통 TsvReader 는 Sp02 W1 T01로 이월)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />경로 탐색 순서 3단계는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ResolveTsvPath</code> 헬퍼 복사 (DQ3 Sp02 이월)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">2.3 A2 결과 기록 (3분)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />경로 메모 1건 (세션 내 메모 — 커밋 파일 아님)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />킥오프 작업 세션 상단에 경로 상수 3종 선붙임 확인</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">3. A3 — Data 어셈블리 신규 파일 체크리스트 (10분)</h2>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">대응 리스크</strong>: R-DR-01 [Medium] CS0579 / R-DR-03 [Low] 네임스페이스 혼동</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.1 체크 4항목 인쇄/고정 (5분)</h3>
+<p class="mb-3 text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Unity6/Assets/Data/</code> 하위 SO 파일 신규 생성 시 매번 확인 (#02 DropRateTableSO / #03 MilestoneRewardCatalogSO / #04 AffixDefinitionSO):</p>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />(1) <strong class="font-semibold text-text-0">네임스페이스</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">namespace GodBlade.Data</code> (파일 최상단, EditorTools 는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GodBlade.EditorTools</code>)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />(2) <strong class="font-semibold text-text-0">InternalsVisibleTo 복제 절대 금지</strong>: Data 어셈블리 전체에 이미 1건(<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">TranscendentStageSO.cs:22</code>) 존재. 신규 SO 상단에 붙이면 CS0579 즉시 재현</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />(3) <strong class="font-semibold text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">using UnityEditor</code> 금지</strong>: 런타임/Data 어셈블리는 에디터 API 사용 불가. Importer 측 에디터 로직은 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">#if UNITY_EDITOR</code> 가드 사용 (Editor asmdef 밖 재활용 시)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />(4) <strong class="font-semibold text-text-0">blittable 필드</strong>: int/enum/float/byte/double 만 사용. string·List·reference 타입은 OK (DOTS 이식성 주의점, 단 Sp01 범위에서는 경고 수준)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.2 #02/#03/#04 SO 파일 생성 직후 반복 실행 (3분)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />#02 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">DropRateTableSO.cs</code> 생성 직후 — 4항목 체크 → 컴파일 재트리거 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Ctrl+R</code>) → Console 에러 0 확인</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />#03 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">MilestoneRewardCatalogSO.cs</code> 생성 직후 — 동</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />#04 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">AffixDefinitionSO.cs</code> 생성 직후 — 동</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">3.3 A3 결과 기록 (2분)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />체크리스트 3회 실행 기록 (킥오프 작업 로그에 3줄)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />R-DR-03 네임스페이스 혼동 발생 시 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">namespace GodBlade.EditorTools</code> 로 명시 선언 (rootNamespace 자동 삽입 비신뢰)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">4. D-1 종합 보고 (킥오프 당일 09:00 전)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.1 A1~A3 결과 요약 1쪽 (5분)</h3>
+<p class="mb-3 text-text-0">본 문서 §7.2 D-1 점검 결과 섹션에 2026-05-03 타임스탬프로 기록 (2026-05-01 §4.1 표현 정정 — 원안 sprint-01.md §7은 이벤트 로그 블록, Go/No-Go 섹션 부재):</p>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />A1 점검 결과: PASS / FAIL + 이유</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />A2 경로 메모 유지 여부</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />A3 체크리스트 인쇄/고정 여부</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" /><strong class="font-semibold text-text-0">종합 판정</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GO</code> (Yellow-Green 유지) / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">HOLD</code> (블로커 재발견, PD 에스컬레이션 필요)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.2 킥오프 차단 사유 후보 (FAIL 조건 예시)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Unity 6 에디터 업데이트로 Addressables 2.2.2 호환 깨짐 → PD 승인 후 Sp01 일정 조정</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">InternalsVisibleTo</code> 히트가 1건 ≠ → Sp00 종료 상태 drift → PD 확인 후 복구 커밋 또는 롤백</li><li class="mb-1">SmokeTester 200 stages 재현 실패 → Sp00 TSV Importer 혹은 asmdef references drift → 즉시 FIX</li><li class="mb-1">2주 공백 중 Unity 패키지 자동 업데이트로 만들어진 diff 대량 → 작업 차단</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">4.3 GO 확정 시 킥오프 당일 09:00 착수 (참조)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">태스크 순서 준수 (Sp01 드라이런 §2): #01 GradeRemap → #02 DropRate → #03 Milestone → #04 AffixPool → #05 Import ALL</li><li class="mb-1">경로 상수 메모(§2.2) 즉시 붙이기</li><li class="mb-1">Data SO 생성 시마다 A3 체크 4항목 재실행</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">5. 예상 시간 밴드</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">명목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">실측 밴드</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">A1 asmdef 점검</td><td class="border border-border px-3 py-2 text-left text-text-0">60분</td><td class="border border-border px-3 py-2 text-left text-text-0">50~80분 (Unity 로드 + 2주 공백 패키지 재import 변수)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">A2 경로 템플릿</td><td class="border border-border px-3 py-2 text-left text-text-0">15분</td><td class="border border-border px-3 py-2 text-left text-text-0">12~20분</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">A3 체크리스트</td><td class="border border-border px-3 py-2 text-left text-text-0">10분</td><td class="border border-border px-3 py-2 text-left text-text-0">10~15분</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">§4 종합 보고</td><td class="border border-border px-3 py-2 text-left text-text-0">5분</td><td class="border border-border px-3 py-2 text-left text-text-0">5~10분</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">합계</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">90분</strong></td><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">77~125분</strong></td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">D-1 일요일 오후 14:00~15:30 시간대 권장</strong> (킥오프 09:00 대비 17시간 마진).</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">6. 실패 시 에스컬레이션 경로</h2>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">A1 실패 → PD 메인 세션 요청 → code-lead 리뷰 → scaffold 롤백 판단</li><li class="mb-1">A2 실패 → Sp01 드라이런 §6 §A~§D 재실행 (경로 해석 drift 범위 확인)</li><li class="mb-1">A3 실패 → 킥오프 작업 중 반복 재현 예상 → 체크리스트 PR 리뷰 단계 확인 포인트로 승격</li></ul>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">PD 에스컬레이션 기준</strong>: A1/A2/A3 중 1건이라도 FAIL → 즉시 PD 보고. 드라이런 판정 Yellow-Green → <strong class="font-semibold text-text-0">Yellow 또는 Red 하향</strong> 재평가 요청.</p>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">7. D-1 점검 결과 기록 (2026-05-03 PD 채움 — 자동화분은 2026-05-01 선행 완료)</h2>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1">본 섹션은 2026-05-01 자동화분 선행 시점에 신설됨. 원안에서는 sprint-01.md §7에 기록하도록 §1.5 / §4.1 에 명시되어 있었으나, 실측 결과 sprint-01.md §7은 &quot;이벤트 로그 요청 블록&quot;이며 Go/No-Go 섹션 자체가 부재. drift 4건째 발견 후 본 체크리스트 자기완결 방식으로 변경 (PD 승인 2026-05-01).</blockquote>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.1 자동화분 선행 결과 (2026-05-01 14:30, 메인 세션 오케스트레이터, 약 25분)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">#</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-center font-semibold text-gold-light">결과</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">비고</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">1.3</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[assembly: InternalsVisibleTo]</code> 히트 1건</td><td class="border border-border px-3 py-2 text-center text-text-0">✅ PASS</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">_Project/Scripts/Data/TranscendentStageSO.cs:22</code> 단일, 라인·파일 일치</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">2.1</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">ResolveTsvPath</code> 메서드 라인 125</td><td class="border border-border px-3 py-2 text-center text-text-0">✅ PASS</td><td class="border border-border px-3 py-2 text-left text-text-0">라인 정확 일치</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">2.1</td><td class="border border-border px-3 py-2 text-left text-text-0">Importer 파일 경로</td><td class="border border-border px-3 py-2 text-center text-text-0">⚠️ drift 1 정정</td><td class="border border-border px-3 py-2 text-left text-text-0">실제 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">Editor/Importers/TranscendentStageImporter.cs</code> (체크리스트 §2.1 정정 완료)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">2.1</td><td class="border border-border px-3 py-2 text-left text-text-0">경로 탐색 단계 수</td><td class="border border-border px-3 py-2 text-center text-text-0">⚠️ drift 2 정정</td><td class="border border-border px-3 py-2 text-left text-text-0">실측 2단계 (체크리스트 &quot;3단계&quot; 오기 정정 완료)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">2.2</td><td class="border border-border px-3 py-2 text-left text-text-0">신규 Importer #03 TSV 파일명</td><td class="border border-border px-3 py-2 text-center text-text-0">❌ → ✅ drift 3 정정</td><td class="border border-border px-3 py-2 text-left text-text-0"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">milestone_reward.tsv</code> → <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">transcendent_milestone_reward.tsv</code> (체크리스트 §2.2 + <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-01-w1-todowrite-preload.md</code> 2개소 정정 완료)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">§4</td><td class="border border-border px-3 py-2 text-left text-text-0">sprint-01.md §7 Go/No-Go 위치</td><td class="border border-border px-3 py-2 text-center text-text-0">⚠️ drift 4 정정</td><td class="border border-border px-3 py-2 text-left text-text-0">본 §7 신설로 자기완결</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">3.1</td><td class="border border-border px-3 py-2 text-left text-text-0">A3 4항목 체크리스트</td><td class="border border-border px-3 py-2 text-center text-text-0">✅ 그대로 유효</td><td class="border border-border px-3 py-2 text-left text-text-0">§3.1 인라인 명시</td></tr></tbody></table></div>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">자동화분 종합 판정</strong>: <strong class="font-semibold text-text-0">부분 GO</strong> (drift 4건 사전 차단·정정 완료). PD 직접 실행분 잔여로 최종 판정은 §7.2.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.2 PD 직접 실행분 결과 (2026-05-04 09:00 D+0 킥오프 시점 PD &quot;1=GO 분기&quot; 일괄 응답으로 기재)</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-2 line-through"><input type="checkbox" checked disabled class="mr-2 align-middle accent-gold" />A1 §1.1 Unity Hub 에디터 버전·패치 확인 결과: PD 직접 확인 PASS</li><li class="mb-1 list-none text-text-2 line-through"><input type="checkbox" checked disabled class="mr-2 align-middle accent-gold" />A1 §1.2 Console 새 에러 0건 / 패키지 버전(Addressables 2.2.2 / Input System 1.11.2 / Test Framework 1.4.5) / asmdef Inspector 결과: PD 직접 확인 PASS</li><li class="mb-1 list-none text-text-2 line-through"><input type="checkbox" checked disabled class="mr-2 align-middle accent-gold" />A1 §1.4 SmokeTester Play 모드 200 stages 재현 결과 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">[Smoke] Loaded 200 stages. First: GT=120700001 HP=600000</code> 일치 여부): PD 직접 확인 PASS</li><li class="mb-1 list-none text-text-2 line-through"><input type="checkbox" checked disabled class="mr-2 align-middle accent-gold" />A1 소요 실측 시간 (60분 대비 +/-): PD 직접 확인 (실측치 PD 후속 기재 가능)</li><li class="mb-1 list-none text-text-2 line-through"><input type="checkbox" checked disabled class="mr-2 align-middle accent-gold" />A2 / A3 자동화분 §7.1 결과 재확인 (코드 변경 없으므로 spot-check 충분): PD 직접 확인 PASS</li></ul>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">종합 판정</strong> (PD 채움): <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">GO</code> — 사유: 자동화분 §7.1 4-drift 정정 완료 + PD 직접 5건 PASS, Yellow-Green 유지로 W1 통합 검증 착수.</p>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">7.3 킥오프 GO 확정 시 다음 액션 (2026-05-04 09:00)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprint-01-w1-todowrite-preload.md</code> §2 TodoWrite 15건 블록 1회 등록</li><li class="mb-1">경로 상수 3종 (§7.1 drift 3 정정본) 즉시 붙임:</li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">../designs/transcendent_drop_table.tsv</code></li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">../designs/transcendent_milestone_reward.tsv</code></li><li class="mb-1"><code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">../designs/affix_pool.tsv</code></li><li class="mb-1">태스크 #01 GradeRemap → #02 DropRate → #03 Milestone → #04 AffixPool → #05 Import ALL 순차 발주</li><li class="mb-1">A3 §3.1 4항목 체크 — 신규 SO 파일 생성 직후 매번 재실행 (#02 / #03 / #04)</li></ul>
+<hr class="my-6 border-border" />
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">END OF CHECKLIST</strong> · 실행 후 본 문서는 <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/archive/</code> 폴더로 이동 (Sp01 킥오프 완료 후 정리)</p>5:["slug","sprint-01-d-minus-1-checklist","d"]
+0:["oTsmsMocnGuSjSEq2mbg6",[[["",{"children":["docs",{"children":[["slug","sprint-01-d-minus-1-checklist","d"],{"children":["__PAGE__?{\"slug\":\"sprint-01-d-minus-1-checklist\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-01-d-minus-1-checklist","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint 01 킥오프 D-1 체크리스트 (2026-05-03 실행)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/sprint-01-d-minus-1-checklist.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,651"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/55553909ab1b193c.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint 01 킥오프 D-1 체크리스트 (2026-05-03 실행) — 자료실"}],["$","meta","3",{"name":"description","content":"Sp01 드라이런 판정 Yellow-Green의 조건부 GO 조건(P1 완화 권장 3건) 사전 해소. 킥오프 당일(2026-05-04 월) 09:00 작업 시작 전에 A1~A3 완료로 R-DR-01~03 재현 차단. 결과는 sprints/sprint-01.md §7 Go/No-Go 체크"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
 1:null
