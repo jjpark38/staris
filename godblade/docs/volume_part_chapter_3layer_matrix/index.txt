@@ -1,0 +1,148 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T1f19,# 권/부/화 3층 라벨 매트릭스 (2026-05-05)
+
+> 작성: 2026-05-05 (project-manager 박세린, PM 자율 권한)
+> 근거: 메모리 4건 통합 (`project_volume_55_chapters_locked_2026-05-04.md` / `project_series_bible_v1_2026-05-05.md` / `project_volume1_chapter_21_30_paste_2026-05-05.md` / `project_volume_serialization_v1_3_2026-05-04.md`)
+> **PD 결정 필요**: 0건 (24화 본문 "1부 完" 메타 = default 잠금)
+> **목적**: 5부작 250화 vs 권1=55화 vs chapter_NN vs 시리즈 바이블 10권 4 라벨 충돌 정리
+
+---
+
+## §0 PD 30초 요약
+
+1. **3층 라벨 = 권 (단행본) / 부 (작품 구조) / 화 (chapter_NN)** — 모두 잠금, 충돌 0
+2. **권 = PD 작가 단위 1권=55화** (메모리 `project_volume_55_chapters_locked_2026-05-04.md`)
+3. **부 = 작품 구조 5부작 가변 화수** (24화 "1부 完" 메타, 메모리 `project_volume1_chapter_21_30_paste_2026-05-05.md`)
+4. **화 = chapter_NN = 권 내 화수** (1권 내 chapter_01~55 형식)
+5. **시리즈 바이블 10권 부제** = 권 단위 종이책 마케팅 라벨 (작품 구조 ≠ 종이책)
+
+---
+
+## §1 3층 라벨 정의
+
+| 라벨 | 단위 | 잠금 | 화수 | 출처 |
+|------|------|------|------|------|
+| **권 (Volume)** | 종이책 단행본 | PD 1권=55화 | 가변 (1권=55화 default) | 메모리 `project_volume_55_chapters_locked_2026-05-04.md` |
+| **부 (Part)** | 작품 구조 (5부작) | 24화 본문 "1부 完" | **가변** (1부=24화) | 메모리 `project_volume1_chapter_21_30_paste_2026-05-05.md` |
+| **화 (Chapter)** | 단일 회차 | chapter_NN.md | 권 내 1~55 | 강시연 frontmatter |
+
+> **종이책 (시리즈 바이블 10권 부제)** = 권 라벨에 종속, 별도 4번째 라벨 X. 1권 부제 = "에러 구역의 이방인들과 엇박자의 태동" (시리즈 바이블 v1.1).
+
+---
+
+## §2 5부작 250화 vs 권 단위 통합 표
+
+| 부 | 추정 화수 | 권 매핑 (잠정) | 핵심 |
+|----|---------|---------------|------|
+| 1부 | **24화** (본문 잠금) | 권1 chapter_01~24 | 에러 구역 이방인 + 엇박자 태동 (24화 굿판+EMP "1부 完") |
+| 2부 | ~50화 (추정) | 권1 chapter_25~55 + 권2 chapter_01~? | 강호 서버 방랑자 + 구파일방 도장 깨기 (루트 키 4/9 → 9/9) |
+| 3부 | ~60화 (추정) | 권2 후반 + 권3~? | (시리즈 바이블 v1.1 권3 = 지니 등장) |
+| 4부 | ~60화 (추정) | 권 중후반 | (시리즈 바이블 v1.1 권7~8) |
+| 5부 | ~56화 (추정) | 권 후반 ~ 권10 | (시리즈 바이블 v1.1 권10 = 최종) |
+| **합계** | **250화** | 권 1~10 (각 55화 default) = 550화 가용 vs 250화 = 여유 +300화 | 5부작 가변 권 단위 자유 |
+
+> **5부작 250화 vs 권 단위 550화 가용 (10권 × 55화)** = 약 45% 사용 / 권 단위 default 55화 잠금 유지 (10권 미만 종료 가능).
+
+---
+
+## §3 권1 33화 누적 3층 라벨 매핑 (D+0 = 2026-05-05)
+
+| chapter | 권 | 부 | 화 (권 내) | 화 (부 내) | 핵심 |
+|---------|----|------|---------|---------|------|
+| chapter_00 | 1 | 1 | 1 | 1 | 정주 입사 (프롤로그) |
+| chapter_01~10 | 1 | 1 | 2~11 | 2~11 | 에러 구역 캐릭터 등장 |
+| chapter_11~14 | 1 | 1 | 12~15 | 12~15 | (paste 완료, 메모리 `project_volume_55_chapters_locked_2026-05-04.md`) |
+| chapter_15~20 | 1 | 1 | 16~21 | 16~21 | 1부 후반 |
+| chapter_21 | 1 | 1 | 22 | 22 | 곤륜 백도어 + 빠루 지렛대 |
+| chapter_22 | 1 | 1 | 23 | 23 | 흑역사 더미 드래곤 |
+| chapter_23 | 1 | 1 | 24 | 24 | 이성계 폭주 + 사이버 각궁 |
+| **chapter_24** | **1** | **1 完** | **25** | **24 (1부 종료)** | **굿판+EMP / 도비 멀티탭 / 루트 키 9 분산** |
+| chapter_25 | 1 | 2 | 26 | 1 (2부 시작) | 무당파 톨게이트 |
+| chapter_26 | 1 | 2 | 27 | 2 | 무당(武當)vs무당(巫堂) |
+| chapter_27 | 1 | 2 | 28 | 3 | 무당 장문인 (루트 키 1/9) |
+| chapter_28 | 1 | 2 | 29 | 4 | 개방 랜선 절단 (루트 키 2/9) |
+| chapter_29 | 1 | 2 | 30 | 5 | 소림 십팔동인 (루트 키 3/9) |
+| chapter_30 | 1 | 2 | 31 | 6 | 아미 핑크 환진 (루트 키 4/9) |
+| chapter_39 | 1 | ? | (volume_2/ → volume_1/ 이동 슬롯) | ? | 김민준 D+15 mv 발주 |
+| chapter_50 | 1 | ? | (volume_2/ → volume_1/ 이동 슬롯) | ? | 김민준 D+15 mv 발주 |
+
+> **누적 33화 / 1부 24화 完 / 2부 6화 진행 / 권1 60% (33/55)**.
+
+---
+
+## §4 chapter_NN 라벨 정합성 검증 (3층 vs 1층 충돌)
+
+### 4.1 chapter_NN ≠ 권 내 화수 (충돌)
+
+본문 24화 "1부 完" 메타 = 25화부터 2부 1화 시작. 그러나 chapter_NN 라벨은 권 내 연속 = chapter_25 = 권1 26번째 화 (chapter_00 시작). **chapter_NN ≠ 부 내 화수**.
+
+### 4.2 해결 = chapter_NN = 권 내 화수 단일 의미
+
+- chapter_00 = 권1 1번째 화 (프롤로그)
+- chapter_NN = 권1 (NN+1) 번째 화
+- 부 라벨 = chapter frontmatter `part: 1` 또는 `part: 2`로 별도 박힘 (강시연 자율)
+- 권 라벨 = chapter frontmatter `volume: 1` (강시연 자율 + 김민준 D+15 mv 슬롯)
+
+### 4.3 chapter_39 / chapter_50 정합 (volume_2/ → volume_1/ 이동 슬롯)
+
+| chapter | frontmatter `volume` | 파일 위치 (현재) | 김민준 mv 슬롯 |
+|---------|---------------------|-----------------|--------------|
+| chapter_39 | volume:1 | volume_2/ | D+15 mv → volume_1/ |
+| chapter_50 | volume:1 | volume_2/ | D+15 mv → volume_1/ |
+| chapter_18·19·20·41·49 | volume:1 | volume_2/ | D+15 mv → volume_1/ |
+
+> 7건 mv 일괄 발주 슬롯 = 메모리 `project_chapter_folder_relocation_kim_minjun_followup.md`. IP 본문 우선 원칙 (메모리 `feedback_ip_sourcing_priority.md`) → 파일 이동 default.
+
+---
+
+## §5 시리즈 바이블 v1.1 (10권 종이책) vs 작품 구조 (5부작) 매핑
+
+| 권 | 시리즈 바이블 v1.1 부제 | 5부작 매핑 (잠정) | 화수 (권 내) |
+|----|----------------------|---------------|------------|
+| 권1 | 에러 구역의 이방인들 | 1부 全 + 2부 시작 | 55화 (1~24=1부, 25~55=2부) |
+| 권2 | (시리즈 바이블 v1.1 부제) | 2부 中 | 55화 |
+| 권3 | (지니 등장) | 2부 末 ~ 3부 | 55화 |
+| 권4~6 | 3부 ~ 4부 | 가변 | 각 55화 |
+| 권7~9 | 4부 ~ 5부 | 가변 | 각 55화 |
+| 권10 | 최종 | 5부 末 | 55화 |
+| **합계** | **10권** | **5부작** | **550화 (250화 사용 시 45%)** |
+
+> 시리즈 바이블 v1.1 = 권 단위 종이책 마케팅 라벨 (10권 100화 목차) ≠ 작품 구조 (5부작 가변 화수). 100화 목차는 권당 10화 marketing teaser로 활용, 본문 55화/권 별도.
+
+---
+
+## §6 라벨 사용 가이드 (강시연 / 윤서아 / 김민준 발주 시)
+
+### 강시연 발주
+- frontmatter `volume:N / part:N / chapter_in_part:N` 3층 박기
+- 부 전환 시 본문에 "[제N부 完] / [제N+1부 시작]" 명시 (24화 패턴 default)
+- chapter_NN 라벨은 강시연 자율 / 권 라벨은 자율 (frontmatter)
+
+### 윤서아 발주
+- 게임 트리거 v1.2 정정 (메모리 `project_yoonseoa_v1_1_chapter_remap_2026-05-04.md`) = chapter_NN frontmatter `volume:N` + `part:N` 2층 인용
+- 시즌 메타플롯 = 부 단위 매핑 (1부=시즌1 / 2부=시즌2 default)
+
+### 김민준 발주
+- chapter mv 7건 = D+15 일괄 (메모리 `project_chapter_folder_relocation_kim_minjun_followup.md`)
+- 웹사이트 `/novel` 라우트 = 권/부/화 3층 사이드바 박기 (D+30 7차 출시 시 wire-up)
+
+---
+
+## §7 PD 결정 슬롯 (자율 default 잠금 그대로)
+
+| 슬롯 | default | PD 변경 시 |
+|------|---------|----------|
+| 권 단위 55화 | ✓ 잠금 | 메모리 `project_volume_55_chapters_locked_2026-05-04.md` 갱신 |
+| 부 단위 가변 (1부=24화) | ✓ 잠금 | 24화 본문 "1부 完" 메타 = 절대 source |
+| chapter_NN = 권 내 화수 | ✓ 잠금 | 강시연 frontmatter |
+| 시리즈 바이블 v1.1 (10권 부제) | ✓ 잠금 | PD 마케팅 영역 |
+| 5부작 250화 마케팅 | ✓ 잠금 | PD 마케팅 영역 |
+
+> **PD 결정 필요 = 0건**. 본 매트릭스 = 4 메모리 정합 통합, 신규 결정 0.
+6:["slug","volume_part_chapter_3layer_matrix","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","volume_part_chapter_3layer_matrix","d"],{"children":["__PAGE__?{\"slug\":\"volume_part_chapter_3layer_matrix\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","volume_part_chapter_3layer_matrix","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"권/부/화 3층 라벨 매트릭스 (2026-05-05)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/volume_part_chapter_3layer_matrix.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,256"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"권/부/화 3층 라벨 매트릭스 (2026-05-05) — 자료실"}],["$","meta","3",{"name":"description","content":"1. 3층 라벨 = 권 (단행본) / 부 (작품 구조) / 화 (chapter_NN) — 모두 잠금, 충돌 0"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

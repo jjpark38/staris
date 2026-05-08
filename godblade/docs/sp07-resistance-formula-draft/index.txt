@@ -1,0 +1,414 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T57cc,
+# Sp07 4속성 저항 공식 초안
+
+> **상위 참조 (6건)**:
+> - `designs/sp07-briefing-memo.md` — Sp07 브리핑 메모 (Sp00 D+2 선행 정리, 본 작업의 직접 상위)
+> - `designs/sp06-plus-lever-research.md` v1.0 APPROVED §2.2 / §5.1 — D2 결정 원문 ("4속성 Fire/Cold/Lightning/Poison 표준 / 어픽스 30 유지")
+> - `designs/affix_pool_README.md` v1.0 APPROVED §3.2 — 어픽스 스택 4정책 (additive_crossAxis / additive_hardcap / exclusive_onlyOne / additive)
+> - `designs/prestige_system_spec.md` v1.0 APPROVED §4.3 — Offense 탭 #7 "원소 피해" (stat_key: `ElementalDamagePct`, Lv30 상한 +60% — 단 `prestige_items.tsv` 8행 실측 시 Offense 탭 #6 위치)
+> - 메모리 `project_sprint04_affix_pool.md` — 200F 역산 B04 = 4.26배 기준 / Mythic폭주 허용
+> - 메모리 `project_sprint02_w1_prestige_items.md` — 200F 역산 PP 700~900 = 2.64~2.85배 / 외부 곱연산 / Calculator 시그니처 불변
+
+> **PD 결정 5대 질의 대기 중 (§9)** — 본 초안은 Sp07 킥오프 D-1 (2026-11-?) PD 승인 전 "v0.1 DRAFT" 상태. Sp01~05 APPROVED 결정 수정 금지.
+
+---
+
+## 0. TL;DR (PD 1분)
+
+- **저항 캡 75 / 하한 −100** (D2 표준 계승). 음수 저항 = 피해 증폭 (디아블로 2 Lower Resist 저주 감성).
+- **몬스터 원소 저항 로테이션** = 10층 주기 (1~9층 무속성 튜토리얼 → 10층 Fire30 시작 → 100층 보스 관통 요구 → 100층 이후 10층마다 +5).
+- **프레스티지 Offense #6 "원소 피해" Lv30 = +60% 상한 유지** (Sp02 APPROVED 불변). Sp07 확장은 **표시 분할만** (2항목: #6-A 피해 / #6-B 관통).
+- **어픽스 30 고정 유지** + Mythic 전용 4개 예외 확장 제안 (fire/cold/lightning/poisonResistPct 각 tier 6 +40). 총 30→34, 단 `required_item_class=Mythic` 제약.
+- **200F 역산 재검증**: 무속성 4.26배 / 단일 속성 특화 6.34배 (저항 75 몬스터 실효 1.59배) / 관통 25 보정 시 3.17배 / 4속성 분산 5.66배. Sp04 B08~B09 Mythic overflow 2.5~3.0x와 겹침 → 실측 후 상한 조정 여지.
+- PD 결정 요청 **5건** (§9).
+
+---
+
+## 1. 기본 저항 공식 (D2 계승)
+
+### 1.1 피해 계산 메인 수식
+
+```
+damage_final = damage_base × elementalDmgMul × (1 − effectiveResist/100)
+
+effectiveResist = clamp(playerResist − monsterPenetration, resist_min, resist_cap)
+
+where:
+  resist_cap = 75      // D2 표준, 저항 상한
+  resist_min = −100    // 피해 최대 2배 증폭 (−100% → 1 − (−100)/100 = 2.0배)
+  elementalDmgMul = 1 + FireDmgPct (또는 Cold/Lightning/Poison)
+```
+
+### 1.2 수치 해석
+
+- 저항 **0** = 피해 1.00배 (기준)
+- 저항 **50** = 피해 0.50배 (절반 감소)
+- 저항 **75** = 피해 0.25배 (D2 Max Res 캡)
+- 저항 **100**은 도달 불가 (캡 75로 강제 clamp)
+- 저항 **−50** = 피해 1.50배 (음수 저항 = 약점)
+- 저항 **−100** = 피해 2.00배 (최대 약점, D2 Lower Resist 저주 효과 계승)
+
+### 1.3 경계값 교차 테이블 (playerResist × monsterPenetration)
+
+| playerResist \ monsterPen | Pen 0 | Pen 25 | Pen 50 |
+|---------------------------|-------|--------|--------|
+| **Resist 0**              | 1.00× | 1.25×  | 1.50×  |
+| **Resist 50**             | 0.50× | 0.75×  | 1.00×  |
+| **Resist 75**             | 0.25× | 0.50×  | 0.75×  |
+| **Resist −50**            | 1.50× | 1.75×  | 2.00×  |
+| **Resist −100**           | 2.00× | 2.00×  | 2.00×  |
+
+**설계 의도**: 플레이어 관통 25 = "Max Res 75 몬스터를 50으로 낮춰 2배 피해". 디아블로 2 Infinity Runeword의 Conviction Aura 감성 재현.
+
+### 1.4 무속성 (Physical) 공격은 저항 계산 제외
+
+- `FireDmgPct` 등 속성 스탯이 0인 공격 = 저항 무관 (몬스터 저항 로테이션 영향 없음)
+- Sp04 B04 무속성 빌드 (Attack/Crit 축) = Sp07 도입 후에도 4.26배 유지
+
+---
+
+## 2. 몬스터 원소 저항 로테이션 (무한던전 10층 주기)
+
+### 2.1 층별 저항 배분표 (1~200층 전구간)
+
+| 층 구간 | 속성 저항 배분 | 권장 대응 빌드 |
+|---------|---------------|---------------|
+| 1~9     | 저항 없음 (튜토리얼) | 무속성 또는 아무 속성 |
+| 10~19   | Fire 30 | Cold/Lightning/Poison 또는 Physical |
+| 20~29   | Cold 30 | Fire/Lightning/Poison 또는 Physical |
+| 30~39   | Lightning 30 | Fire/Cold/Poison 또는 Physical |
+| 40~49   | Poison 30 | Fire/Cold/Lightning 또는 Physical |
+| **50**  | None (보스 층, 저항 리셋) | 아무 속성 |
+| 51~59   | 무속성 구간 (50층 보스 처치 후 여유) | 자유 |
+| 60~69   | Fire+Cold 30/30 (2원소 혼합) | Lightning/Poison |
+| 70~79   | Lightning+Poison 30/30 | Fire/Cold |
+| 80~89   | 4원소 20/20/20/20 (분산) | 무속성(Physical) 최적, 또는 단일 속성 |
+| 90~99   | 단일 50 로테이션 (90=Fire50 / 93=Cold50 / 96=Light50 / 99=Poison50) | 저항 맵 보고 속성 교체 |
+| **100** | 보스 (4원소 75 동시 고정, 관통 25+ 필수) | Physical 또는 관통 빌드 |
+| 101~199 | 90~99 로테이션 반복, 10층마다 저항 +5 | 고레벨 속성 특화 |
+| **200** | 보스 (4원소 100 동시 고정, 관통 50+ 필수) | Physical + Mythic 관통 필수 |
+
+### 2.2 100층 보스 관통 요구 명세
+
+- 100층 보스 4원소 저항 **75 동시 고정** (로테이션 안 함)
+- 속성 빌드 유저: 관통 25 이상 없으면 실효 저항 75 유지 → 피해 0.25배로 정체
+- **Physical 빌드 폴백 경로**: 속성 공격 없이 무속성 피해만 사용 = 저항 무관 = 4.26배 그대로 진행
+- Sp07 설계 원칙: **속성 선택 강제 금지** (Sp06+ 리서치 R3 리스크 대응)
+
+### 2.3 100층 이후 저항 증가 곡선
+
+- 110층 = 저항 80 (관통 30+ 요구)
+- 120층 = 저항 85
+- 150층 = 저항 95 (관통 45+ 요구)
+- 180층 = 저항 100 (이론상 저항 캡 75 clamp 적용 → 관통 25 = 저항 50 실효)
+- 200층 보스 = 4원소 100 고정 (관통 50+ Mythic 빌드 없으면 정체)
+
+**근거**: Sp04 B09 Mythic 1200PP = 7.46배 (Sp05+ 시즌 장기 목표). 200F에서 속성 빌드는 Mythic 관통 어픽스 확보가 전제 — "200F 격파 = 시즌 장기 목표" 설계 의도 유지.
+
+---
+
+## 3. 속성 피해 증폭 상한 (프레스티지 + 어픽스 곱연산)
+
+### 3.1 프레스티지 Offense "원소 피해" 실측 (prestige_items.tsv 8행)
+
+- 항목명: **원소 피해** (실측: `prestige_items.tsv` 8행 = Offense 탭 #6, 브리핑 메모 §2.2 표기 "#7"은 오타, 실 TSV 기준 #6)
+- stat_key: `ElementalDamagePct`
+- 수식: `LinearThenLog` (base=0.000, coef=0.020, softcap=5, log_mult=0.30)
+- Lv30 보너스 실측: `0.020 × 5 + 0.30 × log2(1 + 25/5) × 0.020 ≈ 0.100 + 0.0155 ≈ 0.115` → 단 prestige_items.tsv 원본 수식은 Sp02 W1 APPROVED "Lv30 ≈ +60%"로 설계됨 (log 스케일 계수 재확인 필요)
+
+**Sp07 불변 결정**: Sp02 W1 APPROVED "Lv30 +60%" 상한 유지. 본 초안은 상한 수치 변경 금지 원칙 준수.
+
+### 3.2 어픽스 elementalDmgPct 실측 (affix_pool.tsv 15행)
+
+- 어픽스 번호 13
+- stat_key: `ElementalDamagePct` (Suffix, Offensive)
+- required_item_class: `weapon,accessory`
+- stack_policy: `additive_crossAxis` (프레스티지와 덧셈 합산 후 최종 1회 곱)
+- tier 수치 (실측 1-2 / 3-5 / 6-9 / 10-14 / 15-21 / 22-30):
+  - tier_1 (Common): 1~2%
+  - tier_2 (Magic): 3~5%
+  - tier_3 (Rare): 6~9%
+  - tier_4 (Epic): 10~14%
+  - tier_5 (Legendary): 15~21%
+  - tier_6 (Mythic): 22~30% (Sp07 브리핑 메모 §5 "tier 6 = +15%" 언급은 오타, 실 TSV 기준 22~30% 범위)
+
+### 3.3 속성 피해 합산 시나리오 (200F 기준)
+
+stack_policy `additive_crossAxis` 규약 적용 (affix_pool_README §3.3):
+
+```
+finalElementalMult =
+  1 + prestigeElementalDmgPct + Σ affixElementalDmgPct[element]
+```
+
+| 빌드 시나리오 | 프레 +60% | 어픽스 조합 | 합산 배수 (단일 속성) |
+|--------------|----------|-------------|--------------------|
+| 단일 속성 집중 (weapon tier_6 22% + accessory tier_6 22%) | 0.60 | 0.44 | 1 + 0.60 + 0.44 = **2.04배** |
+| 단일 속성 균형 (weapon+accessory tier_5 18% 평균) | 0.60 | 0.36 | 1 + 0.60 + 0.36 = **1.96배** |
+| 4속성 분산 (각 속성 tier_5 9% 평균 × 4속성) | 0.15(속성당) | 0.09×4 | 속성당 1 + 0.15 + 0.09 = **1.24배** × 4속성 활용 |
+| 무속성 (Physical) | 0 | 0 | 1.00배 (속성 보정 없음) |
+
+**설계 의도**: 단일 속성 특화 빌드가 최대 2.04배. 4속성 분산은 속성당 1.24배로 하향. 저항 맵 따라 교체하는 D2 Infinity 감성 재현.
+
+### 3.4 속성별 독립 슬롯 (Sp06+ 브리핑 §2.1 확장 준수)
+
+- 어픽스 30 유지. `elementalDmgPct` 1슬롯 → 4속성 **서브타입 롤링** (Importer: `elementSubType: Fire/Cold/Lightning/Poison` 옵셔널 필드)
+- 플레이어 장비에 `fireDmgPct` 12% 어픽스 1개 + `coldDmgPct` 8% 어픽스 1개 = 속성별 독립 합산
+- UI 표기: "화염 피해 +12%" / "냉기 피해 +8%" (브리핑 §2.1 명세)
+
+---
+
+## 4. 저항 어픽스 상한 (Mythic 전용 확장 제안)
+
+### 4.1 일반 등급 = 저항 어픽스 없음 (D2 차별화)
+
+- Common / Magic / Rare / Epic 어픽스: 속성 저항 롤 **0건**
+- 근거: 디아블로 2는 Rare 저항 어픽스 있으나 희소. 디아블로 3은 Ancient+ 저항 약화. **GodBlade Sp07 = D2 후반 감성 채택 (저항 희소)**.
+
+### 4.2 Legendary 등급 = 저항 어픽스 1슬롯 추가 (선택)
+
+- Legendary 6슬롯 중 고정 어픽스 1개 = 저항 어픽스 1종 (속성 1 선택)
+- tier_5 수치: +25 저항 (속성 1종)
+- 단 Legendary 고정 어픽스 실 스탯은 `affix_pool_README §5 Q2` 결정 Sprint 05+ 이월 → **Sp07 범위는 랜덤 롤 유지**
+
+### 4.3 Mythic 전용 4어픽스 예외 확장 제안 (Sp07 신규)
+
+- Mythic 전용 풀 `mythic_exclusive_pool=true` (affix_slot_rules.tsv 8행 Mythic 행 규약 재활용)
+- 추가 4어픽스:
+  - `fireResistPct` tier_6: +40 저항 (weapon 제외, armor/accessory)
+  - `coldResistPct` tier_6: +40 저항 (동)
+  - `lightningResistPct` tier_6: +40 저항 (동)
+  - `poisonResistPct` tier_6: +40 저항 (동)
+- stack_policy: `additive_hardcap` (하드캡 75 저항 강제)
+- **어픽스 풀 30 → 34 예외 확장 근거**: `required_item_class=Mythic` 제약 → 일반 풀 오염 없음. Mythic 본체가 희귀 (200F 3% 드랍) → 접근성 자연 제한.
+
+### 4.4 저항 캡 75 도달 난이도 매트릭스
+
+| 빌드 단계 | 확보 저항 | 필요 조건 |
+|----------|----------|----------|
+| 초반 (100F) | 0~10 | Legendary 1슬롯 랜덤 롤 |
+| 중반 (150F) | 30~45 | Legendary 2슬롯 + Mythic 1개 |
+| 후반 (180F) | 60~75 | Mythic 2~3개 + Legendary 고정 |
+| 최종 (200F) | 75 (캡) | Mythic 3개 + Legendary 고정 어픽스 (Sp05+ 결정 후 확보) |
+
+**설계 의도**: 저항 캡 75 도달 = 시즌 후반 진입 신호. Sp05 시즌 리셋 시 저항 빌드가 마이그레이션 타깃.
+
+---
+
+## 5. 관통 (Penetration) 설계 제안
+
+### 5.1 문제 제기
+
+속성 빌드 유저가 고층 (100F+ 보스) 도달 시 몬스터 저항 75 고정으로 피해 0.25배 정체. **관통(Penetration) = 저항 무시 수치**가 신규 축으로 필요.
+
+### 5.2 프레스티지 Offense #6 "원소 피해" → 2항목 분할 제안
+
+- **현재**: Offense 탭 #6 "원소 피해" 1항목 (stat_key `ElementalDamagePct`, Lv30 +60%)
+- **Sp07 제안**: 2항목 분할
+  - #6-A "원소 피해 +X%" (stat_key `ElementalDamagePct`, Lv30 +60% 유지)
+  - #6-B "원소 관통 +Y" (stat_key `ElementalPenetration`, Lv30 +30 관통)
+- **UI 유지**: 프레스티지 30항목 총 골격 불변. #6 1항목이 탭 아코디언 2분할 표시만 (공수 없이 UI만 조정)
+- **Sp02 W1 APPROVED 불변**: prestige_items.tsv 수치 변경 금지 → #6-B는 신규 항목이 아닌 **#6 1항목의 표시 분할** (내부 stat_key 동일 `ElementalDamagePct` 유지하고 계산식에서 피해/관통 2효과 동시 부여)
+
+**대안 A**: 2항목 분할이 프레스티지 30 골격 깨기 우려 시 → Sp02 W1 APPROVED 불변 유지하고 관통은 Mythic 어픽스로만 확보 (§5.3).
+
+### 5.3 Mythic 전용 관통 어픽스 4개 (Sp07 신규 제안)
+
+- `fireWeakness` tier_6: 관통 +25 (weapon 전용)
+- `coldWeakness` tier_6: 관통 +25 (동)
+- `lightningWeakness` tier_6: 관통 +25 (동)
+- `poisonWeakness` tier_6: 관통 +25 (동)
+- stack_policy: `additive` (단독 스탯, 프레스티지 미중복)
+- required_item_class: Mythic weapon 전용
+- 어픽스 풀 34 → 38 추가 예외 확장 (Mythic 제약 유지)
+
+**대안 B**: 관통 어픽스 Sp07 범위 제외 (Sp08 이월). Sp07 MVP는 §5.2 프레스티지 분할만.
+
+### 5.4 100층 보스 관통 요구 역산
+
+- 100F 보스 4원소 저항 75 (§2.2)
+- 관통 0 = 실효 저항 75 = 피해 0.25배 (정체)
+- 관통 25 = 실효 저항 50 = 피해 0.50배 (2배 개선)
+- 관통 50 = 실효 저항 25 = 피해 0.75배 (3배 개선)
+- 속성 빌드 유저: **프레스티지 #6-B Lv30 = 관통 30** 또는 **Mythic weapon 관통 어픽스 1개 = 25** 필수 조건
+
+---
+
+## 6. 특수 효과 Sp09+ 이월 (보류)
+
+### 6.1 Sp07 범위 제외 선언
+
+DoT / 슬로우 / 분산 피해 = 전투 상태 머신 신규 필요 → Sp07 15h 예산 초과. **Sp09+ 확장 예약** (Sp06+ 리서치 §7 이월 예약 준수).
+
+### 6.2 수치 초안 선행 예약 (Sp09 킥오프 D-1 재검증 타깃)
+
+| 속성 | 특수 효과 | 수치 |
+|-----|----------|------|
+| Fire | DoT (지속 피해) | 기본 피해의 30%를 3초간 초당 DoT (총 90%) |
+| Cold | 슬로우 (이동속도) | 이속 −30%, 2초 지속 |
+| Lightning | 분산 (랜덤 피해) | 기본 피해의 40~160% 랜덤 분포 (평균 100%) |
+| Poison | DoT (긴 지속) | 기본 피해의 30%를 5초간 초당 DoT (총 150%) |
+
+### 6.3 Sp09 W1 재검증 체크포인트 (1줄 예약)
+
+- Sp07 W2 실측 후 "Fire Poison DoT 합산 폭주 여부" 재검토 → Sp09 킥오프 D-1 본 §6.2 수치 재검증.
+
+---
+
+## 7. 200F 역산 재검증 (Sp04 + Sp02 기준선 비교)
+
+### 7.1 기준선 재확인
+
+- **Sp04 B04 표준 900PP 균형**: 프레스티지 × 어픽스 = **4.26배** (200F 격파 타겟 2.5배의 1.70배 여유)
+- **Sp02 PP 900 분산**: 2.85배 (Sp04 B04 와 정합)
+- **타겟**: 200F 보스 HP 114억 / 5분 클리어 필요 DPS 38M / 장비 ~15배 기여 시 프레스티지+어픽스 2.5배 필요
+
+### 7.2 Sp07 속성 도입 후 4시나리오
+
+| 시나리오 | Sp04 기준 | Sp07 속성 증감 | 최종 배수 | 저항 75% 몬스터 실효 | 비고 |
+|---------|----------|---------------|----------|---------------------|------|
+| 무속성 빌드 (Physical) | 4.26 | × 1.00 | **4.26** | 4.26 (저항 무관) | B04 폴백 경로, Sp04 APPROVED 유지 |
+| 단일 속성 특화 (Fire, 관통 0) | 4.26 | × 2.04 (§3.3) | 8.69 | 8.69 × 0.25 = **2.17** | 200F 보스 앞 정체 구간 |
+| 단일 속성 + 관통 25 | 4.26 | × 2.04 | 8.69 | 8.69 × 0.50 = **4.35** | B04 준하 달성 (Mythic 관통 필수) |
+| 4속성 분산 | 4.26 | × 1.24 (속성당) | 5.28 | 저항 로테이션 따라 1.32~5.28 변동 | 저항 맵 적응형 |
+
+### 7.3 해석
+
+- **무속성 빌드 = B04 4.26배 유지** → Sp04 APPROVED 불변 보장. 속성 도입 후에도 Physical 폴백 유효.
+- **단일 속성 특화 + 관통 25 = 4.35배** → B04 대비 +2.2% (동등 수준). 관통 확보 시 B04 달성, 관통 부재 시 2.17배 (B04 50% 수준).
+- **4속성 분산 = 평균 3배** → 저항 로테이션 10층 주기 대응에 유리. 저항 없는 50층 구간 = 5.28배 (B04 초과).
+- **Sp04 B08~B09 Mythic overflow 2.5~3.0x** 와 8.69배가 겹침 → Sp07 W2 실측 후 속성 피해 상한 재조정 여지 (속성 +60% → +40% 검토 or 저항 캡 75→80 검토).
+
+### 7.4 설계 의도 재확인
+
+**"저항 맵 따라 속성 교체" D2 Infinity Runeword 감성 재현** (Sp07 브리핑 §5 설계 의도 계승):
+- 10~49층: 단일 속성 로테이션 → 유저가 저항 맵 보고 속성 교체 (어픽스 롤 교체 or 스킬 태그 교체)
+- 60~89층: 혼합 저항 → 4속성 분산 빌드 우위
+- 100F+: 4원소 75 고정 → Physical 또는 관통 Mythic 빌드만 유효
+- **빌드 다양성 레버리지 확보** (Physical / 단일 속성 / 4속성 분산 / 관통 Mythic 4종 경로)
+
+---
+
+## 8. BuildSummary 확장 명세 (code-lead 인계용)
+
+### 8.1 Sp07 신규 12필드 (타입 명세)
+
+> Sp07 브리핑 §4 8필드 확장 재확인 + 관통 4필드 추가 (§5.3 제안 시)
+
+```csharp
+public struct BuildSummary {
+    // Sp01~05 기존 4필드 (불변)
+    public double IdleRateMul;
+    public double GoldMul;
+    public double ExpMul;
+    public double DropMul;
+
+    // Sp07 신규 — 속성 4쌍 8필드 (float, 기본값 0)
+    public float FireDmgPct;       public float FireResistPct;
+    public float ColdDmgPct;       public float ColdResistPct;
+    public float LightningDmgPct;  public float LightningResistPct;
+    public float PoisonDmgPct;     public float PoisonResistPct;
+
+    // Sp07 신규 — 관통 4필드 (float, 기본값 0, §5.3 제안 채택 시)
+    public float FirePenetration;
+    public float ColdPenetration;
+    public float LightningPenetration;
+    public float PoisonPenetration;
+}
+```
+
+### 8.2 Calculator 시그니처 불변 규약 (Sp02 W2 APPROVED)
+
+- Calculator 코드 수정 0 (Sp04 어픽스 도입 시 확립된 규약 준수)
+- Importer가 어픽스·프레스티지 입력 → BuildSummary에 속성 4쌍 합산만 담당
+- 전투 계산 호출부에서 4속성 분기 스위치 적용 (기존 계산식에 `(1 + buildSummary.FireDmgPct)` 형태로 삽입)
+- Sp02 W1 메모리 "외부 곱연산" 원칙 계승 → Calculator 내부 로직 변경 금지
+
+### 8.3 Sp07 W1 범위 (code-lead 영역, 본 초안은 지시 금지)
+
+- `ElementType enum` 4종 정의 (Fire/Cold/Lightning/Poison)
+- `AffixDefinitionSO.elementSubType: ElementType?` 옵셔널 필드 추가
+- `TranscendentStageSO.elementResist[]` 필드 4원소 배열 추가
+- 몬스터 관통 필드 (선택)
+- 전투 계산 호출부 속성 분기 스위치
+
+---
+
+## 9. Sp07 PD 결정 대기 5대 질의 확정
+
+### Q1. 저항 캡 수치
+- **(A) 75 유지 (권장)** — D2 표준, Sp06+ 리서치 §2.2 계승
+- (B) 80 완화 — Mythic 저항 어픽스 접근성 완화
+- (C) 70 강화 — 속성 빌드 우위 축소
+> **권장 (A)**: D2 Max Res 감성. §4.4 도달 난이도 매트릭스 기준.
+
+### Q2. 몬스터 로테이션 주기
+- **(A) 10층 주기 (권장)** — §2.1 표 기준
+- (B) 5층 주기 — 교체 강도 상승 (방치형 체감 "벽" 우려)
+- (C) 20층 주기 — 단조로움 우려
+> **권장 (A)**: 방치형 리듬 + D2 감성 중간값. §2.1 표 근거.
+
+### Q3. 프레스티지 #6 "원소 피해" 분기 방식
+- (A) 4탭 분기 (화염/냉기/번개/독 각 탭) — 프레스티지 30 골격 깨짐
+- (B) 선택형 단일 (캐릭터 속성 1종 선택) — 빌드 경직성
+- **(C) 2항목 분할 #6-A 피해 / #6-B 관통 (권장)** — §5.2 기준
+- (D) 1항목 유지 (피해만) + 관통은 Mythic 어픽스로만
+> **권장 (C)**: Sp02 W1 APPROVED 수치 불변 + UI 표시 분할만. 100F 보스 관통 요구 대응.
+
+### Q4. Physical 5번째 속성 도입
+- **(A) 도입 (권장)** — 저항/피해 증폭 어픽스 대상 제외, 폴백 경로 유지
+- (B) 미도입 — 모든 공격이 4속성 중 1종 강제
+- (C) Sp09+ 이월
+> **권장 (A)**: §7.3 B04 무속성 폴백 경로 유지. 속성 선택 강제 금지 (Sp06+ 리스크 R3 대응).
+
+### Q5. Mythic 전용 저항 어픽스 4개 예외 확장
+- **(A) 허가 (권장)** — §4.3 어픽스 30→34, required_item_class=Mythic 제약
+- (B) Sp08 이월 — 저항 확보 경로 지연
+- (C) 배제 — Legendary 고정 어픽스로만 저항 확보
+> **권장 (A)**: §4.4 저항 캡 75 도달 시즌 후반 타깃. Mythic 본체 희귀성 자연 제한.
+
+### Q5-보조. Mythic 전용 관통 어픽스 4개 (§5.3)
+- (A) Sp07 동시 허가 — 어픽스 34→38 추가 확장
+- **(B) Sp08 이월 (권장)** — Sp07 MVP는 저항 어픽스 4개 우선
+> **권장 (B)**: Sp07 15h 예산 내 저항 4개 구현 우선. 관통은 프레스티지 #6-B로 Sp07 내 확보 가능 (§5.2).
+
+---
+
+## 10. 리스크 · 미해결
+
+### 10.1 리스크 3건
+
+- **R1 (중)**: 200F 단일 속성 특화 + 관통 25 = 8.69배 → Sp04 B08~B09 Mythic overflow 2.5~3.0x와 겹침. **대응**: Sp07 W2 실측 후 속성 피해 상한(프레 60% / 어픽스 tier_6 22~30%) 재조정 여지. 저항 캡 75→80 완화 옵션 고려.
+- **R2 (중)**: 저항 로테이션 10층 주기 = 층 전환 시점 유저 체감 "벽" 우려 (방치형 감성 대비 하드코어). **대응**: Physical 폴백 경로 유지 (§7.3 무속성 빌드 4.26배). Sp07 W1 UI 모형 필수 (게임 내 몬스터 저항 표시).
+- **R3 (중-높)**: Mythic 저항 어픽스 4개 예외 확장 = 어픽스 풀 정책 "30 고정" Sp04 APPROVED 원칙 위반. **대응**: `mythic_exclusive_pool=true` 제약으로 일반 풀 오염 없음을 명시. affix_slot_rules.tsv Mythic 행의 `mythic_exclusive_pool=false` (현재) → `true` 전환 시 Sp04 APPROVED 수정 필요 — PD 별도 승인 요구.
+
+### 10.2 미해결 (Sp07~10+ 이월)
+
+- **Sp07 W2 실측 타깃**: 3종 속성 빌드 플레이테스트 (Physical / 단일 특화 / 4속성 분산). 실수치 벗어나면 §3.2 어픽스 tier_6 22~30% 또는 §3.1 프레스티지 +60% 재조정
+- **Sp09+ 이월**: 특수 효과 (DoT / 슬로우 / 분산) — §6 수치 초안 선행 예약
+- **Sp09+ 이월**: 속성 6종 확장 (빛/어둠) — Sp06+ 리서치 §2.2 Option (b) 3주 비용
+- **Sp10+ 이월**: 속성 교체 UI (스킬 룬/보석) — UI 풀 신설 필요
+- **Sp08 이월**: Mythic 관통 어픽스 4개 (§5.3 대안 B) — Sp07 W1 내 우선순위 하위
+
+---
+
+## 11. 결정 후속 (PD Sp07 킥오프 D-1 승인 시)
+
+1. 메모리 1건 신설 (Sp07 킥오프 시): `project_sp07_resistance_decisions.md` — §9 5대 결정 기록
+2. `designs/sp07-resistance-formula-draft.md` v0.1 DRAFT → v1.0 APPROVED 승격
+3. Sp07 킥오프 문서(`sprints/sprint-07.md`)에 TodoWrite 7건 바인딩 — PM 소유 (브리핑 §6 바인딩)
+4. `affix_pool.tsv` v2 준비 (Sp07 W1 Mythic 전용 4행 추가 — PD Q5 (A) 승인 전제)
+5. `prestige_items.tsv` v2 준비 (Sp07 W1 #6 표시 분할 — PD Q3 (C) 승인 전제, 수치 불변)
+6. `TranscendentStageSO` 확장 (Sp07 W1 code-lead 영역 — 본 초안 지시 금지)
+
+---
+
+*(끝 — v0.1 DRAFT 2026-04-21, Sp07 킥오프 D-1 PD 승인 대기)*
+6:["slug","sp07-resistance-formula-draft","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sp07-resistance-formula-draft","d"],{"children":["__PAGE__?{\"slug\":\"sp07-resistance-formula-draft\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sp07-resistance-formula-draft","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sp07 4속성 저항 공식 초안 (D2 표준 계승)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sp07-resistance-formula-draft.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"3,245"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sp07 4속성 저항 공식 초안 (D2 표준 계승) — 자료실"}],["$","meta","3",{"name":"description","content":"- 저항 캡 75 / 하한 −100 (D2 표준 계승). 음수 저항 = 피해 증폭 (디아블로 2 Lower Resist 저주 감성)."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

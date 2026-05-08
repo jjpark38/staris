@@ -1,0 +1,1 @@
+self.__SSG_MANIFEST=new Set(["\u002Fdocs\u002F[slug]","\u002Fnovel\u002F[volume]","\u002Fnovel\u002F[volume]\u002F[chapter]","\u002Fnovel\u002F[volume]\u002F[chapter]\u002Fopengraph-image"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()

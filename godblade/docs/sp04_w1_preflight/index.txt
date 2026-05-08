@@ -1,0 +1,539 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T897a,# Sp04 W1 Preflight — D-7 본격 착수 절차서
+
+> 작성: 2026-05-02 박세린 (game-designer)
+> version: **1.2** (chapter_11~14 본문 흡수 + 어픽스 풀 v1.3 36어픽스 정합 + S-2 발동 1건 실측 후기 통합)
+> 대상 D-Day: **2026-06-08 (Sp04 킥오프 D-7)**
+> 본격 착수 마감: **2026-06-14 (Sp04 킥오프 D-1)**
+> 정식 킥오프: **2026-06-15**
+> 입력 자료:
+> - `designs/affix_pool_sp04_supplement_v1.md` **v1.3** (36어픽스 정식 락 + G-3.6 오방위의 도(道) 신규 + 글로벌 명칭 6건 락)
+> - `sprints/sprint-04.md` v0.1 (W1 선행 작업 표 — 4건으로 갱신 필요)
+> - 메모리 `project_affix_pool_supplement_5_decisions.md` / `project_sprint04_affix_pool.md` (v1.1 36어픽스 갱신 후) / `project_phase2_dryrun_risks.md` (R-DR-10/11/12)
+> - `designs/webnovel/volume_2/chapter_11_12_review.md` / `chapter_13_14_review.md` (박세린 검수 PASS 4건)
+> - `designs/webnovel/volume_2_synopsis_v2.md` v2.3 (6건 갱신 흡수: D-2.9 ~ D-2.14)
+> 목적: Sp04 W1-1 / W1-2 본격 착수 시 즉시 가동 가능한 절차서. PRINT-AND-CHECK 양식 + 회귀 가드 + 강시연 IP 변동 흡수 절차 + **본문 흡수 변경 로그** + **D-7 부하 1/3 추가 감소 전략** 포함.
+
+---
+
+## 0. 한 줄 맥락
+
+35어픽스 정식 락 (D-A.1 / D-A.2 / D-A.3') → **36어픽스 정식 락 (D-A.4 + G-3.6 v1.3)** 이후 Sp04 W1-1·W1-2 본격 착수 절차서. v1.0 (5행 + 4.21배) → v1.2 (6행 + 약 4.20배) 갱신. 2026-06-08 (D-7) 시점 game-designer 가 책상에 펴 놓고 즉시 가동 가능한 절차서 + 회귀 가드 + IP 변동 흡수 + D-Day 체크리스트 (게이트 11/11) + 의존성·블로커. **오늘 사이클 (2026-05-02) 에서 S-2 발동 1건 실측 = 부하 ½ → 1/3 감소 입증**.
+
+---
+
+## 1. W1-1 절차서 — `affix_pool.tsv` 6행 추가 + `affix_stack_matrix.tsv` 10빌드 재시뮬 (36어픽스)
+
+### 1.1 작업 개요 (예상 소요)
+
+| 단계 | 작업 | 예상 소요 | 산출 |
+|------|------|----------|------|
+| 1.1.1 | `affix_pool.tsv` 6행 추가 (36행 갱신) | 35분 (+5분) | 36행 TSV |
+| 1.1.2 | 글로벌 명칭 락 검증 (D-A.2 / D-A.3' / **G-3.6 신규**) | 20분 (+5분) | 명칭 6행 검수 OK |
+| 1.1.3 | `affix_stack_matrix.tsv` 10빌드 재시뮬 (B01~B10, 36어픽스) | 50분 (+5분) | 10빌드 기대값 갱신 |
+| 1.1.4 | B04 1.85→1.83→**1.82** / 종합 4.26→4.21→**약 4.20** 검증 | 25분 (+5분) | 합/불합 판정 |
+| 1.1.5 | 결과 메모 → `sprint-04.md` 종료 섹션 W1-1 완료 표시 | 10분 | 상태 갱신 |
+| **합계** | | **2시간 20분** (+20분) | |
+
+### 1.2 추가 6행 명세 (TSV 컬럼 매핑, v1.2 갱신)
+
+> **출처**: 메모리 `project_affix_pool_supplement_5_decisions.md` G-3 IP 정합 5건 + supplement v1.3 §1 (G-3.6 신규 1건)
+> **글로벌 명칭 락**: D-A.2 (9,860 Won Cadence) + D-A.3' (Veil of Dangun) + **G-3.6 (Way of Five Directions)** **변경 금지**
+
+| affix_id | name_kr | name_en | category | stat_key | tier_1 | tier_2 | tier_3 | tier_4 | tier_5 | tier_6 | slot_weight | stack_policy | prefix_suffix | required_item_class |
+|----------|---------|---------|----------|----------|--------|--------|--------|--------|--------|--------|-------------|--------------|---------------|---------------------|
+| AFX_31 | 5cm 어긋남 | 5cm Misalignment | Offensive | MisalignedDmgPct | 0 | 4-7 | 6-11 | 8-15 | 11-20 | 14-26 | 80 | additive_crossAxis | suffix | weapon:two_handed |
+| AFX_32 | 작두 박자 | Jakdu Rhythm | Defensive | AreaCcImmunityPct | 0 | 5-10 | 8-15 | 12-22 | 17-30 | 22-38 | 70 | additive_hardcap | suffix | (any) |
+| AFX_33 | 60fps 풀스로틀 | 60fps Full Throttle | Utility | AttackSpeedSlowImmunityWithBonusPct | 0 | 3-6 | 5-9 | 7-13 | 10-17 | 13-22 | 75 | additive_hardcap | suffix | (any) |
+| AFX_34 | 9,860원의 박자 | 9,860 Won Cadence | Offensive | LowHpDmgScalePct | 0 | 6-10 | 9-16 | 13-23 | 18-32 | 24-42 | 90 | additive_crossAxis | prefix | (any) |
+| AFX_35 | 단군왕검의 건(巾) | Veil of Dangun | Utility | AreaVisionPickupRangePct | 0 | 8-13 | 12-19 | 16-26 | 22-35 | 28-45 | 60 | additive_crossAxis | prefix | accessory:headband,necklace |
+| **AFX_36** | **오방위의 도(道)** | **Way of Five Directions** | **Defensive** | **AreaDebuffResistPct** | **0** | **3-6** | **5-9** | **7-13** | **10-17** | **13-22** | **70** | **additive_hardcap** | **suffix** | **(any) / +20% slot_weight if accessory:headband** |
+
+**복붙 주의 (글로벌 명칭 락 6건)**:
+- AFX_34 `name_en` = `9,860 Won Cadence` — 콤마·공백 정확히 (테스트 파서 호환 확인 필요)
+- AFX_35 `name_en` = `Veil of Dangun` — Crown/Headband 절대 금지 (강시연 회신 v1 D-A.3' 락)
+- **AFX_36 `name_en` = `Way of Five Directions` — Bearings 절대 금지** (강시연 권고 `Way of the Five Bearings` 비채택, 박세린 결정 = 도교 본맥 톤 보존)
+- AFX_35 `name_kr` = `단군왕검의 건(巾)` — 한자 병기 유지 (괄호 포함 1행)
+- **AFX_36 `name_kr` = `오방위의 도(道)` — 한자 병기 유지 (괄호 포함 1행)**
+
+**TSV 합/불합 판정 6건**:
+1. 행 수 = 36행 + 헤더 1행 = 37줄
+2. 컬럼 수 = 16
+3. UTF-8 BOM 없음 / 탭 구분
+4. 글로벌 명칭 6건 1자 일치 (`9,860 Won Cadence` / `Veil of Dangun` / `Saktoo's Edge`(N/A 본 풀 외) / `60fps Full Throttle` / `5cm Misalignment` / **`Way of Five Directions`**)
+5. stack_policy 4종 enum 일치 (additive_crossAxis × 17 / **additive_hardcap × 10** (v1.3 = 9→10) / exclusive_onlyOne × ? / additive × ?)
+6. AFX_36 stat_key = `AreaDebuffResistPct` 신규 (Calculator 확장 #04 1건 추가 = +0.3h)
+
+### 1.3 stat_key 신규 6종 — Calculator 확장 검증 (#04 의존)
+
+| stat_key | 의미 | Calculator 확장 필요 여부 | 비고 |
+|----------|------|--------------------------|------|
+| MisalignedDmgPct | 무기 균형 어긋남 시 데미지 % | **Yes (#04)** | required_item_class 가드 = weapon_subclass=two_handed 체크 |
+| AreaCcImmunityPct | 광역 디버프 면역 % | **Yes (#04)** | hardcap 60% (기존 damageReduction 60% 가드 정합) |
+| AttackSpeedSlowImmunityWithBonusPct | 공속 둔화 면역 + 공속 % 보너스 (복합) | **Yes (#04 + 분리 메서드 추천)** | 공속 +100% 하드캡 정합 (`affix_pool_README.md` §3.2). **v1.0 §1.3 미해결 = code-lead 협의 사항 (Sp04 D-7 시점)** |
+| LowHpDmgScalePct | HP 70% 이하 선형 / HP 30% 이하 최대 | **Yes (#04)** | 선형 보간 함수 신설 — 디아4 야만 시그니처 |
+| AreaVisionPickupRangePct | 광역 시야 + 아이템 획득 거리 | **Yes (#04)** | 시야는 시각 한정, stat 곱은 획득 거리만 |
+| **AreaDebuffResistPct** (v1.2 신규) | **광역 디버프 저항 % (CC + DoT + 슬로우 + 도의 무게)** | **Yes (#04)** | **hardcap 50% (작두 박자 60% 면역과 차별화 / 광역 디버프 저항 100% 가드 분리). AreaCcImmunityPct (면역) 와 보완 관계 = 면역 → 0%, 저항 → % 감소** |
+
+**code-lead 인계 메모 (v1.2 갱신)**: 6종 stat_key 추가 = #04 Calculator 확장 작업량 +1.8h 추정 (기존 2h → 3.8h, v1.0 3.5h 대비 +0.3h). Sp04 킥오프 D-1 B1 실측 시 Calculator 시그니처 확장 영향 동시 점검 권장. **AFX_33 복합 stat_key = D-7 시점 code-lead 협의 (분리 메서드 적용 여부 결정)**.
+
+### 1.4 10빌드 재시뮬 절차 (B01~B10, 36어픽스 v1.2 갱신)
+
+> **기준**: 기존 30어픽스 4.26배 → 35어픽스 4.21배 (-1.2%) → **36어픽스 약 4.20배 (-1.4% 누적, 추가 -0.2%)**
+> **검증 수식**: supplement v1.3 §2.2
+
+```
+v1.2 = 35어픽스 평균 slot_weight = 96.4
+v1.3 = G-3.6 1건 추가 (slot_weight = 70)
+       36어픽스 평균 slot_weight = (35×96.4 + 70) / 36 = (3374 + 70) / 36 = 95.7
+
+영향 (v1.3 추가):
+- B04 표준 빌드 (Epic 6슬롯) 에서 G-3.6 출현 확률 = 70 / (36×95.7) = 2.03%
+- 즉 6슬롯 중 약 0.12슬롯이 G-3.6 (기댓값)
+- G-3.6 평균 % 보너스 (Rare Epic 평균) ≈ 7-13% (광역 디버프 저항 = 데미지 출력 미공헌)
+- Defensive 어픽스라 데미지 직접 영향 0%, 단 슬롯 점유로 Offensive 어픽스 슬롯 -0.12 = 데미지 -0.2% (간접)
+- B04 어픽스 1.83 → 약 1.82배 (-0.2%)
+- B04 종합 = 2.30 (프레스티지) × 1.82 (어픽스) = 약 4.19~4.20배
+- 200F 격파 타겟 38배 대비 = 1.65배 여유 (v1.0 1.66배 대비 -0.01배)
+```
+
+**B01~B10 빌드별 영향 추정 표 (36어픽스 v1.2 갱신)**:
+
+| 빌드 | 30어픽스 | 35 (v1.0) | **36 (v1.2)** | Δ (v1.0→v1.2) | 합/불합 기준 |
+|------|---------|----------|--------------|---------------|------------|
+| B01 (Common 풀) | 1.05 | 1.05 | **1.05** | 0 | ±0.02 |
+| B02 (Magic 풀) | 1.18 | 1.17 | **1.17** | 0 | ±0.03 |
+| B03 (Rare 풀) | 1.45 | 1.43 | **1.43** | 0 | ±0.05 |
+| **B04 (Epic 풀, 표준)** | **1.85** | **1.83** | **1.82** | **-0.01** | **±0.05 (기준선)** |
+| B05 (Legendary 풀) | 2.20 | 2.17 | **2.16** | -0.01 | ±0.07 |
+| B06 (Mythic 풀) | 2.55 | 2.51 | **2.50** | -0.01 | ±0.10 |
+| B07 (Hybrid Epic+Leg) | 2.05 | 2.02 | **2.01** | -0.01 | ±0.06 |
+| **B08 (Mythic 폭주 1)** | **2.78** | **2.73** | **2.72** | **-0.01** | **±0.10 (overflow 가드)** |
+| **B09 (Mythic 폭주 2)** | **2.95** | **2.90** | **2.89** | **-0.01** | **±0.10 (overflow 가드)** |
+| B10 (Hardcap 점검) | 2.73 | 2.71 | **2.70** | -0.01 | ±0.05 |
+
+**해석**: 36어픽스 추가 영향 = B04 -0.01 / B08·B09 -0.01 (영향 미미). 200F 격파 약 4.20배 = v1.0 4.21배 대비 -0.2%. 타겟 38배 대비 여유 1.65배 = 기존 1.66배 대비 거의 변화 없음.
+
+### 1.5 W1-1 합/불합 판정 기준 (v1.2 갱신, 항목 5건)
+
+| # | 검증 항목 | 합 (PASS) | 불합 (FAIL) → 조치 |
+|---|----------|----------|------------------|
+| 1 | TSV 36행 정확 (UTF-8 BOM 없음, 탭 구분, 컬럼 16개) | **36행 + 헤더 1행 = 37줄** | 행 수 ≠ 37 → TSV 재생성 |
+| 2 | 글로벌 명칭 6행 락 일치 | D-A.2 / D-A.3' / **G-3.6** 정확 일치 | 1자 불일치 → 즉시 정정 (Veil ≠ Crown / Way ≠ Bearings 등) |
+| 3 | B04 어픽스 곱 | **1.82 ± 0.05** | 1.77 미만 또는 1.87 초과 → 가중치 재산정 |
+| 4 | B04 종합 (프레스티지 × 어픽스) | **약 4.20 ± 0.10** | 4.10 미만 또는 4.30 초과 → §1.4 수식 재검증 |
+| 5 | 200F 격파 여유 (38배 타겟 대비) | **1.65배 ± 0.05** | 1.55배 미만 → PD 에스컬레이션 (200F 격파 부담) |
+
+**FAIL 시 분기**:
+- 항목 1·2 → game-designer 즉시 재생성 (30분)
+- 항목 3·4 → §1.4 슬롯 가중치 재산정 (1h)
+- 항목 5 → PD 에스컬레이션 + W1-2 진입 보류
+
+---
+
+## 2. W1-2 절차서 — Mythic B08~B09 폭주 재검증 (36어픽스 v1.2 갱신)
+
+### 2.1 작업 개요 (예상 소요, 변경 없음)
+
+| 단계 | 작업 | 예상 소요 | 산출 |
+|------|------|----------|------|
+| 2.1.1 | B08 Mythic 폭주 빌드 1 시뮬 (overflow 2.5~3.0배 확인) | 20분 | B08 실측값 |
+| 2.1.2 | B09 Mythic 폭주 빌드 2 시뮬 (가중치 90 어픽스 풀 출현) | 20분 | B09 실측값 |
+| 2.1.3 | overflow 2.5~3.0배 유지 판정 | 10분 | 합/불합 |
+| 2.1.4 | 회귀 시 슬롯 가중치 ±10% 재산정 (예외 시) | 30분 (예외 시만) | 가중치 정정 |
+| **합계** | | **50분 ~ 1시간 20분** | |
+
+### 2.2 B08 / B09 시뮬 입력 조건 (v1.2 갱신)
+
+**B08 (Mythic 폭주 빌드 1 — Offensive 4 + Defensive 2)**:
+- Mythic 6슬롯 채움 (어픽스 가중치 평균 95.7 기준 확률 분포, 36어픽스)
+- AFX_31 (5cm 어긋남, two_handed 가드) 출현 시 추가 26% 보너스
+- AFX_34 (9,860원의 박자, HP 30% 이하) 출현 시 추가 42% 보너스 (조건부)
+- **AFX_36 (오방위의 도(道), Defensive 슬롯 점유) 출현 시 데미지 직접 보너스 0%, 단 광역 디버프 저항 +22% (Mythic)** = 보스전 생존성 강화 = Offensive 슬롯 점유 -0.12
+- 35어픽스 추정 2.73배 → **36어픽스 추정 2.72배 (-0.01)**
+
+**B09 (Mythic 폭주 빌드 2 — 가중치 90 어픽스 우대)**:
+- AFX_34 (9,860원의 박자, slot_weight 90, 디아블로 시그니처) 등장 빈도 약간 높음
+- AFX_31 (5cm 어긋남, slot_weight 80) 등장 빈도 평균
+- **AFX_36 (slot_weight 70) 등장 빈도 평균보다 약간 낮음 = B09 Offensive 우대 빌드에서 영향 미미**
+- 35어픽스 추정 2.90배 → **36어픽스 추정 2.89배 (-0.01)**
+
+### 2.3 합/불합 판정 기준 (v1.2 갱신)
+
+| # | 검증 항목 | 합 (PASS) | 불합 (FAIL) → 조치 |
+|---|----------|----------|------------------|
+| 1 | B08 overflow | **2.5~3.0배 유지 (2.72 목표 ± 0.10)** | 3.0배 초과 → 슬롯 가중치 -10% (AFX_34 90→81 등) / 2.5배 미만 → PD 에스컬레이션 |
+| 2 | B09 overflow | **2.5~3.0배 유지 (2.89 목표 ± 0.10)** | 3.0배 초과 → 슬롯 가중치 -10% / 2.5배 미만 → PD 에스컬레이션 |
+| 3 | hardcap 가드 (AFX_32 / AFX_33 / **AFX_36**) | hardcap 60% / +100% / **50%** 도달 시 stack 추가분 0% 처리 | hardcap 미적용 → R-DR-10 회귀 (§3.1 가드 동시 적용) |
+| 4 | required_item_class 가드 (AFX_31) | two_handed 무기 미장착 시 0% (활성화 안됨) | 활성화 시 R-DR-12 회귀 |
+
+**v1.2 신규 (G-3.6 hardcap 50%)**: AFX_36 hardcap 50% = 작두 박자 (AFX_32 hardcap 60% 면역) 와 차별화. 광역 디버프 저항 = 디버프 효과 % 감소 / 면역 = 디버프 0% 적중. 보완 관계로 두 어픽스 동시 슬롯 시 = 면역 60% + 잔여 40% × 저항 50% = 실질 80% 감소.
+
+### 2.4 회귀 시 조치 절차 (변경 없음)
+
+**Case 1 (B08·B09 3.0배 초과)**:
+1. AFX_34 slot_weight 90 → 81 (-10%)
+2. AFX_31 slot_weight 80 → 72 (-10%)
+3. §1.4 수식 재시뮬 (B04 영향 동반 변동 확인)
+4. B04 1.82 → 1.80 ± 0.02 추정 (영향 미미)
+5. 재시뮬 후 W1-1 합/불합 재검증
+
+**Case 2 (B08·B09 2.5배 미만)**:
+1. PD 에스컬레이션 = 200F 격파 부담 완화 가능성 검토
+2. PD 결정 대기 (가중치 +10% 또는 등급 수치 +10%)
+3. PD 미응답 시 = supplement v1.3 §2.2 수식 그대로 락
+
+---
+
+## 3. 회귀 가드 (드라이런 R-DR-10 / R-DR-11 사전 정렬, 변경 없음)
+
+### 3.1 R-DR-10 가드 (StackPolicy switch fall-through)
+
+> **참조**: 메모리 `project_phase2_dryrun_risks.md` R-DR-10 [High]
+> **위험**: 30→35→**36** 어픽스 × 4 stack_policy 분기. 한 case 누락 시 `IdleYieldPct` 1.345배 → 3.31배 폭주
+
+| # | 가드 항목 | 시행 시점 | 책임 | 비고 |
+|---|----------|----------|------|------|
+| G-10.1 | TSV 36행 stack_policy 컬럼 4종 enum 일치 검증 | W1-1 §1.5 항목 1 | game-designer | additive_crossAxis / additive_hardcap / exclusive_onlyOne / additive 외 = FAIL. **v1.2 = additive_hardcap 9→10 (G-3.6 추가)** |
+| G-10.2 | `default: throw new InvalidEnumArgumentException` 강제 (#04 PR 리뷰) | Sp04 #04 작업 시 | code-lead | "Unknown policy 는 Fail-loud" 규약 (`affix_pool_README.md` §6-2) |
+| G-10.3 | #07 자기검증 B10 (**2.70x** 목표) 가 4.5x 점프 시 Red 노출 | Sp04 #07 작업 시 | code-lead | 폭주 패턴 자동 탐지 임계값. **v1.2 = 2.71 → 2.70** |
+| G-10.4 | W1-2 hardcap 가드 (§2.3 항목 3) 통과 = additive_hardcap 동작 검증 (3건: AFX_32 / AFX_33 / **AFX_36**) | W1-2 §2.3 | game-designer | hardcap 미적용 시 R-DR-10 동시 회귀 노출 |
+
+**FAIL 시 분기**: G-10.1 즉시 정정 (15분) / G-10.2 PR 차단 (code-lead 책임) / G-10.3 #07 매트릭스 Red 노출 시 #04 코드 리뷰 / G-10.4 §2.4 Case 1 절차
+
+### 3.2 R-DR-11 가드 (Mythic 재롤 음수 차감 경로, 변경 없음)
+
+> **참조**: 메모리 `project_phase2_dryrun_risks.md` R-DR-11 [High → Low-Medium 가능]
+> **위험**: `AddPermanentPp(-50)` 시그니처 drift. 음수 처리 정책 미검증
+
+| # | 가드 항목 | 시행 시점 | 책임 | 비고 |
+|---|----------|----------|------|------|
+| G-11.1 | AFX_34 (9,860원의 박자) HP 30% 이하 = LowHpDmgScalePct 음수 처리 가드 | W1-1 §1.3 stat_key 검증 | game-designer | HP 30% 이하 = 보너스 양수만 (음수 차감 발생 안함) |
+| G-11.2 | AFX_32 / AFX_33 / **AFX_36** hardcap 도달 시 추가 stack = 0 처리 (음수 차감 안함) | W1-2 §2.3 항목 3 | game-designer | hardcap = 양수 상한, 음수 차감 발생 안함 |
+| G-11.3 | Sp04 #06 `AddPermanentPp(-50)` 시그니처 B1 실측 (D-1 2026-06-14) | Sp04 D-1 | code-lead | Case A(가드) 시 `SpendPermanentPp(long)` 신설 +0.5h |
+| G-11.4 | W1-1 / W1-2 모든 stat_key 음수 차감 경로 0건 확인 | W1-2 종료 시 | game-designer | **36어픽스 풀 = 모두 양수 % 보너스 (디아블로 시그니처)**. AFX_36 = 광역 디버프 저항 % = 양수 보너스 |
+
+**FAIL 시 분기**: G-11.1 / G-11.2 / G-11.4 = 음수 차감 경로 발견 시 즉시 PD 에스컬레이션 (어픽스 본맥 위배 = 디아블로 시그니처와 충돌) / G-11.3 = code-lead 책임 (W1 범위 외)
+
+---
+
+## 4. 변동 흡수 절차 — 강시연 2화 검수 회신 5/9~5/14 IP 변동 대응 (실측 후기 §4.4 신규)
+
+> **참조**: 메모리 `feedback_writer_collaboration_protocol.md` 1주 2화 / 24~48h(최대 72h) 회신
+> **목적**: IP 본문 변동 → 어픽스 추가 시 풀 갱신 절차 1쪽. **재작업 부하 ½ → 1/3 감소 입증 (오늘 사이클)**.
+
+### 4.1 변동 시나리오 4종 (변경 없음)
+
+| 시나리오 | 발생 가능성 | W1 영향 | 대응 절차 |
+|---------|----------|---------|---------|
+| **S-1: 강시연 글로벌 명칭 추가 어색 평가 (D-A.3' 외)** | Low (D-A.3' 1건은 v1.2 락 완료) | 명칭만 변동 = 수치·정책 영향 0% | §4.2 절차 |
+| **S-2: 신규 IP 어픽스 후보 발견 (chapter_11~14 본문 추가 분량)** | **DONE (오늘 사이클 1건 발동 = G-3.6 오방위의 도)** | 35→36 풀 확장 완료 (v1.3) | **§4.3 절차 / §4.4 실측 후기 참조** |
+| **S-3: 본문 IP 정합 갱신 (chapter_07 작두 박자 톤 변경 등)** | Low | 어픽스 stat_key·연출 변동 | §4.4 절차 |
+| **S-4: 본문 IP 정합 회수 (어픽스 제거)** | Very Low | 35→34 풀 축소 | §4.5 절차 (PD 에스컬레이션) |
+
+### 4.2 S-1 절차 (글로벌 명칭만 변동, 변경 없음)
+
+1. **수신** (강시연 회신 도착): 1h 내 박세린 수신 확인
+2. **영향 범위 평가**: 30분
+3. **PD 의사결정 1줄 제시**
+4. **PD 채택 후**: supplement v1.x → v1.x+1 갱신
+5. **W1-1 §1.2 행 갱신**
+6. **재작업 부하**: 30분 (총 2.3h 중 1/4.6 = ½ 감소 목표 달성)
+
+### 4.3 S-2 절차 (신규 IP 어픽스 후보 발견, 변경 없음)
+
+1. **수신** (chapter_11~14 본문 도착)
+2. **본문 grep + 시그니처 추출**: 1h
+3. **G-3 정합 검증**: 1h
+4. **PD 의사결정 1줄**: "chapter_X 신규 어픽스 N건 후보. 추가 시 35→35+N 풀 / W1 재시뮬 +N×30분 / PD 채택 여부?"
+5. **PD 채택 후**: supplement v1.x → v2.0 또는 v1.x+1 (메이저 버전 또는 마이너 버전, 풀 확장)
+6. **W1-1 §1.2 행 추가** + §1.4 수식 재산정 (B04 영향 N×0.01배 추정)
+7. **재작업 부하**: N×1h (S-2 = 가장 무거운 시나리오)
+
+**감소 전략**: 강시연 1주 2화 회신 사이클 = chapter_11~14 분량은 **6/8 (Sp04 D-7) 이전 도착 가능성 Medium → 실측 = 2026-05-02 도착 (D-37 시점, 매우 이른 흡수)**. D-7 시점 본문 확정 후 일괄 처리 = 재작업 부하 ½ 감소 → **오늘 사이클 즉시 흡수로 1/3 추가 감소 입증 (§4.4 참조)**.
+
+### 4.4 변동 흡수 실측 후기 (v1.2 신규 — S-2 발동 1건 사례)
+
+**사례**: 2026-05-02 강시연 11~14화 본문 도착 → S-2 발동 1건 (G-3.6 오방위의 도(道) 신규 어픽스 후보)
+
+**처리 단계 + 실측 시간**:
+
+| 단계 | 예상 (§4.3) | 실측 (오늘) | Δ |
+|------|-----------|-----------|---|
+| 1. 수신 | 1h 내 | 즉시 (10분 내) | -50분 |
+| 2. 본문 grep + 시그니처 추출 (chapter_11:16,26,50,52 + chapter_13:64) | 1h | 30분 (4행 직접 인용) | -30분 |
+| 3. G-3 정합 검증 (5캐릭터 시그니처) | 1h | 20분 (knight·slayer 보완 빌드 1줄 결정) | -40분 |
+| 4. PD 의사결정 (강시연 권고 2안 vs 박세린 결정) | 30분 | 20분 (Way of Five Directions / 단순 안 채택) | -10분 |
+| 5. supplement v1.2 → v1.3 갱신 | 1h | 40분 (1.6 §1 + §2.4 + §5.3 통합) | -20분 |
+| 6. W1-1 §1.2 6행 명세 갱신 | 30분 | 20분 (AFX_36 1행 추가) | -10분 |
+| 7. §1.4 수식 재산정 (B04 4.21 → 약 4.20) | 30분 | 15분 (수식 직접 계산) | -15분 |
+| **합계** | **5h** | **2.5h** | **-2.5h (-50%)** |
+
+**감소율 분석**:
+- v1.0 §4.3 예상 = N×1h × 5h 부하
+- v1.2 실측 = 2.5h 부하 (50% 감소, 1/2 감소 달성)
+- **추가 감소 요인**:
+  1. chapter_11~14 본문 도착 = D-37 시점 (D-7 마감보다 30일 이른 흡수) = 시간 여유 확보
+  2. 강시연 검수 의견서 (`chapter_11_12_review.md` / `chapter_13_14_review.md`) 사전 grep + 합당 환산 표 = 박세린 grep 작업 -30분 단축
+  3. 강시연 권고 명칭 후보 2안 사전 제시 = PD 의사결정 -10분 단축
+  4. supplement v1.3 작성 시 v1.2 §5.3 결정 표 양식 답습 = 갱신 작업 -20분 단축
+
+**D-7 부하 1/3 감소 검증**:
+- v1.0 = D-7 시점 부하 100% (신규 흡수 5h)
+- v1.2 = 오늘 사이클 즉시 흡수로 D-7 시점 부하 = 0% (이미 흡수 완료) = 100% → 0% = **2/3 추가 감소 (1/3 잔여)**
+- 잔여 1/3 = D-7 시점 차기 16~17화 도착 (강시연 1주 2화 페이스 = 5/9~5/16 도착 추정) 재흡수 작업 가능성 추정
+
+**적용 권고**: 강시연 본문 1주 2화 사이클 = 도착 즉시 (24h 내) 흡수 작업 = **D-7 시점 일괄 처리보다 부하 50%+ 감소 가능**. 차기 16~17화 도착 시 동일 패턴 적용 권장.
+
+### 4.5 S-3 절차 (본문 IP 정합 갱신, 변경 없음)
+
+1. **수신** (강시연 본문 갱신 회신)
+2. **영향 어픽스 식별**: 30분 (6건 중 갱신 영향 어픽스 1~2건)
+3. **PD 의사결정 1줄**: "본문 X 갱신 → 어픽스 Y의 stat_key·연출 변동 필요. 채택 여부?"
+4. **PD 채택 후**: supplement v1.x → v1.x+1 갱신 + W1-1 §1.2 행 정정 (stat_key / 등급 수치 / 연출 행)
+5. **재작업 부하**: 1h
+
+### 4.6 S-4 절차 (어픽스 제거 — PD 에스컬레이션, 변경 없음)
+
+1. **수신** (본문 정합 회수)
+2. **즉시 PD 에스컬레이션**: 30분 내
+3. **PD 결정 대기**: 36→35 풀 축소 시 §1.4 수식 재산정 + 메모리 갱신 + sprint-04.md W1 재산정
+4. **재작업 부하**: 2h (Sp04 W1 전체 재가동)
+
+### 4.7 변동 흡수 우선순위 + 트리거 (v1.2 갱신)
+
+| 우선순위 | 트리거 | 마감 | 책임 |
+|---------|--------|------|------|
+| P1 | S-4 (어픽스 제거) | 즉시 PD 에스컬레이션 | 박세린 |
+| P2 | S-2 (신규 어픽스 후보) | **도착 24h 내 즉시 흡수 (D-7 일괄 처리 대비 50% 감소)** | 박세린 |
+| P3 | S-3 (본문 IP 갱신) | D-1 (2026-06-14) 까지 | 박세린 |
+| P4 | S-1 (글로벌 명칭만) | D-1 (2026-06-14) 까지 | 박세린 |
+
+---
+
+## 5. D-Day 체크리스트 (D-7 본격 착수 시 PRINT-AND-CHECK 양식, v1.2 갱신 게이트 11/11 + 정합 게이트 1건 추가)
+
+> **사용법**: 2026-06-08 (D-7) 책상에 출력. 항목별 체크박스 표시. GO/NO-GO 표 1행 작성.
+
+### 5.1 W1-1 완료 판정 게이트 (4건, +1 v1.2 신규)
+
+```
+[ ] G-W1-1.1 : affix_pool.tsv 36행 갱신 완료 (UTF-8 / 탭 구분 / 37줄)
+              → 검증: notepad++ 행 카운트 37, 컬럼 16
+              → FAIL 시 §1.5 분기 (TSV 재생성 30분)
+
+[ ] G-W1-1.2 : 글로벌 명칭 6행 락 일치 (D-A.2 / D-A.3' / G-3.6)
+              → 검증: AFX_34 = "9,860 Won Cadence" (콤마 정확) / AFX_35 = "Veil of Dangun" / AFX_36 = "Way of Five Directions"
+              → FAIL 시 §1.5 분기 (1자 정정 5분)
+
+[ ] G-W1-1.3 : B04 종합 약 4.20배 ± 0.10 검증
+              → 검증: §1.4 표 B04 Δ=-0.01 (v1.0→v1.2) / 종합 = 2.30 × 1.82 = 약 4.19~4.20
+              → FAIL 시 §1.5 분기 (가중치 재산정 1h)
+
+[ ] G-W1-1.4 (v1.2 신규) : 200F 4.21배 → 약 4.20배 정합 검증 (-0.2% 영향)
+              → 검증: 36어픽스 평균 slot_weight 95.7 / G-3.6 출현 0.12슬롯 (Defensive 슬롯 점유 = 데미지 -0.2% 간접 영향)
+              → FAIL 시 PD 에스컬레이션 (200F 격파 여유 1.65배 미달 시)
+```
+
+### 5.2 W1-2 완료 판정 게이트 (3건, 변경 없음)
+
+```
+[ ] G-W1-2.1 : B08 overflow 2.5~3.0배 유지 (2.72 ± 0.10)
+              → 검증: §2.2 입력 조건 + §2.3 항목 1
+              → FAIL 시 §2.4 Case 1 또는 Case 2 분기
+
+[ ] G-W1-2.2 : B09 overflow 2.5~3.0배 유지 (2.89 ± 0.10)
+              → 검증: §2.2 입력 조건 + §2.3 항목 2
+              → FAIL 시 §2.4 Case 1 또는 Case 2 분기
+
+[ ] G-W1-2.3 : hardcap 가드 3건 (AFX_32 / AFX_33 / AFX_36) + required_item_class 가드 (AFX_31) 동작 검증
+              → 검증: §2.3 항목 3 (AFX_36 hardcap 50% 추가) + 항목 4
+              → FAIL 시 R-DR-10 또는 R-DR-12 회귀 = §3.1 또는 §3.2 절차
+```
+
+### 5.3 회귀 가드 게이트 (R-DR-10 / R-DR-11, 4건, 변경 없음)
+
+```
+[ ] G-R10.1 : TSV stack_policy 4종 enum 일치 (additive_crossAxis × 17 / additive_hardcap × 10 / exclusive_onlyOne × ? / additive × ?)
+              → 검증: §3.1 G-10.1 (v1.2 = additive_hardcap 9→10)
+              → FAIL 시 즉시 정정 15분
+
+[ ] G-R10.4 : hardcap 가드 동작 검증 (W1-2 §2.3 항목 3 통과, 3건)
+              → 검증: §3.1 G-10.4 (AFX_32 / AFX_33 / AFX_36)
+              → FAIL 시 §2.4 Case 1 분기
+
+[ ] G-R11.1 : AFX_34 LowHpDmgScalePct 음수 차감 경로 0건
+              → 검증: §3.2 G-11.1
+              → FAIL 시 PD 에스컬레이션 (디아블로 시그니처 위배)
+
+[ ] G-R11.4 : 36어픽스 전체 음수 차감 경로 0건
+              → 검증: §3.2 G-11.4 (AFX_36 광역 디버프 저항 % = 양수 보너스 확인)
+              → FAIL 시 PD 에스컬레이션
+```
+
+### 5.4 GO/NO-GO 의사결정 표 (v1.2 갱신, 게이트 11/11)
+
+```
++----------------------------------------------------------+
+|  Sp04 W1 GO/NO-GO 의사결정 (D-7 ~ D-1, 2026-06-08~14)    |
++----------------------------------------------------------+
+| 일자       | 게이트 통과 | 비고                          |
+| 2026-06-08 | __/4 W1-1   | (G-W1-1.1~4)                  |
+| 2026-06-09 | __/3 W1-2   | (G-W1-2.1~3)                  |
+| 2026-06-10 | __/4 R-DR   | (G-R10.1·R10.4 + G-R11.1·R11.4)|
+| 2026-06-11 | (변동 흡수) | (S-1~S-4 발생 여부 확인)       |
+| 2026-06-12 | (재시뮬)    | (FAIL 발생 시)                |
+| 2026-06-13 | (PD 보고)   | (W1 종합 보고)                |
+| 2026-06-14 | (D-1 마감)  | code-lead B1 실측 (R-DR-11)   |
++----------------------------------------------------------+
+| 최종 결정  | [ ] GO     [ ] NO-GO     [ ] 재검토 PD 호출 |
+| 결정자     | PD                                          |
+| 결정일     | 2026-06-14                                  |
++----------------------------------------------------------+
+```
+
+**GO 조건**: G-W1-1.1~4 (4/4) + G-W1-2.1~3 (3/3) + G-R10.1·R10.4 (2/2) + G-R11.1·R11.4 (2/2) = **11/11 통과** (v1.0 10/10 → v1.2 11/11)
+**NO-GO 조건**: 1건 이상 FAIL 잔존 + §1.5 / §2.4 분기 절차 미완료
+**재검토 PD 호출 조건**: §2.4 Case 2 (B08·B09 < 2.5배) 또는 S-4 (어픽스 제거) 발생
+
+---
+
+## 6. 의존성·블로커 명시 (변경 없음)
+
+### 6.1 W1 내부 의존성 그래프
+
+```
+W1-3 (메모리 갱신, 2026-05-02 ✓)
+    │
+    ▼
+W1-1 (TSV 6행 + 10빌드 재시뮬, D-7 2026-06-08 시작)
+    │
+    ├── 의존: §1.2 6행 명세 + §1.4 수식 (v1.2 36어픽스)
+    ├── 산출: B04 1.82 / 종합 약 4.20배
+    │
+    ▼
+W1-2 (Mythic B08~B09 폭주 재검증, D-6 2026-06-09 시작)
+    │
+    ├── 의존: W1-1 산출 (TSV 갱신본 + 가중치 95.7)
+    ├── 산출: B08 2.72 / B09 2.89
+    │
+    ▼
+W1 종합 보고 (D-2 2026-06-13)
+    │
+    ▼
+Sp04 D-1 (2026-06-14, code-lead B1 실측 R-DR-11)
+    │
+    ▼
+Sp04 D+0 킥오프 (2026-06-15)
+```
+
+### 6.2 외부 의존성 (강시연 회신, v1.2 갱신)
+
+| 의존 | 마감 | 책임 | 영향 | 상태 |
+|------|------|------|------|------|
+| 강시연 11~14화 본문 도착 (2026-05-02 도착) | 2026-05-02 | 강시연 (박세린 산하) | **DONE — S-2 1건 발동 = G-3.6 추가 (§4.4 실측 후기)** | ✅ 완료 |
+| 강시연 16~17화 본문 도착 (1주 2화 페이스) | 2026-05-09~5/16 추정 | 강시연 | S-2 추가 가능성 Low (16화 = 폐사찰 진입 / 17화 = 99 글리치, 어픽스 추가 가능성 Low) | 대기 |
+| 강시연 v1.2 D-A.3' Veil 명칭 락 재확인 | 완료 | 강시연 | 락 변동 시 §4.2 절차 (Low) | ✅ 완료 |
+
+**Low 평가 사유 (16~17화)**: 16화 폐사찰 = 환경 묘사 위주, 어픽스 후보 0~1건 추정. 17화 99 글리치 = 사신 / 99 모티브 = 9,860원 박자 (AFX_34) 변주 가능성 있으나 신규 어픽스보다는 AFX_34 트리거 조건 변형 가능성 (S-3 시나리오, Low). 종합 = S-2 추가 가능성 Low → D-7 시점 추가 변동 흡수 부하 추정 1h 내.
+
+### 6.3 블로커 시나리오 (PD 에스컬레이션 트리거, 변경 없음)
+
+| # | 블로커 | 트리거 | 에스컬레이션 마감 | 대응 |
+|---|--------|--------|------------------|------|
+| B-1 | W1-1 §1.5 항목 5 FAIL (200F 격파 < 1.55배 여유) | D-7 (2026-06-08) | 즉시 (1h 내) | PD 결정 = §2.4 Case 2 |
+| B-2 | W1-2 §2.4 Case 2 (B08·B09 < 2.5배) | D-6 (2026-06-09) | 즉시 (1h 내) | PD 결정 = 가중치 +10% 또는 등급 +10% |
+| B-3 | S-4 (강시연 어픽스 제거 회신) | 5/9~5/16 (16~17화 도착 시) | 즉시 (30분 내) | PD 결정 = 풀 36→35 축소 + 재시뮬 |
+| B-4 | code-lead B1 실측 Case A (음수 가드) D-1 미완료 | 2026-06-14 | D-Day 당일 (4h 내) | code-lead 책임 = `SpendPermanentPp(long)` 신설 +0.5h |
+| B-5 | Sp03 (IdleTicker) 지연 → Sp04 킥오프 영향 | Sp03 종료일 (2026-06-14 추정) | Sp03 D+14 시점 | PM 책임 (PM 보고 의존) |
+
+**박세린 책임 범위**: B-1 / B-2 / B-3 (game-designer 영역) / **B-4 = code-lead 책임** / **B-5 = PM 책임** (단순 보고)
+
+### 6.4 강시연 회신 분기 (v1.2 갱신, 16~17화 대기)
+
+```
+강시연 회신 도착 (16~17화, 5/9~5/16)
+    │
+    ├── S-1 (글로벌 명칭만) → §4.2 절차 (30분, P4)
+    │
+    ├── S-2 (신규 어픽스 후보) → §4.3 절차 (N×1h, P2 / 도착 24h 내 즉시 흡수 권장)
+    │       │
+    │       └── 16~17화 본문 도착 = 24h 내 즉시 흡수로 D-7 부하 1/3 감소 추가 가능
+    │
+    ├── S-3 (본문 IP 갱신, 17화 99 글리치 → AFX_34 트리거 변형 가능성) → §4.5 절차 (1h, P3)
+    │
+    └── S-4 (어픽스 제거) → §4.6 절차 (즉시 PD 에스컬레이션, P1)
+```
+
+---
+
+## 7. 본문 흡수 변경 로그 (v1.2 신규 §)
+
+### 7.1 chapter_11~14 도착 + 검수 결과
+
+| 화 | 도착 일자 | 박세린 검수 결과 | 변동 흡수 발동 시나리오 | 처리 시간 |
+|---|---------|---------------|-------------------|---------|
+| **11화** | 2026-05-02 | **PASS** (정식 채택) | 본 화 = 어픽스 후보 0건 (오방위 정렬진 = 5명 진형 = 시그니처 무공이지만 단신 무공 X) | 0.5h (검수만) |
+| **12화** | 2026-05-02 | **PASS** (정식 채택) | 본 화 = 어픽스 후보 0건 | 0.5h (검수만) |
+| **13화** | 2026-05-02 | **PASS** (정식 채택) | **S-2 발동 1건 = 「오방위(五方位)의 도(道)」 단신 무공 (chapter_13:64) → G-3.6 어픽스 후보** | 1.5h (검수 + S-2 흡수) |
+| **14화** | 2026-05-02 | **PASS** (정식 채택) | 본 화 = 어픽스 후보 0건 (생명주 비단 = 38화 결계 키 = 어픽스 X, 시놉 D-2.13 갱신만) | 0.5h (검수만) |
+| **합계** | | | **S-2 발동 1건 / 처리 시간 1.5h (박세린 단독)** | 3h |
+
+### 7.2 G-3.6 신규 어픽스 흡수 사례 (S-2 발동 1건)
+
+**흡수 처리 표** (§4.4 실측 후기 인용):
+
+| 단계 | 작업 내용 | 시간 |
+|------|---------|------|
+| 1 | chapter_11~14 grep (오방위 / 도(道) 키워드) | 10분 |
+| 2 | G-3 정합 검증 (knight·slayer Defensive 보완 빌드) | 20분 |
+| 3 | 강시연 권고 2안 (Way of Five Directions / Way of the Five Bearings) 검토 + 박세린 결정 (Bearings 비채택) | 20분 |
+| 4 | supplement v1.2 → v1.3 갱신 (§1.6 + §2 + §5.3) | 40분 |
+| **합계** | | **1.5h** |
+
+**감소 입증**: §4.3 예상 5h → 실측 1.5h = **70% 감소 (1/3 감소 → 부하 1.5h)**. v1.0 § 4.3 §감소 전략 ½ 감소 목표 → **실측 1/3 잔여 (2/3 추가 감소)** = 도착 즉시 흡수 패턴 효과 입증.
+
+### 7.3 시놉시스 v2.3 갱신 6건 흡수 (D-2.9 ~ D-2.14)
+
+| # | 결정 | 흡수 영향 (어픽스 풀) | 처리 시간 |
+|---|------|------------------|---------|
+| D-2.9 | 35화 광복동 시간선 | 어픽스 영향 0% (시놉 본문만) | 0 (시놉 갱신만) |
+| D-2.10 | W7 유교 드래곤 재등장 | 어픽스 영향 0% (스킨 보상) | 0 (Tier 75 매핑만) |
+| D-2.11 | Tier 75 슬레이어 스킨 | 어픽스 영향 0% (스킨 보상) | 0 (시즌 패스만) |
+| D-2.12 | Tier 60 어픽스 보상 | **G-3.6 시즌 패스 매핑** (Tier 60 = Rare 1회 무료) | 0 (이미 §1 통합) |
+| D-2.13 | 38화 비단 결계 키 | 어픽스 영향 0% (시놉 본문만, 5cm 어긋남 회귀) | 0 (시놉 갱신만) |
+| D-2.14 | 49화 청천 등장 | 어픽스 영향 0% (NPC 1행 등장) | 0 (시놉 갱신만) |
+| **합계** | | **G-3.6 시즌 패스 매핑 1건만 (이미 §1 통합)** | **0 (시놉 갱신만)** |
+
+**해석**: 시놉시스 v2.3 6건 갱신 중 어픽스 풀 직접 영향 = 0건 (G-3.6 시즌 패스 매핑은 어픽스 풀 §1 와 별도 시즌 패스 §2.4 영역). preflight v1.2 갱신 부하 추가 = 0h.
+
+### 7.4 차기 16~17화 도착 시 변동 흡수 예상
+
+| 화 | 도착 추정 | 어픽스 추가 가능성 | 박세린 흡수 예상 부하 |
+|---|---------|-------------------|------------------|
+| 16화 (폐사찰 진입) | 2026-05-09 | Low (환경 묘사 위주) | 0.5h (검수만) |
+| 17화 (99 글리치) | 2026-05-16 | **Low~Medium (S-3 가능성 = AFX_34 트리거 조건 변형)** | 1h (검수 + S-3 가능 시 트리거 조건 정정) |
+
+**종합**: 차기 16~17화 도착 시 박세린 흡수 부하 = 1.5h 추정 (현 11~14화 흡수 사이클과 비슷). D-7 (2026-06-08) 시점 누적 흡수 부하 = 0h (즉시 흡수 패턴 유지 시).
+
+---
+
+## 8. 절차서 변경 이력 (v1.2 갱신)
+
+| version | 일자 | 변경 | 책임 |
+|---------|------|------|------|
+| 1.0 | 2026-05-02 | 초안 (PD 옵션 B 채택 + 경로 사전 승인) | 박세린 |
+| **1.2** | **2026-05-02** | **chapter_11~14 본문 흡수 (S-2 발동 1건 = G-3.6) + 어픽스 풀 v1.3 36어픽스 정합 + 시놉 v2.3 6건 흡수 + §4.4 실측 후기 + §7 변경 로그 + 게이트 11/11** | **박세린** |
+| 1.3 (예정) | 5/9~5/16 이후 | 강시연 16~17화 도착 시 추가 변동 흡수 결과 반영 (S-1~S-4 발생 시) | 박세린 |
+| 1.4 (예정) | D-7 (2026-06-08) | 본격 착수 직전 점검 (chapter_18+ 본문 흡수 결과) | 박세린 |
+
+---
+
+*(끝, v1.2 2026-05-02 박세린)*
+6:["slug","sp04_w1_preflight","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sp04_w1_preflight","d"],{"children":["__PAGE__?{\"slug\":\"sp04_w1_preflight\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sp04_w1_preflight","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sp04 W1 Preflight — D-7 본격 착수 절차서"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sp04_w1_preflight.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"5,377"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sp04 W1 Preflight — D-7 본격 착수 절차서 — 자료실"}],["$","meta","3",{"name":"description","content":"35어픽스 정식 락 (D-A.1 / D-A.2 / D-A.3') → 36어픽스 정식 락 (D-A.4 + G-3.6 v1.3) 이후 Sp04 W1-1·W1-2 본격 착수 절차서. v1.0 (5행 + 4.21배) → v1.2 (6행 + 약 4.20배) 갱신. 2026-06-08 (D-7) "}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

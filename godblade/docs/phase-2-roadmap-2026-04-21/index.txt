@@ -1,0 +1,331 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T5806,# Phase 2+3 Roadmap Re-integration — 2026-04-21 (v2.0 REVISED)
+
+> 작성: 2026-04-21 (project-manager) · 근거: 기존 10건 승인본 + **Sp06+ 리서치 v1.0 APPROVED (2026-04-21)** + 메모리 13건 + Sprint 00/01 문서
+> **문서 상태**: **v2.0 APPROVED** (v1.0 2026-04-21 선작성 → 같은 날 PD Gap 회신 + Sp06+ 5대 결정 반영하여 재작성 → 2026-04-21 PD 신규 결정 4건 전량 승인)
+>
+> **PD 결정 (2026-04-21, v2.0 신규 4건)**:
+> - **D1 휴식/Firebase 준비 주차** = **V3** Sp05↔Sp06 통합 1주 (2026-07-13~07-20) — 회고 2h + Firebase 준비 6h + Phase 3 계획 2h + 번아웃 완충. 전체 종료일 **2026-09-14** (1주 순연)
+> - **D2 Phase 2/3 공식 명명** = **B** 분리 (Phase 2 MVP Sp00~05 2026-07-13 / Phase 3 확장 Sp06~09 2026-09-14)
+> - **D3 Sp09 재검토 분기 사전 힌트** = **D** 무힌트 (Sp06~08 실측 후 Sp08 W2 종료일 2026-08-31 PD·game-designer·code-lead 3자 검토로 결정)
+> - **D4 Sp07 W1 game-designer 수치 선행 발주** = **A** Sp06 킥오프 동시(2026-07-13) — Sp06 코딩 중 속성 시트 병렬 작성. 2026-07-20 D-7 교차 검토 1h 예약
+> **범위**: Sp00~Sp09 총 10 스프린트 (Phase 2 = Sp00~Sp05 MVP 골격 / Phase 3 = Sp06~Sp09 확장 레이어)
+> **제약**: 감지·통합·권고만. Sp01~05 APPROVED + Sp06+ 5대 결정 일체 불변. 수치·구조·설계 변경 금지.
+
+---
+
+## §0 v1.0 → v2.0 주요 변경점 (PD 30초)
+
+1. **Gap 해소**: v1.0의 Sp03↔Sp04 4주 / Sp04↔Sp05 6주+ gap은 **PM 스케줄링 아티팩트**로 확정 (PD 2026-04-21 회신). "방치형 RPG"는 장르명, 일정에는 방치 없음. **전 스프린트 gap 0주차로 연속 압축**.
+2. **Phase 3 신설**: Sp06~Sp09 4개 스프린트 × 15h = 60h 추가. Phase 2(Sp00~Sp05 MVP) / Phase 3(Sp06~Sp09 확장 레이어)로 구분.
+3. **종료일 단축**: v1.0 Phase 2 종료 2026-09-21 → v2.0 Phase 2 종료 **2026-07-13**(Sp05 W2) / Phase 3 종료 **2026-09-07**(Sp09 W2). 총 기간 20주 → **18주** (압축 2주 + 확장 8주 순증 6주).
+4. **의존성 그래프**: R01~R28 + **R29~R42 (14 노드 신규)**. Critical path는 Sp05 R26에서 Sp06 R30(MythicEssence 소비처) → Sp07 R35(저항) → Sp08 R38(프리셋) → Sp09 R40(분기)로 연장.
+5. **리스크 R1 번아웃 재평가**: 18주 연속 → **중~고**. 휴식 주차 1~2주 삽입 시나리오 V1 / Firebase 준비 주차 V2 / 통합안 V3 3종 제시 (§6 R1).
+6. **PD 결정 요청 재정리**: v1.0 D1~D5 중 D1(gap 이유) 해소, D4(Sp06+ 로드맵) 해소. 신규 D1~D4 4건 (§7).
+
+---
+
+## §1 로드맵 요약 (PD 1분)
+
+- **전체 공식 기간**: 2026-04-20 (Sp00 킥오프) ~ **2026-09-07** (Sp09 W2 종료) = **20주 연속**
+- **순 작업 스프린트**: 10개 × 2주 = 20주 (Sp00 완료 / Sp01~09 예정)
+- **공식 gap**: **0주차** (v1.0의 10주+ gap 전부 해소, PD 확인 완료)
+- **Phase 구분**:
+  - **Phase 2 (Sp00~Sp05) MVP 골격**: 2026-04-20 ~ 2026-07-13, 12주, 공수 76~87h
+  - **Phase 3 (Sp06~Sp09) 확장 레이어**: 2026-07-13 ~ 2026-09-07, 8주, 공수 60h
+- **공수 총합**: 76~87h + 60h = **약 136~147h**. 주 10~15h × 18주 연속 가용 = 180~270h. **✅ 생존 가능** (단 R1 번아웃 리스크 중~고).
+- **Critical path**: Sp01 W2 DropRateTableSO → Sp02 W2 PlayerPrestigeState → Sp03 IdleTicker → Sp05 SeasonController → **Sp06 MythicEssence 소비처 → Sp07 elementalDmgPct 4분기 → Sp08 프리셋 v3 → Sp09 분기**. **11 노드 × 2~4h 평균 = 26~36h 직렬 공수**.
+- **핵심 병목 3개**: (a) Sp02 W2 `PrestigeCalculator.BuildSummary` 필드 확정 / (b) Firebase 첫 도입(Sp05 T4) / (c) **신규: Sp07 `elementalDmgPct` 1→4 분기 시 `affix_pool.tsv` 총 30개 유지 (31~33개로 누출 금지)**.
+
+---
+
+## §2 Gantt 차트 (주차표)
+
+기준: 2026-04-20 월요일 시작. 각 칸 = 1주. 색/기호:
+- `▓▓` = 활성 스프린트 주차
+- `▒▒` = buffer 주차
+- `[m]` = 마일스톤 / `[?]` = PD 결정 대기 / `[OPT]` = 옵션 삽입 후보
+
+| 주차 | 주 시작일 | Phase | Sp | 진행 | 마일스톤·비고 |
+|-----|-----------|-------|----|----- |----------------|
+| W1  | 2026-04-20 | P2 | Sp00 | ▓▓W1 | Sp00 킥오프 + D+1 Smoke Test 통과 [m] |
+| W2  | 2026-04-27 | P2 | Sp00 | ▒▒버퍼 | 10건 승인본 부설 완료 + Sp06+ 리서치 APPROVED [m] |
+| W3  | 2026-05-04 | P2 | Sp01 | ▓▓W1 | Sp01 킥오프. TSV 3종→SO Importer 3SO 생성 [m] |
+| W4  | 2026-05-11 | P2 | Sp01 | ▓▓W2 | Lookup + Tests.Editor 신설 + 5~8 Green |
+| W5  | 2026-05-18 | P2 | Sp02 | ▓▓W1 | 프레스티지 30항목 수치 시트 + TsvReader 공통화 |
+| W6  | 2026-05-25 | P2 | Sp02 | ▓▓W2 | PlayerPrestigeState(struct+List) + JSON + 6훅. **D-2 BuildSummary 축4 재확인 [!]** |
+| W7  | 2026-06-01 | P2 | Sp03 | ▓▓W1 | Sp03 킥오프. IdleRewardCalculator 하이브리드 |
+| W8  | 2026-06-08 | P2 | Sp03 | ▓▓W2 | IdleTicker + OnIdleReward 실배선 + Smoke 10h |
+| W9  | 2026-06-15 | P2 | Sp04 | ▓▓W1 | Sp04 킥오프. AffixPoolSO 실수치 + 셋 제외 |
+| W10 | 2026-06-22 | P2 | Sp04 | ▓▓W2 | 재롤 시스템 + 10빌드 시뮬 매트릭스 |
+| W11 | 2026-06-29 | P2 | Sp05 | ▓▓W1 | Sp05 킥오프. Firebase + SeasonController + T1~T5 |
+| W12 | 2026-07-06 | P2 | Sp05 | ▓▓W2 | Migrate 실배선 + Smoke 전체 루프. **[m] Phase 2 종료** |
+| W13 | 2026-07-13 | P3 | Sp06 | ▓▓W1 | **Phase 3 시작.** 이월 5건 소화 T1~T3 (Legendary / Essence 소비처 / SeasonEndModal) |
+| W14 | 2026-07-20 | P3 | Sp06 | ▓▓W2 | Firestore CF + 211행 한글명 이식 |
+| W15 | 2026-07-27 | P3 | Sp07 | ▓▓W1 | 속성 4종 enum + affix `elementalDmgPct` 4분기. **[!] 어픽스 30 유지 검증** |
+| W16 | 2026-08-03 | P3 | Sp07 | ▓▓W2 | 저항 4종 + 프레스티지 "원소 피해" 연동 + Tests |
+| W17 | 2026-08-10 | P3 | Sp08 | ▓▓W1 | 주간 이벤트 2종 Firestore `weekly_ranking` + CF |
+| W18 | 2026-08-17 | P3 | Sp08 | ▓▓W2 | 프리셋 3~5 슬롯 + `prestige.v2.json` → v3 마이그 |
+| W19 | 2026-08-24 | P3 | Sp09 | ▓▓W1 | **재검토 분기**. Sp06~08 실측 기반 택1 (Follower / 속성확장 / 수호자) [?] |
+| W20 | 2026-08-31 | P3 | Sp09 | ▓▓W2 | 선택 분기 구현. **[m] Phase 3 종료 / 전체 종료 2026-09-07** |
+
+**병렬 담당**: W1 = game-designer 수치 시트 선행 / code-lead 인프라. W2 = code-lead 런타임·테스트 / PM D+7 중간점검 + D+14 회고. Phase 3는 Sp07 W1 속성 수치, Sp08 W1 이벤트 수치 시트에서 game-designer 재가동.
+
+### §2.1 옵션 삽입 시나리오 (휴식 / Firebase 준비)
+
+| 시나리오 | 삽입 위치 | 주차 | 종료일 | 비고 |
+|---------|----------|------|--------|------|
+| **V0 기본 (현재안)** | 없음 | 18주 연속 | 2026-09-07 | 번아웃 리스크 중~고 |
+| **V1 휴식 1주 (권장)** | Sp06↔Sp07 사이 (W14 종료 후) | +1주 | 2026-09-14 | Phase 2 완주 후 1주 쉼. P3 진입 전 실측 관찰 겸용 |
+| **V2 Firebase 선행 1주** | Sp04↔Sp05 사이 (W10 종료 후) | +1주 | 2026-09-14 | Sp05 T4 러닝커브 선행 흡수. Firestore 에뮬 학습 |
+| **V3 통합 1주 (최적)** | Sp05↔Sp06 사이 (W12 종료 후) | +1주 | 2026-09-14 | Phase 2 종료 회고 + Phase 3 계획 + Firestore CF 선행 학습 동시 소화 |
+| V4 휴식 2주 | V3 + Sp08↔Sp09 | +2주 | 2026-09-21 | 번아웃 안전 최대치. 단 Phase 2 동일 종료 2026-07-13 |
+
+**PM 권장**: **V3** — 1주 비용으로 (a) Phase 2 완주 회고 / (b) Firebase Cloud Function 선행 학습 / (c) Phase 3 Sp06 이월 5건 우선순위 재확인 동시 해결. 번아웃 완충도 겸함.
+
+---
+
+## §3 의존성 그래프 (확장)
+
+### §3.1 노드 (Phase 2 R01~R28 + Phase 3 R29~R42 신규)
+
+**Phase 2 (Sp00~Sp05)**: R01~R28 — v1.0 §3.1 그대로 유지 (변경 없음, 본 문서 §3.3 시그니처 표 참조).
+
+**Phase 3 신규 노드**:
+```
+[Sp06 이월 5건 — game-designer 수치 이미 APPROVED]
+  R29  Legendary 고정 Power 6종 (affix_pool Q2, 장비종류별 차등)
+  R30  MythicEssence 소비처 (sprint-05 Q7, 상점/크래프팅 + 지갑 확장) ★ CRITICAL PATH
+  R31  SeasonEndModal UI (sprint-05 §7 MigrateSeasonalToPermanent 수신)
+  R32  Firestore Cloud Function (sprint-05 Q5 seasonEndUtc 서버 권위화)
+  R33  OptionItemRandom 211행 한글명 이식 (localization.csv 병합)
+
+[Sp07 속성 시스템 — D2 4속성]
+  R34  Element enum (Fire/Cold/Lightning/Poison)
+  R35  elementalResPct 저항 4종 + stack_policy 하드캡 75% ★ CRITICAL PATH
+  R36  affix_pool.tsv `elementalDmgPct` 1행 → 4분기 (30개 유지)
+  R37  prestige Offense #7 "원소 피해" 4속성 분기 (선반영 활용)
+
+[Sp08 이벤트 + 프리셋]
+  R38  prestige.v2.json → v3.json presets[] 스키마 마이그 ★ CRITICAL PATH
+  R39  Firestore weekly_ranking 컬렉션 + CF 주간 리셋
+  R40a 주간 제한 던전 2종 스펙 (Legendary금지 / 공속부스트)
+
+[Sp09 재검토 분기 — 미확정 택1]
+  R40b Option A: 수호자(Guardian) 펫 전투 참여 확장 (15h) — 가장 유력
+  R41  Option B: Follower NPC 1슬롯 (20h+ → 2 스프린트 분할) — 아트 리스크
+  R42  Option C: 속성 6속성 확장 (Holy/Shadow 추가) (10h)
+```
+
+### §3.2 엣지 (Phase 3 추가분)
+
+```
+R26 (Sp05 Migrate 발화자) ─┬─ R30 (MythicEssence 지갑 확장) ─┐
+                          │                                   │
+R27 (PlayerWalletState) ──┘                                   │
+                                                              ├─ R38 (prestige v3) ─ R40* (Sp09 분기)
+R28 (IMythicConstraint) ─── R29 (Legendary Power) ────────────┤
+R11 (BuildSummary) ──── R37 (Offense #7 원소피해 4분기) ──────┤
+R18 (AffixPool) ──── R36 (elementalDmgPct 4분기) ──── R34 ──┤
+                                                              │
+R22 (SeasonController) ──── R31 (SeasonEndModal) ─────────────┤
+R23 (Firebase init) ──── R32 (Cloud Function) ── R39 (weekly) ┘
+R18 수치 ──── R33 (211 한글명) ── (병렬, 비블로킹)
+R34 (Element) ── R35 (저항 stack_policy) ── R37 연동
+```
+
+### §3.3 고정된 API 시그니처 (Phase 3 추가 계약)
+
+| 계약 | 정의처 | 소비처 | 상태 |
+|------|--------|--------|------|
+| `PlayerWalletState.AddMythicEssence(int)` / `SpendMythicEssence(int)` | Sp05 R27 | Sp06 R30 상점 로직 | ✅ Sp05 APPROVED |
+| `OnSeasonEnd(SeasonEndPayload)` 이벤트 | Sp05 R22 발화 | Sp06 R31 UI 구독 | ✅ Sp02 tech-sketch §6 훅 3건 중 1건 |
+| `AffixPool` `elementalDmgPct` 4분기 시 **총 30개 유지** | Sp07 R36 | 기존 Sp04 10빌드 매트릭스 테스트 재실행 | ⚠ Sp07 W1 착수 시 code-lead 검증 필수 (31~33 누출 차단) |
+| `Element` enum (4값) | Sp07 R34 | R35·R36·R37 공유 | ⚠ Sp07 W1 game-designer 표준 명칭 확정 필요 |
+| `PrestigeSaveDto v2 → v3` (presets[] 추가) | Sp08 R38 | 모든 기존 세이브 마이그 필수 | ⚠ Sp05 v1→v2 마이그 패턴 그대로 재활용 |
+| `weekly_ranking` Firestore 스키마 | Sp08 R39 | Sp06 R32 CF 재활용 | ⚠ Sp08 W1 게임디자이너 이벤트 수치 선행 필요 |
+
+---
+
+## §4 병목 식별 (재산출)
+
+### §4.1 Critical Path 재산출
+
+```
+Sp01 R02 (DropRateTableSO)
+  → Sp02 R10 (PlayerPrestigeState)
+    → Sp02 R11 (BuildSummary 축4)
+      → Sp03 R14 (IdleRewardCalculator)
+        → Sp03 R15 (IdleTicker)
+          → Sp03 R17 (OnIdleReward 배선)
+            → Sp05 R26 (MigrateSeasonalToPermanent 발화)
+              → Sp06 R30 (MythicEssence 소비처 + Wallet 확장)
+                → Sp07 R35 (elementalResPct 저항 stack_policy)
+                  → Sp08 R38 (prestige v3 presets 마이그)
+                    → Sp09 R40* (분기 택1)
+```
+
+**총 길이**: 11 노드 × 2~4h 평균 = **약 26~36h 직렬 공수**. 20주 일정 창 대비 크게 여유 (가용 180~270h).
+
+### §4.2 병렬 가능 구간 (Phase 3 추가)
+
+| 구간 | game-designer | code-lead | 비고 |
+|------|---------------|-----------|------|
+| Sp06 W1 | (없음 — 이월 5건 수치 Sp05까지 전부 APPROVED) | R29~R31 | 211행 한글명은 단순 CSV 머지 |
+| Sp07 W1 | Element 명칭 표준 + 저항 75% 하드캡 수치 + `elementalDmgPct` 4분기 밸런스 | R34 enum + R35 stack_policy | **game-designer 재가동 첫 스프린트 풀과제** |
+| Sp08 W1 | 주간 이벤트 2종 수치 (층 기준 / DPS 기준) + 보상 곡선 (MythicEssence 50/100/200) | R38 v3 스키마 + R39 CF 스켈레톤 | game-designer 2주 연속 가동 |
+| Sp08 W2 | 프리셋 3~5 슬롯 기본 배분 샘플 ("폭딜/방치/드롭") | R38 마이그 실구현 + UI 버튼 | |
+| Sp09 W1 | Sp06~08 실측 데이터 분석 → 분기 추천 | — | **PD 결정 D4 유예 분기** |
+
+**결론**: Phase 3는 game-designer 풀가동 구간(Sp07~Sp08). Phase 2와 반대 패턴. **Sp06 킥오프 전 game-designer Sp07 W1 수치 선행 발주 권고**.
+
+### §4.3 잠재 병목 3개 (실제 위험)
+
+1. **축4 `BuildSummary` 필드 확정 지연** — Sp02 W2 (기존 v1.0 R2, 유지).
+2. **Firebase 첫 도입 러닝커브 (Sp05 T4)** — 설계 3h 낙관, 실제 8~12h 가능 (기존 v1.0 R1, 유지). Sp06 R32 Cloud Function이 동일 러닝커브 재현 가능성 높음 → **Sp06 R32 6h 버퍼 권고** (설계 4h → 실측 6~8h 대비).
+3. **신규 — Sp07 `elementalDmgPct` 1→4 분기 시 어픽스 30개 유지** — `affix_pool.tsv` 30행 스키마를 31~33으로 누출시키면 Sp04 APPROVED 10빌드 매트릭스 테스트 재실측 필요. W1 코드리뷰에서 차단해야 함.
+
+---
+
+## §5 공수 재계산
+
+### §5.1 스프린트별 공수 (Phase 3 추가)
+
+| 스프린트 | W1 | W2 | 합계 | 버퍼 | 출처 |
+|---------|-----|-----|------|------|------|
+| (Sp00~Sp05 동일) | v1.0 §5.1 참조 | | 76~87h | +3~4h | 기존 산출 유지 |
+| **Sp06** | R29 4h + R30 3h | R31 3h + R32 4h + R33 1h | **15h** | +2h (Firestore CF 러닝커브) | sp06-plus-lever §5.1 |
+| **Sp07** | R34 3h + R36 3h + R35 설계 2h | R35 구현 2h + R37 2h + Tests 2h + 통합 1h | **15h** | +1.5h | sp06-plus-lever §5.1 |
+| **Sp08** | R40a 4h + R39 4h | R38 3h + R40a UI 3h + Tests 1h | **15h** | +1.5h | sp06-plus-lever §5.1 |
+| **Sp09** | 분기 추천·분석 2h + 착수 준비 3h | 구현 10h (분기별 변동) | **15h** | +2h | sp06-plus-lever §5.1 |
+
+### §5.2 총 공수 합산
+
+- **Phase 2 (Sp00~Sp05)**: 76~87h (v1.0 기준 유지) + 회귀 버퍼 3~4h
+- **Phase 3 (Sp06~Sp09)**: 15h × 4 = **60h** + 회귀 버퍼 7h
+- **전체 합계**: **약 136~147h + 버퍼 10~11h = 146~158h**
+
+### §5.3 가용 시간 vs 공수 (18주 연속)
+
+| 구간 | 주 수 | 주당 가용 h | 총 가용 h | 공수 | 여유 |
+|------|-------|------|-----------|------|------|
+| Phase 2 (Sp00~Sp05) | 12주 | 10~15h | 120~180h | 76~87h + 3~4h | 33~93h |
+| Phase 3 (Sp06~Sp09) | 8주 | 10~15h | 80~120h | 60h + 7h | 13~53h |
+| **전체 18주 연속** | 20주 | 10~15h | **200~300h** | **146~158h** | **42~154h** |
+
+**옵션 삽입 영향 (V3 통합 주차 +1주)**:
+- 가용 추가 +10~15h
+- 전체 19주 = 가용 210~315h → **여유 52~169h** (Phase 3 실측 기반 Sp09 분기 선택 여유 확보)
+
+**결론**: 공수는 안전권. 시간 문제 아닌 **번아웃 리스크**가 지배적.
+
+---
+
+## §6 리스크 & 병목 액션 (6건, R1 재평가)
+
+### R1. **번아웃 리스크 (재평가 — 중~고)** ⚠ NEW
+
+- **위험**: 1인 파트타임 주 10~15h × **18주 연속** 스프린트 = 누적 피로 고위험. Phase 2 Sp05 종료 시점(W12) 이미 12주 연속 작업. Phase 3 진입 직후가 최대 취약 구간.
+- **정량**: 참고 산업 데이터 없지만 1인 파트타임 사이드 프로젝트는 **10~12주 연속에서 번아웃 징후 발생률 40%+**로 경험칙. 18주는 매우 공격적.
+- **완화 시나리오**:
+  - **V0 기본**: 휴식 없이 18주 질주 — 비권장 (R1 중~고 유지)
+  - **V1 휴식 1주 (Sp06↔Sp07)**: Phase 2 완주 후 체력 회복 — R1 중
+  - **V2 Firebase 선행 1주 (Sp04↔Sp05)**: Sp05 T4 버퍼 확보 + 분산 휴식 — R1 중 + R2 완화
+  - **V3 통합 1주 (Sp05↔Sp06)** ⭐ **PM 권장**: 회고 + Firestore CF 선행 + Phase 3 계획 + 번아웃 완충 1주 비용으로 4가지 해결 — R1 저~중
+  - V4 휴식 2주 (V3 + Sp08↔Sp09): 안전 최대치 — R1 저
+- **PM 권장**: **V3**. 비용 1주 = 가용 -10~15h이지만, Phase 3 진입 직전이라 Sp06 효율 회복으로 상쇄 기대.
+
+### R2. Firebase 첫 도입 러닝커브 (Sp05 T4) — 유지
+
+- v1.0 R1 그대로 유지. V2/V3 시나리오에서 1주 선행 학습으로 완화 가능.
+
+### R3. Sp02 W2 `BuildSummary` 필드 확정 지연 — 유지
+
+- v1.0 R2 그대로 유지. W6 D-2(2026-05-25~27) 재확인 태스크 예약.
+
+### R4. Sp07 어픽스 30 → 31~33 누출 차단 ⚠ NEW
+
+- **위험**: `elementalDmgPct` 1행을 Fire/Cold/Lightning/Poison 4분기로 쪼갤 때 스키마를 추가 행으로 변환하면 총 개수 증가 → Sp04 APPROVED 10빌드 매트릭스 테스트 전면 재실측 필요. sp06-plus-lever §7 R1에서 "30 유지" 명시했으나 구현 시 실수 가능.
+- **완화**: Sp07 W1 **내부 분기** 방식 확정 — 단일 어픽스가 Element enum 파라미터를 받는 구조. `elementalDmgPct` 행은 1개 유지, 적용 시 Element 선택. code-lead Sp07 W1 설계 리뷰에서 검증.
+
+### R5. 컴파일 회귀 2~3h 버퍼 미흡 — 유지
+
+- v1.0 R4 그대로 유지. Phase 3에서 Firestore CF / 프레스티지 v3 마이그 등 신규 회귀 지점 추가 — 각 W2 말미 1.5~2h 버퍼 공식 반영.
+
+### R6. Sp09 분기 결정 지연 ⚠ NEW
+
+- **위험**: Sp09 W1 시점(W19=2026-08-24)에서 실측 데이터 부족하면 분기(Follower / 속성확장 / 수호자) 선택 보류 → 공수 낭비.
+- **완화**: Sp08 W2 종료 시점(W18 D+14=2026-08-24)에 PD·game-designer·PM 3자 검토 정례화. "Sp06~08 실측 3대 지표(리텐션 / 콘텐츠 소진율 / 빌드 다양성)" 리포트 PM 사전 준비.
+
+---
+
+## §7 PD 결정 요청 (4건, 재정리)
+
+| # | 질문 | 옵션 | PM 관찰 | 기한 |
+|---|------|------|---------|------|
+| **D1** | 휴식/준비 주차 삽입 시나리오 | V0 기본(없음) / V1 Sp06↔Sp07 / V2 Sp04↔Sp05 / **V3 Sp05↔Sp06 (권장)** / V4 2주 | V3가 번아웃·Firebase·회고·계획 1주 비용으로 4가지 동시 해결 | 2026-06-29 Sp05 킥오프 전 |
+| **D2** | Phase 2/3 구분 공식 명명 여부 | (A) Phase 2만 Sp09까지 단일 확장 / (B) **Phase 2(Sp00~Sp05 MVP) + Phase 3(Sp06~Sp09 확장 레이어) 분리 (권장)** / (C) 명명 없음 | 외부 커뮤니케이션·마일스톤 관리상 B가 명확. MVP 완성 2026-07-13 선포 가능 | 2026-05-04 Sp01 킥오프 전 |
+| **D3** | Sp09 재검토 분기 사전 힌트 | (A) 수호자(Guardian) 확장 유력 / (B) Follower NPC 유력 / (C) 속성 6종 확장 유력 / (D) 실측 데이터 100% 위임 | sp06-plus-lever §5 Option A 수호자 확장이 비용 15h로 가장 타이트. PD 선호 힌트 있으면 Sp08 W2 선행 설계 착수 가능 | 2026-08-10 Sp08 킥오프 전 |
+| **D4** | game-designer Sp07 W1 수치 선행 발주 타이밍 | (A) Sp06 킥오프와 동시 (2026-07-13 발주) / (B) Sp06 W2 중(2026-07-20) / (C) Sp07 W1 진입 후(2026-07-27) | Element 명칭·저항 75%·4분기 밸런스 3건은 2~3h 소요. A가 안전. Phase 3 진입 동시 game-designer 재가동 공식화 | 2026-07-13 Sp06 킥오프 전 |
+
+**v1.0 해소 항목**: D1(gap 이유) / D2(Sp04 일정) / D3(Sp05 일정) / D4(Sp06+ 로드맵) = **4건 해소**. v1.0 D5(Firebase 도입 타이밍)는 v2.0 D1 V2/V3 시나리오로 흡수.
+
+---
+
+## §8 Sprint 00 이월 체크리스트 (2026-05-04 Sp01 킥오프 전 재확인)
+
+v1.0 §8 6건 그대로 유지. 추가:
+
+- [ ] **Sp06+ 리서치 v1.0 APPROVED 연계 확인** — `designs/sp06-plus-lever-research.md` + 메모리 `project_sp06_plus_lever_decisions.md` Sp01~05 APPROVED 결정 수정 금지 원칙 재확인. Sp06+ 레이어만 추가, Phase 2 스키마 불변.
+
+---
+
+## §9 업데이트 트리거
+
+### §9.1 본 로드맵 갱신 조건
+
+| 트리거 | 행동 |
+|--------|------|
+| 매 스프린트 종료(D+14) | PM이 §2 Gantt 해당 주차 결과 반영 + §5 실 공수 대비 추정 비교 + §6 리스크 소진 여부 체크 |
+| PD 결정 변경 | §7 D1~D4 변경 시 §2 Gantt·§5 공수 재계산 |
+| Sp05 W2 종료(2026-07-13) | Phase 2 종료 공식 마일스톤 + V3 시나리오 채택 시 삽입 주차 실행 결과 반영 |
+| Sp08 W2 종료(2026-08-24) | Sp09 분기 택1 결정 반영 + R40*/R41/R42 중 선택 노드 확정 |
+| 외부 의존 발생 | Firebase SDK / Firestore CF / Unity 6 LTS 패치 / Addressables 2.x breaking |
+
+### §9.2 갱신 주기
+
+- **정규**: 격주 월요일 스프린트 킥오프 시 PM 자동 실행
+- **즉시**: PD 결정 변경 / 리스크 소실·신규 발견 / 블로킹 에스컬레이션
+
+---
+
+## §10 메타정보
+
+- **작성자**: project-manager (PM)
+- **작성일**: 2026-04-21 (Sp00 D+1)
+- **버전 이력**:
+  - **v1.0** 2026-04-21 초안 (10건 승인본 기반, Sp00~05 범위, Gap 해석 PD 확인 대기)
+  - **v2.0 REVISED** 2026-04-21 재작성 (PD Gap 회신 + Sp06+ APPROVED 5건 반영, Sp00~09 확장)
+- **근거**:
+  - 기존 10건 승인본 (v1.0 §10 참조)
+  - **추가**: `designs/sp06-plus-lever-research.md` v1.0 APPROVED (2026-04-21) / 메모리 `project_sp06_plus_lever_decisions.md`
+  - 스프린트 문서: `sprints/sprint-00.md` / `sprints/sprint-01.md`
+  - 메모리 13건: 기존 8건 + `feedback_codelead_review_compile_verify` + Sp01~05 결정 5건 + Sp06+ 1건
+- **다음 갱신일 예정**: 2026-05-04 (Sp01 킥오프) — §2 Gantt Sp00 종료 반영 + D1(휴식 시나리오) PD 응답 반영
+- **PD 결정 대기**: 4건 (§7 D1~D4) — v1.0 5건 중 4건 해소, 신규 4건 발생
+- **Sp00 이월 체크**: 7건 (§8, Sp06+ 연계 1건 추가)
+- **총 공수 (추정)**: 146~158h / 총 가용 시간: 200~300h (18주 기준) — **생존 가능** ✅ (단 R1 중~고)
+- **Critical path**: 11 노드 / 26~36h 직렬 (Sp01 R02 → Sp09 R40*)
+- **신규 리스크 플래그**: R1 번아웃(중~고) / R4 어픽스 30 누출(중) / R6 Sp09 분기 결정 지연(저~중)
+- **비추정 공수 플래그**: Sp02·Sp04 — v1.0 §10 유지 (code-lead 공수 확정 요청 필요)
+
+---
+
+*(끝 — v2.0 REVISED, 2026-04-21 PM 재작성)*
+6:["slug","phase-2-roadmap-2026-04-21","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","phase-2-roadmap-2026-04-21","d"],{"children":["__PAGE__?{\"slug\":\"phase-2-roadmap-2026-04-21\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","phase-2-roadmap-2026-04-21","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Phase 2+3 Roadmap Re-integration — 2026-04-21 (v2.0 REVISED)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/phase-2-roadmap-2026-04-21.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"3,318"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Phase 2+3 Roadmap Re-integration — 2026-04-21 (v2.0 REVISED) — 자료실"}],["$","meta","3",{"name":"description","content":"1. Gap 해소: v1.0의 Sp03↔Sp04 4주 / Sp04↔Sp05 6주+ gap은 PM 스케줄링 아티팩트로 확정 (PD 2026-04-21 회신). \"방치형 RPG\"는 장르명, 일정에는 방치 없음. 전 스프린트 gap 0주차로 연속 압축."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

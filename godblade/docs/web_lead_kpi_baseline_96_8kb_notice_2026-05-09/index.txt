@@ -1,0 +1,90 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:Tbbe,# 김민준(web-lead) 통보 — 본진 `/` First Load KPI 88.1KB → 96.8KB 새 baseline (PD 양보 잠금)
+
+> 작성: 2026-05-09 (PM 박세린, 자율 권한)
+> 통보 대상: 김민준 (web-lead)
+> 근거: PD 즉답 잠금 (2026-05-09 D+1)
+> 발주 원본: 본 산출물 = 통보 슬립 (메인 세션 receive)
+
+---
+
+## §0 통보 한 줄
+
+본진 `/` First Load KPI **88.1KB → 96.8KB 새 baseline 채택** (PD 양보 잠금). **민준님 후속 패치 의무 0** + 풀 12.5h 5/10~5/13 plan 잔여 5건 그대로 진입.
+
+---
+
+## §1 PD 잠금 사유
+
+1. 김민준 옵션 A 패치 (TOOL_CARDS 1건 제거 + lint cleanup) **효과 0** (96.8KB 그대로)
+2. 진짜 원인 = 메뉴 헤더 아님, 어제 변경 7건 (types.ts ENUM 확장 / build_novel_index.mjs / page.tsx import 등) 누적 영향 추정
+3. 8.7KB는 실 사용성 영향 0 = 머스크 스타일 압축 default + KPI 1회 갱신
+4. **B PASS 유지** = `/novel/[v]/[c]` 96.1KB (188KB → 96.1KB **-91.9KB 절감**) ⭐
+
+---
+
+## §2 민준님 액션 (전부 = 0)
+
+| 항목 | 값 |
+|-----|---|
+| 96.8KB → 88.1KB 복귀 패치 | **불필요** (PD 양보 잠금) |
+| 옵션 A 패치 lint cleanup | 유지 (side effect PASS) |
+| 어제 변경 7건 검증 | **불필요** (R-V3-16 후보만 보류) |
+| 풀 12.5h 5/10~5/13 plan 잔여 5건 | **그대로 진입** ⭐ |
+| F 슬롯 (`/docs/[slug]` 188KB) | **후속 발주 슬롯 보존** (PD 별도 결정, 민준님 액션 0) |
+
+---
+
+## §3 풀 12.5h plan 잔여 5건 그대로 진입
+
+| # | 작업 | ETA | 비고 |
+|---|----|----|----|
+| 1 | `/novel/[v]/[c]` 라우팅 잔여 폴리싱 | 5/10~5/11 | 96.1KB 유지 |
+| 2 | 등급 배지 컴포넌트 (R-15) | 5/11 | v1.6 확정 분 |
+| 3 | rating 컬럼 Notion 매핑 | 5/11~5/12 | v1.6 +0.5h 분 |
+| 4 | spoiler_level v1 게이트 | 5/12 | D+5 분 |
+| 5 | D+5 5/13 통합 build PASS | 5/13 | First Load 96.8KB baseline 사수 |
+
+---
+
+## §4 F 슬롯 보존 (`/docs/[slug]` 188KB)
+
+- 후속 발주 슬롯 박힘
+- PD 별도 결정 슬롯 보존
+- 민준님 액션 0 (PD 답 대기)
+
+---
+
+## §5 D+14 (5/22) 출시 영향 = 0 ⭐
+
+| 항목 | 영향 |
+|-----|----|
+| `/novel/[v]/[c]` PASS | 0 (96.1KB) |
+| 본진 `/` 96.8KB baseline | 0 (PD 양보 잠금) |
+| 12.5h plan 잔여 5건 | 0 (그대로) |
+| **D+14 5/22 출시** | **0** ⭐ |
+
+---
+
+## §6 박세린 receive
+
+- 5/9 FlatBuffer 3자 회의 결과 (정현우 + 차도윤 + 한가영) — 본인 receive 슬롯 박힘 (W3 분기점 + 한가영 의제 결과)
+- 5/13 D+5 build PASS 시 96.8KB baseline 사수 검증
+- 5/14 D+6 R-V3-13 회복 마킹 시 R-V3-16 (어제 변경 7건 검증 보류) 동시 평가
+
+---
+
+## §7 본인 자율 마킹
+
+- 본 통보 산출물 = `sprints/web_lead_kpi_baseline_96_8kb_notice_2026-05-09.md`
+- 메인 세션이 김민준에게 SendMessage 전달 (본인 자율 영역 = 통보 박스 박음)
+- 5단계 외 (PD KPI 양보 잠금 = 5단계 외)
+- 콘텐츠 발주 0 (메인 세션 영역)
+- 페르소나 갱신 = 거부 (PD 직접 결정 슬롯 보존)
+6:["slug","web_lead_kpi_baseline_96_8kb_notice_2026-05-09","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","web_lead_kpi_baseline_96_8kb_notice_2026-05-09","d"],{"children":["__PAGE__?{\"slug\":\"web_lead_kpi_baseline_96_8kb_notice_2026-05-09\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","web_lead_kpi_baseline_96_8kb_notice_2026-05-09","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"김민준(web-lead) 통보 — 본진 / First Load KPI 88.1KB → 96.8KB 새 baseline (PD 양보 잠금)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/web_lead_kpi_baseline_96_8kb_notice_2026-05-09.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"502"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"김민준(web-lead) 통보 — 본진 / First Load KPI 88.1KB → 96.8KB 새 baseline (PD 양보 잠금) — 자료실"}],["$","meta","3",{"name":"description","content":"본진 / First Load KPI 88.1KB → 96.8KB 새 baseline 채택 (PD 양보 잠금). 민준님 후속 패치 의무 0 + 풀 12.5h 5/10~5/13 plan 잔여 5건 그대로 진입."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

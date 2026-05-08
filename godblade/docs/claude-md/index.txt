@@ -1,0 +1,175 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T2820,# GodBlade Project — Claude Context
+
+> 이 파일은 GodBlade 프로젝트에서 Claude(또는 다른 AI 코딩 에이전트)가 첫 세션을 열 때 프로젝트 맥락을 빠르게 파악하도록 작성되었습니다.
+> 작성일: 2026-04-20
+
+---
+
+## 프로젝트 개요 (한 줄 요약)
+
+**GodBlade** (구 이름: Eternal Guardians / EOD, 중원게임즈 2015~2016) 는 10년 전에 만들어진 Unity 멀티플레이어 RPG이며, **최신 Unity 6 + 싱글 플레이어 중심 + 글로벌 출시**로 리부트하는 장기 프로젝트입니다.
+
+## 현재 상태 (2026-04-20)
+
+- **원본 Unity 버전**: `2019.4.11f1 LTS` (2020년 8월 릴리스)
+- **원본 서버 스택**: .NET Framework 3.5/4.5 + IIS + MySQL Cluster + Redis (Windows Server)
+- **원본 서버 수**: 29개 프로젝트 (~50,000 LOC)
+- **Phase**: Phase 1 (현황 파악) — 진행 중
+
+## 목표
+
+| 항목 | 현재 | 목표 |
+|------|------|------|
+| Unity | 2019.4 LTS | **Unity 6 LTS** |
+| 게임 모드 | 멀티 RPG (파티/길드/PvP/점령전) | **싱글 플레이어** |
+| 서버 | 29개 Windows .NET 서버 | **서버리스 (Firebase만)** |
+| 플랫폼 | 모바일 | **Steam + iOS/Android** |
+| 언어 | 한국어 | **5개 언어 (한/영/중간/일/스)** |
+| 수익 | 없음 (방치) | Steam 유료 + 모바일 유료/광고 |
+
+## 개발 체제
+
+- **1인 파트타임 개발자** (본업 병행)
+- **예상 기간**: 24~30개월
+- **예상 출시**: 2028년 1월
+
+---
+
+## 이 프로젝트에서 AI 에이전트가 먼저 읽어야 할 문서
+
+새 세션을 시작하면 **이 순서대로 읽으세요**:
+
+1. **이 파일 (CLAUDE.md)** — 프로젝트 맥락
+2. **`graphify_output/` 폴더** — Graphify가 생성한 코드 지식 그래프 (있으면 최우선으로 참고)
+3. **`GodBlade_글로벌출시_로드맵.md`** — 7단계 전체 로드맵
+4. **`GodBlade_서버_역할분석.md`** — 서버 29개의 운명 (폐기/흡수/재활용)
+5. **`GodBlade_로드맵_시각화.html`** — 아키텍처 Before/After, 간트, Sankey 차트
+6. **`GodBlade_Unity6_마이그레이션_분석.docx`** — 기존 마이그레이션 분석 (이전 세션 산출물)
+7. **`GodBlade_프로젝트_분석보고서.docx`** — 기존 프로젝트 분석 (이전 세션 산출물)
+
+---
+
+## 코드 구조 (최상위)
+
+```
+D:\SVN\Backup\GodBlade\
+├── Program\
+│   ├── Client\                    # Unity 2019.4 클라이언트
+│   │   ├── Assets\                # 게임 에셋·스크립트
+│   │   │   ├── 3rdParty\          # 외부 에셋 (EasyMovieTexture, FacebookSDK, GooglePlayGames)
+│   │   │   ├── GraphicResource\   # 그래픽 리소스
+│   │   │   ├── LocalData\         # 로컬 데이터
+│   │   │   └── Plugins\           # 네이티브 플러그인
+│   │   ├── Packages\              # UPM 의존성 (manifest.json)
+│   │   └── ProjectSettings\       # Unity 프로젝트 설정
+│   ├── Server\                    # .NET Framework 서버 (29개 프로젝트)
+│   │   ├── EodGameServer\         # ⭐ 메인 게임 서버 (366 C# 파일) - 싱글로 흡수 대상
+│   │   ├── EodDatabase\           # ⭐ DB 레이어 (404 파일) - 스키마만 재활용
+│   │   ├── EodServerCommon\       # ⭐ 공용 타입 (119 파일) - 일부 흡수
+│   │   └── [나머지 26개]           # 대부분 폐기 (멀티/채팅/파티/점령/랭킹 전용)
+│   ├── Common\
+│   ├── Database\
+│   └── Tools\
+├── Datasheets\                    # ⭐ 엑셀 밸런스 데이터 (재활용)
+├── Documents\                     # 기획·회의·QA 문서 (참조용)
+├── Dump20210311.sql               # ⭐ MySQL 덤프 32MB (밸런스 데이터 추출용)
+├── Build-Debug.cmd                # 레거시 빌드 스크립트
+└── [이전 세션 산출물].docx/.md/.html
+```
+
+⭐ = Phase 4에서 집중 작업할 핵심 대상
+
+---
+
+## 진행 원칙
+
+1. **원본은 절대 수정 금지** — `D:\SVN\Backup\GodBlade\` 는 2021년 스냅샷. 새 Unity 6 프로젝트는 별도 폴더에 생성.
+2. **1인 파트타임 현실 반영** — 한 세션은 "2~4시간 집중 단위"로 끝낼 수 있는 크기로 잘라서 진행.
+3. **검증 우선** — 밸런스 데이터는 DB 덤프 원본이 진실. 추측 금지.
+4. **Phase 순서 준수** — 현황 파악 → 설계 → Unity 6 → 싱글 로직 → 백엔드 → 로컬라이즈 → 출시.
+
+## Graphify 사용
+
+이 프로젝트는 코드 규모가 크고(~5만 LOC) 10년 전 작성되어 원저자도 기억이 희미합니다. **Graphify 지식 그래프를 `graphify_output/`에 빌드하면 모든 AI 세션이 코드 구조를 즉시 파악**할 수 있습니다.
+
+설치·실행 방법: **`Graphify_설치_실행_가이드.md`** 참조.
+
+Graphify 결과물이 `graphify_output/` 에 있으면 AI 에이전트는 **반드시 그 폴더부터 먼저 조회**한 뒤 개별 파일을 탐색해야 합니다.
+
+---
+
+## AI 팀 운영 규약
+
+Phase 2부터 PD(사용자)는 3명의 **AI 서브에이전트 직원**과 함께 일한다. 각 에이전트는 `.claude/agents/*.md`에 정의되어 있고 `Agent(subagent_type: "...")`로 호출한다.
+
+### 팀 구성
+
+| 에이전트 | 역할 | 주 책임 |
+|---------|------|---------|
+| `game-designer` | 기획PD (RPG 20년차 / 디아블로 감성) | 밸런스 수치, 컨텐츠 루프, 아이템·스킬 스펙 |
+| `code-lead` | 프로그래밍 리드 (Unity 6 / DOTS / Addressables 2.x) | Unity 6 코드, 포팅 스프린트, 기술 리스크 |
+| `web-lead` | 웹팀장 (Next.js 14 / Supabase / Vercel / Notion API / Gemini Pro) | 통합 웹앱 1차~5차 (대시보드/DevLog/피드백·UGC/강시연 도구/UGC 웹툰), 호스팅·인증·배포 자동화. **2026-05-04 신규 채용** |
+| `project-manager` | PM (하네스 공법) | 2주 스프린트, TodoWrite, 의존성·블로킹 추적 |
+
+메인 대화(Claude Code 세션 자체)는 **PD의 비서 겸 오케스트레이터** — PD 지시를 받아 적절한 서브에이전트를 호출하고 결과를 요약 전달한다.
+
+### 호출 컨벤션
+
+- PD가 업무 지시할 때 에이전트 이름을 명시: "기획PD, 무한던전 보상 초안" / "프로그래밍 리드, Sprint 1 계획" / "PM, 이번 주 번다운"
+- 독립 작업 여러 개를 동시 발주할 땐 한 메시지에 Agent 툴 2~3개 **병렬 호출**
+- 에이전트 결과 보고는 **메인 세션에서 PD에게 1쪽 요약**으로
+
+### 에이전트 협업 프로토콜 (Claude-Code-Game-Studios 선별 채택, 2026-04-21)
+
+1. **Question → Options → Decision → Draft → Approval** 순서 엄수 — 메인 세션/서브에이전트가 PD에 옵션 2~3개 제시 후 PD 선택을 받고 초안 작성, 최종 승인까지 받은 뒤 진행.
+2. **Unity6/ 신규 코드·씬·프리팹 생성 전 PD 경로 승인**: 서브에이전트가 `Unity6/Assets/**` 하위 파일을 **신규 생성**할 때는 사전에 경로를 명시하고 PD 승인 1회 필요. 기존 파일 수정은 태스크 맥락 내 자동 OK.
+3. **설계 문서 (`designs/*.md`) / 스프린트 문서 (`sprints/*.md`)** 는 본 규칙에서 제외 (빠른 반복 우선).
+
+### 계층 (Tier) 표기
+
+- **Tier 1 Director**: PD (creative + technical + producer 통합, 1인 파트타임)
+- **Tier 2 Lead**: `game-designer` / `code-lead` / `project-manager` (3 agent 고정)
+- **Tier 3 Specialist**: 미도입. Phase 3 (Sp06+) 시점 `unity-addressables-specialist` / `unity-dots-specialist` / `unity-shader-specialist` / `unity-ui-specialist` 4 후보 재평가 예정 (`project_framework_phase3_reevaluation.md` 메모리 참조).
+
+### 2주 스프린트 사이클
+
+1. **D+0 킥오프**: PM이 `sprints/sprint-NN.md` 킥오프 섹션 작성 (목표 3건, TodoWrite 리스트, 리스크 3건)
+2. **작업 기간 (2주)**: PD가 game-designer / code-lead에게 단일 과제 발주
+3. **D+14 종료**: 3명 각자 실적 요약 → PM이 `sprint-NN.md`에 종료 섹션 통합 → PD 회고
+
+### 산출물 위치
+
+- 에이전트 정의: `.claude/agents/*.md`
+- 스프린트 문서: `sprints/sprint-NN.md` (PM 소유)
+- 기획 스펙: `designs/<topic>.md` (game-designer 소유)
+- Unity 6 프로젝트 코드: `Unity6/` 하위 (code-lead 소유, 원본 `Program/`과 물리적 분리)
+- 원본 `Program/`, `Datasheets/`, `Dump20210311.sql` → **read-only** (SVN 2021 스냅샷)
+
+### 역할 경계 분쟁 해결
+
+- game-designer가 "이 스킬 쿨다운은 이래야 해" → 수치만. 구현 방식은 code-lead 영역
+- code-lead가 "이 밸런스 수치 이상함" → PD·game-designer에게 에스컬레이션. 독단 수정 금지
+- PM은 **결정권 없음**. 블로킹·선 넘음 사항은 PD에게 보고만
+
+## 이벤트 로그
+
+- **2026-04-20**: CLAUDE.md 신설. Phase 1 현황 파악 진행 중. 서버 29개 중 22개 폐기 확정. Graphify 도입 결정.
+- **2026-04-20**: Phase 1 Strike 1/2/3 완료 (625개 자산 분류, 62.1% 생존). 방치형 RPG + 무한던전(초월모드) 장르 확정. AI 팀 체제(game-designer / code-lead / project-manager) 신설.
+- **2026-04-21 (Sp00 D+1)**: 버퍼 기간 16레일 부설 — 설계 APPROVED 8건 (무한던전 보상 / 프레스티지 / Sp01 Importer / Sp02 W1 수치 / Sp02 W2 기술 스케치 / Sp03 방치 / Sp04 어픽스 / Sp05 시즌) + Phase 2+3 로드맵 v2.0 (2026-09-14 종료) + Sp06+ 레버 5대 결정 + Phase 2 MVP 5 스프린트 드라이런 전수 (Sp01 Yellow-Green / Sp02 W1·Sp03·Sp04·Sp05 Yellow) + 메모리 18건. 18 리스크 도출 · FP 3건 하향 · 실측 검증 원칙 정립. 2026-05-04 Sp01 킥오프 대기.
+
+## graphify
+
+This project has a graphify knowledge graph at graphify-out/.
+
+Rules:
+- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
+- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
+- After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost)
+6:["slug","claude-md","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","claude-md","d"],{"children":["__PAGE__?{\"slug\":\"claude-md\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","claude-md","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"claude"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"GodBlade Project — Claude Context"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"CLAUDE.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,218"}]," · category:"," ",["$","b",null,{"children":"claude"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"GodBlade Project — Claude Context — 자료실"}],["$","meta","3",{"name":"description","content":"GodBlade (구 이름: Eternal Guardians / EOD, 중원게임즈 2015~2016) 는 10년 전에 만들어진 Unity 멀티플레이어 RPG이며, 최신 Unity 6 + 싱글 플레이어 중심 + 글로벌 출시로 리부트하는 장기 프로젝트입니다."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

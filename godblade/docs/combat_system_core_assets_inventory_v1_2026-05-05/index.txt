@@ -1,0 +1,203 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T2727,# 전투 시스템 핵심 자산 인벤토리 v1
+
+**작성**: 정현우 (code-lead)
+**일자**: 2026-05-05
+**원천**: `Program/Client/Assets/Scripts/` (read-only)
+**APPROVED**: 정현우 자율
+
+## 1. 매트릭스 표기
+
+- **LOC**: 라인 수 (정확 또는 ±10)
+- **포팅 난이도**: 1 (drop-in) / 2 (네임스페이스만) / 3 (콜백→async/await) / 4 (외부 의존) / 5 (재설계 필요)
+- **손맛 영향도**: 1 (낮) / 2 (중) / 3 (높) / 4 (최고)
+
+## 2. Entity 본체 (3 파일)
+
+| 파일 | LOC | 역할 | 의존 | 난이도 | 손맛 |
+|------|-----|------|------|--------|------|
+| EodEntity.cs | ~3000 추정 | god 노드, 모든 컴포넌트 owner | 모든 컴포넌트 | 3 | - |
+| EodEntityComponent.cs | ~200 추정 | 컴포넌트 base | EodEntity / EodEntityEventManager | 2 | - |
+| EodEntityBuilder.cs | ~500 추정 | 컴포넌트 조립 팩토리 | 다수 | 3 | - |
+
+## 3. 전투 핵심 컴포넌트 (8 파일)
+
+| 파일 | LOC | 역할 | 의존 | 난이도 | 손맛 |
+|------|-----|------|------|--------|------|
+| **EodEntityCombatComponent.cs** | **2499** | 전투 매니저 (god 클래스) | EodAbilityStatus / EodMatrixTrail × 2 / EodHUDDamage / EodCamera | 4 | 4 |
+| **EodEntitySkillComponent.cs** | **1794** | 스킬 보유·발동·관리 (god 클래스) | List<Skill> / EodEntityCharacterInfo / EodUIGameButtons | 4 | 4 |
+| EodEntityComboHitComponent.cs | 95 | 콤보 UI 연결 | EodUIComboHit / EodUIManager (Addressable) | 3 | 4 |
+| EodEntityShakeCameraComponent.cs | 51 | 카메라 흔들림 수신 | EodCamera / EodGameDatascriptManager | 1 | 4 |
+| EodEntityMatrixEffectComponent.cs | 188 | 잔상 복제 (모션 블러) | EodEntityAnimationComponent / EodEntityModelComponent | 2 | 3 |
+| EodEntityActionComponent.cs | ~500 추정 | 일반 액션 매니저 (Skill 과 중복) | List<EodAction> | 3 | 3 |
+| EodEntityAnimationComponent.cs | ~400 추정 | Animator 래퍼 | UnityEngine.Animator | 2 | 3 |
+| EodEntityMoveComponent.cs | ~600 추정 | 이동 처리 | UnityEngine.Transform | 2 | 3 |
+
+## 4. Skill 시스템 (15 파일)
+
+| 파일 | LOC | 역할 | 난이도 | 손맛 |
+|------|-----|------|--------|------|
+| **EodSkill.cs** | 517 | Skill 클래스 (TimeEvent 컨테이너) | 3 | 4 |
+| EodSkillEventBuilder.cs | 178 | 13 SkillEvent 팩토리 | 2 | 3 |
+| EodSkillEventCreateProjectile.cs | ~150 추정 | 투사체 생성 | 3 | 4 |
+| EodSkillEventShakeCamera.cs | 55 | 카메라 흔들림 | 1 | 4 |
+| EodSkillEventMoveFoward.cs | ~80 추정 | 직선 이동 | 2 | 2 |
+| EodSkillEventMoveDirection.cs | ~80 추정 | 입력 방향 이동 | 2 | 2 |
+| EodSkillEventMoveToNearestTarget.cs | ~100 추정 | 최근접 타겟 돌진 | 2 | 3 |
+| EodSkillEventMoveDirectAutoToNearTarget.cs | ~120 추정 | 소용돌이 (이동 컨트롤) | 2 | 2 |
+| EodSkillEventTeleportFoward.cs | ~80 추정 | 순간이동 전방 | 2 | 3 |
+| EodSkillEventTeleportBack.cs | ~80 추정 | 순간이동 후방 (백스텝) | 2 | 3 |
+| EodSkillEventRotate.cs | ~50 추정 | 즉시 회전 | 2 | 1 |
+| EodSkillEventRotateDirection.cs | ~60 추정 | 입력 방향 회전 | 2 | 1 |
+| EodSkillEventRotateToNearestTarget.cs | ~80 추정 | 최근접 타겟 자동 회전 | 2 | 2 |
+| EodSkillEventCreateMonster.cs | ~150 추정 | 적 몬스터 소환 | 3 | 1 |
+| EodSkillEventAllyCreateMonster.cs | ~150 추정 | 아군 (펫) 소환 | 3 | 2 |
+
+## 5. Action 시스템 (5 파일, Skill 과 중복)
+
+| 파일 | LOC | 역할 | 난이도 | 손맛 |
+|------|-----|------|--------|------|
+| EodAction.cs | 188 | Action 클래스 (Skill 와 유사, refactoring 대상) | 2 | 2 |
+| EodActionEventBuilder.cs | ~80 추정 | 3 ActionEvent 팩토리 | 2 | 2 |
+| EodActionEventPlayEffect.cs | ~100 추정 | VFX 재생 | 3 | 4 |
+| EodActionEventPlaySound.cs | ~100 추정 | 사운드 재생 | 3 | 4 |
+| EodActionEventShakeCamera.cs | ~50 추정 | 카메라 흔들림 (중복) | 1 | 4 |
+
+## 6. Projectile 시스템 (12 파일)
+
+| 파일 | LOC | 역할 | 난이도 | 손맛 |
+|------|-----|------|--------|------|
+| EodProjectile.cs | ~800 추정 | 투사체 본체 | 3 | 4 |
+| EodProjectileEventBuilder.cs | ~150 추정 | 11 ProjectileEvent 팩토리 | 2 | 3 |
+| EodProjectileEventActivateDetection.cs | ~80 | 충돌 활성화 | 2 | 3 |
+| EodProjectileEventAttPowDetection.cs | ~120 | 공격력 검출 (적 충돌) | 3 | 4 |
+| EodProjectileEventDefPowDetection.cs | ~120 | 방어력 검출 (아군 충돌) | 3 | 3 |
+| EodProjectileEventQuickDetection.cs | ~100 | 즉시 검출 | 2 | 3 |
+| EodProjectileEventDamageIgnoreDetection.cs | ~80 | 데미지 무시 검출 | 2 | 1 |
+| EodProjectileEventHealDetection.cs | ~100 | 회복 검출 | 2 | 2 |
+| EodProjectileEventCreateProjectile.cs | ~150 | 투사체에서 투사체 생성 (분열) | 3 | 4 |
+| EodProjectileEventPlayEffect.cs | ~100 | VFX 재생 | 3 | 4 |
+| EodProjectileEventPlaySound.cs | ~100 | 사운드 재생 | 3 | 3 |
+| EodProjectileEventShakeCamera.cs | ~50 | 카메라 흔들림 | 1 | 4 |
+| EodProjectileLightning.cs | ~200 추정 | 번개 투사체 특수 | 3 | 4 |
+
+## 7. Event 시스템 (5 파일)
+
+| 파일 | LOC | 역할 | 난이도 | 손맛 |
+|------|-----|------|--------|------|
+| **EodEntityEvent.cs** | **1035** | 35 EventBase 클래스 정의 | 2 | 3 |
+| EodEntityEventManager.cs | ~300 추정 | 발행-구독 매니저 | 2 | - |
+| EodEntityEventPool.cs | ~200 추정 | 오브젝트 풀 (GC 최소화) | 2 | - |
+| EodEntityEventType.cs | 145 | 34 eType enum | 1 | - |
+| EodEventPushMove.cs | 150 | 넉백 이동 (등속 → 감속) | 2 | 3 |
+
+## 8. 손맛 핵심 (4 파일)
+
+| 파일 | LOC | 역할 | 의존 | 난이도 | 손맛 |
+|------|-----|------|------|--------|------|
+| **EodMatrixTrail.cs** | 204 | 무기 궤적 트레일 (좌/우) | **Xft.XWeaponTrail (외부)** | **5** | **4** |
+| EodCamera.cs | ~1500 추정 | 카메라 매니저 + Shake | EodGameDatascriptManager.CameraShakeTable | 3 | 4 |
+| EodHUDDamageManager.cs | ~500 추정 | 데미지 텍스트 + 회피 텍스트 | UI Pool | 3 | 3 |
+| EodSceneManager.cs | ~2000 추정 | 씬 관리 + GameMode 분기 | 다수 | 4 | - |
+
+## 9. UI (12 파일)
+
+| 파일 | LOC | 역할 | 난이도 | 손맛 |
+|------|-----|------|--------|------|
+| EodUIComboHit.cs | ~300 추정 | 콤보 UI | 3 | 3 |
+| EodUIGameButtons.cs | ~600 추정 | 스킬 버튼 (메인/서브) | 3 | 3 |
+| EodUISkillButton.cs | ~400 추정 | 단일 스킬 버튼 + 쿨타임 | 3 | 2 |
+| Skill UI 9건 | ~2000 추정 (총합) | 스킬 트리 / 슬롯 / 팝업 | 3 | 1 |
+
+## 10. 데이터 테이블 (9 파일)
+
+| 파일 | 역할 | 난이도 | 비고 |
+|------|------|--------|------|
+| EodDataTableSkill | 스킬 본체 | 2 | FlatBuffer 마이그레이션 대상 |
+| EodDataTableSkillEvent | 스킬 이벤트 unitList | 2 | param1/2/3 string parsing |
+| EodDataTableSkillType | 스킬 타입 (Normal/Active/Passive) | 1 | enum 매핑 |
+| EodDataTableSkillLevelup | 레벨별 스킬 코드 | 2 | |
+| EodDataTableSkillLevelUseData | 레벨별 쿨타임 / 사용 데이터 | 2 | |
+| EodDataTablePassiveSkill | 패시브 스킬 | 2 | |
+| EodDataTableSuccessionSkill | 계승 스킬 (장비) | 2 | |
+| EodDataTableOccupationtSkillSetting | 직업별 스킬 셋 | 2 | typo: Occupationt |
+| EodDataTableGuildSkill | 길드 스킬 (멀티 잔재) | 5 | **삭제 권고** |
+
+## 11. SCSV 로더 (9 파일)
+
+`GameDatascript/Loader/SCSV/` 동일 9건 — FlatBuffer 마이그레이션 시 Loader 삭제 + Importer 1건으로 대체.
+
+## 12. 외부 의존 (4건)
+
+| 라이브러리 | 사용처 | Unity 6 | 처리 |
+|-----------|--------|---------|------|
+| **Xft.XWeaponTrail** | EodMatrixTrail | **미보증** | **자체 구현 또는 Asset Store 대체** |
+| Addressables | UI 비동기 로드 (다수) | 2.x 호환 | 콜백 → async/await 점진 |
+| EasyMovieTexture | 컷씬 (3rdParty) | **미보증** | Phase 4 시점 평가 |
+| FacebookSDK / GooglePlayGames | 멀티 잔재 (3rdParty) | 사용 X | **삭제** |
+
+## 13. 우선순위 매트릭스 (포팅 순서 권고)
+
+### Tier 1 — 손맛 4중 메커니즘 (1주)
+1. EodCamera.cs (Shake 본체)
+2. EodEntityShakeCameraComponent.cs (51줄, 즉시)
+3. EodEntityComboHitComponent.cs (95줄, 즉시)
+4. EodMatrixTrail.cs + Xft 대체 (25h)
+5. EodEntityMatrixEffectComponent.cs (디버그 코드 제거 + 188줄)
+
+### Tier 2 — Skill 시스템 (2주)
+6. EodEntityEvent.cs (1035줄, 35 EventBase)
+7. EodEntityEventManager.cs / EventPool.cs / EventType.cs
+8. EodSkill.cs (517줄)
+9. EodSkillEventBuilder.cs + 13 SkillEvent (15 파일)
+
+### Tier 3 — 전투 + 투사체 (2주)
+10. EodEntityCombatComponent.cs (2499줄, **분할 권고**)
+11. EodEntitySkillComponent.cs (1794줄, **분할 권고**)
+12. EodProjectile.cs + 11 ProjectileEvent
+
+### Tier 4 — Action + Move + Animation (1주)
+13. EodAction.cs + 3 ActionEvent
+14. EodEntityActionComponent.cs
+15. EodEntityMoveComponent.cs
+16. EodEntityAnimationComponent.cs
+17. EodEventPushMove.cs
+
+### Tier 5 — UI (1주)
+18. EodUIComboHit.cs / EodUIGameButtons.cs / 12 Skill UI
+
+### Tier 6 — 데이터 (50h, FlatBuffer 50h 흡수)
+19. 9 데이터 테이블 + 9 SCSV 로더 → FlatBuffer 변환
+
+### Tier 7 — Unit Test (지속)
+20. 80% 커버리지 — Tier 1~6 동시 진행
+
+## 14. 통계
+
+- **총 파일 수**: ~70개 (전투 핵심)
+- **총 LOC**: 약 25,000~30,000 추정
+- **god 클래스**: 2건 (Combat 2499 / Skill 1794)
+- **외부 의존**: 4건 (Xft / Addressables / EasyMovieTexture / FB+GPGS)
+- **삭제 권고**: 1건 (GuildSkill 멀티 잔재) + FB/GPGS 3rdParty
+- **포팅 총 비용 (A+ 안)**: 180h = 4.5주 풀타임 또는 9주 파트타임
+
+## 15. 다음 세션 첫 액션
+
+- [ ] LOC 정확 측정 (`Get-ChildItem -Recurse | Measure-Object -Property Length`)
+- [ ] EodCamera.cs / EodProjectile.cs / EodEntity.cs 핵심 3건 추가 read
+- [ ] Xft.XWeaponTrail Unity 6 호환 PoC 1h
+- [ ] god 클래스 분할 설계 (Combat / Skill 각 4 sub) 1쪽 스케치
+
+---
+
+**연계**:
+- `combat_system_analysis_v1_2026-05-05.md`
+- `combat_system_porting_strategy_v1_2026-05-05.md`
+- `combat_system_pd_briefing_1page_2026-05-05.md`
+6:["slug","combat_system_core_assets_inventory_v1_2026-05-05","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","combat_system_core_assets_inventory_v1_2026-05-05","d"],{"children":["__PAGE__?{\"slug\":\"combat_system_core_assets_inventory_v1_2026-05-05\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","combat_system_core_assets_inventory_v1_2026-05-05","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"전투 시스템 핵심 자산 인벤토리 v1"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/combat_system_core_assets_inventory_v1_2026-05-05.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,556"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"전투 시스템 핵심 자산 인벤토리 v1 — 자료실"}],["$","meta","3",{"name":"description","content":"작성: 정현우 (code-lead)"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

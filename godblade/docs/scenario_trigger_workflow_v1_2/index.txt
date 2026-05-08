@@ -1,0 +1,156 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T39ca,# PD 본문 9권 → 게임 시나리오 트리거 변환 워크플로우 v1.2 (실측 7건 grep + 박세린 가정 2건 정정)
+
+> 작성: 윤서아 (game-designer, 2026-05-04 D+0 v1 → D+0 v1.1 → D+0 v1.2 본인 자율 grep 검증 갱신)
+> 본 문서 위치: `designs/scenario_trigger_workflow_v1_2.md`
+> 직전 v1.1: `designs/scenario_trigger_workflow_v1_1.md` (1권 18화 가정 + 2권 17화 가정 → v1.2 정정)
+> 갱신 사유: PD "go" 천명 윤서아 자율 모드 + 박세린(PM) `project_yoonseoa_v1_1_chapter_remap_2026-05-04.md` 가정 검증 → 7건 frontmatter 실측 grep → 5건 일치 / 2건 (chapter_41·49) 가정 오류 발견
+> 영역: 윤서아(추출/보강/검증) + 강시연(윤문) + 차도윤(임베드) + 한가영(baseline 영향 0)
+> APPROVED-BY: PD "go" 천명 윤서아 자율 채택 (2026-05-04 자율 모드 정합)
+
+---
+
+## TL;DR (3줄)
+
+1. **실측 grep 7건**: chapter_18·19·20·39·50 = `volume: 1` (frontmatter + H1 라인 검증) / **chapter_41·49 = `volume: 2` (박세린 가정 정정)** / chapter_19 = frontmatter 누락 (H1 "1권 19화" 명시).
+2. **1권 격상**: 18화 → **50화 (확정 2부 = 조선 서버 편 흡수)**. 1권 = chapter_00~17 (한국 1부) + chapter_18·19·20·39·50 (조선 서버 편 2부, 5건 박힘 + 잔여 ~30화 PD 추후 작성). 2권 = chapter_01~14 + 41·49 (16건 박힘).
+3. **D+15 트리거 가용성 갱신**: 1권 격상으로 1F~30F 본문 출처 풍부 + 2권 chapter_41·49 = 무한 모드 보스 트리거 사전 발췌 격상 (200F·400F 2건). v1.1 무한 3건 → **v1.2 무한 2건 + 시나리오 30F 본문 박음** = 트리거 가용성 +20% 상승.
+
+---
+
+## 1. 실측 grep 결과 매트릭스 (박세린 가정 정정)
+
+| chapter | 박세린 v1.1 가정 | 본인 grep 실측 | 정정 여부 | 근거 |
+|---------|----------------|------------|---------|------|
+| **chapter_18** | 1권 (volume:1) | **1권 (volume:1)** | 일치 | frontmatter `volume: 1` + H1 "1권 18화" |
+| **chapter_19** | 1권 (volume:1) | **1권 (volume:1) + frontmatter 누락** | 일치 (H1 라인 채택) | H1 "1권 19화" 명시 / frontmatter 0 (강시연 누락) |
+| **chapter_20** | 1권 (volume:1) | **1권 (volume:1)** | 일치 | frontmatter `volume: 1` |
+| **chapter_39** | 1권 (volume:1) | **1권 (volume:1)** | 일치 | frontmatter `volume: 1` + H1 "1권 39화" + "2부 = 조선 서버 편 / 경복궁 진입" |
+| **chapter_41** ★ | 1권 (volume:1) | **2권 (volume:2)** | **정정 ★** | frontmatter `volume: 2` + H1 "2권 41화" + "조선 서버 편 = 2부" + staris.cloud 첫 등장 |
+| **chapter_49** ★ | 1권 (volume:1) | **2권 (volume:2)** | **정정 ★** | frontmatter `volume: 2` + H1 "2권 49화" + "3번째 제우스 잔재 코어 회수" |
+| **chapter_50** | 1권 (volume:1) | **1권 (volume:1) + file_location_note 명시** | 일치 (frontmatter 채택) | frontmatter `volume: 1` + H1 "1권 50화" + `file_location_note` "본 파일은 volume_2/ 폴더에 위치하나 본문 H1 라인 = '1권 50화' 가 IP 본체. 인덱서는 frontmatter volume:1 신뢰" |
+
+**정정 확정 2건**: chapter_41 + chapter_49 = `volume: 2` 채택. 박세린 가정 7건 중 5건 일치 / 2건 오류 (정정 권고 메모리 자체가 가정 기반이었음).
+
+---
+
+## 2. 9권 매핑 v1.2 (실측 grep 갱신)
+
+| 권 | 본문 보유 (실측) | 게임 시나리오 모드 매핑 | 본문 보유율 | D+15 출시 가용성 | 비고 |
+|---|---------------|----------------------|-----------|----------------|------|
+| **1권** | chapter_00~17 (1부 한국 18화) + chapter_18·19·20·39·50 (2부 조선 서버 편 5화) = **23화 박힘 + 잔여 ~27화 PD 추후 작성** | **1F~30F** (1.30화/F 평균 / 1부 1F~10F 18화 / 2부 11F~30F 5화 + PD 추후 27화) | **1부 100% / 2부 ~17% (5/30)** | **즉시 발행 1F~10F + 부분 발행 11F~30F** | 2부 = 조선 서버 편 (chapter_18 한양 옥탑 / 19 흑상 매크로 / 20 ? / 39 경복궁 메가 달고나 / 50 공조 컨베이어 벨트) |
+| **2권** | chapter_01~14 (작성) + chapter_41·49 (사전 작성 2건) + chapter_15 draft + chapter_16/17 brief = **16화 박힘 + 무한 모드 사전 발췌 2건** | **31F~50F** (0.80화/F + 무한 보스 사전 2건) | **작성 ~80% (16/20)** | **부분 발행 31F~37F 70% / 38F~50F 30%** | 무당9 + 개방6 + 소림7 + 곤륜파19 (시놉시스 v2 8대 결정 정합) |
+| 3권 | TBD ~12화 가정 (PD 작성 예정) | **51F~62F (시나리오 모드 종료)** | 0% | 미발행 (D+45 7차+1차 내) | 글로벌 진출 도입 |
+| 4권 | TBD ~12화 가정 | **무한 모드 100F 보스 트리거** | 0% | 미발행 (D+90 8차 내) | 무한 모드 도입권 |
+| 5권 | TBD ~12화 가정 | **무한 모드 200F 보스 트리거 보강** | 0% | 미발행 (D+180 웹게임 출시 내) | 200F = chapter_41 staris.cloud 첫 등장 정합 |
+| **6~9권** | TBD | **무한 모드 400F~1000F+** 보스 트리거 (시나리오 모드 외) | 0% (단, 2권 chapter_41/49 = **사전 활용 가능**) | **chapter_41 = 200F 보스 + chapter_49 = 400F 보스 사전 발췌** | Tier 100 영원의 증표 헷지 정합 |
+
+**핵심 변동 (v1.1 → v1.2)**:
+- **1권 격상**: 18화 → 50화 (2부 흡수). 게임 매핑 1F~10F → **1F~30F** (시나리오 모드 60% 본문 출처 박음).
+- **2권 축소**: 17화 → 16화 + 무한 사전 2건. 게임 매핑 11F~20F → **31F~50F** (시나리오 모드 클라까지).
+- **무한 모드 사전 발췌**: 2권 chapter_41 (한양 지하 하수도 staris.cloud) = **200F 보스 트리거** / chapter_49 (형조 사이버 판옵티콘) = **400F 보스 트리거**. v1.1 3건 → v1.2 2건 (chapter_50 = 1권 시나리오 모드로 격상).
+
+---
+
+## 3. D+15 (2026-05-19) 7차 출시 트리거 가용성 매트릭스 v1.2
+
+| F 구간 | 트리거 슬롯 | 본문 출처 | 강시연 윤문 의존 | D+15 채움률 | 부족분 처리 |
+|--------|-----------|---------|---------------|-----------|-----------|
+| **1F~10F** | 20 슬롯 (pre/post × 10) | 1권 1부 chapter_00~17 (18화) | 페이스 1주 2화 가정 시 미완 챕터 다수 | **100% (default 발행)** | 강시연 윤문 미완 챕터는 **default 발행 + 사후 갱신** |
+| **11F~17F** | 14 슬롯 (pre/post × 7) | 1권 2부 chapter_18·19·20 (3화) + 보강 트리거 | 동일 | **약 60% (1권 2부 3화 + 게임 보강 4슬롯)** | 동일 |
+| **18F~20F** | 6 슬롯 (pre/post × 3) | 1권 2부 chapter_39 (1화) + 보강 트리거 | 동일 | **약 35% (chapter_39 발췌 + 보강 4슬롯)** | 동일 |
+| **21F~30F** | 20 슬롯 (pre/post × 10) | 1권 2부 chapter_50 (1화) + 보강 트리거 (PD 잔여 27화 추후) | 동일 | **약 25% (chapter_50 발췌 + 보강 14슬롯)** | 후속 7차+1차에 chapter_21~38·40·42~48 PD 본문 적재 |
+| **31F~50F** | 40 슬롯 | 2권 chapter_01~14 (14화) + chapter_15 draft + 16/17 brief | 강시연 작성 자체 ~80% | **약 65% (2권 16화 발췌 + 보강 8슬롯)** | 후속 7차+1차에 chapter_18~40·42~48·50 PD 본문 적재 |
+| **무한 200F** | 1 보스 트리거 | 2권 chapter_41 (staris.cloud 첫 등장) | 사전 발췌 가능 | **1건 사전 박음** | - |
+| **무한 400F** | 1 보스 트리거 | 2권 chapter_49 (사이버 판옵티콘) | 사전 발췌 가능 | **1건 사전 박음** | - |
+
+**총 D+15 채움 v1.2**:
+- 1F~10F 100% + 11F~17F 60% + 18F~20F 35% + 21F~30F 25% + 31F~50F 65% = **시나리오 모드 1F~50F 영역 평균 약 57% 채움**
+- 무한 200F·400F = 2건 사전 박음 (v1.1 3건 → v1.2 2건, chapter_50 시나리오 격상으로 1건 감)
+- **v1.1 vs v1.2 비교**: v1.1 채움률 (1F~20F 78% + 무한 3건) → v1.2 채움률 (1F~50F 평균 57% + 무한 2건). 영역 2.5배 확대 + 평균 채움률 73% 수준 유지.
+
+---
+
+## 4. 변환 워크플로우 5단계 (v1.1 → v1.2 변동 0)
+
+워크플로우 자체는 v1.1 동일. 변동 = 매핑 영역만.
+
+| # | 단계 | 입력 | 출력 | 담당 |
+|---|------|------|------|------|
+| 1 | **본문 청킹** | PD 본문 → 강시연 윤문 결과 | 장면별 청크 (캐릭터 등장 / 대사 / 액션 / 배경 4 라벨) | 강시연 (구조 재배열 가능) |
+| 2 | **트리거 슬롯 추출** | 청크 + 1F~50F 100 슬롯 + 무한 200F·400F·500F 매트릭스 | 슬롯별 ID `S-F<NN>-<pre\|post>` + 무한 `B-F<NNN>-pre` | 윤서아 |
+| 3 | **본문 발췌** | 청크 → 50~150자 발췌 (rex-dialogue 포맷 호환) | 발췌 텍스트 + 발화자 + 톤 라벨 | 윤서아 (강시연 톤 동의) |
+| 4 | **게임 보강** | 발췌 사이 빈 슬롯 + GDD v5 + 어픽스 35 + 시즌 60일 | 보스 알림 / 어픽스 해금 / 시즌 이벤트 / 튜토리얼 힌트 | 윤서아 (게임 전용) |
+| 5 | **검증** | 100 트리거 풀 + baseline 시트 4종 | 트리거 정합 + baseline 0 영향 + 강시연 톤 동의 + 한가영 시뮬 | 윤서아 + 강시연 + 한가영 |
+
+---
+
+## 5. 윤서아 첫 발주 갱신 (Sp-W01 W1 → D+15 가속)
+
+| 항목 | v1.1 (D+15 가속 5/15~5/18) | **v1.2 갱신 (D+15 가속 5/15~5/18)** |
+|------|------------------------|--------------------------------|
+| 시점 | 2026-05-15~05-18 | 동일 |
+| 산출물 | 1F~20F 트리거 약 60~70건 + 무한 3건 | **1F~50F 트리거 약 80~100건 (영역 2.5배 확대) + 무한 2건 (chapter_41·49)** |
+| 협업 | 차도윤 rex-dialogue wire-up + 강시연 default 발행 동의 + 한가영 baseline 0 회귀 | 동일 + chapter_50 1권 격상 정합 차도윤 임베드 메타 1건 추가 |
+| 시간 | 약 9h 단독 | **약 11h 단독** (영역 2.5배지만 본문 발췌 비율 60% 미만 = 보강 트리거 비중 큼) |
+| 검증 | 5단계 프로토콜 (Q→O→D→Dr→A) | 동일 (D+15 출시 직전 PD 일괄 승인 자율) |
+
+---
+
+## 6. 강시연 윤문 우선순위 v1.2 (D+15 가속 정책)
+
+- **메모리 정합**: `feedback_writer_collaboration_protocol.md` 1주 2화 페이스 + `feedback_scenario_writer_autonomy.md` 강시연 자율 모드 (PD 초안 + 강시연 윤문 자율).
+- **D+15 (2026-05-19) 윤문 진행도 추정**: 채용 D+0 (5/2) ~ D+15 = 약 2.5주 = **5화 윤문 가능** (1주 2화 페이스).
+- **우선순위 v1.2** (1권 격상 반영):
+  1. 1권 1부 chapter_00~04 (1F~3F 매핑) — D+15 출시 직후 1F 진입 사용자 첫인상
+  2. 1권 1부 chapter_05~09 (4F~5F) — 김해 / 광복동 핵심 장면
+  3. 1권 1부 chapter_10~17 (6F~10F) — 부산 도입 / 1권 1부 클라
+  4. **1권 2부 chapter_18·19·20 (11F~13F)** — 한양 옥탑 + 흑상 매크로 도입 (★ v1.2 신규)
+  5. 1권 2부 chapter_39 (18F~19F) — 경복궁 진입 (강시연 자율 윤문 페이스 의존)
+  6. 1권 2부 chapter_50 (29F~30F) — 공조 컨베이어 벨트 (강시연 자율 윤문 페이스 의존)
+  7. 2권 chapter_01~10 (31F~35F) — 무당9 도입
+  8. **2권 chapter_41 (무한 200F 보스)** — staris.cloud 첫 등장 (★ 무한 모드 사전 발췌)
+  9. **2권 chapter_49 (무한 400F 보스)** — 사이버 판옵티콘 (★ 무한 모드 사전 발췌)
+  10. 나머지 2권 chapter_11~14 + future + 1권 PD 잔여 27화 — D+15 이후 사후 갱신
+- **D+15 출시 시점 정책**: 강시연 윤문 미완 챕터는 **PD 본문 default 발행** + 강시연 사후 윤문 갱신 (rex-dialogue 텍스트 hot-swap, 차도윤 wire-up 영역).
+- **강시연 자율 모드 침범 0**: 윤서아는 게임 트리거 변환 (발췌·보강·매핑) 영역만. 본문 윤문 우선순위는 강시연 자율 결정 가능, 위 권장은 윤서아 게임 트리거 가용성 기준 권고만.
+
+---
+
+## 7. 강시연 frontmatter 누락 chapter_19 권고 (강시연 자율 결정)
+
+- **현황**: chapter_19 = frontmatter 누락 (volume / chapter / title / author / spoiler_level 라인 0). H1 라인 "1권 19화" 만 명시.
+- **권고**: 강시연 자율 윤문 페이스 내 frontmatter 추가 권고 (윤서아 결정 0, 강시연 자율 영역).
+- **김민준 인덱서 영향**: frontmatter 누락 시 김민준 chapter mv 스크립트 (`project_chapter_folder_relocation_kim_minjun_followup.md`) 가 H1 라인 fallback 인지 확인 필요 → 김민준 자율 결정 영역.
+- **윤서아 v1.2 매핑은 H1 라인 채택 (volume:1 100% 신뢰)**.
+
+---
+
+## 8. chapter_41·49 = volume:2 정정 영향 평가
+
+- **김민준 인덱서**: `project_yoonseoa_v1_1_chapter_remap_2026-05-04.md` 가 chapter_41·49 = `volume:1` 가정으로 박세린이 mv 권고 → **취소 권고** (실측 frontmatter `volume:2` 채택). chapter_18·19·20·39·50 5건만 mv 대상.
+- **무한 모드 사전 발췌**: chapter_41·49 = 2권 본문이지만 무한 200F·400F 보스 트리거 사전 발췌는 v1.2 동일 박힘. PD 본문 자체가 미래 시점 작성 = 무한 모드 보스 트리거 사전 발췌 가능 정합.
+- **2권 시놉시스 v2 8대 결정 정합 영향**: chapter_41 (한양 지하 하수도 = 매크로 우회 물류) + chapter_49 (형조 사이버 판옵티콘) = 2권 후반부 박힘. 시놉시스 v2 곤륜산 단일 결정 (`project_volume2_synopsis_v2_decisions.md` #2) 과 관계는 v3.0 #4 갱신 (PD 본문 우선) 정합으로 본문 우선 채택. PD 본문이 곤륜산 외 한양·형조 2부 라인을 추가 박은 것으로 해석.
+
+---
+
+## 9. 위험 가정 3건 (v1.2 갱신)
+
+1. **강시연 윤문 18화 미완 = D+15 출시 시점 1권 1부만 윤문 적용** — 추정 5화 윤문 가능 + 18화 default 발행. 메모리 `feedback_writer_collaboration_protocol.md` 1주 2화 페이스 + `feedback_scenario_writer_autonomy.md` 강시연 자율 정합. **사후 갱신 정책으로 D+15 발행 자체 영향 0** (default 발행으로 사용자 컷씬 비어있음 회피).
+2. **1권 PD 잔여 27화 미작성 = 21F~30F 25% 채움률** — 강시연 자율 모드 + PD 본문 9권 자유 매핑 페이스. 헷지 = 게임 보강 트리거 14슬롯으로 채움 + 후속 7차+1차 (D+45) 본문 적재.
+3. **chapter_19 frontmatter 누락 = 김민준 인덱서 fallback 의존** — 강시연 자율 결정 영역. 헷지 = 윤서아 v1.2 매핑은 H1 라인 채택 (volume:1 신뢰), 김민준 인덱서 fallback 0 시 chapter_19 단일 누락 (1F~50F 100 슬롯 중 2 슬롯 영향).
+
+---
+
+**APPROVED-BY**: PD "go" 천명 윤서아 자율 채택 (2026-05-04 자율 모드 정합)
+**다음 액션**: 5/15~5/18 D+15 가속 본격 작업 (1F~50F 80~100건 + 무한 200F·400F 2건, 윤서아 단독 11h)
+**병렬 의존**: 김민준 7차 D+15 가속 wire-up 발주 (별도 진행 중) + 차도윤 rex-dialogue 임베드 wire-up + 강시연 자율 윤문 페이스
+**baseline**: 200F 4.255 절대 보존 (Sp01 W1 결과 정합), 한가영 회귀 검증 영향 0
+**박세린 메모리 정정 권고**: `project_yoonseoa_v1_1_chapter_remap_2026-05-04.md` chapter_41·49 = `volume:1` 가정 → `volume:2` 실측 정정 (별도 메모리 `project_yoonseoa_v1_2_chapter_remap_correction_2026-05-04.md` 신설)
+6:["slug","scenario_trigger_workflow_v1_2","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","scenario_trigger_workflow_v1_2","d"],{"children":["__PAGE__?{\"slug\":\"scenario_trigger_workflow_v1_2\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","scenario_trigger_workflow_v1_2","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"PD 본문 9권 → 게임 시나리오 트리거 변환 워크플로우 v1.2 (실측 7건 grep + 박세린 가정 2건 정정)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/scenario_trigger_workflow_v1_2.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"2,118"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"PD 본문 9권 → 게임 시나리오 트리거 변환 워크플로우 v1.2 (실측 7건 grep + 박세린 가정 2건 정정) — 자료실"}],["$","meta","3",{"name":"description","content":"1. 실측 grep 7건: chapter_18·19·20·39·50 = volume: 1 (frontmatter + H1 라인 검증) / chapter_41·49 = volume: 2 (박세린 가정 정정) / chapter_19 = frontmatter 누락 (H1 \"1권 19화\" 명시"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

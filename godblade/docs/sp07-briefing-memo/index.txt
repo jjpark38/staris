@@ -1,0 +1,186 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T2b8b,# Sp07 브리핑 메모 — 4속성 D2 표준 수치 선행
+
+> 작성: 2026-04-21 (Sp00 D+2 버퍼) · 메인 세션 오케스트레이터
+> 상태: **사전 브리핑 (pre-kickoff)** · Sp07 킥오프 = 2026-11 예정 (Phase 3 확장)
+> 근거: `designs/sp06-plus-lever-research.md` v1.0 APPROVED D2 결정 "4속성(Fire/Cold/Lightning/Poison) D2 표준 / 어픽스 30 유지"
+
+---
+
+## 목적
+
+Sp07 실 킥오프(2026-11) 7개월 전에, **D2 결정 "4속성 D2 표준"의 수치·구조 선행 정리**. Sp06 기존 이월 5건 소화 중에 Sp07 스펙 확정 지연으로 공수 초과되지 않도록 버퍼 기간 1쪽 메모로 예약.
+
+본 메모는 **수치 확정이 아니라 선행 정리**. Sp07 킥오프 D-1에 game-designer가 본 메모를 입력으로 `sprint-07-skill-element-spec.md` 스펙 초안 작성.
+
+---
+
+## 1. 4속성 확정 (D2 계승)
+
+| 속성 | 영문 | stat_key (어픽스/프레스티지) | 몬스터 저항 수치 범위 (0~100) | 특수 효과 (Sp07 W2 검토) |
+|-----|------|----------------------------|-----------------------------|-------------------------|
+| 화염 | Fire | `fireDmgPct` / `fireResistPct` | 0 ~ 100 | 지속 피해 (3초 DoT) — Sp09+ |
+| 냉기 | Cold | `coldDmgPct` / `coldResistPct` | 0 ~ 100 | 이속 -30% 슬로우 (2초) — Sp09+ |
+| 번개 | Lightning | `lightningDmgPct` / `lightningResistPct` | 0 ~ 100 | 무작위 분산 데미지(40~160%) — Sp09+ |
+| 독 | Poison | `poisonDmgPct` / `poisonResistPct` | 0 ~ 100 | 지속 피해 (5초 DoT, 총량 150%) — Sp09+ |
+
+**D2 감성**:
+- 각 속성 저항은 0~100 범위. 기본치 = 0. 저항 캡 = **75** (디아블로 2 표준).
+- 무한던전 10층마다 몬스터 원소 저항 로테이션 (10층=Fire30 / 20층=Cold30 / 30층=Lightning30 / 40층=Poison30 / 50층=None(저항 리셋) / 60층부터 2원소 혼합 등).
+- 플레이어 저항 계산: `피해량 × (1 − clamp(저항 − 몬스터관통, 0, 75) / 100)`.
+
+**특수 효과 (DoT/슬로우/분산)는 Sp07 범위 제외. Sp09+ 확장 예약**. Sp07 MVP는 **순수 속성 피해/저항 곱연산만** 구현.
+
+---
+
+## 2. 기존 데이터 재사용 훅 (3건)
+
+Sp01~05 APPROVED 자산에 이미 속성 훅이 선반영되어 있어 Sp07 풀 비용이 최소화된다:
+
+### 2.1 어픽스 `elementalDmgPct` (1슬롯 → 4슬롯 내부 분기)
+
+- `designs/affix_pool.tsv` Offensive 13개 중 `elementalDmgPct` 1건 존재 (tier 1~6 수치 기반).
+- **Sp07 확장**: 어픽스 30개 유지(항목 추가 금지). 내부적으로 `elementalDmgPct` 롤 시 **서브타입 4종(Fire/Cold/Lightning/Poison)을 동시에 롤**하여 서브 어픽스로 분기. UI 표기: "화염 피해 +12%" 형태.
+- Importer 변경점: `AffixDefinitionSO` 에 `elementSubType : ElementType?` 필드 옵셔널 추가 (`None` = 속성 없음 어픽스 / `Fire/Cold/Lightning/Poison` = 속성 롤).
+- 어픽스 30 → 내부 슬롯 분기로 유효 어픽스 풀 33개 효과.
+
+### 2.2 프레스티지 Offense 탭 #7 (item_id=6) "원소 피해" (1항목 → 4항목 분기)
+
+- `designs/prestige_items.tsv` Offense 탭 10항목 중 **1-indexed 7번째 / `item_id`=6** = "원소 피해" (stat_key: `ElementalDamagePct`, Lv30 상한 +60%). ※ **표기 규약**: 본 메모는 "탭 내 1-indexed 순번(#7)"과 "TSV item_id 컬럼 값(item_id=6)" 두 가지 병기. `sp07-resistance-formula-draft.md` v0.1 DRAFT 는 `item_id=6` 기준.
+- **Sp07 확장**: 항목 1개 유지. 단 내부적으로 `ElementalDmgPct` 1항목 → 화염/냉기/번개/독 4항목으로 분할. **공수 없이 표시만 4탭 아코디언** — 총 30항목 골격 불변.
+- 대안: `ElementalDmgPct` 1항목 유지 + 캐릭터 선택 속성 1개에만 적용 (Sp07 UI 결정 유예 항목).
+
+### 2.3 Mythic 드롭 테이블 (저항 옵션 슬롯 예약)
+
+- `designs/transcendent_drop_table_README.md` v1.0 APPROVED Mythic 등급 이상 보스 드롭 옵션 슬롯에 "원소 저항 옵션 잠재 확장 공간" 이미 명시.
+- **Sp07 확장**: Mythic 전용 `fireResistPct/coldResistPct/lightningResistPct/poisonResistPct` 4어픽스 추가 (어픽스 30→34 예외 확장. `required_item_class = Mythic` 제약).
+
+---
+
+## 3. 기존 스킬 태그 부여 (신규 스킬 금지)
+
+원본 `Program/Client/Assets/` 스킬 리소스에서 이미 존재하는 4~8개 스킬을 **코드 수정 없이 태그만 부여**. 속성 배정안:
+
+| 스킬명 (가칭) | 속성 | 근거 |
+|--------------|------|------|
+| 불꽃 베기 / Flame Slash | Fire | "불꽃" 네이밍 기존재 가능성 — Sp07 킥오프 시 code-lead가 `Resources/Skills/*.asset` 실측 |
+| 얼음 폭풍 / Ice Blast | Cold | 동 |
+| 벼락 일격 / Lightning Strike | Lightning | 동 |
+| 독 살포 / Poison Cloud | Poison | 동 |
+
+**명명이 중립적인 스킬**(예: "참격", "베기", "강타")은 **Physical 속성**으로 배정 (Physical = 5번째 기본 속성, 저항/피해 증폭 어픽스 대상 제외).
+
+**Sp07 W1 체크**: code-lead 가 원본 스킬 자산 실측 후 매핑 확정. 원본이 4속성 미만이면 Sp09+ 스킬 2개 추가로 이월.
+
+---
+
+## 4. 계산식 (Sp02 Calculator 시그니처 불변 재확인)
+
+속성 도입이 `CalculateLevel` / `CalculateBonus` 시그니처를 깨지 않도록 **BuildSummary 확장만으로 흡수**:
+
+```csharp
+public struct BuildSummary {
+    public double IdleRateMul;
+    public double GoldMul;
+    public double ExpMul;
+    public double DropMul;
+    // Sp07 신규 — 속성별 피해·저항 4쌍 8필드
+    public float FireDmgPct;     public float FireResistPct;
+    public float ColdDmgPct;     public float ColdResistPct;
+    public float LightningDmgPct; public float LightningResistPct;
+    public float PoisonDmgPct;   public float PoisonResistPct;
+}
+```
+
+**제약**:
+- Calculator 코드 수정 0 (Sp04 어픽스 도입 시 확립된 규약 준수)
+- Importer 가 어픽스·프레스티지 입력 → BuildSummary 에 속성 4쌍 합산만 담당
+- 전투 계산 호출부: `damage *= (1 + buildSummary.FireDmgPct);` 4속성 분기 스위치
+
+---
+
+## 5. 200F 역산 검증 재진행 (Sp07 W2 필수)
+
+Sp04 어픽스 풀은 "200F 격파 4.26배" 통과. Sp07 속성 도입 후 **동일 역산 재검증**:
+
+- 속성 저항 75% 몬스터 vs 속성 피해 +60% 빌드 = 실효 피해 `0.25 × 1.60 = 0.40배` (저항 없는 무속성 대비 60% 감소)
+- 무속성 대비 빌드: 4.26배 유지 (속성 개입 없음)
+- 속성 특화 빌드 (저항 0 몬스터 + 속성 피해 60% 풀): `4.26 × 1.60 = 6.82배` (과성장)
+- 속성 역저항 빌드 (저항 75% 몬스터): `4.26 × 0.40 = 1.70배` (정체 구간)
+
+**설계 의도**: 속성 선택이 몬스터 로테이션 따라 **전략적 교체 유도** (디아블로 2 "저항 맵 Infinity Runeword" 감성). 빌드 다양성 레버리지 확보.
+
+Sp07 W2 실측 후 속성 피해 상한치(프레스티지 60% / 어픽스 tier 6 15%) 재조정 여지. game-designer 판정.
+
+---
+
+## 6. TodoWrite 예약 (Sp07 킥오프 시 복사)
+
+Sp07 킥오프 D-1 PM이 본 메모 §5.1 Sp07 6건 15h 분해안 기반으로 TodoWrite 7건 전환:
+
+- [ ] T07-1 속성 4종 `ElementDefinitionSO` 설계·작성 (3h)
+- [ ] T07-2 `affix_pool.tsv` `elementalDmgPct` 4속성 분기 (서브타입 롤링) (3h)
+- [ ] T07-3 몬스터 원소 저항 필드 `TranscendentStageSO.elementResist[]` 추가 (2h)
+- [ ] T07-4 프레스티지 Offense #7 (item_id=6) "원소 피해" 4항목 분기 또는 2항목 분할 (피해/관통, `sp07-resistance-formula-draft.md` §5 권장) (2h)
+- [ ] T07-5 기존 스킬 4개 속성 태그 + 전투 계산 분기 (3h)
+- [ ] T07-6 Tests.Editor — 저항 100% 공격 0 데미지 / 저항 -50 관통 경계 테스트 (2h)
+- [ ] T07-7 200F 역산 재검증 + 속성 전략 빌드 3종 실측 (game-designer) (1h)
+
+**합계 16h — Sp07 예산 15h 대비 1h 초과**. Sp07 킥오프 시 T07-6 or T07-7 을 1h 로 압축 필요.
+
+---
+
+## 7. 이월 예약 (Sp09+)
+
+- **속성 특수 효과 (DoT/슬로우/분산)**: Sp09 W1 검토. 전투 상태 머신 필요.
+- **속성 6종 확장 (빛/어둠 추가)**: D1 Sp06+ 로드맵 §5.1 Option C. Sp09 재검토 분기에서 4속성 실측 후 판정.
+- **속성 교체 UI (스킬 룬/보석)**: Sp10+ 이월 (UI 풀 신설 필요).
+- **속성 저항 -100 관통 어픽스**: Mythic 전용. Sp07 W2 검토 후 필요 시 Sp08 편입.
+
+---
+
+## 8. 리스크 사전 노출 (Sp07 드라이런 시 재확인 필요)
+
+본 메모는 리서치 기반 추정으로, Sp07 킥오프 D-1 실측 시 다음 항목 재검증 필수:
+
+| 리스크 후보 | 심각도 (추정) | 실측 방법 |
+|------------|--------------|----------|
+| 원본 스킬 자산이 4속성 미만 | Medium | `Resources/Skills/*.asset` 네이밍 전수 조사 |
+| 기존 어픽스 `elementalDmgPct` 계산 분기가 BuildSummary 1필드 전제로 구현됨 | Medium-High | Sp04 Importer 실 PR merge 후 BuildSummary 확장 가능성 실측 |
+| 200F 속성 역저항 빌드 `1.70배` 체감 → 진행 불가 항의 | Medium | B04 무속성 빌드 폴백 경로 유지 (속성 선택 강제 금지) |
+| 4속성 로테이션 몬스터 저항 UI 미확정 | Low-Medium | Sp07 W1 UI 모형 필요 (게임 내 표시) |
+
+**FP 가능성**: §2.1~2.3 훅 3건은 2026-04-21 APPROVED 자료 grep 기반이므로 R-DR-06/09/11 패턴처럼 Sp07 킥오프 D-1 grep 1회로 드라이런 FP 해소 가능.
+
+---
+
+## 9. Why (본 메모의 존재 이유)
+
+- **2026-11 Sp07 킥오프 시점에 Sp06 이월 5건 소화 중** — game-designer·code-lead 모두 Sp06 집중. Sp07 스펙 확정 지연 시 Sp07 W1 전체 소진 위험.
+- **Sp00 D+2 버퍼 30분 투자로 Sp07 W1 절반(3~4h) 절약 효과** — 킥오프 시 본 메모 + `sp06-plus-lever-research.md` §2.2·§5.1 조합으로 즉시 TodoWrite 7건 전환 가능.
+- **Phase 2+3 로드맵 v2.0 D4 "Sp07 수치 선행" 결정의 실천** — 로드맵 결정만 있고 실 메모가 없으면 선행 효과 0. 본 메모가 실행 파일.
+
+## 10. How to apply
+
+- Sp07 킥오프 D-1 (2026-11-?) PM 이 본 메모 + `sp06-plus-lever-research.md` §5.1 을 game-designer 입력으로 제시
+- game-designer 가 `sprint-07-skill-element-spec.md` 스펙 초안 작성 (PD 승인 대기)
+- PD 5대 결정 필요 (예상): ① 속성 저항 캡 75 유지 / ② 몬스터 로테이션 10층 주기 / ③ 프레스티지 #7 (item_id=6) 분기 방식 (4탭 vs 선택형 vs 2항목 분할) / ④ Physical 5번째 속성 도입 여부 / ⑤ Mythic 전용 저항 어픽스 4개 예외 확장 허가 / **+ 보조 Q5-B 관통 어픽스 4개 Sp07 vs Sp08 이월** (`sp07-resistance-formula-draft.md` §9 신설 질의)
+- Sp07 W1 종료 시 200F 역산 재검증 + 3종 속성 빌드 실측 → W2 수치 조정
+- 본 메모의 `ElementType enum` / `BuildSummary 8필드 확장` / `ElementDefinitionSO` 구조는 Sp04 어픽스 도입 규약(Calculator 시그니처 불변) 준수
+
+---
+
+**사전 예약 총괄**:
+- 공수 0.5h (본 메모 작성)
+- Sp07 W1 절감 예상 3~4h
+- ROI 6~8배
+- Sp07 킥오프 D-1 재확인 체크포인트 §8 리스크 4건 + §2 훅 3건 grep 1회
+
+**END OF MEMO** · 다음 갱신: Sp06 W2 종료 시점 (Sp07 킥오프 2주 전)
+6:["slug","sp07-briefing-memo","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sp07-briefing-memo","d"],{"children":["__PAGE__?{\"slug\":\"sp07-briefing-memo\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sp07-briefing-memo","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sp07 브리핑 메모 — 4속성 D2 표준 수치 선행"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sp07-briefing-memo.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,486"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sp07 브리핑 메모 — 4속성 D2 표준 수치 선행 — 자료실"}],["$","meta","3",{"name":"description","content":"Sp07 실 킥오프(2026-11) 7개월 전에, D2 결정 \"4속성 D2 표준\"의 수치·구조 선행 정리. Sp06 기존 이월 5건 소화 중에 Sp07 스펙 확정 지연으로 공수 초과되지 않도록 버퍼 기간 1쪽 메모로 예약."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

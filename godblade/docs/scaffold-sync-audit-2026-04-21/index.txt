@@ -1,0 +1,476 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T7928,# Scaffold Sync Audit — 2026-04-21
+
+> 작성: 2026-04-21 (code-lead) · 대상: `Unity6/` scaffold ↔ `designs/sprint-{01-w2-importer,02-w2-prestige-tech-sketch,03-idle-research}-design.md` v1.0 APPROVED × 3
+> **감사 종류**: 읽기 전용. 코드 수정 없음. 2026-05-04 Sprint 01 킥오프 Go/No-Go 판정용.
+> **감사 방법**: `Unity6/` 실제 파일 내용 인용 + 설계 3건 요구사항 교차 → 3축(설계/실제/gap) 명시.
+> **문서 상태**: **v1.0**
+
+---
+
+## §0. TL;DR (PD 1분)
+
+| 항목 | 값 |
+|------|----|
+| 총 drift 건수 | **9건** |
+| P0 블로커 | **0건** |
+| P1 선제 해소 권장 | **4건** |
+| P2 Sprint 01 W1 초입에 처리 | **4건** |
+| P3 그대로 둬도 되는 건 (문서 주의만) | **1건** |
+| Sprint 00 회귀 2건 재발 레이어 상태 | **그린** (CS0246·CS1061 해소 확인) |
+
+**판정: Sprint 01 킥오프 (2026-05-04) GO**
+
+- 블로커 없음. 핵심 자산(asmdef 3개, manifest, Addressables, Sprint 00 구현물)은 설계 3건 전제와 정합.
+- **단 P1 4건 중 최소 2건(D1 rootNamespace, D3 Tests.Editor 신설)은 버퍼 기간(D+2~D+13) 선제 해소 권장**. 나머지 2건은 Sprint 01 W1 Day 1 자연 흡수 가능.
+- Sprint 00 회귀 재발 방지 레이어는 **이미 코드에 박혀 있다** — `TranscendentStageSO.cs:22` `InternalsVisibleTo` · `GodBlade.Runtime.asmdef:7` `Unity.ResourceManager` · `GodBlade.Editor.asmdef:9` `Unity.ResourceManager` 3지점 실사 확인.
+
+---
+
+## §1. asmdef 감사
+
+### §1.1 실제 asmdef 전수 (3개, Tests.Editor 미존재 정상)
+
+```
+Unity6/Assets/Editor/GodBlade.Editor.asmdef                                   (22줄, rootNamespace=GodBlade.EditorTools)
+Unity6/Assets/_Project/Scripts/Data/GodBlade.Data.asmdef                      (14줄, rootNamespace=GodBlade.Data)
+Unity6/Assets/_Project/Scripts/Runtime/GodBlade.Runtime.asmdef                (18줄, rootNamespace=GodBlade.Runtime)
+```
+
+### §1.2 `GodBlade.Data.asmdef` 실제 내용
+
+```json
+{
+  "name": "GodBlade.Data",
+  "rootNamespace": "GodBlade.Data",
+  "references": [],
+  ...
+  "autoReferenced": true,
+  "noEngineReferences": false
+}
+```
+(경로: `Unity6/Assets/_Project/Scripts/Data/GodBlade.Data.asmdef:1-14`)
+
+| 설계 요구 (Sprint 01/02/03) | 실제 상태 | Gap |
+|---|---|---|
+| Sprint 01 W2 §3.1 "`Grade` enum / `GradeRemap` / `DropRateTableSO` / `MilestoneRewardCatalogSO` / `AffixPoolSO` 모두 `GodBlade.Data` 어셈블리, `references: []` 빈 배열 유지 가능" | references 빈 배열 유지 | ✅ 정합 |
+| Sprint 02 W2 §2.1 "`PrestigeItemCatalogSO` 는 `GodBlade.Data` (Sprint 01 W2 `DropRateTableSO`와 동일 asmdef)" | references 빈 배열 그대로 유지 가능 | ✅ 정합 |
+| Sprint 02 W2 §2.3 "서브 네임스페이스 `GodBlade.Data.Prestige` 사용 + rootNamespace 수정 금지 (CP9-5)" | rootNamespace는 `GodBlade.Data` (line 3). 파일 상단 `namespace GodBlade.Data.Prestige` 명시로 해결 가능 | ✅ 정합. **단 D1 drift 참고** |
+
+### §1.3 `GodBlade.Runtime.asmdef` 실제 내용
+
+```json
+{
+  "name": "GodBlade.Runtime",
+  "rootNamespace": "GodBlade.Runtime",
+  "references": [
+    "GodBlade.Data",
+    "Unity.Addressables",
+    "Unity.ResourceManager"
+  ],
+  ...
+}
+```
+(경로: `Unity6/Assets/_Project/Scripts/Runtime/GodBlade.Runtime.asmdef:1-18`)
+
+| 설계 요구 | 실제 상태 | Gap |
+|---|---|---|
+| Sprint 01 W2 §9 CP9-1 "Sprint 00 CS0246 재발 방지 — Runtime asmdef가 `Unity.ResourceManager` 필수" | line 7 `"Unity.ResourceManager"` 실존 | ✅ 정합 (Sprint 00 회귀 A 복구분 유지) |
+| Sprint 02 W2 §7.1 "`GodBlade.Runtime.Prestige` 서브 네임스페이스 + rootNamespace 수정 금지" | rootNamespace `GodBlade.Runtime` (line 3). 파일 상단 `namespace GodBlade.Runtime.Prestige` 으로 해결 | ✅ 정합 |
+| Sprint 03 §4.1 "`GodBlade.Runtime.Idle` 서브 네임스페이스 + 신규 asmdef 0개" | 신규 asmdef 불필요. 기존 Runtime에 `Idle/` 하위 폴더만 추가 | ✅ 정합 |
+| Sprint 03 §9 CP-I11 "Addressables 그룹 추가 없음" | `Unity.Addressables` 참조만. Editor 전용 그룹 관리 API (`Unity.Addressables.Editor`)는 Runtime에 없음 — 정책상 올바름 | ✅ 정합 |
+
+### §1.4 `GodBlade.Editor.asmdef` 실제 내용
+
+```json
+{
+  "name": "GodBlade.Editor",
+  "rootNamespace": "GodBlade.EditorTools",
+  "references": [
+    "GodBlade.Data",
+    "GodBlade.Runtime",
+    "Unity.Addressables",
+    "Unity.Addressables.Editor",
+    "Unity.ResourceManager"
+  ],
+  "includePlatforms": ["Editor"],
+  ...
+}
+```
+(경로: `Unity6/Assets/Editor/GodBlade.Editor.asmdef:1-22`)
+
+| 설계 요구 | 실제 상태 | Gap |
+|---|---|---|
+| Sprint 01 W2 §9 CP9-2 "Editor asmdef의 `Unity.Addressables.Editor` 유지 (Addressables 그룹 생성 필수)" | line 8 `"Unity.Addressables.Editor"` 실존 | ✅ 정합 |
+| Sprint 01 W2 §2.1 "신규 Importer 5종(`DropRateTableImporter` / `MilestoneRewardImporter` / `AffixPoolImporter` / `RewardImportAll` / `Shared/TsvReader`) 은 기존 `GodBlade.Editor` asmdef 내에 추가" | 추가 참조 불필요 — 현재 references 5종으로 충분 | ✅ 정합 |
+| Sprint 02 W2 §2.4 "`PrestigeItemImporter` 도 `GodBlade.Editor` asmdef 내" | 동일 | ✅ 정합 |
+| **rootNamespace `GodBlade.EditorTools`** (설계 3건 전반이 `GodBlade.Editor.*` 로 기술) | line 3 `"rootNamespace": "GodBlade.EditorTools"` — **설계 문서 표기와 불일치** | ⚠️ **D1 drift — P1** |
+
+### §1.5 `InternalsVisibleTo` 실제 위치
+
+```csharp
+// Unity6/Assets/_Project/Scripts/Data/TranscendentStageSO.cs:21-23
+#if UNITY_EDITOR
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("GodBlade.Editor")]
+#endif
+```
+
+| 설계 요구 | 실제 상태 | Gap |
+|---|---|---|
+| Sprint 01 W2 §9 CP9-3 "한 파일에만 선언 — 중복 선언 CS0579" | `Unity6/Assets/` 전체 grep 결과 **단일 지점** (`TranscendentStageSO.cs:22`) | ✅ 정합 (Sprint 00 회귀 B 복구분 유지) |
+| Sprint 02 W2 §8.1 CP9-3 재강조 "신규 `PrestigeItemCatalogSO.cs` 에 중복 선언 금지" | 현재 중복 없음. 신규 SO 작성 시 주의 필요 → 체크리스트 항목 | ✅ 정합 (사전 대응 필요) |
+
+### §1.6 `GodBlade.Tests.Editor.asmdef` — 미존재 (정상, Sprint 01 W2 신설)
+
+| 설계 요구 (Sprint 01 W2 §8.2 / §9 CP9-1) | 실제 상태 | Gap |
+|---|---|---|
+| 신설 경로: `Assets/_Project/Tests/Editor/GodBlade.Tests.Editor.asmdef` | **존재 안 함** (`Tests` 폴더 자체 없음, find 결과 0건) | ⏳ **Sprint 01 W2 신설 예정 — 정상** |
+| references 필수 5종: `UnityEngine.TestRunner` / `UnityEditor.TestRunner` / `GodBlade.Data` / `GodBlade.Runtime` / `GodBlade.Editor` | N/A (미존재) | 신설 시 체크리스트 §7 참조 |
+| `defineConstraints: ["UNITY_INCLUDE_TESTS"]` | N/A | 동상 |
+| Sprint 02 W2 §7.1 "Sprint 01 W2 신설 asmdef 재활용 + `GodBlade.Runtime` 참조 추가" | 신설 시 `GodBlade.Runtime` 처음부터 포함 권장 | 체크리스트 반영 |
+
+---
+
+## §2. 네임스페이스 / 폴더 구조 감사
+
+### §2.1 실제 폴더 트리
+
+```
+Unity6/
+└── Assets/
+    ├── AddressableAssetsData/
+    │   ├── AddressableAssetSettings.asset
+    │   ├── AssetGroups/
+    │   │   ├── Default Local Group.asset
+    │   │   └── TranscendentStages.asset   ← Sprint 00 그룹
+    │   └── DataBuilders/, Schemas/, AssetGroupTemplates/
+    ├── Editor/
+    │   ├── GodBlade.Editor.asmdef
+    │   └── Importers/
+    │       └── TranscendentStageImporter.cs   (Sprint 00)
+    ├── _Project/
+    │   ├── Data/                              ← SO 에셋 저장소
+    │   │   ├── TranscendentStageCatalog.asset
+    │   │   └── TranscendentStages/            (200개 Stage SO + meta)
+    │   └── Scripts/
+    │       ├── Data/                          ← GodBlade.Data 어셈블리
+    │       │   ├── GodBlade.Data.asmdef
+    │       │   ├── TranscendentStageSO.cs
+    │       │   └── TranscendentStageCatalogSO.cs
+    │       └── Runtime/                       ← GodBlade.Runtime 어셈블리
+    │           ├── GodBlade.Runtime.asmdef
+    │           └── SmokeTester.cs
+    ├── Scenes/, InputSystem_Actions.inputactions, ...
+```
+
+**Tests 폴더 없음** (Sprint 01 W2 신설 예정).
+
+### §2.2 네임스페이스 정책 실사
+
+| 파일 | 실제 네임스페이스 | rootNamespace 정책 | 설계 기대 | Gap |
+|------|---|---|---|---|
+| `TranscendentStageSO.cs:25` | `GodBlade.Data` | `GodBlade.Data` | `GodBlade.Data.*` 루트 | ✅ |
+| `TranscendentStageCatalogSO.cs:11` | `GodBlade.Data` | `GodBlade.Data` | 동상 | ✅ |
+| `SmokeTester.cs:22` | `GodBlade.Runtime` | `GodBlade.Runtime` | `GodBlade.Runtime.*` 루트 | ✅ |
+| `TranscendentStageImporter.cs:24` | **`GodBlade.EditorTools`** | `GodBlade.EditorTools` | 설계 3건은 `GodBlade.Editor.*` 로 표기 (Sprint 01 W2 §9 CP9-5, Sprint 02 W2 §8.1 CP9-5) | ⚠️ **D1** |
+
+### §2.3 서브 네임스페이스 충돌 검증
+
+| 신규 서브 네임스페이스 | 파일 위치 | 충돌 리스크 |
+|---|---|---|
+| `GodBlade.Runtime.Rewards` (Sprint 01 W2) | `Assets/_Project/Scripts/Runtime/Rewards/MilestoneGranter.cs` | Runtime rootNamespace `GodBlade.Runtime` — 충돌 없음 |
+| `GodBlade.Runtime.Prestige` (Sprint 02 W2) | `Assets/_Project/Scripts/Runtime/Prestige/*.cs` | 충돌 없음 |
+| `GodBlade.Runtime.Idle` (Sprint 03) | `Assets/_Project/Scripts/Runtime/Idle/*.cs` | 충돌 없음 |
+| `GodBlade.Data.Prestige` (Sprint 02 W2) | `Assets/_Project/Scripts/Data/PrestigeItemCatalogSO.cs` | Data rootNamespace `GodBlade.Data` — 충돌 없음 |
+| `GodBlade.Editor.*`(설계 문서 표기) vs 실제 rootNamespace `GodBlade.EditorTools` | `Assets/Editor/Importers/*.cs` | **D1 drift** — 문서와 scaffold 불일치 |
+
+### §2.4 D1 상세 분석: rootNamespace vs 설계 문서 표기
+
+- **실제** (`GodBlade.Editor.asmdef:3`): `"rootNamespace": "GodBlade.EditorTools"`
+- **Sprint 00 컨벤션** (`TranscendentStageImporter.cs:24`): `namespace GodBlade.EditorTools` 
+- **Sprint 01 W2 설계** §8.3 "asmdef 파일명 = `GodBlade.Editor`" 이지만 §9 CP9-5 에서 "`GodBlade.EditorTools.Rewards`(X, 평탄 유지)" 언급 → **설계 문서 내부에서도 `EditorTools` 인정**
+- **Sprint 02 W2 설계** §2.1 "`GodBlade.Editor` asmdef" — 설계 문서는 asmdef **이름**을 가리킴, 네임스페이스 아님
+- **실제 구조**: asmdef **이름** = `GodBlade.Editor`, rootNamespace = `GodBlade.EditorTools`, **파일 내 네임스페이스** = `GodBlade.EditorTools`
+- **결론**: asmdef 이름과 rootNamespace/네임스페이스가 다름. 혼동 유발 but **컴파일 상 문제 없음**. 
+
+**권장**: Sprint 01 W2 W1 Day 1에 **설계 문서 3건의 각주에 "asmdef 이름=`GodBlade.Editor`, 파일 내 네임스페이스=`GodBlade.EditorTools`" 1줄 추가** (문서만 수정, 코드 불변).
+
+---
+
+## §3. manifest.json / packages-lock 감사
+
+### §3.1 `manifest.json` 실제 (9 dependencies)
+
+```json
+{
+  "com.unity.addressables": "2.2.2",
+  "com.unity.inputsystem": "1.11.2",
+  "com.unity.render-pipelines.universal": "17.0.3",
+  "com.unity.textmeshpro": "3.2.0-pre.10",
+  "com.unity.ugui": "2.0.0",
+  "com.unity.ide.rider": "3.0.31",
+  "com.unity.ide.visualstudio": "2.0.22",
+  "com.unity.test-framework": "1.4.5",
+  "com.unity.timeline": "1.8.7"
+}
+```
+(경로: `Unity6/Packages/manifest.json:1-18`)
+
+### §3.2 `packages-lock.json` 해석 버전 (Unity 6 LTS가 실제로 로드하는 것)
+
+| 패키지 | manifest 요청 | lock 해석 | 설계 요구 | Gap |
+|---|---|---|---|---|
+| `com.unity.addressables` | 2.2.2 | **2.2.2** (line 4) | Sprint 01 W2 §0 "Addressables 2.x" / Sprint 02 §5 "Addressables 로딩" | ✅ 정합 |
+| `com.unity.test-framework` | 1.4.5 | **1.6.0 builtin** (line 152) | Sprint 01 W2 §8.1 "1.4.5 scaffold 이미 포함" | ⚠️ **D2 drift — P2**: manifest 1.4.5 요청했지만 lock은 builtin 1.6.0으로 resolving. Unity 6가 이를 자동 upgrade함. 기능 호환 (1.6.0은 1.4.5 superset). |
+| `com.unity.inputsystem` | 1.11.2 | **1.11.2** (line 64) | 설계 직접 요구 없음. 하지만 Sprint 01 W2 §0 블로커 해소 섹션에서 manifest 전수 검증 언급 | ✅ 정합 |
+| `com.unity.render-pipelines.universal` | 17.0.3 | **17.4.0 builtin** (line 107) | 설계 직접 요구 없음. Unity 6 LTS 호환 | ⚠️ **D3 drift — P3 (문서만)**: manifest 17.0.3 요청 → lock이 builtin 17.4.0으로 자동 upgrade. Unity 6 LTS의 builtin URP 버전 정책. 기능 영향 없음. |
+| `com.unity.textmeshpro` | 3.2.0-pre.10 | **5.0.0 builtin** (line 172) | 설계 직접 요구 없음 | ℹ️ 정보. Unity 6 LTS TMP 5.0 builtin. 호환. |
+| `com.unity.timeline` | 1.8.7 | **1.8.7** (line 180) | 설계 직접 요구 없음 | ✅ |
+
+### §3.3 lock 자동 해석된 간접 의존 (설계 체크용)
+
+| 간접 의존 | lock 해석 | 설계 관련성 |
+|---|---|---|
+| `com.unity.burst` | 1.8.29 | Sprint 02 §1 "DOTS 전환 시" / Sprint 03 §2.4 옵션 C 하이브리드 "RNG 결정론" — Burst 직접 의존 없음. Sprint 03+ 고려 시 유용. |
+| `com.unity.collections` | 6.4.0 | 동상. 현재 사용 0건. Sprint 03+ 측정 후 도입 판단. |
+| `com.unity.mathematics` | 1.3.3 | 동상 |
+| `com.unity.scriptablebuildpipeline` | 2.6.1 | Addressables 2.2.2 빌드 의존. Sprint 01 W2 W2 말미 "Build Player Content" 체크 시 필수. 실존. |
+
+### §3.4 누락 패키지 (설계 3건에서 요구했지만 manifest에 없는 것)
+
+**없음.** 설계 3건 모두 "scaffold manifest 이미 포함 가정" 원칙 준수.
+
+---
+
+## §4. 기존 구현물 vs 설계 스펙 drift
+
+### §4.1 Sprint 00 산출물 실사
+
+| 파일 | 실제 경로·크기 | 설계 전제 | Gap |
+|---|---|---|---|
+| `TranscendentStageSO.cs` | `Unity6/Assets/_Project/Scripts/Data/TranscendentStageSO.cs` (7323B, 166줄) | Sprint 01 W2 §1.2 "Sprint 00 `TranscendentStageCatalogSO` 패턴 1:1 재활용" | ✅ 정합 |
+| `TranscendentStageCatalogSO.cs` | `Unity6/Assets/_Project/Scripts/Data/TranscendentStageCatalogSO.cs` (2527B, 69줄) | Sprint 01 W2 §4.2 "Sprint 00 `TranscendentStageCatalogSO._byCode` 패턴 그대로" | ✅ 정합 (lazy `OnEnable` 빌드 패턴 확인) |
+| `TranscendentStageImporter.cs` | `Unity6/Assets/Editor/Importers/TranscendentStageImporter.cs` (15473B, 362줄) | Sprint 01 W2 §2.1 "Sprint 00 — 손대지 않음" / Sprint 01 W2 §10.1 R-W2-2 "공통화 시 깨질 가능성" | ✅ 정합 (1차 PR 불변 원칙) |
+| `SmokeTester.cs` | `Unity6/Assets/_Project/Scripts/Runtime/SmokeTester.cs` (2574B, 70줄) | Sprint 01 W2 §7.3 "Sprint 00 `SmokeTester` 의 `AsyncOperationHandle<T>` 패턴 재사용" | ✅ 정합 |
+| `TranscendentStageCatalog.asset` | `Unity6/Assets/_Project/Data/TranscendentStageCatalog.asset` (14878B) | Sprint 01 W2 §7.3 로드 타겟 | ✅ 정합 |
+| 200개 Stage SO | `Unity6/Assets/_Project/Data/TranscendentStages/TranscendentStage_*.asset` × 200 | Sprint 00 Smoke Test 통과분 | ✅ 정합 (ls 결과 200 asset + 200 meta = 400 entry) |
+
+### §4.2 Addressables 그룹 상태
+
+```
+AddressableAssetSettings.asset                (4033B)  — 전역 설정
+AssetGroups/
+  Default Local Group.asset                   (874B)   — 기본 그룹
+  TranscendentStages.asset                    (41066B) — Sprint 00 그룹 (200 entries 내포)
+  Schemas/
+    Default Local Group_BundledAssetGroupSchema.asset
+    Default Local Group_ContentUpdateGroupSchema.asset
+    TranscendentStages_BundledAssetGroupSchema.asset
+    TranscendentStages_ContentUpdateGroupSchema.asset
+```
+
+| 설계 요구 | 실제 상태 | Gap |
+|---|---|---|
+| Sprint 01 W2 §2.4 "신규 그룹 `Rewards` + 라벨 `reward-table`" | **그룹 없음** → Sprint 01 W2 Importer가 생성 예정 | ⏳ 정상 (Sprint 01 W2 신설) |
+| Sprint 02 W2 §2.1 "신규 그룹 `Prestige` + 라벨 `prestige-catalog`" | **그룹 없음** → Sprint 02 W2 Importer가 생성 예정 | ⏳ 정상 |
+| Sprint 03 §9 CP-I11 "신규 Addressables 그룹 추가 없음 — 기존 `Rewards` / `Prestige` 재활용" | Sprint 03 시점엔 두 그룹 존재 예정 | ⏳ 의존 정상 |
+| Sprint 01 W2 §9 CP9-11 "`settings.FindGroup("Rewards")` 선확인" | 기존 패턴(`TranscendentStageImporter.cs:325`)에 이미 `FindGroup` 후 없으면 `CreateGroup` 경로 존재 — 복제 대상 | ✅ 패턴 확립됨 |
+
+### §4.3 TSV 입력 경로 drift (Sprint 00 convention vs Sprint 01 W2 TSV 위치)
+
+```
+Sprint 00 Importer 경로 해석 (TranscendentStageImporter.cs:129-137):
+  candidate1 = <ProjectRoot>/../data_extracted/transcendent_stage.tsv
+  candidate2 = <ProjectRoot>/data_extracted/transcendent_stage.tsv
+실제 존재:
+  d:/SVN/Backup/GodBlade/data_extracted/transcendent_stage.tsv           (Sprint 00)
+  d:/SVN/Backup/GodBlade/designs/transcendent_drop_table.tsv             (Sprint 01 W2 대상)
+  d:/SVN/Backup/GodBlade/designs/transcendent_milestone_reward.tsv       (Sprint 01 W2 대상)
+  d:/SVN/Backup/GodBlade/designs/transcendent_affix_pool.tsv             (Sprint 01 W2 대상)
+  d:/SVN/Backup/GodBlade/designs/prestige_items.tsv                      (Sprint 02 W1 대상)
+  d:/SVN/Backup/GodBlade/designs/prestige_pp_cost.tsv                    (Sprint 02 W1 대상)
+  d:/SVN/Backup/GodBlade/designs/prestige_effect_matrix.tsv              (Sprint 02 W1 대상)
+```
+
+| 설계 요구 | 실제 상태 | Gap |
+|---|---|---|
+| Sprint 01 W2 §2.2 "TSV 는 `designs/` 폴더 — ScriptedImporter 부적합, MenuItem 채택" | TSV 3종 `designs/` 확인 | ✅ 정합 |
+| Sprint 01 W2 §2.1 `Shared/TsvReader.cs` 공통 읽기 모듈 | 3종 Importer 각자 ResolveTsvPath 필요 — 경로 `data_extracted/` vs `designs/` **다름** | ⚠️ **D4 drift — P2**: `TsvReader.Read()` 시그니처만으로는 경로 해석 안 됨. Importer 별 ResolveTsvPath 필요. 설계 §2.5 시그니처는 `Read(path, expectedHeaders)` — 경로는 호출자 책임이라 OK. 단 **각 Importer가 `designs/` 경로 하드코딩**해야 함을 설계 문서에 명기 권장. |
+
+### §4.4 기존 그룹명 `TranscendentStages` — 설계 3건 신규 그룹과 충돌?
+
+| 신규 그룹명 (설계) | 기존 그룹명 | 충돌 |
+|---|---|---|
+| `Rewards` (Sprint 01 W2 §2.4) | `TranscendentStages` | ✅ 없음 |
+| `Prestige` (Sprint 02 W2 §2.1) | `TranscendentStages` | ✅ 없음 |
+| `Default Local Group` (Unity 기본) | 신규 그룹 모두 | ✅ 없음 |
+
+---
+
+## §5. 이벤트 훅 그래프 (발화자 × 구독자 매트릭스)
+
+### §5.1 설계 3건 선언 훅 7개
+
+| # | 훅 이름 | Sprint 01 W2 | Sprint 02 W2 | Sprint 03 | 발화자 (예정) | 구독자 (예정) |
+|---|---|---|---|---|---|---|
+| 1 | `OnMonsterKilled(floor, mobKind, monsterCode)` | 채널 A 선언(§7.4) | 확장(§6.4) | — | Sprint 02+ (`LootRoller`) | `LootRoller` / `PrestigePpAccumulator.GrantBossBonus` (mobKind=Boss 시) |
+| 2 | `OnFloorReached(floor)` | 채널 B 선언(§7.4) | 확장(§6.4) | 배치 호출(§4.5) | Sprint 02+ (`StageCompletion`) / Sprint 03 Catch-up 배치 | `MilestoneGranter.Award(floor)` / `PrestigePpAccumulator.OnStageCompleted` / `PlayerPrestigeState.Unlock` (floor==100 시) |
+| 3 | `OnBossKilled(floor, bossCode)` | — | 신규(§6.2) | — | Sprint 02+ (`BossSpawn`) | `PrestigePpAccumulator.GrantBossBonus(floor)` |
+| 4 | `OnIdleReward(IdleRewardBundle)` | — | 핸들러 예약(§6.2) | **실제 발화자**(§4.2) | **`IdleTicker.FlushCatchUp` = 유일 발화자** (Sprint 03) | UI 방치 보고서 모달 (Sprint 03+) |
+| 5 | `OnSeasonEnd` | — | 채널 C 선언(§6.4) | — | **Sprint 05+** `SeasonSystem` (W2 시점 발화자 없음) | `PlayerPrestigeState.MigrateSeasonalToPermanent(0.5f)` (구독만 등록) |
+| 6 | `MilestoneGranter.Award(100)` | 구현 완료 예정(§7.2) | 활용(§6.1) | 배치 호출(§4.5) | `OnFloorReached(100)` 구독자 경로 | `PlayerPrestigeState.Unlock()` 호출 |
+| 7 | `MilestoneGranter.Award(200)` | TODO 주석만(§10.4) | 활성화(§6.1) | 배치 호출(§4.5) | `OnFloorReached(200)` 구독자 경로 | `PrestigePpAccumulator.GrantMilestone(200)` 활성화 |
+
+### §5.2 발화·구독 순서 불변식
+
+```
+Sprint 03 §4.5 FlushCatchUp 순서:
+  1. elapsed 계산 + cap + 역전 가드
+  2. IdleRewardCalculator.Calculate → IdleRewardBundle
+  3a. bundle.MilestonesReached.ForEach(floor => MilestoneGranter.Award(floor))
+       └ floor==100 → PlayerPrestigeState.Unlock() 연쇄
+       └ floor==200 → PrestigePpAccumulator.GrantMilestone(200) 연쇄
+  3b. KillsTotal/DropsCompact → 로그만 (Sprint 04 실제 인벤토리)
+  3c. PrestigePpAccumulator.GrantIdleDrip(elapsed, maxFloor)
+         → PlayerPrestigeState.AddPermanentPp(amount) (내부)
+  3d. OnIdleReward?.Invoke(bundle)  ← UI 알림용, State 반영 완료 후
+  4. IdleSaveService.Save()
+```
+
+### §5.3 `MigrateSeasonalToPermanent(retainRatio)` 구독자 현황
+
+| 발화자 (Sprint 02 W2) | 구독자 (Sprint 02 W2) | 상태 |
+|---|---|---|
+| Sprint 05+ `SeasonSystem.OnSeasonEnd` | `PlayerPrestigeState.MigrateSeasonalToPermanent(0.5f)` | **Sprint 02 W2 시점 구독자 0건 정상** (no-op 예정 확인) |
+
+**체크**: Sprint 02 W2 §6.2 "W2는 구독자만 등록, 발화자 없음" — 설계 일관. 실제 코드 작성 시점에 `OnSeasonEnd` 이벤트는 **정의만** (`public static event Action OnSeasonEnd;`), 어디서도 `Invoke` 호출 없음을 컴파일러/리뷰어가 확인해야 함 → **P2 체크리스트 §7 추가**.
+
+### §5.4 훅 그래프 이상 감지
+
+| 패턴 | 탐지 | 대응 |
+|---|---|---|
+| 이중 PP 적립 (`GrantIdleDrip` + `OnIdleReward` 핸들러에서 또 `AddPermanentPp`) | Sprint 03 §4.6 "PP 발화자 분리" 명시 / §9 CP-I6 "이중 적립 금지" | Sprint 03 테스트 T7 불변식 I2·I3 assert |
+| Sprint 02 W2 `OnSeasonEnd` 실수 발화 | Sprint 02~04 기간 발화자 없음 보장 | PR 리뷰 grep `OnSeasonEnd\s*?\.Invoke` 결과 0건 확인 |
+| `Unlock()` 이중 호출 (floor==100 달성 두 번) | `PlayerPrestigeState.Unlock()` "이미 Unlock이면 noop" (Sprint 02 W2 §3.2) | idempotent 설계 확인됨 |
+
+---
+
+## §6. 발견된 Drift / Blocker / Gap 목록
+
+### 우선순위 범례
+
+- **P0 Blocker** — 2026-05-04 킥오프 전 반드시 해소, 미해소 시 Sprint 01 W2 코딩 불가
+- **P1 Warning** — 버퍼 기간(D+2~D+13) 선제 해소 강력 권장, 미해소 시 W1 Day 1에 혼동·재작업 유발
+- **P2 Note** — Sprint 01 W1 초입 2~4시간 자연 흡수 가능
+- **P3 Info** — 문서 주석만 추가, 코드 변경 불요
+
+| ID | 설명 | 설계 근거 | 실제 상태 | 우선순위 | 해소 액션 (실행은 버퍼/W1에서) |
+|---|---|---|---|---|---|
+| **D1** | `GodBlade.Editor.asmdef` rootNamespace = `GodBlade.EditorTools`, 설계 문서 3건은 `GodBlade.Editor.*` 로 표기 | Sprint 01 W2 §9 CP9-5 / Sprint 02 W2 §8.1 CP9-5 | `GodBlade.Editor.asmdef:3`, `TranscendentStageImporter.cs:24` | **P1** | 설계 3건 각주 1줄 추가: "asmdef 이름=`GodBlade.Editor`, 파일 내 네임스페이스 = `GodBlade.EditorTools`" (문서만 수정) |
+| **D2** | `com.unity.test-framework` manifest 1.4.5 요청 → lock 1.6.0 builtin 해석 | Sprint 01 W2 §8.1 "1.4.5 scaffold 이미 포함" | `packages-lock.json:152` | **P2** | Sprint 01 W2 §8.1 표기를 "1.4.5 이상 (Unity 6 builtin 자동 해석)"으로 업데이트. 기능 영향 없음 |
+| **D3** | URP `manifest 17.0.3` → `lock 17.4.0 builtin` 자동 upgrade | 설계 직접 요구 없음 (Unity 6 LTS) | `packages-lock.json:107` | **P3** | 문서 영향 없음. 정보 차원 메모만. |
+| **D4** | 3개 신규 Importer TSV 경로가 `designs/` 폴더 (Sprint 00은 `data_extracted/`) | Sprint 01 W2 §2.2 "TSV는 designs/ — MenuItem 채택" | Sprint 00 `ResolveTsvPath`와 경로 다름 | **P2** | Sprint 01 W2 §2.5 `TsvReader` 설계에 "경로 해석은 Importer 각자 책임"을 재확인. 각 Importer 상단에 `designs/<file>.tsv` 경로 상수 명시 가이드 추가 |
+| **D5** | `GodBlade.Tests.Editor.asmdef` 미존재 (정상) | Sprint 01 W2 §8.2 "신설 대상" | `Tests` 폴더 부재 | — | Sprint 01 W2 신설 시 §7 체크리스트 따름. 블로커 아님 |
+| **D6** | 설계 3건 각자 11/16/11 체크포인트 존재, 공통 항목 중복 | Sprint 01 W2 §9 / Sprint 02 W2 §8 / Sprint 03 §9 | 문서 내부 | **P2** | PM에게 Sprint 01 킥오프 시 **합본 체크리스트 (총 23 유니크)** 1쪽 만들기 요청. 각 스프린트 최소 서브셋 명시 |
+| **D7** | Sprint 02 W2 §7.1 "`GodBlade.Tests.Editor.asmdef` references 에 `GodBlade.Runtime` 추가 필요, Sprint 01 W2에선 없을 가능성" | Sprint 01 W2 §8.2 / Sprint 02 W2 §7.1 | 아직 asmdef 미존재 | **P1** | Sprint 01 W2 신설 시 처음부터 `GodBlade.Runtime` 포함 권장. 별건 수정 회피 |
+| **D8** | Sprint 03 §5 축8 "`PrestigeCalculator.BuildSummary` 에 `IdleRateMul` 필드 존재 여부" — Sprint 02 W2 구현 시점에 확정 필요 | Sprint 03 §5 축8 | Sprint 02 W2 미구현 | **P1** | Sprint 02 W2 착수 시 `BuildSummary` 필드 리스트에 `GoldMul`, `ExpMul`, `IdleRateMul`, `DropMul` 포함 확인. game-designer TSV stat_key 집합과 일치 |
+| **D9** | Sprint 03 §5 축8 "`PrestigeCalculator.GetIdleCapHours(state)` 신규 헬퍼 — Sprint 02 W2 시그니처 불변 원칙 위반 여부" | Sprint 03 §5 축8 | Sprint 02 W2 미구현 | **P2** | 신규 메서드 추가는 "시그니처 변경 아님 = OK" 주석 명시 |
+
+### P0 Blocker = **0건**
+
+**판정**: 2026-05-04 Sprint 01 W2 킥오프에 직접 차단되는 항목 없음.
+
+### Sprint 00 회귀 2건 재발 방지 레이어 — 실사 확인
+
+| 회귀 | 복구분 위치 | 확인 |
+|---|---|---|
+| **CS0246** (`Unity.ResourceManager` 누락) | `GodBlade.Runtime.asmdef:7` `"Unity.ResourceManager"` / `GodBlade.Editor.asmdef:9` `"Unity.ResourceManager"` | ✅ 유지 |
+| **CS1061** (`InternalsVisibleTo` 중복 CS0579 or 오타) | `TranscendentStageSO.cs:22` 단일 선언 (Unity6/Assets 전체 grep 결과 1건) | ✅ 유지 |
+
+Sprint 01 W2/02 W2/03 모두 이 레이어를 요구(각 §9/§8). 현 scaffold에서 **이미 해소됨** → 신규 파일 작성 시 이 두 위치를 건드리지만 않으면 재발 없음.
+
+---
+
+## §7. Sprint 01 킥오프 Go/No-Go 체크리스트 (2026-05-04)
+
+> PD가 킥오프 시점에 1분 내 확인. 7개 bullet. 6개 이상 ✅면 GO.
+
+- [ ] **§A. asmdef 3개 실존 + Unity 에디터 열어서 Console 에러 0**
+      — `Unity6/Assets/Editor/GodBlade.Editor.asmdef` / `Unity6/Assets/_Project/Scripts/Data/GodBlade.Data.asmdef` / `Unity6/Assets/_Project/Scripts/Runtime/GodBlade.Runtime.asmdef` 각자 내용 정상
+- [ ] **§B. `Unity.ResourceManager` 참조 유지 (CS0246 재발 방지)**
+      — Runtime asmdef line 7 / Editor asmdef line 9 변경 없음 확인
+- [ ] **§C. `InternalsVisibleTo("GodBlade.Editor")` 단일 선언 유지 (CS0579 재발 방지)**
+      — `TranscendentStageSO.cs:22` 외 중복 grep 결과 0건
+- [ ] **§D. Sprint 00 Smoke Test 통과 유지**
+      — 빈 씬에 `SmokeTester` 컴포넌트 붙이고 Play → 콘솔 `[Smoke] Loaded 200 stages. First: GT=120700001 HP=600000` 출력 확인
+- [ ] **§E. 설계 3건 각주 추가 여부 (D1 해소)**
+      — Sprint 01 W2 §9 CP9-5 각주 또는 별도 "네임스페이스 규약" 메모: "asmdef 이름=`GodBlade.Editor`, 네임스페이스=`GodBlade.EditorTools`" 1줄 존재
+- [ ] **§F. TSV 3종 실존 (designs/ 폴더)**
+      — `designs/transcendent_drop_table.tsv` / `transcendent_milestone_reward.tsv` / `transcendent_affix_pool.tsv` 각각 존재
+- [ ] **§G. Sprint 01 W2 TodoWrite (PM 작성) 준비 완료**
+      — PM이 Sprint 01 W2 킥오프 문서에 설계 §2/§3/§4/§5/§7/§8 기반 TodoWrite 10~12건 작성
+
+---
+
+## §8. 권장 후속 조치 (버퍼 기간 ~ Sprint 01 W1 착수)
+
+### §8.1 버퍼 기간(D+2~D+13 = 2026-04-22 ~ 2026-05-03)에 선제 해소 권장 (2건)
+
+1. **D1 해소** — 설계 3건(`sprint-01-w2-importer-design.md` §9 CP9-5 / `sprint-02-w2-prestige-tech-sketch.md` §8.1 CP9-5 / `sprint-03-idle-research.md` §9.2)에 각주 1줄씩 추가
+   - 예: `// NOTE: asmdef 파일명은 "GodBlade.Editor"이나, rootNamespace/네임스페이스는 "GodBlade.EditorTools"이다 (Sprint 00 scaffold 컨벤션 유지).`
+   - 작업량 30분. 문서만 변경, 코드 무변경.
+   
+2. **D6 해소** — PM에게 **합본 체크리스트 1쪽** 요청 (§9 총 38개 → 유니크 23개 정도)
+   - 스프린트별 서브셋 라벨 (W1/W2/Idle) 부착
+   - PR 머지 전 자체 체크 원칙 유지
+   - 작업량 1~2시간 (PM 영역)
+
+### §8.2 Sprint 01 W1 Day 1 (2026-05-04~06) 자연 흡수 가능 (4건)
+
+3. **D4 해소** — 3개 신규 Importer 파일 상단에 TSV 경로 상수 명시
+   ```csharp
+   const string TSV_PATH = "designs/transcendent_drop_table.tsv";  // 각 Importer 별
+   ```
+4. **D7 해소** — `GodBlade.Tests.Editor.asmdef` 신설 시 `references` 에 **처음부터** 5종 포함: `UnityEngine.TestRunner`, `UnityEditor.TestRunner`, `GodBlade.Data`, `GodBlade.Runtime`, `GodBlade.Editor`
+5. **D8 검증** — Sprint 02 W2 착수(Sprint 02 W1 말미) 전 `PrestigeCalculator.BuildSummary` 필드 리스트 확정. 현 시점엔 Sprint 01 W2 범위 외 — 체크리스트 추적만
+6. **D9 노트** — Sprint 03 착수 시점에 해당. 현 시점엔 메모 수준
+
+### §8.3 그대로 둬도 되는 건 (문서 주석만, 3건)
+
+7. **D2** — test-framework 버전 불일치는 Unity 6 builtin 정책. 기능 호환.
+8. **D3** — URP 17.0.3 → 17.4.0 upgrade는 builtin 정책. 호환.
+9. **D5** — `Tests.Editor.asmdef` 미존재는 Sprint 01 W2 범위 내 신설 예정. 정상.
+
+### §8.4 PM·game-designer 에스컬레이션 권장
+
+- **PM에게**: 
+  - D6 합본 체크리스트 작성 요청
+  - Sprint 01 W2 TodoWrite에 "§7 Go/No-Go 체크 7개"를 D+0 킥오프 블록에 포함
+  - Sprint 02 W2 D-2 시점 "D8/D9 재확인 태스크" 1건 예약
+- **game-designer에게**:
+  - D8 관련 `prestige_items.tsv` (Sprint 02 W1 산출물) 의 `stat_key` 컬럼에 `IdleRateMul` 해당 항목 존재 여부 확인 요청 (스펙 §3.2 C 방치 드립 수식 일관성)
+
+---
+
+## §9. 결론 (1줄)
+
+**2026-05-04 Sprint 01 W2 킥오프 GO**. P0 블로커 없음, Sprint 00 회귀 2건 방어 레이어 실사 확인. 버퍼 2주 동안 D1/D6 문서 정돈 2건만 선제 해소 권장.
+
+---
+
+## §10. 감사 메타
+
+- 감사 파일 수: `Unity6/` 하위 asmdef 3 + manifest 2 + SO 2 + Importer 1 + Runtime 1 + AddressableAssetsData 그룹 확인 = **읽기 11건**
+- 설계 문서 교차: 3건 (v1.0 APPROVED 각)
+- drift 총 9건 (P0=0, P1=4, P2=4, P3=1)
+- 코드 수정: **0건** (읽기 전용 원칙 준수)
+- 보고서 생성 Write 호출: 1회 (본 파일)
+- 감사 소요 시간: 약 40분
+- 차기 감사 예정: Sprint 01 W2 종료 D+14 (2026-05-17) — 실구현물 vs 설계 drift 재확인
+6:["slug","scaffold-sync-audit-2026-04-21","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","scaffold-sync-audit-2026-04-21","d"],{"children":["__PAGE__?{\"slug\":\"scaffold-sync-audit-2026-04-21\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","scaffold-sync-audit-2026-04-21","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Scaffold Sync Audit — 2026-04-21"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/scaffold-sync-audit-2026-04-21.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"3,754"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Scaffold Sync Audit — 2026-04-21 — 자료실"}],["$","meta","3",{"name":"description","content":"판정: Sprint 01 킥오프 (2026-05-04) GO"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

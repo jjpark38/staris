@@ -1,0 +1,104 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T1ac9,# 모바일 wrap 정현우 영역 위임 합의 (차도윤 + 정현우 D+30 1:1)
+
+> 작성: 2026-05-04 (정현우 code-lead) · 차도윤 + 정현우 D+30 (2026-06-04) 1:1 합의 사전 작성
+> 버전: **v0.1 사전 작성** (D+30 합의 미완 / PD 명시 거부 없으면 D+30 본 문서 baseline 박힘)
+> 상위 참조: `project_v3_0_redesign_decisions.md` (#1 C 하이브리드 / #7 D+180) · `.claude/agents/web-game-lead.md` L26~31 (차도윤 약점 "모바일 네이티브 광고 SDK 0 경험") · `.claude/agents/code-lead.md` (정현우 분업 — DOTS/SDK/IAP 류재현 위임 명시)
+> 범위: 모바일 native wrap (Capacitor / Cordova) 영역 차도윤(웹게임) → 정현우(Unity 클라) 위임 합의 1쪽
+
+---
+
+## 1. TL;DR (3줄)
+
+1. **모바일 native wrap 정현우 영역 위임 합의** — 차도윤은 웹 PWA + 모바일 브라우저 60fps까지 / 정현우는 Capacitor 또는 Cordova 셋업 + iOS·Android 빌드 파이프라인 + 류재현 광고 SDK 통합
+2. **위임 사유 2건** — (a) 차도윤 페르소나 약점 "모바일 네이티브 광고 SDK 0 경험" (`.claude/agents/web-game-lead.md` L27) (b) 정현우 영역 시너지 — Steam Electron + 모바일 wrap 합쳐서 1 영역 (네이티브 빌드·서명·스토어 제출 공통)
+3. **작업 시점 = Unity Sp02 재개 후 (2026-09-15+)** — 웹게임 D+180 (2026-11-04) 출시 직후 Unity 본판 트랙 합류. Sp-W01~W08 기간(5/18~9/01) 정현우 영역 침범 0
+
+---
+
+## 2. 현재 영역 분리 (D+0 = 2026-05-04)
+
+| 영역 | 차도윤 (web-game-lead) | 정현우 (code-lead) | 비고 |
+|------|----|----|----|
+| 웹 PWA 매니페스트 + Service Worker | 차도윤 ⭐ | — | 임재훈 60fps 협업 |
+| 모바일 브라우저 60fps (iOS Safari / Android Chrome) | 차도윤 ⭐ | — | 임재훈 부하 테스트 |
+| 모바일 native wrap (Capacitor / Cordova) | — | 정현우 ⭐ ★ | 본 합의로 정현우 위임 |
+| iOS·Android 빌드 파이프라인 | — | 정현우 ⭐ ★ | Unity 빌드 파이프라인과 통합 |
+| Steam Electron 빌드 | — | 정현우 ⭐ | 기존 영역 |
+| 모바일 광고 SDK (IronSource / AppLovin) | — | 정현우 ★ + **류재현 (dots-platform) 협업** | 류재현 = SDK 본체 / 정현우 = wrap 통합 |
+| 웹 광고 (AdSense / Coinis) | 차도윤 ⭐ | — | 웹 PWA 한정 |
+| IAP (Stripe Web) | 김민준 (web-lead) | — | 김민준 영역 |
+| IAP (App Store / Play Store) | — | 류재현 ⭐ | 정현우는 wrap 통합만 |
+
+---
+
+## 3. 위임 사유 2건
+
+### 사유 1 — 차도윤 페르소나 약점 (모바일 광고 SDK 0 경험)
+
+`.claude/agents/web-game-lead.md` L26~31 명시:
+
+> **모바일 네이티브 광고 SDK 0 경험** — IronSource / AppLovin 모바일 광고는 류재현(dots-platform) 의존. 웹 광고는 본인 처리 (AdSense / Coinis).
+
+차도윤(차도윤 가정 인용): "현우님, 모바일 wrap 자체보다 광고 SDK 통합이 발목 잡습니다. IronSource Capacitor plugin 자체 PoC 1주 + AppLovin MAX 통합 1주 + 양 OS 정책 검수 1~2주 — 도합 4주 추정인데 저는 0 경험입니다. 류재현님 SDK 본체 + 현우님 wrap 통합 라인이 본인 학습 4주 비용 회피입니다."
+
+### 사유 2 — 정현우 영역 시너지 (Steam Electron + 모바일 wrap = 1 영역)
+
+정현우 영역에 이미 Steam Electron 빌드 파이프라인이 박혀 있음. 모바일 wrap (Capacitor / Cordova) 도 동일 패턴 — 네이티브 wrap + 빌드 서명 + 스토어 제출. 차도윤이 별도 학습 4주 들이는 것보다 정현우 영역에 합쳐서 1 영역 통합이 학습 비용 0 + 빌드 파이프라인 일관성 확보.
+
+정현우 본인 발화: "Steam Electron 이미 셋업했으니 Capacitor 추가 1~2주면 됩니다. 단 광고 SDK 통합은 류재현님 본체 의존 — 본인은 wrap layer 만."
+
+---
+
+## 4. 합의 사항 5건 (D+30 잠금 예정)
+
+| # | 항목 | 합의 | 근거 |
+|---|------|------|------|
+| 1 | **영역 경계** | 차도윤 = 웹 PWA + 모바일 브라우저까지 / 정현우 = Capacitor wrap + 빌드·서명·스토어 / 류재현 = 광고 SDK + IAP 본체 | 페르소나 명세 일치 |
+| 2 | **작업 시점** | Sp-W01~W08 기간(5/18~9/01) 정현우 영역 침범 0 / Unity Sp02 재개 후 (2026-09-15+) 모바일 wrap 트랙 시작 | v3.0 #7 D+180 출시 후 합류 |
+| 3 | **빌드 파이프라인** | `Unity6/` Unity native 빌드 + `webgame/` Vite 빌드 → Capacitor wrap → iOS/Android | 정현우 단일 빌드 시스템 |
+| 4 | **광고 SDK 통합** | 류재현 = IronSource / AppLovin / Google AdMob 본체 SDK / 정현우 = Capacitor plugin layer / 차도윤 = JS 인터페이스 호출만 | 페르소나 약점 명시 위임 |
+| 5 | **충돌 해결** | 모바일 광고 표시 라인 = JS 호출 인터페이스 차도윤 + native impl 정현우+류재현. 충돌 시 박세린(PM) 중재 → PD | 5단계 프로토콜 |
+
+---
+
+## 5. 차도윤 잔여 영역 (D+30 이후)
+
+- **웹 PWA 매니페스트** (`webgame/public/manifest.json`)
+- **Service Worker** (오프라인 캐시 + Phaser asset preload)
+- **모바일 브라우저 60fps** (iOS Safari / Android Chrome — 임재훈 60fps 부하 테스트 협업)
+- **웹 광고 (AdSense / Coinis)** — 웹 PWA 한정, 모바일 native 광고 위임
+- **모바일 브라우저 입력 (touch event)** — Phaser 3 input plugin 활용
+- **Firestore 세이브 sync** (모바일 브라우저까지)
+
+---
+
+## 6. 정현우 신규 영역 (D+30 이후, Sp02 재개 후 = 2026-09-15+)
+
+- **Capacitor 또는 Cordova 셋업** — Capacitor 우선 권장 (Ionic 표준 / Phaser 3 호환 검증 사례 다수)
+- **iOS 빌드 파이프라인** — Xcode + 인증서 + TestFlight + App Store Connect
+- **Android 빌드 파이프라인** — Gradle + Keystore + Play Console
+- **모바일 광고 SDK Capacitor plugin layer** — 류재현 본체 SDK wrap, JS 인터페이스 차도윤에게 노출
+- **App Store / Play Store 제출 자동화** — GitHub Actions 또는 fastlane
+
+---
+
+## 7. 위험 가정 2건
+
+1. **차도윤 모바일 브라우저 60fps 미달 시 native wrap 우회 압력** → 헷지: 임재훈 부하 테스트 (Sp-W02 6/1) 60fps 검증 통과 시 native wrap 일정 D+30 유지. 미달 시 정현우 영역 합류 시점 앞당김 (Sp-W04 6/29 검토) + PD 보고
+2. **류재현 광고 SDK 본체 작업 일정 미정** → 헷지: 본 합의는 wrap layer 합의만. 류재현 본체 일정은 dots-platform agent 별도 발주 (정현우 + 류재현 D+45 1:1 추가 합의 예약)
+
+---
+
+## 8. 다음 액션
+
+- **D+30 (2026-06-04)**: 차도윤 + 정현우 1:1 본 문서 검토 + 합의 5건 잠금 → `v1.0 APPROVED` 갱신
+- **D+45 (2026-06-19)**: 정현우 + 류재현 1:1 광고 SDK 본체 일정 합의 (별도 문서)
+- **2026-09-15+**: Unity Sp02 재개 시 모바일 wrap 트랙 첫 발주 (정현우 4h 단위)
+6:["slug","mobile_wrap_delegation_2026-06-04","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","mobile_wrap_delegation_2026-06-04","d"],{"children":["__PAGE__?{\"slug\":\"mobile_wrap_delegation_2026-06-04\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","mobile_wrap_delegation_2026-06-04","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"모바일 wrap 정현우 영역 위임 합의 (차도윤 + 정현우 D+30 1:1)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/mobile_wrap_delegation_2026-06-04.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"993"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"모바일 wrap 정현우 영역 위임 합의 (차도윤 + 정현우 D+30 1:1) — 자료실"}],["$","meta","3",{"name":"description","content":"1. 모바일 native wrap 정현우 영역 위임 합의 — 차도윤은 웹 PWA + 모바일 브라우저 60fps까지 / 정현우는 Capacitor 또는 Cordova 셋업 + iOS·Android 빌드 파이프라인 + 류재현 광고 SDK 통합"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

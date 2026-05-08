@@ -1,0 +1,489 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T8808,# Sprint 03 — 방치(Idle) 시스템 사전 조사 리서치
+
+> 작성: 2026-04-21 (code-lead) · 근거: `prestige_system_spec.md` v1.0 APPROVED / `sprint-01-w2-importer-design.md` v1.0 APPROVED / `sprint-02-w2-prestige-tech-sketch.md` v1.0 APPROVED / 메모리 `project_game_direction_idle_rpg.md`, `feedback_codelead_review_compile_verify.md`
+> **문서 상태**: **v1.0 APPROVED** (PD 승인 2026-04-21) — Sprint 03 착수 시 본 문서 §1~§9 이행 필수
+> **범위**: Sprint 03 (2026-06-01~ 예정) 착수 전 기술 옵션 비교 + Open Question + TodoWrite 스케치
+
+## PD 승인 결정표 (2026-04-21)
+
+| Q | 결정 | 코멘트 |
+|---|------|--------|
+| **Q1 계산 전략** | **C 하이브리드** | Bulk 집계 + tail 3,600초 리플레이. 10h/24h/48h 방치 모두 동일 성능 |
+| **Q2 `IdleCapHoursFlat` 정책** | **A 스펙/TSV대로** | **24h 기본 / Lv당 +2h / 소프트캡 Lv5 → 34h** (TSV `prestige_items.tsv` #25 `IdleCapHoursFlat` 실수치 기준, `prestige_system_spec.md:105` "오프라인 캡 24h" 일관). 하드캡은 Sprint 03 W2 말미 `IdleCapHardCapDebug` 토글만 예약, Sprint 04+ 실측 후 v0.2 유예. ※ 2026-04-21 S1 승인으로 원본 "8h/+1Lv/13h" 오기 정정 |
+| **Q3 방치 중 층 자동 진행** | **A 금지** | maxFloor 고정. 자동 진행은 Sprint 04+ 별도 기획 과제로 분리 |
+| **Q4 PP 자동 수령** | **A 자동** | FlushCatchUp 시점 즉시 PP 반영. 모달은 보고용이지 수령 절차 아님. Sprint 04 광고 부스트만 별도 버튼 |
+| **Q5 드롭 실제 수령** | **A 로그만** | Sprint 03 스코프 = 방치 계산 + PP 적립 + 마일스톤 배치 + Debug.Log 드롭. 실제 인벤토리는 Sprint 04 |
+
+**부수 Q6 (부활 초기화 타이밍)** → Sprint 04 부활 시스템 설계 때 일괄 결정.
+
+**TodoWrite 10건 예상 공수 13.25h** (1인 파트타임 11~15h 예산 + 리뷰 후 컴파일 회귀 버퍼 1.5~2h). **§9 체크리스트 11개 PR 머지 전 자체 완료 필수**.
+
+---
+
+## 0. TL;DR (PD 1분)
+
+- **핵심 질문**: 오프라인 10시간 후 복귀한 유저에게 "드롭 + 마일스톤 + PP" 를 어떻게 계산해 돌려줄 것인가.
+- **권장 전략**: **옵션 C (하이브리드)** — 구간 집계(평균 처치율 × 경과시간) + 마지막 1시간만 이벤트 리플레이. 드롭 표현력과 성능의 현실적 타협점.
+- **틱 주기**: 온라인 방치 = **1초 고정 `IdleTicker.Update()` 누산**. 오프라인 = 앱 포커스 복귀 시 1회 Catch-up 계산.
+- **DateTime 신뢰**: Sprint 03 로컬 전용 구간에선 **로컬 `DateTime.UtcNow` 전제 + 역전 가드만**. 본격 서버 검증은 Phase 5 Firebase 도입 후.
+- **아키텍처**: `GodBlade.Runtime.Idle` 서브 네임스페이스. `IdleTicker` (MonoBehaviour, 앱 수명) + `IdleRewardCalculator` (순수 C# static) + `IdleSaveService` (JSON).
+- Sprint 02 W2 `OnIdleReward` 훅의 **유일한 발화자** = `IdleTicker.FlushCatchUp()`.
+- Open Question **5개** (§6). Sprint 03 TodoWrite **10건** W1/W2 각 5 (§7). 리스크 3건 (§8). 체크 11개 (§9).
+
+---
+
+## 1. 방치 시스템 요구사항 정의
+
+### 1.1 온라인 방치 vs 오프라인 방치
+
+| 구분 | 정의 | 범위 | 처리 경로 |
+|------|------|------|----------|
+| **온라인 방치** | 앱 실행 중 + 포커스 보유 + 유저 입력 없음 | 로비·스테이지 화면에서 자동전투 루프가 계속 도는 상태 | `IdleTicker.Update()` 매 1초 틱 누산 |
+| **오프라인 방치** | 앱 종료 / iOS 백그라운드 Suspended / 시스템 강제종료 후 | 마지막 저장 시각 ↔ 재진입 시각 사이 경과 전부 | 앱 재진입 시 `FlushCatchUp()` 1회 일괄 계산 |
+| **포커스 잃은 상태** (회색지대) | 알림바 내림 / 카카오톡 전환 / 화면 잠금 등 — 앱은 살아있지만 `Application.isFocused == false` | OS 별 동작 차이 큼 (iOS 백그라운드 30초 후 Suspend, Android는 상대적 관대) | 방어 설계: **포커스 잃는 순간도 오프라인 간주** (마지막 틱 시각 스탬프 저장 → 복귀 시 Catch-up) |
+
+**운영 원칙**: "온라인 틱 vs 오프라인 Catch-up" 을 **동일한 계산기**(`IdleRewardCalculator`)로 처리. 온라인은 `elapsedSec=1` 을 매초 호출, 오프라인은 `elapsedSec=Δ` 를 1회 호출. 수식 두 벌 운영 금지.
+
+### 1.2 틱 주기 트레이드오프
+
+| 주기 | 장점 | 단점 | 권장도 |
+|------|------|------|--------|
+| 매 프레임 | 즉시성 최대 | 모바일 배터리·발열 유해, 60fps × 60초 = 초당 60회 드롭 롤 | ❌ |
+| **매 1초** | 체감 즉시성 유지 + 초당 드롭 롤 1회로 예측 가능 | 백그라운드 60fps 가정 시에도 오버헤드 적음 | **✅ 기본값** |
+| 매 5~10초 | 저전력, CPU spike 최소 | 드롭 애니메이션 체감 둔화 | Sprint 04+ 저사양 디바이스 옵션 |
+| 이벤트 기반 | 계산 최소 | 몬스터 킬 이벤트 원천이 사라짐 (방치 특성상 자동 소환 사이클 유지가 본질) | ❌ |
+
+**결정**: **매 1초 `IdleTicker` MonoBehaviour 에서 Update() + 내부 accumulator `deltaTimeFloat` 누산 → 1.0f 넘을 때만 1틱 발화**. `InvokeRepeating(1f)` 는 Time.timeScale 변화 시 중단 이슈 + 게임 일시정지 통합 어려움으로 비권장.
+
+### 1.3 "몇 시간 만에 돌아왔을 때" 계산 방식
+
+- 입력: `elapsedSec`, `maxFloor`, `prestigeBonus(IdleRateMul)`, `idleCapHours` (프레스티지 **아이템 #25 `IdleCapHoursFlat`** — FlatStat 별도 경로 via `PrestigeCalculator.GetIdleCapHours(state)`) <!-- D8 검증 2026-04-21 반영 -->
+- 출력: `IdleRewardBundle { kills: List<KillEvent>, gold: long, exp: long, ppGained: long, milestonesReached: List<int> }`
+- 세부 전략은 **§2 3옵션 비교에서 결정**.
+
+### 1.4 Unity 6 시간 API 검토
+
+| API | 용도 적합성 | 주의 |
+|-----|------------|------|
+| `DateTime.UtcNow` | 오프라인 경과 계산의 **유일한 신뢰 지점** (로컬 범위 내) | 시계 조작 취약, **역전 가드 필수** (§3) |
+| `Time.realtimeSinceStartup` | 온라인 세션 내부 경과 | 앱 재시작 시 0 리셋 → 오프라인 계산에 부적합 |
+| `Time.deltaTime` | 온라인 틱 누산 | `Time.timeScale=0` 일시정지에 영향받음 → `Time.unscaledDeltaTime` 권장 |
+| `Application.focusChanged` (event) | 포커스 진입·이탈 감지 | iOS 백그라운드 Suspension 시점엔 발화 안될 수 있음 |
+| `OnApplicationPause(bool)` MonoBehaviour 콜백 | `true`=백그라운드 진입 / `false`=포커스 복귀 | **핵심 훅**. Catch-up 계산 + 저장 flush 타이밍 |
+| `OnApplicationQuit` | 앱 종료 직전 | Android·iOS에서 호출 보장 약함 → OnApplicationPause 중복 저장 권장 |
+
+**결정**:
+- 온라인 틱 누산 = `Time.unscaledDeltaTime` (일시정지 영향 회피)
+- 경과 시간 측정 = `DateTime.UtcNow - lastTickUtc` (초 단위 차)
+- 백그라운드 진입 시점 = `OnApplicationPause(true)` 에서 마지막 틱 시각 저장
+- 포커스 복귀 시점 = `OnApplicationPause(false)` 에서 Catch-up 호출
+
+---
+
+## 2. 오프라인 보상 계산 전략 — 3개 옵션 비교
+
+### 2.1 공통 입력
+
+```
+inputs:
+  elapsedSec       (long)              // DateTime 차 (cap 적용 후)
+  maxFloor         (int)               // 현재 최고 도달층
+  dropTable        (DropRateTableSO)   // Sprint 01 W2 자산
+  milestoneCatalog (MilestoneRewardCatalogSO)
+  prestigeBonus    (PrestigeCalculator.BuildSummary — Sprint 02 W2 자산)
+  rngSeed          (uint)              // 결정론 재현을 위한 시드
+```
+
+공통 제약:
+- `idleCapHours` (프레스티지 #24, 기본 8h Lv당 +1h, 소프트캡 Lv5 → 13h 상한 영역) 초과분은 **드롭**.
+- 드롭 버킷 Lookup은 Sprint 01 W2 `Dictionary<(floorBucket, mobKind, grade), float>` 재사용 — 신규 Lookup 구조 없음.
+
+### 2.2 옵션 A — 이벤트 리플레이 (초당 시뮬)
+
+```
+for sec in 0..elapsedSec:
+  if sec % killsPerSec == 0:
+    KillEvent k = SimulateKill(currentFloor, rng)
+    dropTable.RollDrops(k, rng)   // 등급 drop 굴림
+    if ShouldAutoAdvanceFloor(...):
+      floor++
+      CheckMilestone(floor)
+  accumulator.Add(k)
+```
+
+- **장점**: 온라인 틱 코드 재활용 가능 (동일 로직). 드롭 분포 완전 정확. "방치 로그" UI에 시간대별 이벤트 표현 가능.
+- **단점**: 10h × 3600sec × 초당 1킬 = **36,000 회 RollDrops** — 수백 ms ~ 1s+ CPU 스파이크. 24h 캡 시 86,400회 — 체감 프리즈 위험.
+- **성능 측정 필요**: Unity 6 모바일 Mono에서 Dictionary Lookup + System.Random.NextDouble 기준, 36,000회 ≈ 100~300ms 예상 (중급 기기). 허용 범위지만 여유 없음.
+
+### 2.3 옵션 B — 집계 공식 (평균 처치율 × 경과시간)
+
+```
+killsTotal   = killsPerSec × elapsedSec
+goldTotal    = killsTotal × avgGoldPerKill(currentFloor) × prestigeBonus.GoldMul
+expTotal     = killsTotal × avgExpPerKill(currentFloor) × prestigeBonus.ExpMul
+drops        = ExpectedDrops(killsTotal, dropTable, currentFloor, mobKind)  // 확률 × 횟수
+ppGained     = floor((elapsedSec / 3600) × maxFloor × 0.05 × prestigeBonus.IdleRateMul)
+```
+
+- **장점**: O(1) 계산. 10시간·24시간·48시간 모두 동일 1ms.
+- **단점**:
+  - 드롭 표현력 상실 — "레어 1개, 에픽 0개" 같은 정수 결과가 평균 개수(예: 0.37개)로 표현됨 → 반올림 or 확률 추첨 한번으로 해결해야.
+  - 마일스톤 "방치 중 돌파" 시퀀스를 잡기 어려움 (언제 100→101→102 도달?) — 별도 `FloorProgressEstimator` 로 수식화 필요.
+  - "방치 동안 층 자동 진행 허용" 여부 (§6 Q3) 에 따라 복잡도 극심 차이.
+
+### 2.4 옵션 C — 하이브리드 (구간 샘플링 + 마지막 구간 리플레이) **권장**
+
+```
+cappedSec = min(elapsedSec, idleCapHours × 3600)
+
+// Phase 1: 첫 구간 = 공식으로 집계 (cappedSec - 3600 초)
+if cappedSec > 3600:
+  bulkSec   = cappedSec - 3600
+  bulkBundle = AggregateFormula(bulkSec, dropTable, milestoneCatalog, prestigeBonus)
+
+// Phase 2: 마지막 1시간 = 이벤트 리플레이 (최대 3600회)
+tailSec      = min(cappedSec, 3600)
+tailBundle   = ReplayEvents(tailSec, dropTable, ..., rng)
+
+// 합산
+finalBundle = bulkBundle + tailBundle
+```
+
+- **장점**:
+  - 리플레이 횟수 상한 **3,600회 고정** — 10h든 24h든 성능 동일.
+  - 마지막 구간은 이벤트 로그로 "방치 보고서" UI 표현 가능 ("최근 1시간 동안 에픽 2개 획득" 등).
+  - Bulk 구간은 집계 수식 → 긴 방치에도 즉시 응답.
+- **단점**:
+  - 구현 복잡도 옵션 A·B 합산 → 테스트 커버리지 2배.
+  - 마일스톤 돌파 타이밍은 여전히 추정 (Phase 1 집계에서 "이 1시간 구간 동안 105→108층" 식 추정).
+- **적합성**: 1인 파트타임 + 모바일 타겟 + 방치형 핵심 체험 ("돌아왔는데 짜잔!") 모두 만족. **Sprint 03 권장**.
+
+### 2.5 각 옵션의 드롭·마일스톤·PP 처리 차이
+
+| 항목 | 옵션 A (Replay) | 옵션 B (Formula) | 옵션 C (Hybrid) |
+|------|-----------------|------------------|-----------------|
+| 드롭 | 매 초 RollDrops 호출, 실제 아이템 결정론 | 확률 × 횟수의 기대값 → 정수 반올림 or 1회 Poisson 추첨 | Bulk = 기대값, Tail = 실 Roll |
+| 마일스톤 | 층 진행 함수 따라 정확히 돌파 시점 포착 | 추정 공식으로 "Δsec 동안 몇 층 진행" → 배치 발화 | Bulk=추정, Tail=실시간. 경계 층 누락 가능 |
+| PP (`OnIdleReward` 훅) | 초당 `maxStage × 0.05 / 3600` 누적 | `elapsedSec / 3600 × maxStage × 0.05` 공식 1회 | Bulk+Tail 합산 후 단일 `OnIdleReward` 1회 발화 |
+| 로그 UI 표현력 | 최상 (시계열 그래프 가능) | 최하 (요약 숫자만) | 중 (최근 1h만 상세) |
+
+### 2.6 권장 — **옵션 C (하이브리드)**
+
+**근거**:
+1. 1인 파트타임 관점에서 옵션 B는 단순 구현이지만 "방치 보고서" UI에 콘텐츠가 없어 방치형 게임 체감이 죽는다.
+2. 옵션 A는 24h 캡 시 86,400회 루프 — 저사양 기기 리스크 + 복귀 프리즈.
+3. 옵션 C는 리플레이 횟수 **상한 고정**(3,600) + 드롭 표현력 유지. 구현 복잡도는 Sprint 03 11~15h 예산에서 수용 가능.
+4. Sprint 04+ 저사양 디바이스 옵션으로 "tail=0" (완전 옵션 B) 전환이 쉬움 (파라미터 하나로 토글).
+
+---
+
+## 3. 타임스탬프 관리 & 치팅 방지
+
+### 3.1 로컬 `DateTime` 신뢰 가능한가
+
+- 모바일 유저는 `설정 > 일반 > 날짜 및 시간` 을 임의로 변경 가능 → 8시간 → 24시간 조작 시도 가능.
+- Sprint 03 범위에선 **Firebase Timestamp 동기 불가 (Phase 5+)**. 따라서 **로컬 시계 전적 신뢰 + 보수적 이상 탐지**.
+
+### 3.2 Sprint 03 로컬 방어 체크리스트
+
+| 이상 케이스 | 감지 방법 | 대응 |
+|------------|----------|------|
+| `lastTickUtc > DateTime.UtcNow` (역전) | `elapsed < 0` 이면 로그 + `elapsed = 0` 처리 | 보상 0. 토스트 "시간 확인" |
+| `elapsed > 30일` (비정상 장기) | 캡 `idleCapHours` 가 자연 상한. 단 의도적 리셋 감지 위해 `elapsed > 30일` 이면 Warn | 캡 적용 후 정상 처리 (리셋은 Phase 5+ 서버 도입 전까지 유저 권리 범위) |
+| 기기 재부팅 후 시각 변경 | 검출 불가 (로컬만으로는 한계) | Sprint 03 범위 외 — Phase 5 Firebase 서버 시각 검증에 위임 |
+| 시간대 변경 | `DateTime.UtcNow` 는 시간대 독립 → 영향 없음 | OK |
+
+### 3.3 치팅 허용 입장
+
+- **현재 방침**: 로컬 치팅은 **부분 허용** (싱글·방치형, 글로벌 랭킹 없음). 대응은 Steam Anti-cheat + Firebase Phase 5 서버 시각 검증.
+- Sprint 03 구현은 **역전 가드 1개 + 30일 Warn 1개** 만. 과도한 감지 로직 금지 (UX 해침).
+
+### 3.4 저장할 타임스탬프 필드
+
+```
+IdleSaveDto {
+  int  schemaVersion      = 1
+  long lastTickUtcMs      // DateTime.UtcNow.Ticks / 10000 (ms 단위)
+  long lastFocusExitUtcMs // OnApplicationPause(true) 시 갱신
+  int  lastKnownMaxFloor  // 오프라인 동안 층 변화 없음 가정
+  uint rngSeed            // 결정론 재현
+  long savedAtUtcMs       // 디버그
+}
+```
+
+### 3.5 장치 재부팅 / 시간대 변경
+
+- `DateTime.UtcNow` 는 장치 재부팅 생존 (OS가 RTC 유지).
+- 시간대 변경은 UTC 기준이므로 무영향.
+- **단**, 유저가 "기기 초기화 + 날짜 변경" 하면 감지 불가 → Phase 5+ 서버 시각으로 위임.
+
+---
+
+## 4. `IdleTicker` 런타임 아키텍처 스케치
+
+### 4.1 클래스 배치
+
+```
+GodBlade.Runtime / Assets/_Project/Scripts/Runtime/Idle/
+  IdleTicker.cs                 // MonoBehaviour 싱글턴, 앱 수명 동행
+  IdleRewardCalculator.cs       // 순수 C# static, §2 옵션 C 구현
+  IdleRewardBundle.cs           // 누산 결과 struct (kills/gold/exp/pp/milestones)
+  IdleSaveService.cs            // JSON 저장·로드
+  IdleSaveSchema.cs             // DTO (§3.4)
+  IdleConstants.cs              // 상수 (초당 킬수 기준값, 캡 등)
+```
+
+네임스페이스: `GodBlade.Runtime.Idle` (Sprint 02 W2 `GodBlade.Runtime.Prestige` 와 평행).
+
+### 4.2 클래스 책임
+
+```csharp
+// — IdleTicker.cs — (MonoBehaviour, DontDestroyOnLoad)
+namespace GodBlade.Runtime.Idle {
+  public sealed class IdleTicker : MonoBehaviour {
+    // 주입 의존
+    PlayerPrestigeState _prestige;            // Sprint 02 W2
+    DropRateTableSO     _drop;                // Sprint 01 W2
+    MilestoneRewardCatalogSO _milestone;      // Sprint 01 W2
+    int _currentMaxFloor;
+
+    // 내부 상태
+    float _accumUnscaled;                     // Time.unscaledDeltaTime 누산
+    DateTime _lastTickUtc;
+
+    // Unity 콜백
+    void Awake()  { /* singleton + DontDestroyOnLoad */ }
+    void Start()  { BootstrapFromSave(); }
+    void Update() { TickOneSecondIfElapsed(); }
+    void OnApplicationPause(bool paused);     // true → save + stamp, false → CatchUp
+    void OnApplicationQuit() { FlushSave(); }
+
+    // 핵심 메서드
+    void TickOneSecondIfElapsed();            // accum ≥ 1f 시 OnlineTick 호출
+    void OnlineTick(float deltaSec);          // IdleRewardCalculator.Accumulate(1초)
+    public IdleRewardBundle FlushCatchUp();   // 포커스 복귀 시 Δ만큼 Hybrid 계산
+    public event Action<IdleRewardBundle> OnIdleReward;  // Sprint 02 W2 예약 훅의 실제 발화자
+  }
+}
+```
+
+```csharp
+// — IdleRewardCalculator.cs — (순수 static)
+namespace GodBlade.Runtime.Idle {
+  public static class IdleRewardCalculator {
+    public static IdleRewardBundle Calculate(
+      long elapsedSec,
+      int maxFloor,
+      DropRateTableSO drop,
+      MilestoneRewardCatalogSO milestone,
+      in PrestigeCalculator.BuildSummary prestigeBonus,
+      int idleCapHours,
+      uint rngSeed);
+    // 내부적으로 §2.4 옵션 C 하이브리드 수행
+  }
+
+  public readonly struct IdleRewardBundle {
+    public readonly long ElapsedSec;
+    public readonly long GoldGained;
+    public readonly long ExpGained;
+    public readonly long PpGained;
+    public readonly int  KillsTotal;
+    public readonly IReadOnlyList<(int floor, Grade grade, int count)> DropsCompact;
+    public readonly IReadOnlyList<int> MilestonesReached;  // 배치 발화용
+  }
+}
+```
+
+### 4.3 갱신 타이밍 비교
+
+| 방식 | 장점 | 단점 | Sprint 03 선택 |
+|------|------|------|---------------|
+| `Update()` + float accum | Time.timeScale 독립 (`unscaledDeltaTime`), 일시정지 영향 통합 가능 | Update 빈도 높음(60/s) | **✅** |
+| `InvokeRepeating(1f)` | 단순 | Time.timeScale=0 시 중단 + Pause 통합 어려움 | ❌ |
+| 커스텀 Coroutine `yield return new WaitForSeconds(1f)` | 세련됨 | timeScale 의존. `WaitForSecondsRealtime` 대체 필요 | ❌ (검토 대상, 본 스프린트는 Update 고정) |
+| C# Threading.Timer | 메인스레드 외부 | Unity API 접근 불가. 동기화 비용 | ❌ |
+
+### 4.4 초기화 시점
+
+1. **게임 부팅 (`Start()`)**: `IdleSaveService.Load()` → `_lastTickUtc` 복원. 즉시 `FlushCatchUp()` 1회 호출 → `OnIdleReward` 1회 발화.
+2. **스테이지 진입**: `_currentMaxFloor` 갱신. 틱은 계속 진행 (스테이지 전환은 IdleTicker 생명에 영향 없음).
+3. **포커스 복귀 (`OnApplicationPause(false)`)**: 현 시각 ↔ `_lastTickUtc` Δ 계산 → `FlushCatchUp()`.
+4. **씬 전환**: `DontDestroyOnLoad` 로 유지. 초기화 반복 금지.
+
+### 4.5 이벤트 발화 순서 (§6 Sprint 02 W2 계약 준수)
+
+`FlushCatchUp()` 내부 순서:
+
+```
+1. elapsed 계산 + cap 적용 + 역전 가드
+2. IdleRewardCalculator.Calculate(...)  → IdleRewardBundle
+3. 순서 (배치 발화):
+   a. bundle.MilestonesReached.ForEach(floor => MilestoneGranter.Award(floor))   // Sprint 01 W2 채널 B
+      └─ floor==100 시 PlayerPrestigeState.Unlock() 내부 연쇄 (Sprint 02 W2 계약)
+      └─ floor==200 시 PrestigePpAccumulator.GrantMilestone(200) 연쇄
+   b. bundle.KillsTotal / DropsCompact → 인벤토리 수령 (Sprint 04+ 인벤토리 시스템 확정 후. Sprint 03은 로그만)
+   c. PrestigePpAccumulator.GrantIdleDrip(elapsed, maxFloor)
+   d. OnIdleReward?.Invoke(bundle)  // 최종 집계 이벤트 — UI가 "방치 보고서" 모달로 소비
+4. IdleSaveService.Save()  // lastTickUtc 갱신
+```
+
+**불변식**: `OnIdleReward` 발화 시점엔 Milestones·Drops·PP 모두 이미 적용된 상태. UI는 후처리 표시만.
+
+### 4.6 `OnIdleReward` 와 `PrestigePpAccumulator.GrantIdleDrip` 관계
+
+- **PP 발화자 분리**:
+  - `GrantIdleDrip(elapsed, maxFloor)` → `PlayerPrestigeState.AddPermanentPp(amount)` 호출 (실제 PP 적립)
+  - `OnIdleReward(bundle)` → UI 알림용 집계 이벤트
+- **순서**: 적립 먼저 (c 단계), UI 알림 나중 (d 단계). UI 가 "이번 방치로 +N PP" 표시할 때 이미 State 반영 완료.
+- **왜 분리**: Sprint 02 W2 `PrestigePpAccumulator` 가 PP 수식 소유권 (§3.3 계산 공식). `IdleTicker` 는 그 호출자일 뿐. 이중 관리 금지.
+
+---
+
+## 5. Sprint 01/02 자산과의 정합성 10축 교차표
+
+| # | 축 | Sprint 01/02 상태 | Sprint 03 방치 시스템 영향 | 충돌? |
+|---|------|-------|----------|------|
+| 1 | Drop Table Dictionary `(floorBucket, mobKind, grade) → rate` | Sprint 01 W2 `DropRateTableSO._lookup` | `IdleRewardCalculator` 가 read-only 호출 (RollDrops + ExpectedDrops 두 용도) | ✅ 없음 |
+| 2 | 마일스톤 독립 채널 (Sprint 01 W2 채널 B) | `MilestoneGranter.Award(floor)` 구현 완료 | `FlushCatchUp` 에서 `MilestonesReached` 배치 Award 호출 | ✅ 없음 (호출자 증가만) |
+| 3 | `PlayerPrestigeState` (struct+List hot path) | Sprint 02 W2 JSON 저장 · 60슬롯 | `IdleTicker` 가 read-only 참조 (prestige 아이템 **#25 `IdleCapHoursFlat`** via `GetIdleCapHours` 헬퍼, #24 `IdleYieldPct` → `BuildSummary.IdleRateMul`) <!-- D8 2026-04-21 --> | ✅ 없음 |
+| 4 | `PrestigeCalculator.BuildSummary` | Sprint 02 W2 시그니처 고정 | `Calculate` 입력으로 in-param 전달 (복사 비용 0) | ✅ 없음. 단 BuildSummary 필드에 `IdleRateMul` 존재 여부 확인 필요 → Sprint 02 W2 Stat 확정 후 교차 확인 |
+| 5 | `OnIdleReward` 이벤트 훅 | Sprint 02 W2 핸들러만 존재 (§6.2) | `IdleTicker` 가 실제 발화 | ✅ 본 Sprint 가 계약 이행 |
+| 6 | asmdef 4분할 | `GodBlade.Data` / `.Runtime` / `.Editor` / `.Tests.Editor` | 신규 파일 전부 `GodBlade.Runtime` 내 `Idle` 서브 네임스페이스. 신규 asmdef 0 | ✅ 없음 |
+| 7 | JSON 저장 경로 `Application.persistentDataPath/account/<accountId>/` | Sprint 02 W2 `prestige.v1.json` | 신규 `idle.v1.json` 같은 경로에 공존. 경로 정책 재활용 | ✅ 없음 |
+| 8 | **`IdleCapHoursFlat` 프레스티지 아이템 (#25, FlatStat)** <!-- D8 2026-04-21 수정: 원본 "#24 IdleCapHours"는 TSV 실제 stat_key와 불일치 --> | Sprint 02 W1 spec 기본 24h + Lv당 +2h / 소프트캡 Lv5 → 34h 영역. 수식: `24 + 2 × min(level, 5)` | `IdleRewardCalculator` 가 `min(elapsed, cap)` 적용. `cap` 은 `PrestigeCalculator.GetIdleCapHours(state)` 헬퍼에서 파생 (곱연산 `BuildSummary` 와 분리 경로) | ✅ 없음. 파생 헬퍼 `GetIdleCapHours(state)` 는 Sprint 02 W2 Calculator 기본 시그니처 불변 원칙 위반 아님 (신규 메서드 추가 = 시그니처 변경 아님) |
+| 9 | `MigrateSeasonalToPermanent(retainRatio)` | Sprint 02 W2 메서드 예약 · 발화자 Sprint 05+ | 방치와 무관 | ✅ 없음 |
+| 10 | Sprint 00 회귀 2건 (CS0246 `Unity.ResourceManager` / CS1061 `InternalsVisibleTo`) | 기존 자산에서 해소 완료 | `IdleTicker` 가 Addressables로 SO 참조 로드 시 `Unity.ResourceManager` 필요. `GodBlade.Runtime.asmdef` 이미 참조. 단 **신규 asmdef 추가 금지** (CP9-1 재발 방지) | ⚠️ **체크리스트 추가** — §9 CP-I1 |
+
+**결론**: 구조적 충돌 0건. 단 축 4 (`IdleRateMul` 필드 존재), 축 8 (`GetIdleCapHours` 신규 헬퍼) 두 건은 Sprint 02 W2 구현 완료 시점에 **재확인**.
+
+---
+
+## 6. Sprint 03 착수 전 Open Questions (PD / game-designer)
+
+| Q# | 질문 | 옵션 | code-lead 추천 + 근거 |
+|----|------|------|---------------------|
+| **Q1** | 오프라인 계산 전략 | A: 이벤트 리플레이 / B: 집계 공식 / **C: 하이브리드** | **C 권장**. §2.6 근거: 리플레이 상한 3,600회 고정 + 드롭 표현력 유지. 1인 파트타임 11~15h 예산에서 구현 가능 |
+| **Q2** | 오프라인 캡 정책 — `IdleCapHoursFlat` (item_id=25, FlatStat) 기본값과 하드캡 | A: **기본 24h / Lv당 +2h / 소프트캡 Lv5 → 34h** (TSV 실수치 + spec §3.2 "오프라인 캡 24h" 일관) / B: Lv 차등 조정 / C: 기본 12h + 광고시 48h | **A 권장** (TSV/스펙 그대로). TSV `prestige_items.tsv` #25 수식 = `24 + 2 × min(level, 5)`. 파생 경로 = `PrestigeCalculator.GetIdleCapHours(state)` 헬퍼. "하드캡 Sprint 04+ 검토"는 실측 후 v0.2로 유예 — Sprint 03 W2 말미 `IdleCapHardCapDebug` 토글만 예약. ※ 2026-04-21 S1 승인으로 원본 "8h/+1Lv/13h" 오기 정정 |
+| **Q3** | 방치 중 층 자동 진행 허용? | A: 금지 (최대 층 고정) / B: 허용 (추정 공식으로 `currentFloor → currentFloor+N` 진행) / C: 옵션 — 유저가 토글 | **A 권장** (Sprint 03 범위). 이유: 옵션 C 하이브리드의 Bulk 구간 복잡도 폭증 회피. 층 자동 진행은 Sprint 04+ 별도 기획 과제로 분리. 현재 `IdleRewardCalculator` 는 `maxFloor` 고정으로 계산 |
+| **Q4** | 방치 PP 자동 획득 vs "보상 수령" 버튼 | A: 자동 수령 (FlushCatchUp 시점 즉시 PP 반영) / B: 모달에서 "수령하기" 버튼 후 반영 / C: 옵션 토글 | **A 권장**. 방치형 UX 원칙 = "돌아오면 자동으로 쌓여있다". 모달은 **보고용**이지 수령 확정 절차 아님. Sprint 04 광고 부스트(48h 확장) 도입 시 "광고 시청 후 보너스" 만 버튼 (별개 경로) |
+| **Q5** | 드롭 실제 인벤토리 수령 시점 | A: Sprint 03 인벤토리 미정 → **로그만 출력** / B: Sprint 03에서 임시 인벤토리 Stub 설계 / C: Sprint 04까지 드롭 전체 보류 | **A 권장**. Sprint 03 스코프 = "방치 계산 + PP 적립 + 마일스톤 배치 발화 + 콘솔 로그". 실제 드롭 수령은 Sprint 04 인벤토리 시스템 설계 후. Sprint 03 말미 Smoke Test = "10h 방치 시뮬 → PP 50 적립 + `Debug.Log("[Idle] Drops: Epic x2, Legendary x0")` 확인" |
+
+**부수 질문** (PD 판단 선택, 답 없어도 Sprint 03 착수 가능):
+- `Q6` (선택): 부활 횟수(프레스티지 Defense 탭 #19) 초기화 타이밍 — 스테이지 재입장 시? 세션 시작 시? 24h 1회? → **Sprint 04 부활 시스템 설계 때 일괄 결정**, Sprint 03 범위 아님.
+
+---
+
+## 7. Sprint 03 예상 TodoWrite (W1/W2 × 5건 = 10건)
+
+> 형식: `[번호] <내용> (담당, 예상 h, 의존)` — 1인 파트타임 11~15h 예산 기준 · 방치 시스템 Smoke Test 통과까지
+> CP 태그 = §9 체크리스트
+
+### W1 — 기반 인프라 + 온라인 틱
+
+- **[#01]** `GodBlade.Runtime.Idle` 네임스페이스 + `IdleConstants.cs` + `IdleRewardBundle.cs` struct 작성 (code-lead, 0.75h, 의존: 없음). CP-I2 네임스페이스 충돌 확인.
+- **[#02]** `IdleSaveSchema.cs` DTO + `IdleSaveService.cs` Save/Load/Migrate 구현 (code-lead, 1.5h, 의존: #01). 경로 `account/<accountId>/idle.v1.json` · schemaVersion=1. CP-I3 저장 회로.
+- **[#03]** `IdleRewardCalculator.cs` 옵션 C 하이브리드 Phase 1(Bulk 집계 공식) 구현 (code-lead, 2h, 의존: #01, Sprint 02 W2 `PrestigeCalculator.BuildSummary`). CP-I4 공식 일치.
+- **[#04]** `IdleRewardCalculator.cs` Phase 2(Tail 3,600초 리플레이) 구현 + RNG 시드 결정론 (code-lead, 1.5h, 의존: #03). CP-I5 결정론 테스트 재현.
+- **[#05]** `IdleTicker.cs` MonoBehaviour + `OnApplicationPause` 훅 + singleton + `DontDestroyOnLoad` (code-lead, 1.5h, 의존: #02, #04). CP-I1 Unity.ResourceManager 참조.
+
+### W2 — 통합 + 테스트 + Smoke
+
+- **[#06]** `PrestigePpAccumulator.GrantIdleDrip` 실배선 (Sprint 02 W2 시그니처만 존재) + `PlayerPrestigeState.AddPermanentPp` 호출 (code-lead, 0.75h, 의존: #05, Sprint 02 W2). CP-I6 이중 적립 방지.
+- **[#07]** `IdleTicker.FlushCatchUp` 내부 이벤트 발화 순서 구현 (Milestones 배치 → Drops 로그 → PP 적립 → `OnIdleReward` 알림) (code-lead, 1.5h, 의존: #06). CP-I7 순서 검증.
+- **[#08]** `IdleTickerTests.cs` + `IdleRewardCalculatorTests.cs` Edit-mode 테스트 7개 (역전 가드 / 캡 적용 / 옵션 C 결정론 / 마일스톤 배치 / Save 라운드트립 / PP 누적 / 30일 Warn) (code-lead, 2h, 의존: #07). `GodBlade.Tests.Editor.asmdef` references 확인.
+- **[#09]** Smoke Test — 시뮬 모드로 10h elapsed 입력 → PP ≈ 50 + Debug.Log 드롭 내역 1건 이상 확인 (code-lead, 0.75h, 의존: #08). 초월모드 Smoke Test 후속 포맷 재사용.
+- **[#10]** §9 컴파일러 시뮬레이션 11개 체크 + Unity Console 새 에러 0 + PR 머지 (code-lead, 1h, 의존: #01~#09). Sprint 00 회귀 2건 재발 금지.
+
+**합계 예상 공수**: 13.25h (범위 11~15h 내). 1.5~2h 여유 = code-lead 리뷰 후 Unity 첫 컴파일 회귀 대응 버퍼 (메모리 `feedback_codelead_review_compile_verify.md` 원칙).
+
+### 정비 (PM)
+- D+7 중간 점검 + D+14 회고 + Sprint 04 킥오프 — Sprint 01/02 패턴 그대로, 본 문서 범위 외.
+
+---
+
+## 8. 리스크 & 블로킹 예상 3건
+
+### 8.1 모바일 OS 백그라운드 제한 (특히 iOS 30초 Suspend)
+
+- **증상**: iOS 는 앱이 백그라운드 진입 후 약 30초 내 Suspend. 이후 `Update()` 정지. `OnApplicationPause(true)` 는 Suspend 직전 호출 보장이 약함 (Unity 버전·OS 조합 변수).
+- **리스크**: 유저가 백그라운드로 돌린 후 30초 뒤 앱이 Suspend → 10분 뒤 다시 열면 `OnApplicationPause(false)` 가 먼저 호출됨. 이때 `_lastTickUtc` 가 Suspend 직전이 아니라 앱 진입 시점이면 오프라인 계산 누락.
+- **완화**:
+  - `OnApplicationPause(true)` 호출 시 **즉시** `IdleSaveService.Save()` + `lastTickUtc = DateTime.UtcNow` flush.
+  - `OnApplicationPause(false)` 는 재계산만 수행 (Save는 재진입 후 1틱 지나야 다시).
+  - 추가 안전망: `Update()` 내부에서 1분에 1회 Save flush (1분 미만 차이면 iOS Suspend에도 큰 손실 없음).
+- **Sprint 03 범위 내 해소 가능**. 전담 테스트: 실제 iOS 실기 테스트는 Phase 3+ 빌드 파이프라인 가능 후 재확인 (CP-I8 체크리스트 이월).
+
+### 8.2 `DateTime.UtcNow` 치팅 — 로컬 검증 한계
+
+- **증상**: 유저가 시스템 시각을 +24h 조작하면 `idleCapHours` 기본 8h 캡을 돌파하지 못해도 "8h 치 보상 매번 재획득" 가능 (앱 재시작마다).
+- **리스크**: 싱글·방치·랭킹 없음 정책상 허용 가능하지만, Steam 도입 시 업적·과금 회귀 우려.
+- **완화**:
+  - Sprint 03: 로컬 `DateTime.UtcNow` 신뢰 + 역전 가드만.
+  - Sprint 05+ Firebase: `ServerValue.TIMESTAMP` 로 최종 검증. `IdleSaveService.Load` 가 서버 시각 주입받도록 시그니처 확장 준비 (`Load(string accountId, DateTime? serverUtcNow = null)`).
+- **현 Sprint 범위 = 로컬 방어만**. PD 승인 필요 (Q에는 올리지 않음 — 기존 정책 일관).
+
+### 8.3 옵션 C 리플레이 RNG 결정론 실패 시 테스트 불가능
+
+- **증상**: `System.Random` 은 `Next()` 호출 순서가 결정론적이지만, Dictionary 순회 순서 의존 시 플랫폼·런타임 간 편차 가능.
+- **리스크**: `IdleRewardCalculatorTests` 가 Unity 에디터에서 Green이어도 모바일 빌드에서 Red.
+- **완화**:
+  - 테스트는 `rngSeed` 고정 + **순회 순서 결정론 보장**을 위해 Dictionary 순회 대신 `List<DropRateRow>` 인덱스 순 탐색 강제. (Sprint 01 W2 `_lookup` 은 O(1) 조회 용도만, 리플레이 시 iteration 은 `rows` 사용).
+  - 테스트 케이스는 "RNG 1234 seed + 10층 3600초 → 드롭 정확히 이 배열" 식 hard-coded assert.
+- **§9 CP-I5 에 강제 체크** 포함.
+
+---
+
+## 9. 컴파일러 시뮬레이션 체크리스트
+
+### 9.1 Sprint 00 회귀 2건 재발 경고 (유지)
+
+- **[CS0246] `Unity.ResourceManager` 누락** — `IdleTicker` 가 Addressables 로 `DropRateTableSO` / `MilestoneRewardCatalogSO` / `PrestigeItemCatalogSO` 참조 시 발생 가능.
+- **[CS1061] `InternalsVisibleTo` 중복** — `GodBlade.Runtime` 어셈블리 내 다른 파일에 이미 존재하면 신규 `IdleTicker.cs` 에 재선언 금지.
+
+### 9.2 방치 특화 체크포인트 (신규)
+
+| ID | 체크 | 방법 |
+|----|------|------|
+| **CP-I1** | `GodBlade.Runtime.asmdef` references에 `Unity.ResourceManager` 존재 | Sprint 01 W2 시점 이미 추가. 재확인만. Sprint 00 회귀 CS0246 재발 방지 |
+| **CP-I2** | `GodBlade.Runtime.Idle` 네임스페이스 vs `GodBlade.Runtime.Prestige` 충돌 없음 | rootNamespace 수정 금지. 서브 네임스페이스만 추가. **NOTE**: Editor asmdef는 파일명=`GodBlade.Editor` / rootNamespace=`GodBlade.EditorTools` (Sprint 00 컨벤션). `IdleTicker` 는 Runtime이므로 영향 없음. Sprint 04+ Idle 디버그 Importer 작성 시 `namespace GodBlade.EditorTools` 사용. (scaffold sync audit 2026-04-21 D1 반영) |
+| **CP-I3** | `IdleSaveDto` 에 `schemaVersion=1` 필드 + Sprint 02 W2 마이그레이션 패턴 재활용 | `Migrate(dto)` 스위치 포맷 통일 |
+| **CP-I4** | `IdleRewardCalculator.Calculate` 수식이 `prestige_system_spec.md` §3.2(C) `maxStage × 0.05 PP/hour` 와 일치 | 단위 테스트 1개 하드코딩 assert (100층 × 10h = 50 PP) |
+| **CP-I5** | RNG 결정론 — 동일 seed + 동일 입력 → 동일 출력 | 테스트에서 2회 실행 후 동일 결과 assert. Dictionary 순회 금지, List 순서 고정 |
+| **CP-I6** | `OnIdleReward` 이벤트 발화 **전** 에 `PlayerPrestigeState.AddPermanentPp` 호출 완료 | UI 가 State 읽었을 때 이미 반영. 이중 적립 금지 |
+| **CP-I7** | `MigrateSeasonalToPermanent` / `Unlock` 같은 Sprint 02 W2 계약 위반 없음 | `IdleTicker` 는 `PlayerPrestigeState` 의 public API 만 호출. private 접근 금지 |
+| **CP-I8** | iOS 백그라운드 Suspend 시 `OnApplicationPause(true)` 안전망 이중 저장 | 1분 주기 안전 flush 추가. 실기 테스트는 Phase 3+ 이월 |
+| **CP-I9** | `DateTime.UtcNow` 역전 가드 + 30일 Warn | `elapsed < 0` → 0 처리. `elapsed > 30*86400` → `Debug.LogWarning` |
+| **CP-I10** | 옵션 C 하이브리드 Bulk 구간 마일스톤 추정 공식이 층 고정 정책(Q3-A)과 일치 | Q3 A안 확정 시 maxFloor 불변 → 마일스톤은 세션 중 도달했던 값만 포함 (Catch-up 중 신규 돌파 없음) |
+| **CP-I11** | Addressables 그룹 추가 없음 | `IdleTicker` 는 기존 `Rewards` / `Prestige` 그룹만 참조. 신규 그룹 금지 |
+
+### 9.3 PR 머지 전 절차 (Sprint 01/02 패턴)
+
+1. Unity 6 에디터 파일 저장
+2. Console 새 에러 0 확인 (Warning 허용, Error 금지)
+3. Edit-mode 테스트 7개 Green
+4. Addressables Build → Build Player Content 성공
+5. Smoke Test (#09) 통과 — `Debug.Log("[Idle] +50 PP, elapsed=36000s")` 확인
+
+---
+
+## 10. 문서 메타
+
+- 본 문서: 약 10쪽 (마크다운 렌더 기준)
+- 섹션 9개 + 메타 = 10개
+- §9 체크포인트: **11개** (Sprint 00 회귀 2 + 방치 특화 11 = 13 중 Sprint 00 회귀 부분은 유지 경고 형태로 통합, 신규 체크 11건 카운트)
+- §6 Open Question: **5개** (+ 부수 1건)
+- §7 TodoWrite: **10건** (W1 5 + W2 5)
+- §8 리스크: **3건**
+- 실구현 코드: **0 줄** (설계 시그니처·의사코드만)
+
+---
+
+*(끝 — DRAFT v0.1, PD 결정 대기)*
+6:["slug","sprint-03-idle-research","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sprint-03-idle-research","d"],{"children":["__PAGE__?{\"slug\":\"sprint-03-idle-research\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-03-idle-research","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint 03 — 방치(Idle) 시스템 사전 조사 리서치"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-03-idle-research.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"4,483"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint 03 — 방치(Idle) 시스템 사전 조사 리서치 — 자료실"}],["$","meta","3",{"name":"description","content":"부수 Q6 (부활 초기화 타이밍) → Sprint 04 부활 시스템 설계 때 일괄 결정."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

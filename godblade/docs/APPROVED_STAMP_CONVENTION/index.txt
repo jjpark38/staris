@@ -1,0 +1,144 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T1580,# APPROVED 스탬프 표기 규약 (GodBlade 설계 문서)
+
+> 작성: 2026-04-21 (Sp00 D+2 버퍼) · 메인 세션 오케스트레이터
+> 버전: **v1.0 APPROVED** (PD 승인 2026-04-21)
+> 적용 범위: `designs/*.md` 중 PD 승인 단계를 거치는 모든 설계 문서
+
+---
+
+## 1. 배경
+
+2026-04-21 Sp00 D+2 버퍼 기간 10건 APPROVED 설계 문서 헤더 재점검 결과 포맷 drift 2건 확인:
+
+- **버전 표기**: `v1.0 APPROVED` (7건) vs `APPROVED v1.0` (3건)
+- **승인자 명기**: 최초 문서 1건만 이메일 병기, 9건은 간소화
+
+기능 영향 0이나 향후 PR 리뷰·grep 검증 시 일관성 확보 및 신규 작성자(game-designer/code-lead/메인 세션) 혼란 방지 목적으로 본 규약 제정.
+
+---
+
+## 2. 표준 헤더 블록 (권장)
+
+```markdown
+# <문서 제목>
+
+> 작성: YYYY-MM-DD (<작성자 역할>) · <서브 맥락 1줄>
+> 버전: **v1.0 APPROVED** (PD 승인 YYYY-MM-DD)
+> 상위 참조: `designs/<상위 문서>.md` v1.0 APPROVED
+> 범위: <1줄>
+>
+> ---
+```
+
+**필수 5요소**:
+
+1. `# <문서 제목>` — H1 헤딩 1개
+2. `작성: YYYY-MM-DD (<역할>)` — ISO-8601 날짜 + 괄호 역할
+3. `버전: **v1.0 APPROVED** (PD 승인 YYYY-MM-DD)` — 굵은체 + 승인일
+4. `상위 참조: <경로> v1.0 APPROVED` — 상위 문서가 있으면 명시
+5. `범위: <1줄>` — 문서 스코프 1줄 요약
+
+**선택 요소** (문서 성격에 따라 추가):
+
+- `승인자: PD <이메일>` — 최초 승인(v1.0) 시 1회 한정 이메일 명기. v1.1 이상 개정 시 생략
+- `CP 추적: CP1(§3) · CP2(§4) ...` — 체크포인트 있는 기술 설계 문서
+- `> **PD 결정 (YYYY-MM-DD)**:` 블록 — 복수 결정(Q1~Qn) 문서
+
+---
+
+## 3. 버전 표기 통일 원칙
+
+**채택**: `v1.0 APPROVED` (v 접두사 앞, APPROVED 뒤)
+
+- 이유: 10건 중 7건 다수 표기 계승. `v`로 시작하면 정렬·grep 용이.
+- 비추천: `APPROVED v1.0` (순서 반대). 2026-04-21 이전 3건(`transcendent_reward_draft.md` / `sprint-01-w2-importer-design.md` / `sprint-02-w2-prestige-tech-sketch.md`) 은 **과거 기록으로 유지** — 소급 수정 금지 (히스토리 보존).
+
+**개정 시 버전 번호 규칙**:
+
+- 초안 (PD 미승인): `v0.1 DRAFT` / `v0.2 DRAFT` ...
+- 최초 승인: `v1.0 APPROVED`
+- 수치/스펙 수정 (breaking 아님): `v1.1 APPROVED` / `v1.2 APPROVED` ...
+- 구조 변경 (breaking): `v2.0 APPROVED` / `v3.0 APPROVED` ...
+- Sp06+ 이월 후 재개: `v2.0 APPROVED (Sp06 재승인)`
+
+---
+
+## 4. 승인자 명기 규칙
+
+- **최초 v1.0 APPROVED**: 이메일 병기 **선택** — 중요 결정 문서(5대 결정 이상)는 이메일 명시 권장
+- **v1.1 이상 개정**: 이메일 생략, `(PD 승인 YYYY-MM-DD)` 만
+- **승인 없음 (DRAFT)**: `상태: DRAFT (YYYY-MM-DD, PD 승인 대기)` 명시
+
+이메일 명시 포맷: `승인: PD mobydickaquainc@gmail.com (YYYY-MM-DD)` 별도 라인
+
+---
+
+## 5. 2026-04-21 기존 10건 현황
+
+| # | 파일 | 버전 표기 | 이메일 명시 | 정정 필요 |
+|---|------|----------|------------|----------|
+| 1 | `transcendent_reward_draft.md` | `APPROVED v1.0` | ✅ 있음 | ✗ 히스토리 보존 |
+| 2 | `prestige_system_spec.md` | `v1.0 APPROVED` | ✗ 없음 | ✗ 표준 일치 |
+| 3 | `sprint-01-w2-importer-design.md` | `APPROVED v1.0` | ✗ 없음 | ✗ 히스토리 보존 |
+| 4 | `prestige_items_README.md` | `v1.0 APPROVED` | ✗ 없음 | ✗ 표준 일치 |
+| 5 | `sprint-02-w2-prestige-tech-sketch.md` | `APPROVED v1.0` | ✗ 없음 | ✗ 히스토리 보존 |
+| 6 | `sprint-03-idle-research.md` | `v1.0 APPROVED` | ✗ 없음 | ✗ 표준 일치 |
+| 7 | `affix_pool_README.md` | `v1.0 APPROVED` | ✗ 없음 | ✗ 표준 일치 |
+| 8 | `sprint-05-season-research.md` | `v1.0 APPROVED` | ✗ 없음 | ✗ 표준 일치 |
+| 9 | `sp06-plus-lever-research.md` | `v1.0 APPROVED` | ✗ 없음 | ✗ 표준 일치 |
+| 10 | `d8-stat-key-validation-2026-04-21.md` | `v1.0 APPROVED` | ✗ 없음 | ✗ 표준 일치 |
+
+**소급 수정 없음** — 3건 `APPROVED v1.0` 표기는 과거 기록으로 보존. 향후 신규 문서부터 본 규약 적용.
+
+---
+
+## 6. DRAFT 상태 문서 (2026-04-21 기준)
+
+- `designs/sp07-resistance-formula-draft.md` **v0.1 DRAFT** (game-designer, 2026-04-21) — Sp06 W2 종료 시 재검토
+- `designs/sp07-briefing-memo.md` **v1.0** (메인 세션 오케스트레이터, 2026-04-21) — APPROVED 아님, 선행 메모 성격
+- `designs/scaffold-sync-audit-2026-04-21.md` — APPROVED 상태 아님, 감사 리포트
+
+향후 v1.0 APPROVED 승격 시 본 규약 §2 표준 헤더로 정렬.
+
+---
+
+## 7. grep 검증 스니펫 (PR 리뷰용)
+
+```bash
+# v1.0 APPROVED 표기 전수 확인
+grep -rn "v1\.[0-9]* APPROVED" designs/*.md
+
+# 비표준 표기 감지 (APPROVED v1.0 패턴)
+grep -rn "APPROVED v1\.[0-9]*" designs/*.md
+
+# DRAFT 상태 문서 목록
+grep -rln "DRAFT" designs/*.md
+```
+
+---
+
+## 8. 예외
+
+- `README.md` / 게임 기획 비승인 초안 / 외부 리서치 자료 — 본 규약 미적용
+- `CLAUDE.md` / 메모리 파일 (`~/.claude/.../memory/*.md`) — 자체 프론트매터 규약 사용
+
+---
+
+## 9. 적용 시점
+
+- **즉시 (2026-04-21 이후)**: 신규 작성 설계 문서 전부
+- **소급 적용 없음**: 기존 10건 APPROVED 문서는 현 상태 유지
+- **개정 시 기회**: v1.1 이상 개정 시 자연스럽게 표준 헤더로 정렬
+
+---
+
+**END OF CONVENTION** · 변경 이력:
+- v1.0 APPROVED (2026-04-21): 최초 제정, 10건 현황 기록, 규약 §2~§8 확정
+6:["slug","APPROVED_STAMP_CONVENTION","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","APPROVED_STAMP_CONVENTION","d"],{"children":["__PAGE__?{\"slug\":\"APPROVED_STAMP_CONVENTION\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","APPROVED_STAMP_CONVENTION","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],["$","span",null,{"className":"rounded-sm bg-gold-dark px-2 py-0.5 text-[10px] font-bold text-bg-0","children":"APPROVED"}]]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"APPROVED 스탬프 표기 규약 (GodBlade 설계 문서)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/APPROVED_STAMP_CONVENTION.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"756"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"APPROVED 스탬프 표기 규약 (GodBlade 설계 문서) — 자료실"}],["$","meta","3",{"name":"description","content":"2026-04-21 Sp00 D+2 버퍼 기간 10건 APPROVED 설계 문서 헤더 재점검 결과 포맷 drift 2건 확인:"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

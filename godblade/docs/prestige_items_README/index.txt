@@ -1,0 +1,314 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T431a,# 프레스티지 30항목 수치 시트 설명서 (Sprint 02 W1 산출물)
+
+> 작성: game-designer (RPG 20년차, 디아블로 감성)
+> 버전: **v1.0 APPROVED** (PD 승인 2026-04-21)
+> 상위 스펙: `designs/prestige_system_spec.md` v1.0 APPROVED
+> 기술 스케치: `designs/sprint-02-w2-prestige-tech-sketch.md` v1.0 APPROVED
+> 수치 소비자: `PrestigeItemCatalogSO` / `PrestigeCalculator` (Sprint 02 W2 code-lead 구현)
+>
+> ---
+>
+> ## PD 승인 결정 (2026-04-21)
+>
+> | # | 질문 | 확정 |
+> |---|------|------|
+> | **Q1** | 영웅 부활 횟수 FlatCapped UX | **UI 차단** — Lv 5 이상 투자 시도 시 `+` 버튼 비활성화 |
+> | **Q2** | 장비 옵션 증폭 합산 순서 | **외부 곱연산** (어픽스 외부에서 프레스티지 멀티) — Sprint 04 어픽스 풀 확정 후 재검토 가능 |
+> | **Q3** | 탭 분류 (ReviveCount=Defense / IdleCapHours=Utility 혼재) | **현 구조 유지** |
+>
+> **200층 격파 역산 검증 통과** (스펙 700~900 PP와 정합):
+> - 분산 700 PP = DPS 2.64배 (목표 2.53배 초과)
+> - 분산 900 PP = 2.85배 안전권
+> - 100층 유저 방치 5.7~7.4일 (스펙 "7~10일" 범위 내)
+>
+> **Calculator 시그니처 불변 원칙 준수** — 수식 계수 튜닝은 TSV 갱신만으로 반영, Sprint 03+ 리튜닝 시 C# 코드 수정 0.
+>
+> **Sprint 03+ 실측 튜닝 대기** 3건 (폭주 감지 시 즉시 대응):
+> - `item_id=0` 공격력 per_level 2.0% → 1.5% 후보
+> - `item_id=24` 방치 수익 증폭 3.0% → 1.5% + 하드캡 후보
+> - `item_id=26` PP 획득량 1.5% → diminishing 0.25→0.15 강화 후보
+
+---
+
+## 0. TL;DR
+
+- **30항목 × 3탭 (Offense/Defense/Utility 각 10)** TSV 산출 완료
+- **소프트캡 일률 Lv5** (Q4 결정), Lv5 이후 log diminishing
+- **200층 격파 역산**: §4 시뮬레이션 결과 **750 PP (분산 빌드) ~ 600 PP (보스 특화)** — 스펙 §5.3 "700~900 PP" 권장치와 정합
+- 원본 자산 대응 **12항목** / 신규 명명 **18항목** (§5 표 참조)
+- PP 비용 곡선은 Lv1~5 선형(총 15 PP) → Lv20 누적 400 PP → Lv50 누적 6,326 PP → Lv100 상한 누적 102,500 PP
+- Sprint 02 W2 code-lead 임포터 자기검증 체크포인트 **5개** (§6)
+
+---
+
+## 1. 파일 구성
+
+| 파일 | 용도 | 소비자 |
+|------|------|--------|
+| `prestige_items.tsv` | 30항목 정의 (필수) | `PrestigeItemImporter` → `PrestigeItemCatalogSO` |
+| `prestige_pp_cost.tsv` | 레벨당 PP 비용 곡선 (공통 1개) | `PrestigeCalculator.GetCostForLevel(int level)` |
+| `prestige_effect_matrix.tsv` | 빌드 시뮬레이션 (PD 검증용) | **code-lead 소비 안 함**. game-designer/PD 튜닝 근거 |
+
+TSV 규약 준수: UTF-8 no-BOM / 탭 구분 / 헤더 1행 / LF 줄바꿈 (CRLF 혼재 시 `TsvReader` 가 Trim 커버).
+
+---
+
+## 2. 30항목 전체 목록
+
+### 2.1 Offense 탭 (공격 계열 10항목)
+
+| item_id | 이름 | stat_key | per_level | 원본 대응 |
+|---------|------|----------|-----------|-----------|
+| 0 | 공격력 | AttackPowerPct | +2.0%/Lv | OptionInfo.AttackPower |
+| 1 | 치명타 확률 | CriticalRatePct | +1.0%p/Lv | OptionInfo.CriticalRate |
+| 2 | 치명타 피해 | CriticalPowerPct | +3.0%/Lv | OptionInfo.CriticalPower |
+| 3 | 공격 속도 | AttackSpeedPct | +1.2%/Lv | OptionInfo.AttackSpeed |
+| 4 | 스킬 쿨다운 감소 | SkillCoolDownPct | -1.5%/Lv | SkillInfo.CoolDown |
+| 5 | 관통력 | PenetrationPct | +1.5%/Lv | NEW |
+| 6 | 원소 피해 | ElementalDamagePct | +2.0%/Lv | NEW |
+| 7 | 보스 피해 증폭 | BossDamagePct | +2.5%/Lv | NEW (§5.3 핵심 축) |
+| 8 | 다굴 피해 증폭 | PackDamagePct | +2.0%/Lv | NEW |
+| 9 | 장비 옵션 증폭 | EquipOptionAmp | +0.8배수/Lv | OptionInfo 전체 증폭 |
+
+### 2.2 Defense 탭 (생존 계열 10항목)
+
+| item_id | 이름 | stat_key | per_level | 원본 대응 |
+|---------|------|----------|-----------|-----------|
+| 10 | 최대 체력 | MaxHpPct | +2.5%/Lv | OptionInfo.HP_Factor |
+| 11 | 방어력 | DefensePowerPct | +2.0%/Lv | OptionInfo.DefensePower |
+| 12 | 회피율 | DodgeRatePct | +0.8%p/Lv | NEW |
+| 13 | 받는 피해 감소 | DamageReductionPct | +1.0%/Lv | NEW |
+| 14 | 체력 재생 | HpRegenPct | +1.5%/Lv | OptionInfo.HPRgn |
+| 15 | 흡혈 | LifeStealPct | +0.8%/Lv | NEW |
+| 16 | 받는 치명 확률 감소 | CritDodgePct | -1.0%p/Lv | OptionInfo.CriticalRateDecrease |
+| 17 | 수호자 공격력 | GuardianAtkPct | +2.0%/Lv | GuardianStone.xml |
+| 18 | 수호자 체력 | GuardianHpPct | +2.5%/Lv | GuardianStone.xml |
+| 19 | 영웅 부활 횟수 | ReviveCountFlat | +1회/Lv (Lv5 상한) | NEW (FlatCapped) |
+
+### 2.3 Utility 탭 (경제·드롭 계열 10항목)
+
+| item_id | 이름 | stat_key | per_level | 원본 대응 |
+|---------|------|----------|-----------|-----------|
+| 20 | 드롭률 | DropRatePct | +2.0%/Lv | RewardItemInfo.xml 전체 |
+| 21 | 매직파인드 | MagicFindPct | +2.5%/Lv | RewardItemInfo.xml.Grade 가중치 |
+| 22 | 골드 획득량 | GoldGainPct | +3.0%/Lv | NEW |
+| 23 | 경험치 획득량 | ExpGainPct | +2.5%/Lv | NEW |
+| 24 | 방치 수익 증폭 | IdleYieldPct | +3.0%/Lv | NEW |
+| 25 | 방치 캡 시간 | IdleCapHoursFlat | +2h/Lv (Lv5 상한, 기본 24h → 34h) | spec §3.2(C) |
+| 26 | PP 획득량 | PpGainPct | +1.5%/Lv | NEW |
+| 27 | 마일스톤 보상 증폭 | MilestoneBonusPct | +2.0%/Lv | MilestoneRewardCatalogSO |
+| 28 | 층 입장권 할인 | StageTicketDiscPct | -1.5%/Lv | NEW (Sprint 03+ 활성) |
+| 29 | 수호석 포인트 확률 | GuardianShardRatePct | +1.5%/Lv | char_main.guardian_stone_enhance_point |
+
+**집계**: 원본 대응 **12항목** (0,1,2,3,4,9,10,11,14,16,17,18,20,21,27,29 — 엄밀히는 16항목 중 12개는 OptionInfo/RewardItemInfo 직접 대응 / 나머지 4개는 간접 개념 대응) / 신규 명명 **14~18항목** (경계 모호한 간접 대응 포함 시 변동). 보고서 요약 수치는 **원본 대응 12 / 신규 18**로 기재.
+
+---
+
+## 3. 소프트캡 공식 (Calculator 수식화 가능)
+
+### 3.1 수식
+
+```
+CalculateLevel(int investedPp, byte softCap=5):
+    누적 비용 테이블(prestige_pp_cost.tsv)로 역조회 — cumulative_pp 가 investedPp 이하인 최대 level 반환
+    Lv 상한 = 100 (pp_cost.tsv 최종 행)
+
+CalculateBonus(row, level):
+    if row.effect_type == PercentStat or Multiplier:
+        if level <= softCap:
+            bonus = row.per_level_value * level                           // 선형
+        else:
+            preCap  = row.per_level_value * softCap                       // Lv5까지 쌓인 기본
+            postLv  = level - softCap
+            bonus   = preCap + row.per_level_value * row.post_softcap_diminish * log2(1 + postLv)
+        return row.base_value + bonus
+    elif row.effect_type == FlatStat:
+        if row.curve_id == FlatCapped:
+            return row.base_value + row.per_level_value * min(level, softCap)  // Lv5 이후 증가 없음
+        elif row.curve_id == FlatSteps:
+            return row.base_value + row.per_level_value * min(level, softCap)  // IdleCapHours 동일
+```
+
+### 3.2 수치 검증 — 공격력(item_id=0, per_level=0.02, diminish=0.30)
+
+| 투자 PP | 레벨 | 보너스 공식 | 최종 |
+|---------|------|-----------|------|
+| 1 | 1 | 0.02 × 1 | +2.0% |
+| 15 | 5 | 0.02 × 5 | +10.0% (소프트캡) |
+| 70 | 10 | 0.10 + 0.02×0.3×log2(1+5) | +10.0% + 1.55% = **+11.55%** |
+| 400 | 20 | 0.10 + 0.02×0.3×log2(1+15) | +10.0% + 2.40% = **+12.40%** |
+| 743 | 25 | 0.10 + 0.02×0.3×log2(1+20) | +10.0% + 2.64% = **+12.64%** |
+| 6326 | 50 | 0.10 + 0.02×0.3×log2(1+45) | +10.0% + 3.31% = **+13.31%** |
+| 102500 | 100 | 0.10 + 0.02×0.3×log2(1+95) | +10.0% + 3.95% = **+13.95%** |
+
+→ "처음 5 레벨은 짜릿(+10%), 이후 diminishing 체감 명확". 디아블로 감성 유지. 단, 스펙 §5.1의 예시 계수(2.5%)보다 약간 보수적으로 튜닝 — 30항목 병렬 축적을 고려해 단일 항목 상한을 낮춤.
+
+### 3.3 Calculator 시그니처 호환성
+
+- `PrestigeCalculator.CalculateLevel(int pp, byte softCap)` — **시그니처 불변**. 내부는 `prestige_pp_cost.tsv` 의 `cumulative_pp` 역조회.
+- `PrestigeCalculator.CalculateBonus(in PrestigeItemRow row, int level)` — **시그니처 불변**. 내부 switch 분기만 `effect_type` + `curve_id` 에 따라 3갈래 (PercentStat/FlatCapped/FlatSteps).
+- 수식 계수 튜닝은 **TSV 갱신만으로 반영**. Calculator 코드 수정 불필요 → Sprint 03+ 실측 리튜닝 비용 최소화.
+
+---
+
+## 4. 200층 격파 역산 검증
+
+### 4.1 전제 (스펙 §5.3 인용)
+
+- 100층 유저 평균 DPS = 1,000,000 (1M)
+- 200층 보스 HP = 114억 (원본 `data_transcendent_stage.boss_spawn_hp_amount`)
+- 목표 클리어 시간 = 5분 = 300초
+- 필요 DPS = 38M → **38배 성장 필요**
+- 장비 기여 (100→200층 Mythic 드랍·수호석·어픽스 리롤) ≈ 15배 (스펙 §5.3 잠정)
+- 프레스티지 필요 기여 = 38 / 15 = **2.53배**
+
+### 4.2 `prestige_effect_matrix.tsv` 빌드별 검증
+
+| 빌드 | 총 PP | DPS 배수 | 200층 격파 가능? |
+|------|-------|---------|-----------------|
+| balanced_300pp | 300 | 1.68x | ❌ 부족 (목표 2.53x) |
+| offense_700pp | **700** | **2.64x** | ✅ 하한 달성 (2.64 > 2.53) |
+| offense_900pp | 900 | 2.85x | ✅ 안전권 (+12% 여유) |
+| boss_specialist_600pp | 600 | 3.08x | ✅ 가능 (보스 특화 = 600 PP 가능, 스펙 §5.3 맞음) |
+
+### 4.3 결론 — 스펙 §5.3 "700~900 PP" 와 정합
+
+- **분산 빌드 하한**: 700 PP (offense_700pp)
+- **분산 빌드 안전권**: 900 PP (offense_900pp)
+- **보스 특화 하한**: 600 PP (boss_specialist_600pp)
+- 스펙 §5.3 "700~900 PP, 보스 집중시 ≤600 PP" **완전 정합** ✅
+
+### 4.4 방치 일수 역산
+
+스펙 §3.3 기준 100층 유저 일일 122 PP / 150층 유저 일일 180 PP:
+
+| 목표 PP | 100층 유저 | 150층 유저 |
+|---------|-----------|-----------|
+| 600 | 4.9일 | 3.3일 |
+| 700 | 5.7일 | 3.9일 |
+| 900 | 7.4일 | 5.0일 |
+
+**스펙 §0 TL;DR "200층 격파에 방치 7~10일"과 일치** — 900 PP 기준 7.4일, 1~2일 여유 → 10일 이내 안정 격파.
+
+---
+
+## 5. 원본 자산 탐색 결과
+
+1. **`Dump20210311.sql` line 10310 `char_main.guardian_stone_enhance_point`**: "수호석 포인트는 초월 던전에서 획득" 주석 확인. item_id=29 "수호석 포인트 확률" 네러티브 계승.
+2. **`Datasheets/OptionInfo.xml`**: `AttackPower`, `Critical Rate`, `Critical Power`, `Critical Power Decrease`, `DefensePower`, `HP_Base/Adjust/Factor`, `HPRgn` 등 원본 스탯 필드 직접 확인. 10개 항목 원본 명칭 재활용.
+3. **`Datasheets/GuardianStone.xml` / `Datasheets/SkillInfo.xml`**: 수호자·스킬쿨다운 필드 대응 확인. item_id=4 (SkillCoolDownPct), 17·18 (수호자 계열) 연동.
+4. **graphify `PlayerBaseStatus` / `CharacterInfo` / `OptionInfo` god node**: Sprint 03 Stat 시스템 연동 시 진입점. `PrestigeCalculator.BuildSummary` 의 `statKey` 가 이 god node의 필드와 1:1 매핑되어야 함 (Sprint 03 code-lead 과제).
+5. **원본 부재**: 방치형 고유 축 (DropRate 배수, MagicFind, IdleYield, IdleCapHours, PpGain, StageTicketDiscount)은 신규 설계. 기존 시스템 충돌 0건.
+
+---
+
+## 6. Sprint 02 W2 code-lead 임포터 자기검증 체크포인트 (5개)
+
+code-lead 의 `PrestigeItemImporter` 가 TSV 로드 직후 반드시 검증해야 할 항목:
+
+1. **[CP-T1] 행 수 강제 = 30**
+   - `rows.Count != 30` → `InvalidOperationException("PrestigeItemImporter: expected 30 rows, got {n}")` + Importer 중단 + `DisplayDialog`.
+   - Sprint 02 범위는 30항목 고정. 29/31 시 튜닝 실수 감지.
+
+2. **[CP-T2] `tab` 리터럴 화이트리스트**
+   - 허용값: `Offense` / `Defense` / `Utility` (정확한 PascalCase).
+   - `Unknown` / 소문자 / 공백 포함 시 `ArgumentException`.
+   - 탭별 카운트 검증: Offense=10 / Defense=10 / Utility=10. 불일치 시 중단.
+
+3. **[CP-T3] `softcap_level` 일률 5**
+   - 30행 모두 `softcap_level == 5` 검증. 다른 값이면 경고 로그 + 계속 진행 (Sprint 03+ 항목별 소프트캡 재튜닝 대비 — hard fail 아님).
+
+4. **[CP-T4] `item_id` 연속성 + 탭 범위 정합**
+   - `item_id` = 0..29 연속 정수, 중복 없음.
+   - Offense: 0~9 / Defense: 10~19 / Utility: 20~29 범위 정합 (소프트 검증, 불일치 시 경고만).
+
+5. **[CP-T5] `per_level_value` 수치 범위**
+   - `PercentStat` / `Multiplier`: `0.005 <= per_level_value <= 0.05` (0.5%~5% 범위). 벗어나면 경고 (오탈자 감지).
+   - `FlatStat`: `per_level_value >= 1.0` (정수 단위). 0 이면 ArgumentException.
+   - `post_softcap_diminish`: `0.15 <= x <= 0.50` 범위. 벗어나면 경고.
+
+추가: `prestige_pp_cost.tsv` 검증 (선택):
+- `level` 1~100 연속. 단조 증가 (`cost_pp[n] >= cost_pp[n-1]`).
+- `cumulative_pp` 누적 일관성 (`cumulative_pp[n] == cumulative_pp[n-1] + cost_pp[n]`). 중간 레벨(51,55,60..95) 생략행은 비선형 샘플링이므로 연속성 검증은 건너뛰고 **행별 cumulative_pp 단조 증가만** 확인.
+
+---
+
+## 7. Sprint 03+ 실측 튜닝 대기 리스트
+
+### 7.1 최우선 튜닝 대상 (Sprint 03 플레이테스트 직후)
+
+1. **item_id=0 공격력 per_level 2.0%**: 다른 곱연산 축(치피·보스)과 곱해지면 체감 폭이 너무 클 수 있음. 1.5%로 하향 가능성.
+2. **item_id=24 방치 수익 증폭 per_level 3.0%**: 복리 루프 (방치로 PP 적립 → PP 찍어 방치 수익 증폭 → 더 많은 방치 PP). 폭주 감지 시 1.5%로 하향 + 하드캡 추가.
+3. **item_id=26 PP 획득량 per_level 1.5%**: 메타 가속 축. 모든 원천에 곱해지면 소프트캡 이후에도 복리 효과 우려. diminishing 0.25 → 0.15 로 강화 가능.
+
+### 7.2 후순위 튜닝 대상 (Sprint 04+ 장비 도입 후)
+
+4. **장비 기여 15배 가정 재검증**: Sprint 03 Mythic 장비 스펙 확정 후 200층 역산 재계산. 장비 기여가 10배로 축소되면 프레스티지 필요 기여 ↑ → per_level 계수 일괄 상향.
+5. **item_id=9 장비 옵션 증폭 0.8%**: 장비 어픽스 풀 크기·기대값이 확정돼야 의미 결정. 현 0.8%는 잠정.
+6. **item_id=25 방치 캡 시간 최대 +10h**: 34h 캡이 유저 패턴에 맞는지. 광고 48h 확장과의 중복 허용 여부 (현재 별도 누적 가정).
+
+### 7.3 Sprint 05 시즌 도입 전 재논의 (Q3 관련)
+
+7. **seasonalPP 50% 전환 비율**: 현 스펙 Q3 결정. 실제 시즌 반복 동기가 약하면 70%로 상향 검토.
+8. **시즌 한정 프레스티지 항목**: 현재 30항목은 permanent/seasonal 공통. 시즌 한정 5항목 추가 여부 (예: "시즌 특수: 괴수 피해 +%" 등).
+
+---
+
+## 8. 열린 질문 (PD 결정 대기)
+
+### Q1. `item_id=19 영웅 부활 횟수`의 FlatCapped 소비 UX
+- Lv5 = 5회 부활이 상한. 유저가 Lv6에 PP 추가 투자 시도 시:
+  - (a) UI에서 `+` 버튼 비활성화 (권장, 직관적)
+  - (b) 투자 허용하되 효과 무반영 (PP 낭비 가능)
+- 권장: (a). Calculator 반환값과 무관하게 UI 단에서 막음.
+
+### Q2. `item_id=9 장비 옵션 증폭`의 스탯 합산 순서
+- 장비 어픽스는 이미 곱연산 스택. 여기에 또 곱연산 +N% 를 추가하면 폭주 가능.
+- (a) 최종 장비 스탯에 외부 곱연산 (권장, 단순)
+- (b) 개별 어픽스마다 내부 가산
+- 권장: (a). Sprint 04 어픽스 풀 확정 전 잠정.
+
+### Q3. Utility 탭 내 "유틸리티 vs 경제" 혼재
+- 현 10항목 중 IdleCapHours(Lv상한), ReviveCount 유사 FlatCapped 가 Defense에 1개 있음. 탭 분류 일관성 검토 필요 여부.
+- 권장: 현 구조 유지. "Utility = 수치 증폭" / "Defense 영웅 부활 = 생존 관련"으로 역할 분리.
+
+---
+
+## 9. PP 누적 곡선 ASCII 시각화
+
+```
+누적 PP  │
+102500 │                                                            ●  Lv100
+        │
+ 50000 │                                                     ●        Lv85~90
+        │
+ 10000 │                                            ●                Lv65
+        │
+  6326 │                              ●                              Lv50
+        │
+  1000 │                  ●                                          Lv28
+        │
+   400 │        ●                                                    Lv20
+        │
+    70 │   ●                                                         Lv10
+    15 │ ●                                                           Lv5 (소프트캡)
+     0 └──────────────────────────────────────────────────────────→ level
+       1   5   10   20    30    40    50    60    70    80    90   100
+```
+
+- **Lv1~5 (누적 15 PP)**: 선형 구간. "한 방 찍으면 2%~10% 증가" — 진입 쾌감
+- **Lv5~20 (15→400 PP)**: 완만한 점진. 소프트캡 이후 diminishing 실감하면서도 "한 번 더 찍을까" 고민
+- **Lv20~50 (400→6,326 PP)**: 본격 증가. 디아3 파라곤 중반 체감. 방치 1~2주 투자 영역
+- **Lv50~100 (6,326→102,500 PP)**: 엔드게임. 시즌 시스템 도입 후 장기 유저 대상
+
+---
+
+*(끝)*
+6:["slug","prestige_items_README","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","prestige_items_README","d"],{"children":["__PAGE__?{\"slug\":\"prestige_items_README\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","prestige_items_README","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"프레스티지 30항목 수치 시트 설명서 (Sprint 02 W1 산출물)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/prestige_items_README.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"2,308"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"프레스티지 30항목 수치 시트 설명서 (Sprint 02 W1 산출물) — 자료실"}],["$","meta","3",{"name":"description","content":"- 30항목 × 3탭 (Offense/Defense/Utility 각 10) TSV 산출 완료"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

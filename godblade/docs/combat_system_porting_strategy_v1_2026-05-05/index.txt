@@ -1,0 +1,232 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T254b,# 전투 시스템 Unity 6 포팅 전략 v1
+
+**작성**: 정현우 (code-lead)
+**일자**: 2026-05-05
+**연계**: `combat_system_analysis_v1_2026-05-05.md` §7 호환성 평가
+**APPROVED**: 정현우 자율 (PD 출장 복귀 시 인수)
+
+## 1. PD 핵심 지시 (2026-05-05)
+
+> "GodBlade 제일 중요한 건 전투 시스템. 탁월한 손맛 + 전투 이펙트 + 스킬 = 강점. 잘 분석해서 진행 중인 게임에 그대로 가져오거나 거의 비슷하게 구현."
+
+**PD 우선순위**: A (그대로) > B (비슷하게) > C (핵심만)
+
+## 2. 전제 조건 (현재 잠금)
+
+- **Phase 4 (2027-04+) 본판 출시** — Steam + 모바일 (메모리 `project_phase_2_3_roadmap_v3_0.md`)
+- **Sp02~05 PAUSE** (5/18~9/14) — 웹게임 우선
+- **Unity Sp02 재개 9/15** — 워밍업 1주 권장 (R-V3-1)
+- **200F 4.255 baseline 절대 보존** — 본 포팅 영향 0% (분석 v1 §9)
+- **류재현(dots-platform)**: 무한던전 1만 시뮬 / DOTS — 별도 트랙
+- **본 포팅 시점**: Phase 4 진입 (2027-04+) 또는 Sp02 W2~W4 일부 선행 가능
+
+## 3. 3안 비교
+
+### A안 — 그대로 가져오기 (drop-in port)
+
+**범위**:
+- `Program/Client/Assets/Scripts/Entity/` 64 파일 그대로 복사
+- `Program/Client/Assets/Scripts/Camera/EodCamera.cs` 복사
+- `Program/Client/Assets/Scripts/Foundation/EodMatrixTrail.cs` + Xft 라이브러리 복사
+- 네임스페이스 `SnowFamily.EvilOfDarkness` 그대로 유지 (별칭 `Eod`)
+- Addressables 콜백 → async/await 1건 패치
+- Xft 1건 검증 (Unity 6 호환 안 되면 대체)
+- 데이터 테이블 9건 (Skill / SkillEvent / SkillType / SkillLevelup / SkillLevelUseData / PassiveSkill / SuccessionSkill / OccupationSkill / GuildSkill) FlatBuffer 변환 (이미 잠금)
+
+**비용**: 약 **120h** (3주 풀타임 / 6주 파트타임)
+- Entity 64 파일 복사 + 컴파일 에러 패치 = 50h
+- Xft 검증 또는 대체 = 25h
+- Addressables async/await = 5h
+- CSV → FlatBuffer 변환 (50h 의 일부 흡수, 추가 0h)
+- 테스트 (Unit Test 80% 커버리지) = 30h
+- 라이브 안정성 검증 (콤보 100 / 카메라 흔들림 4 진입점 / Matrix Trail 좌우) = 10h
+
+**리스크**:
+- (R-A-1, 중) Xft 라이브러리 Unity 6 미보증 — 대체 시 +2주
+- (R-A-2, 낮) god 클래스 2건 (Combat 2499 / Skill 1794) 잔존 → 라이브 패치 회귀 위험 누적
+- (R-A-3, 낮) 멀티 잔재 (PvP / 길드전 / 점령전 분기) 잔존 → dead code 정리 부채
+- (R-A-4, 중) 디버그 코드 잔존 (잔상 5초 자동 발화) → **포팅 시 필수 제거**
+
+**가능성**: **HIGH** — 코드가 견고하고 외부 의존 2건만 → 8개월 안에 가능
+
+**손맛 보존도**: **100%** — 4중 메커니즘 (콤보/Shake/Trail/잔상) + 13 SkillEvent + 35 EventBase 그대로
+
+**장점**:
+- PD 1순위 부합
+- 검증된 동작 (10년 라이브 운영 이력)
+- 시간 단축 (B 안 대비 -40%)
+- 손맛 0 손실
+
+**단점**:
+- 부채 (god 클래스 2건 / 멀티 분기 / 디버그 코드) 그대로
+- Unity 2019 디자인 패턴 잔존 (singleton EodCamera.Get 등)
+
+### B안 — 거의 비슷하게 재구현 (semantic port)
+
+**범위**:
+- 새 코드베이스 `Unity6/Assets/Scripts/Combat/` 신설
+- 동일 동작 보존:
+  - TimeEvent 패턴 100% 유지 (Skill 클래스 / List<TimeEvent>)
+  - 콤보 시스템 (max 100, 3초 리셋)
+  - 카메라 흔들림 4 진입점 → 단일 Camera Shake API
+  - Matrix Trail 좌/우 무기 궤적
+  - 잔상 복제 N개
+  - 35 EventBase → 동일 35 (또는 일부 통합)
+- god 클래스 분할: Combat → 4 sub / Skill → 3 sub
+- 멀티 분기 제거 (싱글 only)
+- 데이터 테이블 9건 그대로 (FlatBuffer)
+- C# 9.0 패턴 활용 (record / pattern matching / async/await)
+- DOTS 적용 평가 (정현우 영역 X, 류재현 인계 가능)
+
+**비용**: 약 **240h** (6주 풀타임 / 12주 파트타임)
+- 새 코드베이스 설계 = 30h
+- TimeEvent + Skill 재구현 = 60h
+- EventBase 35 재구현 = 40h
+- 4중 손맛 메커니즘 재구현 + Xft 대체 = 50h
+- god 클래스 분할 = 30h
+- 데이터 파이프라인 (FlatBuffer) = 20h (50h 의 일부 흡수, 추가 0h)
+- Unit Test = 40h (커버리지 80%)
+- 라이브 안정성 검증 + 손맛 동등성 검증 (정현우 + 윤서아 협업) = 20h
+
+**리스크**:
+- (R-B-1, 높) **손맛 미세한 차이 발생 가능** — 원본 10년 튜닝 결과 재현 어려움
+- (R-B-2, 중) 일정 -3개월 (A안 대비 2배)
+- (R-B-3, 낮) 새 버그 도입 가능
+- (R-B-4, 낮) 윤서아(game-designer) 손맛 검증 부담 증가
+
+**가능성**: **MEDIUM** — 일정 빠듯, Phase 4 (2027-04) 안 12개월 안에 가능
+
+**손맛 보존도**: **80~95%** — 미세 차이 가능
+
+**장점**:
+- 코드 부채 0
+- C# 현대 패턴 활용
+- 멀티 분기 제거로 코드 -30%
+- DOTS 등 신기술 도입 가능
+- god 클래스 분할로 라이브 안정성 향상
+
+**단점**:
+- 일정 +3개월
+- 손맛 동등성 검증 부담
+- PD 2순위 (A안 우선)
+
+### C안 — 핵심만 포팅 (minimal viable port)
+
+**범위**:
+- 손맛 4중 메커니즘만:
+  - 콤보 100 / 3초 리셋
+  - 카메라 흔들림 단일 진입점
+  - Matrix Trail (Xft 대체)
+  - 잔상 복제
+- 13 SkillEvent 중 핵심 5개:
+  - CreateProjectile / ShakeCamera / MoveToNearestTarget / TeleportForward / Rotate
+- 35 EventBase 중 핵심 10개:
+  - DoBaseAttack / DoAttack / OnSkillUsed / OnHit / OnDamaged / OnCollideProjectile / ShakeCamera / GetSocketTransform / FindUsableSkill / GetEquipSkills
+- 나머지는 Phase 4.5 (2027-10+) 점진 추가
+
+**비용**: 약 **80h** (2주 풀타임 / 4주 파트타임)
+
+**리스크**:
+- (R-C-1, 높) **손맛 손실 30~50%** — Action 시스템 / 잔상 / Sub Skill / Push Move 누락
+- (R-C-2, 중) Phase 4.5 추가 작업 +120h 누적 (총합 200h, A안 보다 +80h)
+
+**가능성**: **HIGH** (8주 안 가능)
+
+**손맛 보존도**: **50~70%**
+
+**장점**:
+- 빠른 출시 가능
+- Phase 4 일정 여유 확보 (-1.5개월)
+
+**단점**:
+- 손맛 약화 → PD 핵심 지시 위배
+- Phase 4.5 추가 작업 누적 → 결국 A 안 보다 비용 많음
+
+## 4. 정현우 권고: **A안**
+
+### 4.1 권고 이유
+
+1. **PD 1순위 부합** ("그대로 가져오기" 명시)
+2. **손맛 100% 보존** (10년 튜닝 자산 그대로)
+3. **비용 -50% (B안 대비)** — Phase 4 일정 안전
+4. **C 안 보다 총비용 -40%** (장기적 합산)
+5. Xft 1건 + async/await 1건 = 2건만 패치하면 99% 동작 (분석 v1 §7)
+
+### 4.2 A안 보완 권고 (코드 부채 헷지)
+
+A안 그대로 가져오면 god 클래스 2건 / 디버그 코드 / 멀티 분기 부채 누적. 이를 헷지하기 위해 **A+ 보완**:
+
+| 항목 | 작업 | 추가 비용 | 시점 |
+|------|------|----------|------|
+| 디버그 코드 즉시 제거 | EodEntityMatrixEffectComponent line 67~77 | 1h | 포팅 시 |
+| 멀티 분기 dead code 표시 | `// TODO Sp03+ 제거` 주석 | 4h | 포팅 시 |
+| god 클래스 분할 | Combat 2499 / Skill 1794 | 30h | Sp02 W2~W4 (재개 후) |
+| Xft 대체 | Unity 6 TrailRenderer + Bezier | 25h | 포팅 시 |
+| Unit Test 80% | 점진 도입 | 30h | 포팅 시 |
+
+**A+ 총합**: 120h (A안) + 60h (보완) = **180h** (B안 240h 보다 -25%)
+
+### 4.3 Sp01 W2 baseline 보존 영향
+
+- 본 포팅 = Phase 4 (2027-04+) 진입 시 본격
+- Sp01 W2 (5/11~5/17) **본 작업 0%** — Importer baseline 보존만
+- Sp02 재개 (9/15+) 시 **god 클래스 분할 30h 부분 선행 가능** (워밍업 1주 후)
+- 메모리 `project_sprint01_w1_results.md` 200F 4.255 + 0.12% 편차 baseline 영향 0%
+
+### 4.4 Phase 4 일정 영향
+
+- Phase 4 본판 출시 = 2027-04
+- Sp02 재개 9/15 ~ 2027-04 = **약 19개월**
+- A+ 총합 180h = 4.5주 풀타임 또는 9주 파트타임
+- 19개월 중 0.5개월 (2.6%) 소요 → **여유 충분**
+- Phase 4 막판 1.5개월 풀타임 또는 Phase 3 (Sp06+, 2026-09~) 분산 가능
+
+## 5. 의사결정 슬롯 3건 (PD 출장 복귀 시)
+
+### D-1: A / B / C 안 선택 (PD 결정)
+
+- 정현우 권고: **A+ (A 보완)**
+- B 결정 시 일정 +3개월 + 손맛 미세 차이 위험
+- C 결정 시 PD 핵심 지시 위배 + 장기 비용 더 큼
+
+### D-2: Xft 라이브러리 처리 (PD 결정 후 정현우 자율)
+
+- D-2a: Xft 그대로 + Unity 6 호환 PoC 1h (호환 시 채택)
+- D-2b: Unity 6 TrailRenderer + Bezier 자체 구현 (~200 LOC, 25h)
+- D-2c: Asset Store 대체 ($30~$50)
+- 정현우 권고: **D-2b** (외부 의존 제거 + 라이브 안정성)
+
+### D-3: god 클래스 분할 시점 (PD 결정 + 류재현 협업 의향 확인)
+
+- D-3a: 포팅 동시 분할 (총 비용 180h)
+- D-3b: 포팅 후 Phase 4.5 분할 (총 비용 200h, +20h)
+- D-3c: 분할 안 함 (라이브 부채 누적, 비추)
+- 정현우 권고: **D-3a** (포팅 1회 작업으로 통합)
+
+### D-4 (선택): 한지우 협업 슬롯 시점
+
+- 셰이더 / Material 시드 (잔상 Ghost Material / Camera Shake 모션 블러)
+- 권고: Sp01 W2 종료 (5/17) 후 박세린(PM) 경유 발주
+
+## 6. 다음 세션 첫 액션
+
+1. PD A/B/C 선택 (D-1) — 출장 복귀 후 1쪽 브리핑 인수 시
+2. 정현우: EodCamera.cs / EodProjectile.cs 추가 read (1h)
+3. 정현우: Xft 라이브러리 Unity 6 호환 PoC 1h (D-2 결정용)
+4. 박세린(PM) 경유 한지우 협업 발주
+5. 윤서아 협업 슬롯 — 손맛 동등성 검증 기준 (B안 채택 시 필수)
+
+---
+
+**연계**:
+- `combat_system_analysis_v1_2026-05-05.md` (전투 시스템 분석)
+- `combat_system_core_assets_inventory_v1_2026-05-05.md` (~50 파일 매트릭스)
+- `combat_system_pd_briefing_1page_2026-05-05.md` (PD 1쪽)
+6:["slug","combat_system_porting_strategy_v1_2026-05-05","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","combat_system_porting_strategy_v1_2026-05-05","d"],{"children":["__PAGE__?{\"slug\":\"combat_system_porting_strategy_v1_2026-05-05\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","combat_system_porting_strategy_v1_2026-05-05","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"전투 시스템 Unity 6 포팅 전략 v1"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/combat_system_porting_strategy_v1_2026-05-05.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,416"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"전투 시스템 Unity 6 포팅 전략 v1 — 자료실"}],["$","meta","3",{"name":"description","content":"작성: 정현우 (code-lead)"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

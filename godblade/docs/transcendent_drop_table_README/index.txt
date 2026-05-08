@@ -1,0 +1,190 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T2b7a,# Transcendent Drop Table - Sprint 01 W1 산출물 README
+
+> 작성: 2026-04-21 (game-designer) · 근거: `designs/transcendent_reward_draft.md` v1.0 APPROVED
+> **문서 상태**: **APPROVED v1.0** (PD 승인 2026-04-21)
+>
+> ---
+>
+> ## PD 승인 결정 (재검토 2건 + 리스크 1건)
+>
+> | # | 결정 | 후속 영향 |
+> |---|------|-----------|
+> | **§4 등급 리매핑** | **그대로 확정** (Normal→Common / Superior→Rare / **원본 Rare→Epic** / Unique→Legendary / Magic·Mythic 신설) | Importer는 `GradeRemap.cs` 로 원본값 즉시 치환. 원본 "Rare" 리터럴은 **신규 Epic**임을 code-lead가 명시적으로 인지 |
+> | **§6-#6 어픽스 이월** | **Sprint 02 이월 승인** — W2엔 `affix_pool.tsv` 6행(grade→slot count)만 반영. `OptionItemRandom` 211행 실수치 접합은 Sprint 02 전담 스프린트로 | Sprint 02 킥오프 시 "어픽스 풀 실수치 주입" 별도 과제로 편성 필요 |
+> | **R2 Magic 베이스 부족** | **Normal 베이스 복제 방식 채택** — Sprint 02에 `ItemInfo.xml`의 Normal 아이템을 복제하여 Magic 파생 생성 | Sprint 02 game-designer·code-lead 공동 작업 (어픽스 이월 과제와 묶어서 진행) |
+>
+> Q4·Q5 유예 상태 유지. Sprint 03+ 실측 리튜닝 대상.
+
+---
+
+## 1. 파일 구성
+
+| 파일 | 행수 | 역할 |
+|------|------|------|
+| `transcendent_drop_table.tsv`      | 60 | 층 구간 × 등급 × 일반/보스 드롭률 매트릭스 |
+| `transcendent_milestone_reward.tsv` | 22 | 10/50/100/150/200층 확정 보상 |
+| `transcendent_affix_pool.tsv`      | 6 | Q3 6등급 × 어픽스 슬롯/값 범위 뼈대 |
+| `transcendent_drop_table_README.md` | — | 본 문서 |
+
+모든 TSV: UTF-8 no-BOM, 탭 구분자, 헤더 1행. Sprint 00 `TranscendentStageSO` Importer 규약과 동일.
+
+---
+
+## 2. 원본 자산 탐색 결과
+
+| 자산 | 상태 | 경로 / 라인 | 조치 |
+|------|------|-------------|------|
+| `data_transcendent_stage_reward` SQL 스키마 | **확보** | `Dump20210311.sql:4069-4081` | 11 컬럼 그대로 참조 |
+| `RewardItemInfo.xml` / `TranscendentStageReward` 시트 | **확보** | `Datasheets/RewardItemInfo.xml:150579`, 3459 데이터 행 (R5C1:R3463C13) | Importer 주입 대상 |
+| `OptionInfo.xml` / `OptionItemRandom` 시트 | **확보** | `Datasheets/OptionInfo.xml:33967`, 211 어픽스 행 | 어픽스 실수치 주입 대상 |
+| `TranscendentStageSO.cs` | **확보** | `Unity6/Assets/_Project/Scripts/Data/TranscendentStageSO.cs` (Sprint 00 PR #1) | 보조 TSV는 덧붙임 레이어 |
+| **원본 Grade 리터럴** | **4개만 발견** | `Normal / Superior / Rare / Unique` | 신규 6등급에 매핑 (§4) |
+
+### 2.1 원본 `TranscendentStageReward` 13 컬럼
+
+| 순서 | 컬럼 | 타입 | 신규 TSV 대응 |
+|------|------|------|---------------|
+| 1 | Read | bool | (임포트 플래그) |
+| 2 | Description | string | `notes` 필드로 흡수 |
+| 3 | RewardGeneralCode | int | `milestone.reward_code` / 드롭풀 ID |
+| 4 | StageGeneralCode | int | `TranscendentStageSO.generalTypeCode`와 FK |
+| 5 | RequiredClass | enum (All/Berserker/...) | **싱글 리부트에선 All 고정** 권장 |
+| 6 | Act | int | 무한던전은 단일 Act → 상수 |
+| 7 | StageNo | int | 층 번호 |
+| 8 | GeneralTypeCode | int | 실제 드롭되는 아이템 코드 |
+| 9 | ItemMinCount | int | `reward_count` min |
+| 10 | ItemMaxCount | int | `reward_count` max |
+| 11 | DropRate | float | `drop_rate` 최종 값 |
+| 12 | EquipType | enum | 직업 필터 제거 후에도 슬롯(Weapon/Ring/Armor)은 유지 |
+| 13 | Grade | enum | **4등급 → 6등급 리매핑 필요** (§4) |
+
+### 2.2 원본 `OptionItemRandom` 11 컬럼
+
+| 순서 | 컬럼 | 의미 |
+|------|------|------|
+| 1 | Read | 플래그 |
+| 2 | Description | 옵션 한글명 (예: "공격력 기본") |
+| 3 | OptionRandomGroupID | 아이템 RandomOptionGroup 인덱스 (Item 시트와 연동) |
+| 4 | OptionDivision | OptionBase.OptionCode 인덱스 |
+| 5 | OptionRank | 그룹 내 랭크 |
+| 6 | OptionAdjustType | +/- (1/-1) |
+| 7 | OptionDataType | 0 Constant / 1 Percent |
+| 8 | OptionValueMin | float, 범위 최소 |
+| 9 | OptionValueMax | float, 범위 최대 |
+| 10 | Interval | 값 변화 단위 |
+| 11 | OptionRate | 10000 분율 적용 확률 |
+
+**해석**: 원본은 "그룹 ID + 랭크"로 풀을 정의, 10000 분율 Weighted 추첨. 신규 6등급 체계는 `affix_pool.tsv` 의 `grade` 를 축으로 접근하되, 실제 값은 이 `OptionItemRandom` 211행을 Sprint 01 W2 에 code-lead 가 Importer로 연결.
+
+---
+
+## 3. TranscendentStageSO 와의 연결 그림
+
+```
+TranscendentStageSO (Sprint 00 - 고정)
+ ├─ generalTypeCode  ────────────┐
+ ├─ stageNumberInAct ─ 1~200     │  (stage FK)
+ ├─ bossSpawnHpAmount            │
+ ├─ RewardGeneralCode  ──────┐   │
+ ├─ FirstRewardGeneralCode   │   │
+ └─ AddRewardGroupCode   ────┤   │
+                             │   │
+                             ▼   ▼
+            ┌─────────────────────────────────┐
+            │   transcendent_drop_table.tsv   │  (신규, Sprint 01)
+            │  floor_range × grade × mob_kind │
+            │  → 실제 드롭 선택 확률만 정의    │
+            └──────────────┬──────────────────┘
+                           │
+                           ▼ (grade 축이 일치)
+            ┌─────────────────────────────────┐
+            │   transcendent_affix_pool.tsv    │  (신규, Sprint 01)
+            │  grade × slot_count × value range │
+            └──────────────┬──────────────────┘
+                           │
+                           ▼ (OptionRandomGroupID 매핑)
+            ┌─────────────────────────────────┐
+            │   OptionInfo.xml/OptionItemRandom │  (원본, Sprint 01 W2)
+            │   실제 Prefix/Suffix 수치 211행    │
+            └─────────────────────────────────┘
+
+마일스톤:
+  transcendent_milestone_reward.tsv
+    └─ floor (10/50/100/150/200) 도달 시 확정 지급
+       → 드롭 테이블과 독립 경로 (겹치지 않음)
+```
+
+---
+
+## 4. 등급 리매핑 규칙 (원본 4 → 신규 6)
+
+| 원본 Grade | 출현수(RewardItemInfo) | 신규 매핑 | 비고 |
+|------------|------------------------|-----------|------|
+| Normal     | 2,535 | **Common** | 기본 템 그대로 |
+| (없음)     | — | **Magic** | 신규 — 어픽스 2슬롯 저가 접근 |
+| Superior   | 3,386 | **Rare** | Superior를 Rare로 승격 (Diablo 식) |
+| Rare (원본)| 3,743 | **Epic** | 원본 Rare는 실질 상위 템 → Epic으로 흡수 |
+| Unique     | 2,960 | **Legendary** | 1:1 |
+| (없음)     | — | **Mythic** | 신규 — 시즌 최상위 |
+
+**근거**: 원본 EOD는 4등급이지만 신규 방치형 6등급 체계를 위해 `Magic` / `Mythic` 두 층을 신설. Importer 는 기존 XML의 `Grade` 컬럼을 위 매핑표로 치환하여 `drop_table.tsv` 의 grade 와 충돌 없이 통합.
+
+> **I-3 패치 (2026-05-04, #W1-03)**: `transcendent_affix_pool.tsv` 의 `legacy_grade_map` 컬럼은 원본 자산 추적용 메타데이터로, **Sp01 W2 Importer는 본 컬럼을 무시**한다 (등급 리매핑은 §4 표만 진실). R2 정책(Magic 베이스 = Normal 복제)은 Sp02 W2 코드 분기로 처리.
+
+---
+
+## 5. 드롭률 합 검증
+
+| 층 구간 | 일반 합 | 보스 합 |
+|---------|---------|---------|
+| 1~30     | 1.000 | 1.000 |
+| 31~80    | 1.000 | 1.000 |
+| 81~130   | 1.000 | 1.000 |
+| 131~180  | 1.000 | 1.000 |
+| 181~200  | 1.000 | 1.000 |
+
+모든 구간 합 = 1.000 ± 0.000. 오차 없음.
+
+### 5.1 Mythic 기대치 검증 (181~200층 일반)
+
+- 드롭률 3% = 0.030 / 마리
+- 평균 방치 10h · 분당 약 36 마리 (Sprint 00 DPS 초안 기준) → 21,600 마리
+- 181~200층 체류 비중 10% 가정 → 2,160 마리
+- Mythic 기대 = 2,160 × 0.030 = **64.8개** (10h 기준, 181~200 구간만)
+
+초안보다 기대치가 크므로, **`Epic 이상만 개별 보존` 필터(Q2)** 가 반드시 켜져야 로그 폭주 방지. `settings.idle.keepIndividualLogFromGrade = "Epic"` 상수로 code-lead에 전달.
+
+---
+
+## 6. Sprint 01 W2 code-lead 임포터 검증 체크포인트
+
+1. **Grade 리매핑 변환 테이블** — §4 의 4→6 매핑을 `GradeRemap.cs` enum 또는 Dictionary 로 하드코딩. 누락 시 Importer 에서 즉시 Fail (Unknown grade exception).
+2. **드롭 테이블 검색 함수는 `(floor:int, mobKind:enum, grade:enum)` 키** — 60행 테이블을 런타임 Lookup O(1) 로. Dictionary<(int,int,int), float> 추천.
+3. **층 구간 경계값 편입 규칙** — `floor_range_min <= floor <= floor_range_max` (양끝 포함). 30/31 경계에 테스트 케이스 2개 필수.
+4. **TSV 파서 "TBD_" 프리픽스 처리** — `reward_code`가 `TBD_` 로 시작하면 플레이스홀더 로그만 남기고 Skip (임시, Sprint 02 이후 실제 코드로 치환 예정).
+5. **드롭률 합 자기검증** — Importer 끝에서 층 구간별 합이 1.000 ± 0.001 인지 Assert. 벗어나면 Editor 콘솔에 Error 로그 (런타임 Crash 금지).
+6. **어픽스 풀은 Week 2 완결 금지** — `affix_pool.tsv` 6행은 "뼈대". 실제 `OptionItemRandom` 211행 접합은 Sprint 02 로 이월 권장. Week 2 엔 "Grade→슬롯 수"만 반영해도 충분.
+7. **마일스톤은 드롭 테이블과 별도 경로** — 10/50/100/150/200 층에서 `MilestoneGranter.Award(floor)` 같은 이벤트 한 번만 실행, 드롭 Roll 과 중복 지급 금지.
+
+---
+
+## 7. 리스크 · 미해결
+
+- **R1**: 원본 `EquipType` 리터럴 전체 목록 미확인 (`Ring/Weapon/Armor` 세 가지만 샘플 확인). 드롭테이블에 슬롯 필터 추가 필요 시 code-lead 가 Importer 단계에서 값 수집 후 PD에게 컬럼 추가 제안.
+- **R2**: `Magic` 등급 신규 도입에 따른 원본 자산(베이스 아이템) 부족 — Sprint 02에서 `ItemInfo.xml` 의 `Normal` 베이스를 복제해 `Magic` 파생을 만드는 방안을 code-lead·game-designer 공동 결정.
+- **R3**: Mythic 기대치 64.8개/10h 는 원본 몬스터 스폰율이 유지된다는 전제. `TranscendentStageSO.bossSpawnHpAmount`가 200층에서 114억 HP이므로 실제 DPS 확정 전까지는 추정치 (±50% 편차 각오).
+- **R4**: 시즌 리셋 (Q5) 이 Sprint 05 이후로 유예됐으므로, Mythic 누적 상한/디센팅 정책 미정. 초기 출시 구간에 Mythic 인플레 우려 → Sprint 03 회고에서 재검토.
+
+---
+
+## 8. 분량
+
+본 문서 8쪽 이내, TSV 총 88행. 초안 한 번에 완결. Sprint 01 W2 code-lead Importer 착수 전 PD 재검토 필요 구간은 §4 등급 리매핑과 §6-#6 어픽스 이월 여부 두 곳.
+6:["slug","transcendent_drop_table_README","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","transcendent_drop_table_README","d"],{"children":["__PAGE__?{\"slug\":\"transcendent_drop_table_README\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","transcendent_drop_table_README","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],["$","span",null,{"className":"rounded-sm bg-gold-dark px-2 py-0.5 text-[10px] font-bold text-bg-0","children":"APPROVED"}]]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Transcendent Drop Table - Sprint 01 W1 산출물 README"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/transcendent_drop_table_README.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,403"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Transcendent Drop Table - Sprint 01 W1 산출물 README — 자료실"}],["$","meta","3",{"name":"description","content":"모든 TSV: UTF-8 no-BOM, 탭 구분자, 헤더 1행. Sprint 00 TranscendentStageSO Importer 규약과 동일."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

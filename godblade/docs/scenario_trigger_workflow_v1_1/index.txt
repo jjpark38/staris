@@ -1,0 +1,105 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T1f53,# PD 본문 9권 → 게임 시나리오 트리거 변환 워크플로우 v1.1 (실측 갱신)
+
+> 작성: 윤서아 (game-designer, 2026-05-04 D+0 v1 → D+0 v1.1 실측 갱신)
+> 본 문서 위치: `designs/scenario_trigger_workflow_v1_1.md`
+> 직전 v1: `designs/scenario_trigger_workflow_v1.md` (추정값, 본 v1.1로 정정)
+> 갱신 사유: PD "D+15 가속 가능" 천명 + `designs/webnovel/` 본문 실측 결과 반영
+> 영역: 윤서아(추출/보강/검증) + 강시연(윤문) + 차도윤(임베드) + 한가영(baseline 영향 0)
+> APPROVED-BY: PD default 채택 (2026-05-04 v3.0 정합)
+
+---
+
+## TL;DR (3줄)
+
+1. **본문 실측**: 1권 18화 확정 (chapter_00~17) + 2권 17화 작성 완료 (chapter_01~14, 18~20) + 4화 future (39/41/49/50) + 1 draft (15) + brief 1건 (16/17). v1 추정값 정정.
+2. **D+15 (2026-05-19) 7차 출시 트리거 가용성**: 1F~10F **100% 본문 채움 가능** + 11F~17F **약 70% 채움 가능** (chapter_18~20 강시연 윤문 의존) + 18F~20F **30% 채움** (15 draft + brief 의존).
+3. **무한 모드 보스 트리거 사전 활용**: 2권 future 4화 (39/41/49/50) → **200F·400F·500F 보스 트리거 사전 발췌 가능** (D+15 출시 시 무한 모드 200F~500F 핵심 컷씬 3건 박을 수 있음).
+
+---
+
+## 1. 9권 매핑 실측 갱신 (v1 추정 → v1.1 실측)
+
+| 권 | 화수 (실측) | 게임 시나리오 모드 매핑 | 본문 보유율 | D+15 출시 가용성 | 비고 |
+|---|------------|----------------------|-----------|----------------|------|
+| **1권** | **18화 확정** (chapter_00~17) | **1F~10F** (1.80화/F) | **100%** | **즉시 발행** | 튜토리얼 + 김해 + 광복동 + 부산 도입 |
+| **2권** | **17화 작성** (01~14, 18~20) + 1 draft (15) + 1 brief (16/17) + 4 future (39/41/49/50) | **11F~20F** (1.70화/F) | 작성 ~85% (17/20) + future 별도 | **부분 발행** (11F~17F 약 70% / 18F~20F 약 30%) | 무당9 + 개방6 + 소림7 + 곤륜파19 |
+| 3권 | TBD ~12화 가정 (PD 작성 예정) | **21F~30F** (1.20화/F) | 0% | 미발행 (D+45 7차+1차 내) | 경복궁 + 이성계 + 삼합회 (2권 이월) |
+| 4권 | TBD ~12화 가정 | **31F~40F** | 0% | 미발행 (D+90 8차 내) | 글로벌 진출 |
+| 5권 | TBD ~12화 가정 | **41F~50F** | 0% | 미발행 (D+180 웹게임 출시 내) | 시나리오 모드 종료 (50F 클라) |
+| **6~9권** | TBD | **무한 모드 200F~1000F+** 보스 트리거 (시나리오 모드 외) | 0% (단, 2권 future 4화 = **사전 활용 가능**) | **200F·400F·500F 3건 사전 발췌** | Tier 100 영원의 증표 헷지 정합 |
+
+**자유 매핑 원칙** (v3.0 #4 정합 유지): PD 본문 진행률 / 강시연 윤문 결과에 따라 권당 F 수 ±2 가변. 윤서아 단독 결정.
+
+---
+
+## 2. D+15 (2026-05-19) 7차 출시 트리거 가용성 매트릭스
+
+| F 구간 | 트리거 슬롯 | 본문 출처 | 강시연 윤문 의존 | D+15 채움률 | 부족분 처리 |
+|--------|-----------|---------|---------------|-----------|-----------|
+| **1F~10F** | 20 슬롯 (pre/post × 10) | 1권 chapter_00~17 | 페이스 1주 2화 가정 시 미완 챕터 다수 | **100% (default 발행)** | 강시연 윤문 미완 챕터는 **default 발행 + 사후 갱신** |
+| **11F~17F** | 14 슬롯 (pre/post × 7) | 2권 chapter_01~14, 18~20 | 동일 | **약 70% (default 발행)** | 동일 |
+| **18F~20F** | 6 슬롯 (pre/post × 3) | 2권 chapter_15 draft + chapter_16/17 brief | 강시연 작성 자체 미완 | **약 30% (보강 트리거 + 본문 일부)** | **빈 슬롯 = 게임 보강 트리거 (튜토리얼 힌트 / 어픽스 해금)** 채움 |
+| **21F~50F** | 60 슬롯 | 3~5권 미작성 | N/A | **0%** | 후속 7차+1·2차에 순차 발행 |
+| **무한 200F·400F·500F** | 3 보스 트리거 | 2권 future 39/41/49/50 | **사전 발췌 가능** (PD 미래 시점 작성 완료) | **3건 사전 박음** | 추가 17건은 6~9권 진행 시 |
+
+**총 D+15 채움**: 1F~17F 약 90% + 18F~20F 30% + 무한 200F~500F 3건 = **시나리오 모드 1F~20F 영역 약 78% 채움 + 무한 컷씬 3건 보너스**.
+
+---
+
+## 3. 변환 워크플로우 5단계 (v1 변동 0)
+
+| # | 단계 | 입력 | 출력 | 담당 |
+|---|------|------|------|------|
+| 1 | **본문 청킹** | PD 본문 → 강시연 윤문 결과 | 장면별 청크 (캐릭터 등장 / 대사 / 액션 / 배경 4 라벨) | 강시연 (구조 재배열 가능) |
+| 2 | **트리거 슬롯 추출** | 청크 + 1F~50F 100 슬롯 매트릭스 | 슬롯별 ID `S-F<NN>-<pre\|post>` | 윤서아 |
+| 3 | **본문 발췌** | 청크 → 50~150자 발췌 (rex-dialogue 포맷 호환) | 발췌 텍스트 + 발화자 + 톤 라벨 | 윤서아 (강시연 톤 동의) |
+| 4 | **게임 보강** | 발췌 사이 빈 슬롯 + GDD v5 + 어픽스 35 + 시즌 60일 | 보스 알림 / 어픽스 해금 / 시즌 이벤트 / 튜토리얼 힌트 | 윤서아 (게임 전용) |
+| 5 | **검증** | 100 트리거 풀 + baseline 시트 4종 | 트리거 정합 + baseline 0 영향 + 강시연 톤 동의 + 한가영 시뮬 | 윤서아 + 강시연 + 한가영 |
+
+---
+
+## 4. 윤서아 첫 발주 갱신 (Sp-W01 W1 → D+15 가속)
+
+| 항목 | v1 (Sp-W01 W1 5/18) | **v1.1 갱신 (D+15 가속 5/15~5/18)** |
+|------|---------------------|--------------------------------|
+| 시점 | 2026-05-18 Sp-W01 킥오프 | **2026-05-15~05-18 D+15 출시 직전 4일** |
+| 산출물 | 1F~3F 트리거 6건 PoC | **1F~20F 트리거 약 60~70건 본격 작업** (1F~17F 본문 발췌 + 18F~20F 보강 + 무한 200F·400F·500F 3건) |
+| 협업 | 차도윤 1건 boilerplate + 강시연 chapter_00~02 동의 + 한가영 1차 검증 | **차도윤 rex-dialogue 일괄 임베드 wire-up + 강시연 default 발행 동의 + 한가영 baseline 0 회귀 1회** |
+| 시간 | 9h 단독 | **약 9h 단독 + 차도윤 wire-up 별도 발주 (김민준 7차 D+15 가속 병렬)** |
+| 검증 | 5단계 프로토콜 (Q→O→D→Dr→A) | 동일 (D+15 출시 직전 PD 일괄 승인) |
+
+---
+
+## 5. 강시연 윤문 우선순위 (D+15 가속 정책)
+
+- **메모리 정합**: `feedback_writer_collaboration_protocol.md` 1주 2화 페이스 + 24~48h(최대 72h) 회신 + PD "페이스 자유 채택" 천명.
+- **D+15 (2026-05-19) 윤문 진행도 추정**: 채용 D+0 (5/2) ~ D+15 = 약 2.5주 = **5화 윤문 가능** (1주 2화 페이스).
+- **우선순위**:
+  1. 1권 chapter_00~04 (1F~3F 매핑) — D+15 출시 직후 1F 진입 사용자 첫인상
+  2. 1권 chapter_05~09 (4F~5F) — 김해 / 광복동 핵심 장면
+  3. 1권 chapter_10~17 (6F~10F) — 부산 도입 / 1권 클라
+  4. 2권 chapter_01~10 (11F~14F) — 무당9 도입
+  5. 나머지 2권 + future 4화 — D+15 이후 사후 갱신
+- **D+15 출시 시점 정책**: 강시연 윤문 미완 챕터는 **PD 본문 default 발행** + 강시연 사후 윤문 갱신 (rex-dialogue 텍스트 hot-swap, 차도윤 wire-up 영역).
+
+---
+
+## 6. 위험 가정 2건 (갱신)
+
+1. **강시연 윤문 18화 미완 = D+15 출시 시점 1권 일부만 윤문 적용** — 추정 5화 윤문 가능 + 13화 default 발행. 메모리 `feedback_writer_collaboration_protocol.md` 1주 2화 페이스 정합 (PD 페이스 자유 채택). **사후 갱신 정책으로 D+15 발행 자체 영향 0** (default 발행으로 사용자 컷씬 비어있음 회피).
+2. **2권 chapter_15 + 16/17 + 미래 4화 일부 강시연 작성 진행 중** = 18F~20F 트리거 30% 채움 + 무한 200F·400F·500F 3건 사전 발췌만. **나머지 17건 무한 보스 트리거는 6~9권 강시연 진행 페이스 의존 후속 발행**. 박세린(PM) D+15 직후 7차+1차 (D+45) 발주 시 윤서아 갱신 분량 보고 의무.
+
+---
+
+**APPROVED-BY**: PD default 채택 (2026-05-04 "D+15 가속 가능" 천명 정합)
+**다음 액션**: 5/15~5/18 D+15 가속 본격 작업 (1F~20F 60~70건 + 무한 3건, 윤서아 단독 9h)
+**병렬 의존**: 김민준 7차 D+15 가속 wire-up 발주 (별도 진행 중) + 차도윤 rex-dialogue 임베드 wire-up
+**baseline**: 200F 4.255 절대 보존 (Sp01 W1 결과 정합), 한가영 회귀 검증 영향 0
+6:["slug","scenario_trigger_workflow_v1_1","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","scenario_trigger_workflow_v1_1","d"],{"children":["__PAGE__?{\"slug\":\"scenario_trigger_workflow_v1_1\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","scenario_trigger_workflow_v1_1","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"PD 본문 9권 → 게임 시나리오 트리거 변환 워크플로우 v1.1 (실측 갱신)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/scenario_trigger_workflow_v1_1.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,186"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"PD 본문 9권 → 게임 시나리오 트리거 변환 워크플로우 v1.1 (실측 갱신) — 자료실"}],["$","meta","3",{"name":"description","content":"1. 본문 실측: 1권 18화 확정 (chapter_00~17) + 2권 17화 작성 완료 (chapter_01~14, 18~20) + 4화 future (39/41/49/50) + 1 draft (15) + brief 1건 (16/17). v1 추정값 정정."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

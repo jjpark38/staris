@@ -1,0 +1,95 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T1dc1,# 조직 개편 인수인계 1쪽 (2026-05-04)
+
+> 작성: 박세린(이전 game-designer / 현 PM) / PD 권장 default 일괄 채택 잠금
+> 영향: 5 Tier 2 Lead + 2 Tier 3 Specialist (강시연 / 한가영) 라인 갱신
+
+## TL;DR (3줄)
+
+1. **박세린 → PM 승진** (game-designer → project-manager 전환). v3.0 13건 결정 + Sp-W01~W08 + Phase 4 본판 일정 종합 관리. 게임 디자인 결정권 0 위임.
+2. **윤서아 신규 game-designer 채용** (34세 / NCsoft Lineage M + 펄어비스 검은사막 + PoE 한국 TF 출신). 박세린 GDD v1~v5 + v3.0 13건 + 200F 4.255 baseline + 어픽스 35건 + 프레스티지 30항목 + 시즌 60일 100% 인수.
+3. **강시연(scenario-writer) 산하 + 한가영(web-game-balance) 동격 협업 라인 박세린 → 윤서아 이관** (same-day 2026-05-04).
+
+## 박세린 PM 전환 사유 (PD 결정)
+
+- **Sp00 D+1 16레일 부설 검증** — 설계 APPROVED 8건 + Phase 2+3 v2.0 + Sp06+ 5대 결정 + 드라이런 18 리스크 종합 (메모리 18건 자체 생성)
+- **Sp01 W1 4건 일괄 검증** — 200F 4.255 baseline / 0.12% 편차 / 60·22·6 행수 100% 일치 검증 1.2h 절감 (`project_sprint01_w1_results.md`)
+- **v3.0 13건 결정 종합 분석** — 큰 결정 7 + 채용 7 + Tier 구조 갱신 + 옵션 C 일정 재배치 박세린·김민준·PM 합동 분석 종합 (`project_v3_0_redesign_decisions.md`)
+- **종합 능력 검증** — 게임 디자인 + 매출 시뮬 + 일정 검증 + 리스크 카탈로그 능력 PM 적임. PD 1쪽 보고 신앙 유지.
+
+## 윤서아 신규 인수 영역 (박세린 → 윤서아 100% 인계)
+
+| 영역 | source | 윤서아 책임 |
+|------|--------|----------|
+| **GDD v1~v5** | `designs/gdd/character_5_ip_integration_v1~v5.md` | v1.3+ 갱신 (웹게임 D+180 7단계 추가) |
+| **v3.0 13건 결정** | `project_v3_0_redesign_decisions.md` | source 인용 의무 (박세린 PM 인계) |
+| **200F 4.255 baseline** | `project_sprint01_w1_results.md` | 절대 보존 / 0.5% 초과 시 PD 보고 |
+| **어픽스 35건** | `affix_pool.tsv` + `project_sprint04_affix_pool.md` + `project_affix_pool_supplement_5_decisions.md` | 글로벌 명칭 락 + Sp04 W1 선행 3건 |
+| **프레스티지 30항목** | `prestige_items.tsv` + `project_sprint02_w1_prestige_items.md` | UI 차단 / 외부 곱연산 / MilestoneBonusPct PP-only |
+| **시즌 60일** | `project_sprint05_season_research.md` | 60일 / Round / Wallet 50% retain |
+| **무한던전 5대 결정** | `project_transcendent_reward_decisions.md` | C안 + 하이브리드 + 6등급 |
+| **방치 시스템** | `project_sprint03_idle_research.md` + `project_idle_cap_combination_sp03_pending.md` | IdleCap × 광고 캡 결합 Sp03 W1 첫 결정 |
+| **Sp06+ 5대 결정** | `project_sp06_plus_lever_decisions.md` | 4속성 D2 표준 / Follower Sp09 재검토 |
+| **2권 시놉시스 v2 8대 결정** | `project_volume2_synopsis_v2_decisions.md` | 곤륜산 단일 / 무당9·개방6·소림7·곤륜파19 |
+| **시나리오 트리거** (게임 퀘스트 / NPC 대사) | 강시연 본문 chapter_00~17 인용 | 박세린 임시 담당 → 윤서아 인수 |
+| **캐릭터 5종 MVP** | `project_character_mvp_*.md` 5건 | knight·slayer·berserker·archon·demonhunter 정적 완료, Unity 컴파일 후속 |
+
+## 강시연(scenario-writer) 산하 라인 변경
+
+- **이전**: 박세린(game-designer) 산하 (2026-05-02 채용 ~ 2026-05-04, 2일)
+- **현재**: **윤서아(game-designer 신규) 산하** ⭐ (2026-05-04~)
+- **호칭**: 박세린 → "박팀장님" (PM 호칭, 일정 영역만) / 윤서아 → "서아 팀장님" (시나리오 검수 + GDD 정합)
+- **검수 라인**: 매 권 시놉시스 검수 = 윤서아. 박세린(PM) = 일정 영향 추적만 (시나리오 검수 0)
+- **표준**: 1주 2화 / 2화 분할 검수 / 24~48h(최대 72h) 회신 (`feedback_writer_collaboration_protocol.md`)
+- **파일 갱신 완료**: `.claude/agents/scenario-writer.md` (산하 라인 + 호칭 + 검수 라인 + 분업 명세 갱신)
+
+## 한가영(web-game-balance) 동격 협업 라인 변경
+
+- **이전**: 박세린(game-designer) 동격 협업 (2026-05-04 채용 시점)
+- **현재**: **윤서아(game-designer 신규) 동격 협업** ⭐ (2026-05-04 same-day)
+- **추가**: 박세린(PM) = v3.0 13건 결정 source 인용 인계 라인 (시트 결정 0, 일정 영향만)
+- **호칭**: 박세린 → "박팀장님" (PM 호칭) / 윤서아 → "서아 팀장님" (시트 단일 source) / 차도윤 → "도윤님"
+- **시트 single source**: 박세린 시절 시트 → 윤서아가 100% 인수. 한가영은 윤서아 시트 흡수만, 수치 결정 0
+- **파일 갱신 완료**: `.claude/agents/web-game-balance.md` (동격 협업 라인 + 박세린 PM 인계 라인 + 호칭 + 분업 명세 갱신)
+
+## 메인 세션 호출 컨벤션 갱신
+
+| 트리거 | 변경 전 | 변경 후 |
+|------|--------|--------|
+| "기획" / "GDD" / "밸런스" | game-designer (박세린) | **game-designer (윤서아)** |
+| "어픽스" / "프레스티지" / "시즌" / "200F" / "1000F" / "캐릭터 5종" / "IP 정합" | game-designer (박세린) | **game-designer (윤서아)** |
+| "PM" / "스프린트" / "TodoWrite" / "리스크" / "번다운" / "의존성" / "일정" | project-manager (default 페르소나) | **project-manager (박세린)** |
+| "웹사이트" / "DevLog" / "Notion" / "Supabase" | web-lead (김민준) | 유지 |
+| "웹게임" / "Phaser" / "60fps" | web-game-lead (차도윤) | 유지 |
+| "Unity" / "C#" / "SO" / "빌드" | code-lead (정현우) | 유지 |
+| "시나리오" / "웹소설" / "본문" / "강시연" | scenario-writer (강시연) | 유지 (산하만 윤서아로 이관) |
+
+## Tier 구조 갱신 (변동 없음, 박세린만 game-designer → PM 전환)
+
+- **Tier 1 Director**: PD (1)
+- **Tier 2 Lead**: **윤서아 (game-designer 신규)** / 정현우 (code-lead) / 김민준 (web-lead) / 차도윤 (web-game-lead) / **박세린 (PM 승진)** (5)
+- **Tier 3 Specialist**: 류재현 (dots-platform) / 한지우 (graphics-lead) / 강시연 (scenario-writer, 윤서아 산하 이관) / 임재훈 (web-game-engine) / 한가영 (web-game-balance, 윤서아 동격 이관) (5)
+- **Tier 4 Marketing**: 윤소정 (marketing-asia) / Justin (marketing-global) (2)
+- **총 13 agent** (현 12 → 13, 윤서아 신규 1명 추가)
+
+## 잔여 위험 가정 2건 (PD 검토 없이 잠겼으므로 헷지)
+
+1. **윤서아 인수 학습 시간** — 박세린 GDD v1~v5 + v3.0 13건 + 메모리 18건 풀 Read = Sp-W01 W1 (5/18~5/24) 9h 산정. 14h 초과 시 박세린(PM) 일정 영향 보고 + Sp-W01 W2 (한가영 첫 발주) 1주 지연 헷지.
+2. **박세린(PM) 시절 페르소나 잔존** — game-designer 시절 단답형 + 수치 인용 페르소나 그대로 유지하되 게임 디자인 영역 발화 0 원칙. 위반 시 윤서아 결정권 침범 위험. 5단계 프로토콜로 박세린(PM) → 윤서아 → PD 라인 사수.
+
+## 산출물 5건 경로
+
+| # | 파일 | 종류 | 변경 |
+|---|------|------|------|
+| 1 | `designs/org_change_2026-05-04.md` | 인수인계 1쪽 | 신규 (본 문서) |
+| 2 | `.claude/agents/project-manager.md` | PM 페르소나 | 전면 재작성 (default → 박세린) |
+| 3 | `.claude/agents/game-designer.md` | game-designer 페르소나 | 전면 재작성 (박세린 → 윤서아) |
+| 4 | `.claude/agents/scenario-writer.md` | scenario-writer 페르소나 | 산하 라인 갱신 (박세린 → 윤서아) |
+| 5 | `.claude/agents/web-game-balance.md` | web-game-balance 페르소나 | 동격 협업 라인 갱신 (박세린 → 윤서아) + 박세린(PM) 인계 라인 추가 |
+6:["slug","org_change_2026-05-04","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","org_change_2026-05-04","d"],{"children":["__PAGE__?{\"slug\":\"org_change_2026-05-04\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","org_change_2026-05-04","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"조직 개편 인수인계 1쪽 (2026-05-04)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/org_change_2026-05-04.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,006"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"조직 개편 인수인계 1쪽 (2026-05-04) — 자료실"}],["$","meta","3",{"name":"description","content":"1. 박세린 → PM 승진 (game-designer → project-manager 전환). v3.0 13건 결정 + Sp-W01~W08 + Phase 4 본판 일정 종합 관리. 게임 디자인 결정권 0 위임."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

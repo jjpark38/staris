@@ -1,0 +1,328 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T5961,# Sprint 01 W2 Importer Precheck — D+0 PRINT-AND-CHECK 진입 게이트
+
+> 작성: 2026-05-02 (code-lead 정현우) · 옵션 A 채택본
+> 입력 자료 (이전 정독 완료, 자기충족):
+> - `designs/sprint-01-w2-importer-design.md` v1.0 APPROVED (4 결정 + §9 11체크 본문)
+> - `designs/scaffold-sync-audit-2026-04-21.md` v1.0 (D1·D4 정합)
+> - `designs/sp04_w1_preflight.md` v1.2 (어픽스 v1.3 흡수, AFX_36 신규)
+> - `designs/affix_pool_sp04_supplement_v1.md` v1.3 (변동 4건 원본)
+> - `sprints/sprint-01.md` D-2 확정본 (W2 #W2-01~10 + 가드 6건 인라인)
+> - `Unity6/Assets/Editor/GodBlade.Editor.asmdef` (rootNs `GodBlade.EditorTools`)
+> - `Unity6/Assets/_Project/Scripts/Data/GodBlade.Data.asmdef` (references 빈 배열)
+> - `Unity6/Assets/_Project/Scripts/Runtime/GodBlade.Runtime.asmdef` (`Unity.ResourceManager` line 7)
+> - `Unity6/Packages/manifest.json` line 10 `test-framework 1.4.5` (lock builtin 1.6.0 자동 해석)
+> - `graphify-out/GRAPH_REPORT.md` (god nodes Top 10 + Community 0~30 헤드)
+>
+> **목적**: 2026-05-11 (월) 오전 W2 진입 PRINT-AND-CHECK 양식 1쪽. 책상 위 출력 → 11 게이트 체크 → GO/NO-GO 판정. 패치 1~2h 버퍼 명시.
+>
+> **PD 결정 확인**: 옵션 A 채택 + 신규 폴더 3개 경로 사전 승인 완료 (2026-05-02).
+
+---
+
+## §1. 4 결정 vs 설계 정합 (정합 점수 4/4)
+
+| # | 결정 항목 | PD 승인 | sprint-01-w2-importer-design.md 본문 | sprint-01.md W2 작업 매핑 | 정합 |
+|---|---------|--------|----------------------------------|----------------------|-----|
+| **DQ1** | SO 구조 = 옵션 A (개별 3개) | 2026-04-21 | §1.1 표 / §1.3 필드 초안 / §0 한 줄 요약 | #W2-02 / #W2-03 / #W2-04 (3 SO 분리 import) | ✅ |
+| **DQ2** | Importer 메뉴 = 4+1 (개별 4 + ALL 1) | 2026-04-21 | §2.2 메뉴 5개 / §2.3 의존 순서 | #W2-02 (Drop) / #W2-03 (Milestone) / #W2-04 (Affix) / 기존 Stage / #W2-05 (ALL) | ✅ |
+| **DQ3** | `TsvReader` 공통화 = Sprint 02 이월 | 2026-04-21 | §10.1 R-W2-2 (Sp00 회귀 위험) / §11 DQ3 추천 사유 | W2 범위 외 — sprint-02.md 킥오프에서 인계 | ✅ |
+| **DQ4** | 테스트 asmdef = 신설 `GodBlade.Tests.Editor` | 2026-04-21 | §8.2 파일 배치 / §9 CP9-1 references 5종 | #W2-06 (asmdef 신설) / #W2-09 (테스트 5~8개 Green) | ✅ |
+
+**정합 점수: 4/4** (PD 승인 결정 4건 ↔ 설계 본문 ↔ sprint-01.md W2 작업표 = 1:1:1 매핑 무드리프트)
+
+---
+
+## §2. §9 11체크리스트 W2 작업 단계 매핑 (CP9-1 ~ CP9-11)
+
+| # | CP9 항목 | 적용 W2 작업 | 가드 시점 | 가드 방식 |
+|---|---------|------------|---------|---------|
+| **CP9-1** | 신규 Tests asmdef references 5+1종 (`UnityEngine.TestRunner` / `UnityEditor.TestRunner` / `GodBlade.Data` / `GodBlade.Runtime` / `GodBlade.Editor` / `Unity.ResourceManager`) | #W2-06 | asmdef 저장 직후 | Inspector 표시 + Test Runner 인식 확인 |
+| **CP9-2** | `Unity.Addressables.Editor` 유지 (Editor asmdef line 8) | #W2-02 / #W2-03 / #W2-04 / #W2-05 | Importer 신규 작성 시 | 기존 `GodBlade.Editor.asmdef` 변경 금지 (read-only) |
+| **CP9-3** | `[InternalsVisibleTo]` 단일 선언 (`TranscendentStageSO.cs:22`만) | #W2-02 / #W2-03 / #W2-04 | 신규 SO 저장 직후 | **#가드-CS0579-1~4 그렙 4회 강제** |
+| **CP9-4** | `#if UNITY_EDITOR` 가드 — Data asmdef는 `UnityEditor.*` 직접 참조 금지 | #W2-02 / #W2-03 / #W2-04 | SO 작성 시 | `[CreateAssetMenu]` 외 Editor 심볼 사용 금지 자체 점검 |
+| **CP9-5** | 네임스페이스 — Runtime만 하위(`GodBlade.Runtime.Rewards`), Editor는 평탄(`GodBlade.EditorTools`) | #W2-08 (Runtime Granter) / #W2-02~05 (Editor Importer) | 파일 저장 직후 | **#가드-네임스페이스 그렙 1회** (#W2-05 직후, sprint-01.md L89) |
+| **CP9-6** | TSV `Split('\t')` + `Trim()` (`\r` 잔여 가드) | #W2-02 / #W2-03 / #W2-04 | Import 첫 실행 시 | 콘솔 BOM/CRLF 경고 0건 확인 |
+| **CP9-7** | BOM 트림 중복 적용 금지 (Sp00 `TranscendentStageImporter` 손대지 않음 — DQ3 이월 원칙) | #W2-02 / #W2-03 / #W2-04 | 코드 작성 시 | 신규 3 Importer 각자 BOM trim 1회만 |
+| **CP9-8** | Dictionary 직렬화 금지 (`List<Row>` 저장 + `[NonSerialized] Dict` `OnEnable` lazy build) | #W2-02 / #W2-03 / #W2-07 | SO 필드 작성 시 | Inspector에서 Dict 필드 표시 0건 확인 |
+| **CP9-9** | Enum underlying type = `int` 유지 (W2) — DOTS byte 전환 Sp02+ | #W2-01 (Grade/MobKind/RewardType) | enum 선언 시 | `: int` 명시 또는 default 그대로 |
+| **CP9-10** | Editor Importer = 결정론, `System.Random` 금지 | #W2-02 / #W2-03 / #W2-04 / #W2-05 | Importer 작성 시 | `System.Random` grep 0건 |
+| **CP9-11** | Addressables `Rewards` 그룹 — `FindGroup` 후 없으면 `CreateGroup` (Sp00 패턴 복제, `TranscendentStageImporter.cs:325`) | #W2-02 (최초 등록) / #W2-03 / #W2-04 (재등록) | 첫 Import 실행 시 | Addressables 창에서 그룹 `Rewards` 1개만 (중복 없음) |
+
+**커버리지**: 11/11 (전 항목이 W2 #W2-01~10 중 1건 이상에 매핑됨)
+
+---
+
+## §3. 신규 파일 14개 + 신규 폴더 3개 명세 (PD 경로 승인 완료)
+
+### 3.1 신규 폴더 3개 (PD 사전 승인 완료 2026-05-02)
+
+| # | 경로 | 생성 시점 | 사유 |
+|---|------|---------|------|
+| 1 | `Unity6/Assets/_Project/Scripts/Runtime/Rewards/` | #W2-08 작업 중 (`MilestoneGranter.cs` 작성 시 자동) | Granter Runtime 격리 (CP9-5 네임스페이스 `GodBlade.Runtime.Rewards`) |
+| 2 | `Unity6/Assets/_Project/Tests/Editor/` | #W2-06 작업 중 (`GodBlade.Tests.Editor.asmdef` 작성 시 자동) | 테스트 asmdef 격리 (DQ4 신설) |
+| 3 | `Unity6/Assets/_Project/Data/Rewards/` | #W2-02 첫 Import 실행 시 (Importer 자동 생성, OUT_DIR 상수) | SO 에셋 저장 폴더 (Sp00 `TranscendentStages/` 패턴 복제) |
+
+### 3.2 Data 어셈블리 신규 4 파일 (`GodBlade.Data` namespace)
+
+| # | 파일 | #W2-NN | 라인 (예상) | InternalsVisibleTo |
+|---|------|--------|----------|-------------------|
+| F-D1 | `Unity6/Assets/_Project/Scripts/Data/GradeRemap.cs` | #W2-01 | ~80 (enum 3 + GradeRemap + UnknownGradeException) | **부착 금지** (public enum) |
+| F-D2 | `Unity6/Assets/_Project/Scripts/Data/DropRateTableSO.cs` | #W2-02 | ~120 | **부착 금지** (CP9-3 단일 선언 유지) |
+| F-D3 | `Unity6/Assets/_Project/Scripts/Data/MilestoneRewardCatalogSO.cs` | #W2-03 | ~100 | **부착 금지** |
+| F-D4 | `Unity6/Assets/_Project/Scripts/Data/AffixPoolSO.cs` | #W2-04 | ~80 (skeleton + 빈 valueEntries) | **부착 금지** |
+
+### 3.3 Editor 어셈블리 신규 4 Importer (`GodBlade.EditorTools` namespace)
+
+| # | 파일 | #W2-NN | 메뉴 | TSV 경로 |
+|---|------|--------|------|---------|
+| F-E1 | `Unity6/Assets/Editor/Importers/DropRateTableImporter.cs` | #W2-02 | `GodBlade/Data/Import Drop Rate Table TSV` | `designs/transcendent_drop_table.tsv` |
+| F-E2 | `Unity6/Assets/Editor/Importers/MilestoneRewardImporter.cs` | #W2-03 | `GodBlade/Data/Import Milestone Reward TSV` | `designs/transcendent_milestone_reward.tsv` |
+| F-E3 | `Unity6/Assets/Editor/Importers/AffixPoolImporter.cs` | #W2-04 | `GodBlade/Data/Import Affix Pool TSV` | `designs/affix_pool.tsv` (또는 `transcendent_affix_pool.tsv` — game-designer 재확인) |
+| F-E4 | `Unity6/Assets/Editor/Importers/RewardImportAll.cs` | #W2-05 | `GodBlade/Data/Import ALL` | (Stage → Drop → Milestone → Affix 순차 호출) |
+
+### 3.4 Runtime 어셈블리 신규 1 파일 (`GodBlade.Runtime.Rewards` namespace)
+
+| # | 파일 | #W2-NN | 신규 폴더 |
+|---|------|--------|---------|
+| F-R1 | `Unity6/Assets/_Project/Scripts/Runtime/Rewards/MilestoneGranter.cs` | #W2-08 | 폴더 #1 (PD 승인) |
+
+### 3.5 Tests 어셈블리 신규 1 asmdef + 3 테스트 파일 (`GodBlade.Tests.Editor` namespace)
+
+| # | 파일 | #W2-NN | 신규 폴더 |
+|---|------|--------|---------|
+| F-T0 | `Unity6/Assets/_Project/Tests/Editor/GodBlade.Tests.Editor.asmdef` | #W2-06 | 폴더 #2 (PD 승인) |
+| F-T1 | `Unity6/Assets/_Project/Tests/Editor/DropRateTableLookupTests.cs` | #W2-09 | 동상 |
+| F-T2 | `Unity6/Assets/_Project/Tests/Editor/GradeRemapTests.cs` | #W2-09 | 동상 |
+| F-T3 | `Unity6/Assets/_Project/Tests/Editor/MilestoneCatalogTests.cs` | #W2-09 | 동상 |
+
+### 3.6 SO 에셋 자동 생성 3 파일 (Importer 첫 실행 시)
+
+| # | 파일 | 생성 시점 | Addressables 주소 | 신규 폴더 |
+|---|------|---------|-----------------|---------|
+| A-1 | `Unity6/Assets/_Project/Data/Rewards/DropRateTable.asset` | #W2-02 첫 실행 | `Rewards/DropRateTable` | 폴더 #3 (PD 승인) |
+| A-2 | `Unity6/Assets/_Project/Data/Rewards/MilestoneRewardCatalog.asset` | #W2-03 첫 실행 | `Rewards/MilestoneRewardCatalog` | 동상 |
+| A-3 | `Unity6/Assets/_Project/Data/Rewards/AffixPool.asset` | #W2-04 첫 실행 | `Rewards/AffixPool` | 동상 |
+
+**총합**: 신규 코드 파일 13개 (D 4 + E 4 + R 1 + T 4) + asmdef 1개 + SO 에셋 3개 = **17 entry**, 신규 폴더 3개.
+
+---
+
+## §4. namespace 컨벤션 (CP9-5 단일 진실)
+
+| 어셈블리 | rootNamespace (asmdef) | 파일 내 namespace | 비고 |
+|---------|----------------------|------------------|------|
+| `GodBlade.Data` | `GodBlade.Data` | `namespace GodBlade.Data` (모든 4 신규 파일) | 하위 네임스페이스 미도입 (W2 한정) |
+| `GodBlade.EditorTools` (asmdef 이름 = `GodBlade.Editor`) | `GodBlade.EditorTools` | `namespace GodBlade.EditorTools` (모든 4 신규 Importer) | scaffold-sync-audit D1 정합 — asmdef 이름 ≠ 네임스페이스 |
+| `GodBlade.Runtime` | `GodBlade.Runtime` | `namespace GodBlade.Runtime.Rewards` (#W2-08 단일) | **하위 네임스페이스 도입 = Runtime만** (CP9-5) |
+| `GodBlade.Tests.Editor` (신설) | `GodBlade.Tests.Editor` | `namespace GodBlade.Tests.Editor` (3 테스트 파일) | Test Runner 인식 + `defineConstraints: ["UNITY_INCLUDE_TESTS"]` |
+
+**가드 규칙**:
+- Editor 측 4 Importer 저장 직후 → `namespace GodBlade.EditorTools` 명시 그렙 1회 (#가드-네임스페이스, sprint-01.md #W2-05 직후)
+- rootNamespace 자동 삽입 비신뢰 (R-DR-03) — 파일 최상단 명시 강제
+
+---
+
+## §5. 오늘(2026-05-02) ALL IN 사이클 변동 흡수 영향 표
+
+| # | 변동 | 원천 문서 | W2 영향 | 사유 |
+|---|------|---------|--------|------|
+| 1 | 어픽스 풀 v1.2 → v1.3 (35 → **36 어픽스**) | `affix_pool_sp04_supplement_v1.md` v1.3 §1.6 | **W2 무영향** | 스키마(`AffixSkeletonRow` 6 등급 행) 그대로 — 36어픽스는 Sp04 W1 본 풀 영역, W2는 6 등급 뼈대만 |
+| 2 | 200F 4.21배 → **약 4.20배** (-0.2%) | `affix_pool_sp04_supplement_v1.md` v1.3 §2.2 | **W2 무영향** | 자기검증 게이트(드롭률 합 1.000±0.001)는 어픽스 곱 무관 |
+| 3 | AFX_36 신규 stat_key `AreaDebuffResistPct` | `sp04_w1_preflight.md` v1.2 §1.3 | **W2 무영향** | Sp04 #04 Calculator 확장 영역 — W2 어픽스 뼈대 SO 에는 stat_key 컬럼 없음 (`AffixSkeletonRow` = grade/slot/value 범위만) |
+| 4 | AFX_33 복합 stat_key `AttackSpeedSlowImmunityWithBonusPct` | `sp04_w1_preflight.md` v1.2 §1.3 (D-7 시점 code-lead 협의) | **W2 무영향** | 분리 메서드 적용 여부 = Sp04 D-7 (2026-06-08) 박세린 ↔ 정현우 협의 — 본 W2 범위 외 |
+| 5 | 시놉시스 v2.3 D-2.9~D-2.14 6건 갱신 | `sp04_w1_preflight.md` v1.2 §7.3 | **W2 무영향** | 어픽스 풀 직접 영향 0건 (Tier 60 시즌 패스 매핑 1건은 Sp05+ 영역) |
+
+**총평**: 오늘 사이클 변동 5건 모두 Sp04+ 영역 흡수, W2 (Sp01) 범위 무영향. PD가 W2 진입 GO 판정 시 변동 흡수 부담 0.
+
+---
+
+## §6. Sp00 회귀 2건 재발 방지 가드
+
+### 6.1 회귀 A — CS0246 (`Unity.ResourceManager` 누락)
+
+- **재현 조건**: `AsyncOperationHandle<T>` 사용 + asmdef references에 `Unity.ResourceManager` 누락
+- **현 scaffold 상태**: `GodBlade.Runtime.asmdef:7` `"Unity.ResourceManager"` 유지 / `GodBlade.Editor.asmdef:9` `"Unity.ResourceManager"` 유지 (scaffold-sync-audit §1.3 / §1.4 실사 확인)
+- **W2 신규 영향**: #W2-06 신규 `GodBlade.Tests.Editor.asmdef` 생성 시 references에 `Unity.ResourceManager` **처음부터 포함** (CP9-1 / sprint-01.md #W2-06 명세)
+- **가드**: 4 신규 SO + 1 Granter는 `AsyncOperationHandle<T>` 직접 사용 0건 (Granter는 SO 의존성 주입 받음, Addressables 로드는 별도 `RewardBootstrap` Sp02 이월) → references 누락 시에도 컴파일 안전
+
+### 6.2 회귀 B — CS0579 (`InternalsVisibleTo` 중복 선언)
+
+- **재현 조건**: 신규 SO 파일 상단에 `[assembly: InternalsVisibleTo("GodBlade.Editor")]` 중복 부착
+- **현 scaffold 상태**: `TranscendentStageSO.cs:22` 단일 선언 유지 (`Unity6/Assets/` 전체 grep 결과 1건 — scaffold-sync-audit §1.5 실사 확인)
+- **W2 신규 영향**: 4 신규 SO (`GradeRemap.cs` 제외, 단 enum public이라 부착 불요) 작성 시 부착 충동 발생 가능 — sprint-01.md `#W2-01` 명세에 "**InternalsVisibleTo 부착 금지** (public enum)" 명시
+- **가드 4회 그렙** (sprint-01.md L77/80/84/87 인라인 편입):
+  - **#가드-CS0579-1** — #W2-01 (`GradeRemap.cs`) 저장 직후 `[assembly: InternalsVisibleTo` 그렙 히트 1건 (`TranscendentStageSO.cs:22`) 유지 확인
+  - **#가드-CS0579-2** — #W2-02 (`DropRateTableSO.cs`) 저장 직후 동일 그렙
+  - **#가드-CS0579-3** — #W2-03 (`MilestoneRewardCatalogSO.cs`) 저장 직후 동일 그렙
+  - **#가드-CS0579-4** — #W2-04 (`AffixPoolSO.cs`) 저장 직후 동일 그렙 (3회 연속 동일 패턴 = 피로도 축적 ⚠)
+
+**그렙 명령 1줄** (Windows PowerShell): `Get-ChildItem -Recurse -Filter *.cs Unity6\Assets | Select-String "\[assembly: InternalsVisibleTo"`
+**기대 결과**: 히트 1건 (`TranscendentStageSO.cs:22`), 외 0건.
+
+---
+
+## §7. graphify Communities 매핑 (메인 분석 결과 흡수)
+
+### 7.1 god nodes Top 10 (W2 직접 의존도)
+
+`assert()` (2314) / `Neon` (1114, 1099) / `ToArray()` (774) / `ContainsKey()` (682) / `IsValid()` (664) / `Max()` (629) / `Equals()` (522) / `ToList` (493) / `Min()` (485)
+
+**해석**: Top 10 = 라이브러리 / Burst Intrinsics / LINQ / Dictionary 표준 메서드. **W2 신규 13 코드 파일 직접 의존 0건** (단, `ContainsKey()` / `Equals()` 는 `DropRateTableSO.GetDropRate` 내부 Dictionary lookup에서 간접 사용 — 이는 무해, Sp00 `TranscendentStageCatalogSO._byCode` 패턴과 동일).
+
+### 7.2 W2 핵심 의존 Communities (Addressables 4개 + Tests 1개)
+
+| Community | 영역 | W2 의존 작업 | 위험도 |
+|----------|------|------------|--------|
+| **Community 4** (1371 nodes) | `AddressableAssetEntry` / `UnityEditor.AddressableAssets.Settings` | #W2-02/-03/-04/-05 (그룹 등록) | **LOW** — Sp00 패턴 복제 (`TranscendentStageImporter.cs:325` `FindGroup` 검증됨) |
+| **Community 5** (1392 nodes) | `AddressableAssetGroupInspector` / `UnityEditor.AddressableAssets.GUI` | #W2-02/-03/-04 (그룹 인스펙터 접근) | LOW — Inspector 시각 확인만 |
+| **Community 14** (454 nodes) | `AddressablesAssetPostProcessor` / `AssetPostprocessor` | #W2-02/-03/-04 (SO 자동 등록 후 reimport) | LOW — Unity 자동 실행, 직접 호출 0 |
+| **Community 22** (513 nodes) | `DataBuilderTest` / `GroupTemplateTestObj` / `UnityEditor.AddressableAssets.Tests` | #W2-09 (테스트 작성 시 참조 가능) | LOW — Edit 모드 단위 테스트만 |
+| **Community 1** (1003 nodes) | `Tests.Editor` / `UnityEditor.TestTools` / `Unity.Mathematics` | #W2-06/-09 (Tests asmdef + 5~8개 테스트) | LOW — `defineConstraints: ["UNITY_INCLUDE_TESTS"]` 격리 |
+
+### 7.3 모니터 대상 결론
+
+- **모니터 대상 = Addressables 4 community (4·5·14·22) + Tests 1 community (1)**
+- **god node 직접 의존 0** = 위험도 LOW
+- **Cohesion 0.0 일관** = monorepo 패턴 (Unity packages + 원본 server 50K LOC), W2 신규 17 entry는 격리 영역 — 다른 community에 직접 영향 0
+- W2 PR 머지 후 `graphify update .` 1회 실행 권장 (코드 변경 반영, AST-only 비용 0)
+
+---
+
+## §8. D+0 (2026-05-11 월요일 오전) PRINT-AND-CHECK 게이트 11/11
+
+> **사용법**: 이 페이지 책상에 출력. 11 체크박스 진행 → GO/NO-GO 판정 표 작성. 패치 1~2h 버퍼 포함.
+
+```
++--------------------------------------------------------------+
+|  Sprint 01 W2 D+0 진입 게이트 (2026-05-11 Mon, 오전)         |
++--------------------------------------------------------------+
+
+[ ] G-W2.1 (CP9-1) : GodBlade.Tests.Editor.asmdef 신설 시 references 6종
+                     (UnityEngine.TestRunner / UnityEditor.TestRunner /
+                      GodBlade.Data / GodBlade.Runtime / GodBlade.Editor /
+                      Unity.ResourceManager) 처음부터 포함 준비
+                     → 검증: #W2-06 작업 직후 Test Runner 창 인식 확인
+
+[ ] G-W2.2 (CP9-2) : GodBlade.Editor.asmdef line 8 "Unity.Addressables.Editor"
+                     변경 0 (read-only)
+                     → 검증: Get-Content GodBlade.Editor.asmdef | Select-String
+                       "Unity.Addressables.Editor"
+                     → 기대: 1건 히트
+
+[ ] G-W2.3 (CP9-3) : InternalsVisibleTo 단일 선언 유지
+                     → 검증: TranscendentStageSO.cs:22 1건만, 신규 4 SO 0건
+                     → 가드 4회 (CS0579-1~4) 인라인 편입 완료
+                     → 기대: 그렙 히트 1건
+
+[ ] G-W2.4 (CP9-5) : 네임스페이스 - 4 Importer 모두 GodBlade.EditorTools /
+                     1 Granter는 GodBlade.Runtime.Rewards 명시
+                     → 검증: #W2-05 직후 #가드-네임스페이스 그렙 5회
+
+[ ] G-W2.5 (CP9-6) : TSV Trim() 적용 - CRLF/LF 잔여 0
+                     → 검증: 3 Importer 첫 실행 후 콘솔 BOM/CRLF 경고 0
+
+[ ] G-W2.6 (CP9-8) : Dictionary 직렬화 0 - List 저장 + [NonSerialized] Dict
+                     OnEnable lazy build
+                     → 검증: 3 SO 에셋 Inspector에서 Dict 필드 표시 0
+
+[ ] G-W2.7 (CP9-11): Addressables Rewards 그룹 단일 - FindGroup 후 CreateGroup
+                     → 검증: Addressables 창에서 Rewards 그룹 1개만, 중복 0
+
+[ ] G-W2.8 (DropRate 합) : 드롭률 합 1.000 ± 0.001 (10 버킷 x mob)
+                     → 검증: #W2-02 첫 Import 후 콘솔 SUM 로그 OK
+                     → FAIL: TSV 60행 재검수 (game-designer 회수)
+
+[ ] G-W2.9 (TBD 14건)    : MilestoneRewardCatalog TBD_* prefix 14행 IsPlaceholder=true
+                     → 검증: #W2-03 첫 Import 후 콘솔 Warn 14건
+
+[ ] G-W2.10 (Tests Green): 5~8개 Edit 모드 테스트 Green
+                     → 검증: Test Runner Run All → Pass 5+ / Fail 0
+                     → 핵심: GradeRemap_RareLegacy_MapsToEpic_NotRare 통과
+
+[ ] G-W2.11 (Console 0)  : Unity 에디터 연 상태 모든 파일 저장 후
+                     Console 새 에러 0
+                     → 검증: Console Clear -> 4 SO + 4 Importer + 1 Granter +
+                       3 Tests 저장 -> 새 에러 0
+                     → FAIL: §6 회귀 A/B 또는 §9 11체크 누락 점검 +
+                       1~2h 패치 버퍼 활용
+
++--------------------------------------------------------------+
+|  GO/NO-GO 판정                                              |
++--------------------------------------------------------------+
+| 11/11 통과       : [ ] GO -> #W2-01 착수                    |
+| 9~10/11 통과     : [ ] CONDITIONAL GO -> 1~2h 패치 버퍼 +   |
+|                       FAIL 항목 1~2건 보강 후 재진입       |
+| 8/11 이하 통과    : [ ] NO-GO -> PD 에스컬레이션 +          |
+|                       sprint-01.md #PM-01 D+7 점검 연기    |
++--------------------------------------------------------------+
+| 결정자  : code-lead (정현우) 자체 판정 + PM 보고            |
+| 결정일  : 2026-05-11 (Mon) 오전                             |
+| 패치 버퍼: 1~2h (sprint-01.md #W2-10 명시,                 |
+|            메모리 feedback_codelead_review_compile_verify) |
++--------------------------------------------------------------+
+```
+
+---
+
+## §9. 잔여 미해결 / 인계 사항
+
+### 9.1 W2 내 인지만 (조치 없음)
+
+1. **TSV 경로 차이 인지** (D4 drift, scaffold-sync-audit §4.3)
+   - Sp00 = `data_extracted/transcendent_stage.tsv`
+   - Sp01 W2 = `designs/transcendent_drop_table.tsv` 등 3종
+   - 각 Importer 상단 `const string TSV_PATH` 명시 (sprint-01.md L72~74 경로 상수 정정 반영)
+   - 첫 Import 실행 시 `EditorUtility.DisplayDialog("TSV Not Found")` 팝업 0 가드 (#가드-경로-1)
+
+2. **AffixPool TSV 파일명 재확인** (#W2-04 시작 시)
+   - `affix_pool.tsv` vs `transcendent_affix_pool.tsv` 둘 다 `designs/` 존재
+   - game-designer 박세린에게 1줄 확인 요청 (D+0 오전, sprint-01.md L74 명시)
+
+### 9.2 Sprint 02 인계 사항 (DQ3 이월)
+
+3. **`TsvReader` 공통화 = R-W2-2 회피 이월**
+   - W2 1차 PR은 신규 3 Importer 단독 구현 (Sp00 `TranscendentStageImporter` 손대지 않음)
+   - sprint-02.md 킥오프 (sprint-01.md #PM-02, 2026-05-18) W1 또는 W2에서 별도 PR
+   - W2 말 회귀 0 확인 후 공통화 리팩터 PR 발주
+
+4. **`MilestoneGranter.Award(200)` 활성화 = Sp02 이월**
+   - W2는 TODO 주석만 (sprint-01-w2-importer-design.md §10.4)
+   - Sp02 W1 프레스티지 PP `GrantMilestone(200)` 연쇄 이벤트 활성화
+
+### 9.3 packages-lock 자동 해석 (D2 drift, 영향 0)
+
+5. **`com.unity.test-framework` 1.4.5 → 1.6.0 builtin 자동 해석**
+   - manifest.json 요청 = 1.4.5
+   - lock 해석 = 1.6.0 builtin (Unity 6 LTS 정책)
+   - 기능 호환 (1.6.0은 1.4.5 superset) — 영향 0
+   - sprint-01-w2-importer-design.md §8.1 표기 "1.4.5 이상 (Unity 6 builtin)"으로 인지
+
+---
+
+## §10. dots-platform 인수인계
+
+**본 W2 PR 범위 내 인계 사항 = 0건**
+
+| 항목 | code-lead (정현우) 책임 | dots-platform (류재현) 영역 | W2 인계 |
+|------|----------------------|--------------------------|---------|
+| `DropRateTableSO` Dictionary lookup | ✅ #W2-07 (`GetDropRate` O(1)) | — | 인계 0 |
+| `AffixPoolSO` 6행 skeleton | ✅ #W2-04 (List + 빈 valueEntries) | — | 인계 0 |
+| **DOTS Blob 전환** (`BlobArray<DropRateRow>` 등) | — | Sp02 이후 측정 후 류재현 판단 | **Sp02+ 측정 결과에 따라 분업 협의** |
+| 멀티 플랫폼 SDK / IAP / 광고 | — | 류재현 전담 | W2 무관 (Phase 2 후반) |
+
+**측정 트리거 (Sp02 이후 dots-platform 호출 조건)**:
+- Profiler `DropRateTableSO.GetDropRate` 호출 빈도 > 10K/frame (방치형 100배 가속 시)
+- 또는 Dict GC alloc > 1KB/sec
+- 둘 다 미충족 시 Dictionary 유지 (sprint-01-w2-importer-design.md §1.2 "DOTS는 Sprint 02 이후 측정 기반 재검토" 원칙 준수)
+
+---
+
+*(끝, 2026-05-02 code-lead 정현우)*
+6:["slug","sprint-01-w2-importer-precheck","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sprint-01-w2-importer-precheck","d"],{"children":["__PAGE__?{\"slug\":\"sprint-01-w2-importer-precheck\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-01-w2-importer-precheck","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint 01 W2 Importer Precheck — D+0 PRINT-AND-CHECK 진입 게이트"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sprint-01-w2-importer-precheck.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"2,879"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint 01 W2 Importer Precheck — D+0 PRINT-AND-CHECK 진입 게이트 — 자료실"}],["$","meta","3",{"name":"description","content":"정합 점수: 4/4 (PD 승인 결정 4건 ↔ 설계 본문 ↔ sprint-01.md W2 작업표 = 1:1:1 매핑 무드리프트)"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

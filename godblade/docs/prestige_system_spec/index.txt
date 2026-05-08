@@ -1,0 +1,423 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T555d,# 프레스티지 / 파라곤 시스템 스펙 초안 (Sprint 02 선행)
+
+> 작성: game-designer (RPG 20년차 / 디아블로 감성)
+> 버전: **v1.0 APPROVED** (PD 승인 2026-04-21)
+> 상위 귀결: `designs/transcendent_reward_draft.md` §7.2 Q1=C안 / Q2=Epic+ / Q3=6등급 / Q5=시즌리셋 Sprint 05+ 유예
+> 구현: Sprint 02 W1(수치 TSV) → W2(code-lead Paragon Entity·UI 프로토) 예정. 수치는 실측 후 Sprint 03+ 리튜닝.
+>
+> ---
+>
+> ## PD 승인 결정 (2026-04-21)
+>
+> | # | 질문 | 확정 | 후속 영향 |
+> |---|------|------|-----------|
+> | **Q1** | 투자 축 구조 | **C안 — 3탭(Offense/Defense/Utility) × 10항목 = 30 항목** | 1인 제작 부담 최소화, 고민 축 유지 |
+> | **Q2** | 리셋 범위 | **D3식 계정 영구** | 방치형 리듬과 궁합. 캐릭터 교체 시에도 진전 누적 |
+> | **Q3** | 시즌 종료 시 seasonalPP | **50% 영구 전환** | 시즌 반복 동기 + 진전감 양립. Sprint 05 직전 재논의 가능 |
+> | **Q4** | 소프트캡 지점 | **항목당 Lv 5** | Lv 5 이후 log diminishing, 빌드 분산 유도 |
+> | **Q5** | 해금 시점 | **100층 초월자 마일스톤** | `transcendent_reward_draft.md` §5와 정합 |
+>
+> **핵심 구조 확정**: 3탭 × 10항목 × 항목당 소프트캡 Lv 5 + PP 슬롯 `permanent / seasonal` **2채널 사전 분리** (Sprint 05 시즌 도입 시 마이그레이션 0).
+> **해금 조건**: 100층 "초월자" 마일스톤 클리어 시 자동 해금.
+
+---
+
+## 0. TL;DR (PD 1분 요약)
+
+- 귀결: 200층 보스 원본 HP 114억 = "유저가 프레스티지로 뚫는 벽"으로 확정됨. 원본 수치를 낮추는 대신 **플레이어 축**에 성장 여력을 추가한다.
+- 원본 자산 결론: **프레스티지/파라곤 테이블은 원본에 존재하지 않음.** 단 `guardian_stone_enhance_point`(char_main 필드, "초월 던전에서 획득하는 수호석 강화 포인트") 개념이 유일한 유사 축 → **PP 명명·획득 원천 아이디어만 재활용**, 나머지는 신규 설계.
+- 권장 구조: **디아블로 3 축소판 C안** (3탭 × 10항목, 항목당 소프트캡 5단계 후 diminishing 무한성장). 1인 제작 기준 가장 현실적.
+- 해금: 100층 "초월자" 마일스톤에서 오픈 (초월모드 스토리 정합성).
+- 역산: DPS 1M·5분 클리어 가정 시 200층 보스 격파에 **약 140 PP** 필요 → 100층 도달 유저 기준 **방치 약 7~10일**분.
+- Sprint 02~04 기간 **소프트 리셋 없음**. 단 슬롯 구조는 `permanent / seasonal` 2채널로 미리 분리해 Sprint 05+ 시즌 도입 대비.
+
+---
+
+## 1. 목적·귀결
+
+### 1.1 왜 프레스티지가 필요한가 (Q1 C안 정리)
+
+`transcendent_reward_draft.md` §7.2 에서 PD 승인된 C안은 다음을 확정했다:
+
+- **원본 `data_transcendent_stage.boss_spawn_hp_amount` 는 0% 수정.** 즉 200층 보스 HP ≈ 114억은 고정상수.
+- 대신 플레이어의 **영구 성장 축**을 신설해, 같은 보스 HP를 "자본 축적으로 뚫는 벽"으로 재해석.
+- 2019 원본은 4인 파티·풀 액티브 기준이므로 싱글 자동전투 DPS는 약 −40%로 예상(`§2.2`). 이 갭을 장비·레벨만으로 메우면 100층 도달 후 성장 상한(플래토)이 바로 와서 방치형 게임의 생명인 "오늘도 돌아올 이유"가 꺾인다.
+- 따라서 **장비 축(유한: Mythic까지 드랍)과 병렬로 무한 성장 가능한 PP 축**이 필요하다.
+
+### 1.2 스코프 경계
+
+포함 (본 스펙):
+- DPS 성장 축 제공 (공격력/치명/방어/드롭률/골드·EXP 증폭 등)
+- 무한 성장 곡선 (소프트캡 + diminishing)
+- 일일 리듬 훅 (24h 방치 → PP 누적)
+- 해금 플로우, UI 컨셉, 영구/시즌 슬롯 구조
+
+**불포함** (Sprint 02 내 금지):
+- 직업 변경·스킬 교체 (별도 "승천/클래스 변경" 축, Sprint 07+ 유예)
+- 스킬 트리 리워크 (기존 `SkillInfo.xml`은 건드리지 않음)
+- Ancestral/Sacred 같은 장비 세컨더리 축 신설 (Sprint 04 이후)
+
+---
+
+## 2. 진입 조건
+
+### 2.1 해금 시점
+
+- **해금 층: 100층 "초월자" 마일스톤 클리어** (`transcendent_reward_draft.md` §5 대응)
+- 근거:
+  - 1~99층은 "서사 확장 + 장비 파밍" 구간으로 유지 → 초반 유저에게 시스템 인지부하 최소화.
+  - 100층 도달은 "이제 본격 엔드게임" 신호. 디아블로 3의 토르먼트 진입과 동일 구조.
+  - 100층 도달 평균 시간은 `transcendent_reward_draft.md` §2.2 추정으로 첫 주 내 비교적 자연스럽게 달성 (방치 포함).
+- 대안: 레벨 기반 해금(예: 캐릭터 Lv 70) — **기각**. 층 기반 해금이 초월모드와 직관적 정합.
+
+### 2.2 해금 UI 플로우
+
+1. 100층 보스 격파 로그 → 풀화면 컷씬 (텍스트 3줄: "당신은 초월자가 되었다 / 이제 신의 조각이 쌓이기 시작한다 / 프레스티지 시스템이 해금되었습니다")
+2. 하단 HUD에 **PP 카운터** 영구 노출 (아이콘 + 숫자)
+3. 메인 메뉴 → [프레스티지] 탭이 빨간 점 알림과 함께 오픈
+4. 첫 진입 시 튜토리얼 3스텝 (획득 원천 / 투자 탭 / 소프트캡 설명)
+
+---
+
+## 3. 프레스티지 포인트 (PP) 획득
+
+### 3.1 획득 원천 5가지
+
+| 원천 | 설명 | 일일 비중(%) 권장 |
+|------|------|-------------------|
+| (A) 층 첫 클리어 | N층 최초 클리어 시 1회 PP 보상 (층수 ↑ 증가) | 20% |
+| (B) 보스 처치 누적 | 10층 단위 보스 누적 처치 (반복 가능) | 15% |
+| (C) 방치 누적 (시간당 PP) | 최고 도달층 기반 시간당 PP 드립 | **50%** |
+| (D) 마일스톤 | 100/150/200층 등 이정표 도달 1회 | 10% |
+| (E) 일일 퀘스트 / 광고 보상 | 일 1회 광고 시청 × 2, 일일 퀘스트 완료 | 5% |
+
+비중 해석: **방치형 게임의 절반 이상이 오프라인 드립**에서 나와야 "안 켜도 자란다"는 방치 철학 유지. 나머지는 "접속해서 층 깨면 가속" 보상.
+
+### 3.2 원천별 수식 (잠정)
+
+- **(A) 층 첫 클리어 PP**: `floor(1 + stage^1.2 / 20)`
+  - 100층 첫클 = `floor(1 + 251/20) = 13 PP`
+  - 150층 첫클 = `floor(1 + 444/20) = 23 PP`
+  - 200층 첫클 = `floor(1 + 660/20) = 34 PP`
+  - 1~99층 소급: 총 약 `Σ floor(1+n^1.2/20), n=1..99 ≈ 520 PP` (해금 즉시 선지급)
+- **(B) 보스 반복**: 10층 단위 보스 1회 = `floor(stage/20)` PP, 쿨다운 없음 (그냥 재입장 반복)
+  - 100층 보스 반복 = 5 PP/회
+- **(C) 방치 드립 (시간당)**: `maxClearedStage × 0.05 PP/hour`, 오프라인 캡 24h (광고로 48h 확장)
+  - 100층 유저 10h 방치 = 50 PP
+  - 100층 유저 24h 방치 = 120 PP
+  - 150층 유저 24h 방치 = 180 PP
+- **(D) 마일스톤**: 100층=+50 / 120층=+50 / 150층=+80 / 180층=+100 / 200층=+150 PP (1회성)
+- **(E) 일일 퀘스트·광고**: 일일 퀘스트 3개 완료 = +10 PP, 광고 2회 = +10 PP → 하루 최대 +20 PP
+
+### 3.3 일일 획득 예시 (100층 도달 유저, 10시간 방치 기준)
+
+| 원천 | PP |
+|------|----|
+| 방치 10h | 50 |
+| 접속 후 보스 5회 반복 | 25 |
+| 신규 층 2개 클리어 (101·102층) | 27 |
+| 일일 퀘스트·광고 | 20 |
+| **일일 합계** | **122 PP** |
+
+일일 20 PP ~ 150 PP 사이가 정상 범위. 소프트캡 진입 구간(항목당 50 PP)을 **1.5~3일 단위로 하나씩** 찍는 리듬.
+
+---
+
+## 4. 투자 축 — 3안 병기
+
+### 4.1 A안 (디아블로 3 평면 4탭, 과하게 큼)
+
+- 4탭: Core / Offense / Defense / Utility
+- 각 탭 25항목 × 무한 레벨 (항목당 소프트캡 50 PP)
+- **제작량**: 항목 100개 × 스탯식 = 100개 수식 설계 + UI 100슬롯
+- **재미**: "어디 찍을지" 고민이 많아 고수가 깊이 즐김
+- **1인 제작 평가**: ❌ Sprint 02 2주 안에 100항목 수식 검증 불가능. Unity UI도 100슬롯은 인지부하 초과.
+
+### 4.2 B안 (디아블로 4 노드 그래프)
+
+- 경로 의존 트리 + Legendary 노드 + Glyph 슬롯
+- **제작량**: 노드 그래프 에디터 자체가 Sprint 1개 분량. 이후 노드 80~120개 설계.
+- **재미**: 빌드 선택권 폭발, 리롤·변경 이슈 발생 → UX 복잡도 급증
+- **1인 제작 평가**: ❌❌ 노드 그래프 에디터 Unity 툴 자체를 만들어야 한다. 거의 게임 하나 분량. Sprint 02 범위에 불가.
+
+### 4.3 C안 (축소판, **권장**)
+
+- **3탭 × 10항목 = 30항목.**
+  - Offense (공격 계열): 공격력%, 치명타율, 치명타 피해, 공속, 스킬쿨 감소, 관통률, 원소 피해, 보스 피해, 다굴 피해, 장비 옵션 증폭
+  - Defense (생존 계열): 체력%, 방어력%, 회피율, 받는 피해 감소, HP 재생, 흡혈, 받는 치명 확률 감소, 소환수 체력, 영웅 부활 횟수, 수호자 공격력(펫)
+  - Utility (경제·드롭 계열): 드롭률, 골드 획득량, EXP 획득량, 층 입장권 할인, 방치 수익 +, 광고 보너스 +, 마일스톤 보상 +, 오프라인 캡 시간, PP 획득량, 수호석 포인트 확률
+- **항목당 곡선**:
+  - Lv 1~5 (소프트캡 전): 1 PP당 **+0.5%** (또는 해당 스탯 단위)
+  - Lv 5 이후: **diminishing**, `bonus = 2.5% + 0.5% × log2(1 + (pp-5)/5)` → 1 PP당 0.1%~0.25% 수준으로 감소
+  - 최대값 없음 (무한 성장)
+- **제작량**: 항목 30개 × 수식 = 수식 약 10종 (스탯 계열 재사용) × 30 슬롯 UI
+- **재미**: "한 탭 몰빵 vs 분산" 고민. 소프트캡 때문에 "찍고 다음 항목으로 넘어갈까" 자연스러운 갈등.
+- **1인 제작 평가**: ✅ 2주 W1(수치 TSV) + W2(30슬롯 프로토) 커버 가능.
+
+### 4.4 권장: **C안**
+
+이하 수치·UI는 C안 기준. A안·B안으로 결정 시 §5·§7은 재작성 필요.
+
+---
+
+## 5. 수치 곡선 (C안 기준)
+
+### 5.1 단일 항목 PP 효율 (공격력% 예시)
+
+```
+f(pp) = 0.5% × min(pp, 5)                       // 소프트캡 전 선형
+      + [pp > 5 이면 2.5% × log2(1 + (pp-5)/5)]  // 이후 로그 증가
+```
+
+| PP 투자 | 공격력 보너스 | 한계 효율 |
+|---------|---------------|-----------|
+| 5 | +2.50% | +0.50%/pp |
+| 10 | +4.88% | +0.30%/pp 평균 |
+| 25 | +8.12% | +0.20%/pp |
+| 50 | +11.02% | +0.15%/pp |
+| 100 | +14.17% | +0.09%/pp |
+| 200 | +17.31% | +0.05%/pp |
+
+→ "처음 5포인트는 엄청 짜릿, 다음 5~25는 쓸만함, 50 이후는 '한 번 더 찍을까' 망설여지는 diminishing". 디아블로 감성 유지.
+
+### 5.2 총 빌드 파워 (예시: 공격·치명·보스·드롭 4항목 분산)
+
+| 총 투자 PP | 배분 (공/치율/치피/보스) | 총 DPS 배수 |
+|-----------|---------------------------|-------------|
+| 100 PP | 25/25/25/25 | `1.08 × 1.05 × 1.15 × 1.08 ≈ 1.41×` |
+| 300 PP | 75/75/75/75 | `1.13 × 1.08 × 1.25 × 1.12 ≈ 1.71×` |
+| 500 PP | 125/125/125/125 | `1.15 × 1.09 × 1.30 × 1.13 ≈ 1.85×` |
+| 1000 PP | 250/250/250/250 | `1.18 × 1.11 × 1.36 × 1.16 ≈ 2.05×` |
+
+치명타 피해 같은 곱연산 스탯이 핵심 기여. 4항목 분산 기준 500 PP 찍어 **DPS 1.85배**. 
+
+### 5.3 200층 보스 격파 역산 (PD 요구 §5)
+
+전제:
+- 100층 기준 유저 평균 DPS = 1,000,000 (1M)
+- 200층 보스 HP = 114억 = 11,400,000,000
+- 원하는 클리어 시간 = 5분 = 300초
+- 필요 DPS = 11,400,000,000 / 300 = **38M DPS**
+- 현재 DPS 대비 배수 = 38M / 1M = **38배 필요**
+
+이 38배 중:
+- 장비 성장 기여 (100→200층 구간 Mythic 드랍·수호석 업·옵션 리롤) ≈ **~15배** 가정 (추후 장비 스펙에서 검증 필요)
+- 프레스티지 기여 필요 = 38 / 15 ≈ **2.5배**
+
+공격·치명률·치명피·보스 4항목 기준 2.5배를 만들려면 역산:
+- `1.20 × 1.12 × 1.50 × 1.20 ≈ 2.42` → 근접
+- 각 항목 약 **150 PP** 씩 필요 → 총 **600 PP** 필요
+- 보수적으로 공격·치피에 더 투자, 총 **~700 PP** 잡으면 안정권
+
+추가 여유 잡아 **900 PP = 기본 분산 투자로 200층 격파 가능 권장치**.
+
+실효 필요 PP를 §5.3 역산으로 단순화하여 PD 커뮤니케이션 라인:
+> **"200층 5분 격파 필요 PP ≈ 700~900 PP. 보스 피해 집중시 ≤ 600 PP 가능."**
+
+### 5.4 방치 며칠분인가
+
+100층 유저 일일 획득 122 PP(§3.3) 기준:
+- 700 PP = **5.7일**
+- 900 PP = **7.4일**
+- 역산 한 줄 답: **200층 격파에 필요한 프레스티지 적립은 방치 약 7~10일**
+
+150층 유저(일일 180+ PP) 기준 4~5일로 단축. 풀 카지노형 가속 기대치에 부합.
+
+---
+
+## 6. 소프트 리셋 (Rebirth) 정책
+
+### 6.1 Sprint 02~04 기간
+
+- **소프트 리셋 없음.** Q5 귀결 = 시즌 리셋은 Sprint 05+ 유예.
+- 유저는 PP 투자를 "영구 자산"으로 인식 → 장기 복귀 동기 유지.
+
+### 6.2 Sprint 05+ 시즌 도입 대비 구조
+
+**핵심 설계 결정**: PP 슬롯을 2채널로 분리한다.
+
+```
+UserPrestige {
+    permanentPP: long            // 영구 채널 (Sprint 02~)
+    seasonalPP: long             // 시즌 채널 (Sprint 05~)
+    permanentAllocation: Map<NodeId, int>
+    seasonalAllocation: Map<NodeId, int>
+}
+
+// UI 표기: Σ = permanent + seasonal
+// 동일 30항목 트리에 양쪽 채널이 각각 투자되며, 시즌 종료 시 seasonal만 리셋
+```
+
+- 현 Sprint에서는 `seasonalPP`·`seasonalAllocation` 필드만 스키마에 선반영, **실제 기능은 Sprint 05+에서 활성화.**
+- 이렇게 해두면 Sprint 05 시즌 도입 시 데이터 마이그레이션 없음.
+
+### 6.3 디아블로 3 vs 4 참고
+
+| 게임 | 구조 | 평가 |
+|------|------|------|
+| D3 | 영구 Paragon (계정 공유) | 방치 친화적, 복귀 동기 강 |
+| D4 | 캐릭터 전용 Paragon | 빌드 실험 장려, 리셋 스트레스 |
+
+**권장**: D3 식 **계정 영구** (Sprint 02~). 싱글 플레이어 + 1인 제작 기준 캐릭터 여러 개 운영할 유저는 극소수. 캐릭터별 분리 관리 비용이 효용 대비 높음.
+
+---
+
+## 7. UI 컨셉
+
+### 7.1 레이아웃 스케치 (ASCII)
+
+```
++-----------------------------------------------------------+
+| [프레스티지] 탭 활성                                         |
++-----------------------------------------------------------+
+| 보유 PP: 1,234 / 시간당: +5.0 PP / 오프라인 누적: 48h       |
++-----------------------------------------------------------+
+| [ Offense ] | [ Defense ] | [ Utility ]                    |
++-------------+-------------+-------------------------------+
+|                                                             |
+|  Offense 탭 (10항목, 2열 × 5행)                              |
+|                                                             |
+|  +---------------+  +---------------+                       |
+|  | 공격력%       |  | 치명타율      |                       |
+|  | Lv 25 (+8.1%) |  | Lv 10 (+4.9%)|                       |
+|  | [+] [+5] [max]|  | [+] [+5] [max]|                       |
+|  +---------------+  +---------------+                       |
+|  +---------------+  +---------------+                       |
+|  | 치명타 피해   |  | 공속          |                       |
+|  | Lv 50 (+11%)  |  | Lv 5 (+2.5%) |                       |
+|  | [+] [+5] [max]|  | [+] [+5] [max]|                       |
+|  +---------------+  +---------------+                       |
+|  ... (이하 6항목 동일 슬롯)                                   |
+|                                                             |
++-----------------------------------------------------------+
+| [초기화: 비용 500 골드 + 다이아 10] [자동배분 프리셋]           |
++-----------------------------------------------------------+
+```
+
+- 슬롯 하나당 정보: 항목명 / 현재 Lv·보너스 / 다음 Lv 예상 보너스(hover) / 투자 버튼(+1 / +5 / max)
+- 소프트캡(5 PP) 지점을 노란색 테두리로 시각화 → "여기 넘으면 효율 떨어진다" 경고
+- 자동배분 프리셋: "공격 특화" / "생존 특화" / "경제 특화" 3개 프리셋 원클릭
+
+### 7.2 방치 복귀 시 알림
+
+```
++-----------------------------------------------------------+
+|         돌아오신 것을 환영합니다                            |
+|-----------------------------------------------------------+
+|                                                             |
+|   방치 시간: 18h 32m                                         |
+|   획득 PP: +92 (시간당 5.0 × 18.5h)                          |
+|   잡은 몬스터: 14,280마리                                    |
+|   드랍 아이템: 수호석 3 / Epic 장비 1                        |
+|                                                             |
+|   [바로 투자하기] [나중에]                                    |
+|                                                             |
++-----------------------------------------------------------+
+```
+
+- "방치 보고서" 안에 PP 수치를 강조 색상으로 노출 → "돌아올 이유"를 매 세션 리프레시.
+
+---
+
+## 8. 기존 자산 재활용 매핑
+
+### 8.1 원본 탐색 결과
+
+- **`Dump20210311.sql` 에 `prestige` / `paragon` 테이블 없음** (grep 0건 확인, 33건 match는 모두 `transcendent` 계열이나 문자열 중복)
+- **`Datasheets/*.xml` 34개 중 프레스티지 관련 시트 없음** (AlchemyInfo, CraftInfo, CharacterInfo, PlayerInfo 등 34개 시트 전수 확인)
+- **단 유사 개념 1건 발견**: `char_main.guardian_stone_enhance_point` (line 10310)
+  - 코멘트 원문: "수호석 포인트는 초월 던전에서 획득할 수 있다"
+  - 구조: tinyint(4) 카운터 + 수호석 강화에 소비
+  - **재활용 방식**: 이름만 **"수호자의 조각(Guardian Shard)"**으로 계승하거나, **PP = 수호석 포인트의 확장판**으로 네러티브 통합. 실제 테이블은 신규 생성.
+
+### 8.2 TranscendentStageSO 재활용 (PP 원천 공식의 입력)
+
+`Unity6/Assets/_Project/Scripts/Data/TranscendentStageSO.cs` 의 기존 필드를 PP 공식 입력으로 쓴다:
+
+| SO 필드 | PP 공식 용도 |
+|---------|-------------|
+| `stageNumberInAct` | §3.2 (A)(B) 층 기반 보상 공식의 `stage` |
+| `stageExp` | 참고용. PP 환산은 별도 공식 (§3.2) |
+| `guardianExp` | **수호자 체력·공격력 계열 파라곤 항목 연동** (Defense 탭 #8 "수호자 공격력") 투자 시 guardianExp와 곱연산 |
+| `bossSpawnHpAmount` | §5.3 역산의 타겟 (114억) |
+
+### 8.3 신규 생성 대상
+
+- `Unity6/Assets/_Project/Scripts/Data/PrestigeNodeSO.cs` (30개 SO)
+- `Unity6/Assets/_Project/Scripts/Data/PrestigeCatalogSO.cs` (30 SO 집결 카탈로그)
+- `Unity6/Assets/_Project/Scripts/Runtime/Prestige/UserPrestigeState.cs` (§6.2 2채널 구조)
+- `Unity6/Assets/_Project/Scripts/Runtime/Prestige/PrestigePointAccumulator.cs` (§3.2 5원천 수식)
+- UI: `UIPrestigeWindow.uxml` + Controller
+- **TSV**: `Datasheets_v2/PrestigeNodes.tsv` (Sprint 02 W1 과제, 본 문서 아님)
+
+---
+
+## 9. 리스크 · 미해결
+
+### 9.1 수치 리스크
+
+- **R1 (중)**: §5.3의 "장비 기여 ~15배" 가정이 검증 안 됨. Sprint 03에서 장비 드롭 테이블 확정 후 재조정 필요.
+- **R2 (중)**: §5.1 로그 곡선이 너무 완만하면 "찍어도 안 오른다" 불만, 너무 가파르면 diminishing 실감이 안 남. Sprint 02 W2 플레이테스트에서 `coefficient (2.5%)` 튜닝 필요.
+- **R3 (낮)**: §3.2(C) 방치 드립 `maxClearedStage × 0.05` 가 고층 유저에 유리 → 200층 유저(10h) = 100 PP/day vs 100층 유저(10h) = 50 PP/day. 빈부격차 발생 우려. 완화 옵션: log 곡선 `5 × log2(1+stage)` 로 대체.
+
+### 9.2 시스템 리스크
+
+- **R4 (중)**: `char_main.guardian_stone_enhance_point` 기존 개념과 PP가 혼동. 기존 수호석 강화 시스템은 Sprint 06 수호석 리워크에서 다룰 예정 → **이름 중복 금지**. "프레스티지 포인트(PP)" 로 명시.
+- **R5 (낮)**: Sprint 05+ 시즌 도입 시 §6.2 2채널 구조로 전환. 그러나 시즌 종료 시 "기존 seasonalPP 처리 규칙"이 미결정 (→ §10 Q3).
+
+### 9.3 범위 리스크
+
+- **R6 (중)**: 30항목 × 수식 검증은 2주 안에 빡빡. A안(100항목)으로 확장 요구 시 Sprint 02만으로 부족 → Sprint 04까지 연장 필요.
+
+---
+
+## 10. PD 결정 필요 — 열린 질문
+
+### Q1. 투자 축 구조 (§4)
+**A안(4탭·100항목) / B안(D4 노드 그래프) / C안(3탭·30항목, 권장)** 중 어느 것으로 확정하시겠습니까?
+> 권장: C안. A/B는 Sprint 02 범위 초과.
+
+### Q2. 계정 영구 vs 캐릭터 전용 (§6.3)
+**D3식 계정 영구(권장) / D4식 캐릭터 전용** 중 어느 쪽?
+> 권장: 계정 영구. 싱글·1인 제작에 적합.
+
+### Q3. 시즌 종료 시 `seasonalPP` 처리 규칙 (§6.2, §9.2-R5)
+Sprint 02 시점엔 결정 안 해도 되지만, **스키마 확정에 영향** — 다음 중:
+- (a) 시즌 종료 시 100% 소멸 (D3 시즌식)
+- (b) 50% 영구 전환 + 50% 소멸 (하이브리드)
+- (c) 별도 "유산 포인트(Legacy)" 로 전환, 별도 트리
+> 권장: (b). Sprint 05 시즌 도입 직전 재논의 유예 가능.
+
+### Q4. 소프트캡 지점 (§5.1)
+C안의 소프트캡을 **Lv 5(권장) / Lv 10 / Lv 없음** 중 어느 쪽?
+> 권장: Lv 5. 초반 5포인트 쾌감 + 이후 고민 곡선.
+
+### Q5. 해금 시점 (§2.1)
+**100층 "초월자" 마일스톤(권장) / 캐릭터 Lv 70 / 150층** 중?
+> 권장: 100층. 초월모드·스토리 정합.
+
+---
+
+## 11. Sprint 02 W1·W2 연결 (참고)
+
+- **W1 (game-designer)**: 
+  - `Datasheets_v2/PrestigeNodes.tsv` 30행 작성 (본 문서 §4.3·§5.1 기반)
+  - 일일 PP 획득량 시뮬레이션 스프레드 작성
+- **W2 (code-lead)**: 
+  - `UserPrestigeState` + `PrestigePointAccumulator` 구현
+  - 30슬롯 UI 프로토 (UIToolkit 권장)
+  - 오프라인 드립 계산 (복귀 시 `(now - lastLogin) × maxStage × 0.05`)
+
+본 문서의 수치는 Sprint 02 W2 플레이테스트 후 v0.2로 개정 예정.
+
+---
+
+*(끝)*
+6:["slug","prestige_system_spec","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","prestige_system_spec","d"],{"children":["__PAGE__?{\"slug\":\"prestige_system_spec\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","prestige_system_spec","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"프레스티지 / 파라곤 시스템 스펙 초안 (Sprint 02 선행)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/prestige_system_spec.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"2,857"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"프레스티지 / 파라곤 시스템 스펙 초안 (Sprint 02 선행) — 자료실"}],["$","meta","3",{"name":"description","content":"- 귀결: 200층 보스 원본 HP 114억 = \"유저가 프레스티지로 뚫는 벽\"으로 확정됨. 원본 수치를 낮추는 대신 플레이어 축에 성장 여력을 추가한다."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

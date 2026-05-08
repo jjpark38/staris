@@ -1,0 +1,182 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T3093,# v2.0 → v3.0 격변 PM 분석 (인력 운영 + 일정 재배치)
+
+작성: 2026-05-04 (PM, project-manager)
+배경: PD가 "웹 = 실제 플레이 가능 웹게임 / DB 통합 / 시뮬레이터 + 웹게임 분리 병존 / Unity 24~30M → 웹게임 먼저 출시 / 시나리오 1F~50F + 무한 1F~1000F / 신규 agent 1인 → 팀 단위 확장" 7개 의도 천명. Phase 2~3 v2.0 (메모리 `project_phase_2_3_roadmap_v2_decisions.md`) 의 격변 가능성 평가.
+
+본 분석은 **PM 인력 운영 + 일정 재배치** 측면 단독. 박세린(게임 디자인) / 김민준(웹 기술) 측면 분석은 동시 발주 별도 산출물.
+
+---
+
+## 1. TL;DR (3줄)
+
+1. **팀 구성 = 중안 (web-game-lead + 2 specialist) ★ 권장** — 출시 D+180 / 메인 세션 9→12 agent (한계 내) / Tier 3 Specialist 라인 첫 도입.
+2. **일정 재배치 = 옵션 C (Sp01 마무리 후 Sp02~05 일시 정지 + 웹게임 D+90~120 출시 후 Unity Sp02 재개) ★ 권장** — 1인 PD 가용 10~15h/주 분산 회피 + 웹게임 출시로 매출/피드백 사이클 선행.
+3. **메인 세션 부담 = 12 agent까지 안전 / 14 agent부터 컨텍스트 한계 의심** — Tier 3 Specialist는 호출 빈도 낮음 전제로 +3까지 OK. Tier 구조 갱신 + 호출 컨벤션 1줄 추가 권장.
+
+---
+
+## 2. 팀 구성 3안 ROI 매트릭스
+
+| 안 | 구성 | 추가 agent | 출시 영향 (웹게임 D+) | 메인 세션 (현 9→) | 컨텍스트 비용 | ROI 평가 | 권장 |
+|----|------|----------|---------------------|------------------|------------|---------|------|
+| 소 | web-game-lead 1인 | +1 | D+270 (~2027-02) | 9→10 | 낮음 | 단일 풀스택 풀가동, 김민준 패턴 재활용. but 게임 엔진 + 밸런스 + UI + 백엔드 1인 부담 = 번아웃 R-DR-S01형 재현 위험 | - |
+| **중** | **web-game-lead + web-game-engine + web-game-balance** | **+3** | **D+180 (~2026-11)** | **9→12** | **중** | **engine = Phaser/PixiJS 라이브 + 성능 / balance = 박세린 협업 + 시뮬레이터 동기화. lead는 통합·UI·백엔드. 정현우·김민준 분업 패턴 재현. 12 agent 메인 세션 안전권 내** | **★** |
+| 대 | lead + engine + balance + ui + backend | +5 | D+90~120 (~2026-09) | 9→14 | 높음 | 최단 출시 but 1인 PD 오케스트레이션 한계 의심. 메인 세션 컨텍스트 14 agent = 미검증. PD 잠금 결정 빈도 폭증 (D+0 4건 패턴이 D+0 10건+ 가능) | - |
+
+**중안 ★ 근거**:
+- 김민준 D+0~D+5 6일 26h → 메인 세션 대행 ~3h (-88% 효율) 실측에서 1 lead + specialist 분업 패턴이 **검증됨**
+- 웹게임 = 게임 엔진(JS) + 밸런스 데이터(Unity와 공유) + UI 3축 분업이 자연스러움. 5 agent 분업은 과잉
+- 12 agent는 현 9 agent 운영(scenario-writer/marketing-asia/marketing-global/graphics-lead/dots-platform 호출 빈도 낮음) 패턴 연장으로 안전권
+
+---
+
+## 3. Phase 2~3 v2.0 → v3.0 일정 재배치 옵션
+
+현 v2.0 (메모리 `project_phase_2_3_roadmap_v2_decisions.md` D2 결정):
+- Phase 2 MVP: Sp00~05 (2026-04-20 ~ 2026-07-13, 13주)
+- 통합 주차: 2026-07-13 ~ 07-20
+- Phase 3 확장: Sp06~09 (2026-07-20 ~ 2026-09-14, 9주)
+- 총 159~172h / 가용 180~270h
+
+| 옵션 | 설명 | Unity Phase 2 | 웹게임 출시 | 1인 PD 부담 | 권장 |
+|------|------|--------------|-----------|-----------|------|
+| A | Unity Phase 2 유지 + 웹게임 병행 | Sp01~05 그대로 | D+270 (~2027-02) | **고** (Unity 9~12h + 웹게임 5~6h = 14~18h/주, 가용 상한 초과 위험) | - |
+| B | Unity Phase 2 일시 정지 (Sp02~05) + 웹게임 우선 | Sp01만 종료 후 PAUSE | D+90 (~2026-09) | 중 (웹게임 단일 트랙 10~15h) | (적극적이나 Unity 6 모멘텀 손실 큼) |
+| **C** | **Unity Phase 2 축소 (Sp01만 마무리) + 웹게임 D+90~120 출시 + Unity Sp02 재개** | **Sp01만 5/4~5/17 마무리. Sp02~05 PAUSE** | **D+90~120 (~2026-09)** | **중 (웹게임 단일 트랙 → 출시 → Unity 재개)** | **★** |
+
+**옵션 C ★ 근거**:
+- Sp01 W2 (5/11~5/17 Importer)는 이미 D-7 도달, 캔슬 비용 큼. **마무리 후 PAUSE**가 매몰비용 회수
+- Sp02 (5/18~5/31 프레스티지) ~ Sp05 (6/29~7/13 시즌) PAUSE = 약 8주 = 80~120h 절약 → 웹게임에 전부 투입
+- 웹게임 D+90 (2026-08-02) ~ D+120 (2026-09-01) 출시 후 매출/피드백 → Unity Sp02 재개 시 시뮬레이터 ↔ 웹게임 데이터 통합 검증 데이터 확보
+- v2.0 Phase 2+3 종료 (2026-09-14)는 Unity 단독 종료 → v3.0에서는 **웹게임 출시 (2026-09-01) + Unity Phase 2 재개 (2026-09-15부터)** 두 마일스톤 분리
+
+**옵션 C 후속 일정 스케치 (확정 X, PD 승인 필요)**:
+- 2026-05-04 ~ 05-17: Sp01 마무리 (Unity)
+- 2026-05-18 ~ 09-01: 웹게임 Sp-W01~W08 (15~16주, 120~150h)
+- 2026-09-01: 웹게임 1차 출시
+- 2026-09-15 ~ : Unity Sp02 재개 (Phase 2 잔여 4 sprint = ~2026-12 종료 추정)
+
+---
+
+## 4. Sp01~Sp10 영향 표
+
+영향: 0=영향없음 / 1=경미 / 2=재계획 / 3=폐기/이월
+
+| Sprint | 기간 (v2.0) | 영향 | 비고 |
+|--------|------------|------|------|
+| Sp01 | 2026-05-04~05-17 | 0 | W2 Importer 진행 중. 옵션 C에서 마무리 보장 |
+| Sp02 | 2026-05-18~05-31 | 3 | 프레스티지 30항목 — 웹게임 후 재개 (2026-09-15+) |
+| Sp03 | 2026-06-01~06-14 | 3 | 방치 시스템 — 웹게임 후 재개 |
+| Sp04 | 2026-06-15~06-28 | 3 | 어픽스 풀 35건 — **웹게임에 데이터 공유 가능** (DB 통합 의도) |
+| Sp05 | 2026-06-29~07-13 | 3 | 시즌 시스템 — 웹게임에 1차 적용 가능 (60일 시즌) |
+| Sp06 | 2026-07-20~08-03 | 3 | MythicEssence — Unity 재개 후 |
+| Sp07 | 2026-08-03~08-17 | 3 | 속성 4종 — Unity 재개 후 |
+| Sp08 | 2026-08-17~08-31 | 3 | 주간 이벤트 + 프리셋 |
+| Sp09 | 2026-08-31~09-14 | 3 | Follower/속성/수호자 분기 |
+| **Sp-W01~W08 (신규)** | **2026-05-18~09-01** | **신규** | **웹게임 트랙 8 sprint (각 2주)** |
+
+**Critical Path 11 노드 (메모리)**: 옵션 C 채택 시 **Sp01 R02 DropRateTableSO만 Phase 2 내 처리 → 나머지 10 노드 (R11~R40*)는 Unity Sp02 재개 후로 이월**. 웹게임 Sp-W 트랙은 별도 CP 신설 필요 (웹게임 PM/web-game-lead 책임).
+
+---
+
+## 5. 메인 세션 오케스트레이션 부담 평가
+
+### 현재 (9 agent, 2026-05-04)
+1. game-designer (박세린)
+2. code-lead (정현우)
+3. web-lead (김민준, 5/4 신규)
+4. project-manager (PM, 본인)
+5. dots-platform (류재현)
+6. graphics-lead (한지우)
+7. marketing-asia (윤소정)
+8. marketing-global (Justin)
+9. scenario-writer (강시연)
+
+호출 빈도: 1~3 (game-designer/code-lead/web-lead) 고빈도, 4 (PM) 중빈도, 5~9 저빈도
+
+### 중안 채택 시 (12 agent)
++10 web-game-lead (Tier 2)
++11 web-game-engine (Tier 3 Specialist)
++12 web-game-balance (Tier 3 Specialist)
+
+**메인 세션 부담**:
+- Tier 2 Lead 라인 = 4명 (code-lead/web-lead/web-game-lead/PM) — PD 직접 소통 빈도 ↑
+- Tier 3 Specialist 호출 빈도는 web-game-lead 경유 가능 (정현우 ↔ 류재현 패턴 재현)
+- 컨텍스트: 9→12 = 33% 증가, 호출 트리거 키워드 충돌 위험 (예: "밸런스" → game-designer vs web-game-balance)
+
+### Tier 구조 갱신 권장 = Y
+- Tier 1 Director: PD (1)
+- Tier 2 Lead: game-designer / code-lead / web-lead / **web-game-lead** / project-manager (5)
+- Tier 3 Specialist: dots-platform / graphics-lead / scenario-writer / **web-game-engine** / **web-game-balance** (5)
+- Tier 4 Marketing: marketing-asia / marketing-global (2)
+
+### 호출 컨벤션 변경 권장 = Y (1줄 추가)
+- "웹게임", "Phaser", "PixiJS", "JS 게임 엔진" → web-game-lead
+- "웹게임 밸런스", "시뮬레이터 동기화", "Unity↔웹 데이터 통합" → web-game-balance (web-game-lead 경유)
+- "웹게임 성능", "60fps", "Canvas/WebGL" → web-game-engine (web-game-lead 경유)
+
+### 14 agent (대안) 위험
+- 메인 세션 1쪽 보고 시 9 agent 상태 그리드도 빡빡 → 14 agent 시 sticky 헤더 + 스크롤 필요
+- PD 잠금 결정 빈도: D+0 4건 (web-lead) → D+0 10건+ (대안 5 agent 동시 신규) 가능 = 1인 PD 결정 부담 폭증
+
+---
+
+## 6. 신규 agent 정의 권장 N=3 (각 핵심 5줄)
+
+중안 ★ 채택 전제. 각 정의는 메인 세션이 `.claude/agents/*.md` 작성 시 인용.
+
+### 6.1 web-game-lead.md (Tier 2 Lead, 정현우·김민준 동격)
+1. **이름/역할**: 차도윤(가칭, 32세) / GodBlade 웹게임 트랙 통합 — 게임 루프, UI, 백엔드 API, 시뮬레이터↔Unity 데이터 통합 책임
+2. **출신**: 인디 웹게임 스튜디오 4년 (Phaser 3 액션 RPG 출시 경험) + 카카오 게임즈 백엔드 1년
+3. **분업**: web-game-engine(라이브 성능) + web-game-balance(밸런스 데이터) 라인 통솔. 정현우(Unity) / 김민준(웹앱) 영역 침범 0
+4. **호출 트리거**: "웹게임", "Phaser", "PixiJS", "시나리오 모드 1F~50F", "무한 모드 1F~1000F"
+5. **첫 발주**: Sp-W01 킥오프 (2026-05-18, 옵션 C 채택 시) — 웹게임 기술 스택 결정 (Phaser 3 vs PixiJS vs 자체 Canvas) + DB 통합 아키텍처 (Unity SO ↔ 웹 JSON ↔ Supabase)
+
+### 6.2 web-game-engine.md (Tier 3 Specialist, web-game-lead 산하)
+1. **이름/역할**: 임재훈(가칭, 29세) / 웹게임 라이브 엔진 + 60fps 성능 + Canvas/WebGL 렌더링 전담
+2. **출신**: 게임 엔진 회사 3년 (Phaser 3 contributor) + 모바일 웹 게임 5종 출시
+3. **분업**: web-game-lead 산하. 류재현(dots-platform) 과 모바일 웹 성능 패턴 협업. 정현우 영역 침범 0
+4. **호출 트리거**: "60fps", "Canvas", "WebGL", "오브젝트 풀링", "draw call"
+5. **첫 발주**: Sp-W02 (2026-06-01) — 1F~50F 시나리오 모드 + 무한 모드 1000F 부하 테스트 1쪽 (10,000 entity / 60fps 유지 가능 검증)
+
+### 6.3 web-game-balance.md (Tier 3 Specialist, web-game-lead 산하 + 박세린 협업)
+1. **이름/역할**: 한가영(가칭, 31세) / 웹게임 밸런스 + Unity 시뮬레이터↔웹게임 데이터 동기화 + DB 단일 source 검증
+2. **출신**: 모바일 RPG 5년 (그라비티 / 넷마블) — 시즌 곡선 / 어픽스 풀 / 재화 인플레 분석
+3. **분업**: web-game-lead 산하 + **박세린(game-designer) 동격 협업** (Unity 밸런스 시트 = 단일 source). 박세린 시트 변경 시 자동 흡수 워크플로우 책임
+4. **호출 트리거**: "웹게임 밸런스", "시뮬레이터 동기화", "DB 통합", "Unity↔웹 어픽스 시트", "시즌 곡선 검증"
+5. **첫 발주**: Sp-W01 W2 (2026-05-25) — 박세린 `affix_pool.tsv` / `prestige_items.tsv` 웹게임 흡수 매퍼 1쪽 (TsvReader 패턴 web-lead 김민준 협업)
+
+---
+
+## 7. 확실하지 않은 가정 (1~2건, 박세린·김민준 분석 결과 의존)
+
+1. **웹게임 기술 스택 미확정** — 본 분석은 "Phaser 3 또는 PixiJS" 가정. 김민준 측 분석에서 "Next.js + Canvas 자체 구현" 권장 시 web-game-engine 역할 변경 (라이브러리 학습 → 자체 엔진 구현). 권장 default = Phaser 3 (모바일 웹 검증 완료 + 1인 학습 부담 최소).
+2. **DB 통합 아키텍처 미확정** — 본 분석은 "Unity SO → JSON export → Supabase 흡수" 가정. 박세린 측 분석에서 "Unity ScriptableObject 직접 참조" 권장 시 web-game-balance 역할 변경 (Supabase 매퍼 → Unity 빌드 타임 SO export 파이프라인). 권장 default = JSON 중간 레이어 (Unity↔웹 디커플링 우선).
+
+**박세린·김민준 분석 결과로 변동 가능한 권장**: 위 2 가정 중 하나라도 다르게 결정 시 web-game-engine / web-game-balance 분업 1줄 재조정.
+
+---
+
+## 8. 다음 액션 (PD 승인 대기 5건)
+
+| # | 결정 | PM 권장 default | 시급도 |
+|---|------|----------------|-------|
+| V1 | 팀 구성 | **중 (web-game-lead + 2 specialist)** ★ | D+1 (5/5) |
+| V2 | 일정 재배치 | **옵션 C (Sp01 마무리 후 PAUSE + 웹게임 D+90~120)** ★ | D+1 |
+| V3 | Tier 구조 갱신 | **Y (Tier 4 Marketing 신설)** | D+1 |
+| V4 | 호출 컨벤션 1줄 추가 | **Y (3개 트리거 키워드)** | D+1 |
+| V5 | 신규 agent 3건 정의 작성 시점 | **D+2 (5/6) — V1 잠금 후 즉시** | D+2 |
+
+**PM 의견**: PD가 "권장 default 일괄 채택" 천명 → V1~V5 5건 모두 본 권장 그대로 잠금 가정. 변동 시 박세린·김민준 분석 결과 종합 후 메인 세션이 재발주.
+
+---
+
+(끝, ~620 words 한국어, 1쪽 상한 준수)
+6:["slug","v2_0_redesign_pm_analysis","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","v2_0_redesign_pm_analysis","d"],{"children":["__PAGE__?{\"slug\":\"v2_0_redesign_pm_analysis\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","v2_0_redesign_pm_analysis","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"v2.0 → v3.0 격변 PM 분석 (인력 운영 + 일정 재배치)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/v2_0_redesign_pm_analysis.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,762"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"v2.0 → v3.0 격변 PM 분석 (인력 운영 + 일정 재배치) — 자료실"}],["$","meta","3",{"name":"description","content":"작성: 2026-05-04 (PM, project-manager)"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

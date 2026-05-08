@@ -1,0 +1,206 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T2904,# Sprint 01 W1 TodoWrite 사전 구체화 (킥오프 즉시 복사용)
+
+> 작성: 2026-04-21 (Sp00 D+2 버퍼) · 메인 세션 오케스트레이터
+> 대상: Sp01 킥오프 2026-05-04 (월) 09:00 · 복사 대상: Claude Code TodoWrite 도구
+> 근거: `sprints/sprint-01-dry-run-2026-04-21.md` v1.0 §1~§6 + §0.3 사전 완화 A1~A3 + R-DR-01~03
+
+---
+
+## 목적
+
+Sp01 킥오프 당일 09:00 작업 시작 시점에 **TodoWrite 도구에 즉시 복붙 가능한 15건 리스트 + R-DR-01~03 인라인 가드**. 드라이런에서 도출된 리스크 체크 항목을 태스크 사이에 체크박스로 삽입하여 "태스크 완료 = 체크 완료" 1:1 매핑.
+
+**원칙**: 태스크 #01~#05 뼈대 5건 + 회귀 가드 체크 6건 + 커밋 단위 4건 = **총 15건**. 킥오프 시 PM(또는 PD)이 Claude 메인 세션에 TodoWrite 명령 발주 → 본 문서 §2 블록 그대로 복사.
+
+---
+
+## 1. D-1 선결 체크 (2026-05-03 A1~A3 완료 여부 확인)
+
+킥오프 09:00 시점에 다음 3건 확인 후 TodoWrite 생성 진행:
+
+- [ ] A1 asmdef/InternalsVisibleTo 점검 PASS (기대 히트 1건: `TranscendentStageSO.cs:22`)
+- [ ] A2 TSV 경로 상수 3종 메모 유지 (§2.2 경로 3개 즉시 붙이기)
+- [ ] A3 Data 어셈블리 체크리스트 4항목 인쇄/고정 완료
+
+**FAIL 시**: 킥오프 HOLD → PD 에스컬레이션 (sprint-01-d-minus-1-checklist.md §6)
+
+---
+
+## 2. TodoWrite 복사 블록 (15건)
+
+**복사 시점**: A1~A3 PASS 확인 직후, Claude 메인 세션에 다음 내용 전달:
+
+```
+Sp01 W1 TodoWrite 15건 등록:
+
+1. [#01 enum+GradeRemap] GodBlade.Data asmdef 에 Grade/MobKind/RewardType enum + GradeRemap.cs 작성 (1.0h, CP-M02 ⭐)
+2. [가드#1-CS0579] #01 저장 직후 grep '[assembly: InternalsVisibleTo' 히트 1건 유지 확인 (R-DR-01)
+3. [커밋#1] feat(sp01-w1): add Grade/MobKind/RewardType enums + GradeRemap static class
+4. [#02 DropRateTableSO] TSV_REL_PATH='../designs/transcendent_drop_table.tsv' + SO 60행 + Importer + .asset + Addressables 엔트리 Rewards/DropRateTable (2.0h, CP-M02 ⭐ + CP-M03)
+5. [가드#2-CS0579] #02 SO 저장 직후 grep '[assembly: InternalsVisibleTo' 히트 1건 유지 확인 (R-DR-01 재발 Medium)
+6. [가드#2-경로] #02 Import 실행 전 DialogBox 'TSV Not Found' 확인 없이 성공 로그 확인 (R-DR-02)
+7. [커밋#2] feat(sp01-w1): add DropRateTableSO + importer (60 rows)
+8. [#03 MilestoneRewardCatalogSO] TSV_REL_PATH='../designs/transcendent_milestone_reward.tsv' + SO 22행 + Importer + .asset + Addressables Rewards/MilestoneRewardCatalog (1.5h, CP-M02 ⭐)
+9. [가드#3-CS0579] #03 SO 저장 직후 grep 재확인 (R-DR-01 피로도 축적 Medium)
+10. [커밋#3] feat(sp01-w1): add MilestoneRewardCatalogSO + importer (22 rows)
+11. [#04 AffixPoolSO] TSV_REL_PATH='../designs/affix_pool.tsv' + SO 30행 뼈대 + Importer + .asset + Addressables 엔트리 (1.0h, W2 범위 일탈 금지 ⚠)
+12. [가드#4-CS0579] #04 SO 저장 직후 grep 재확인 (3회 연속 Sp00 회귀 B 동일 패턴 Medium)
+13. [#05 Import ALL] GodBlade/Data/Import ALL 메뉴 1개 (Sp00 Stage + #02~#04 호출) (0.5h)
+14. [가드#5-네임스페이스] 생성된 4 파일(#01~#04) 최상단 'namespace GodBlade.Data' 명시 선언 유지 확인 (R-DR-03)
+15. [커밋#4] feat(sp01-w1): add AffixPoolSO skeleton + Import ALL menu
+```
+
+---
+
+## 3. 태스크별 상세 참조 (킥오프 직전 재확인용)
+
+### 3.1 #01 — Grade / MobKind / RewardType enum + GradeRemap (1.0h)
+
+- **출력**: `Unity6/Assets/_Project/Scripts/Data/GradeRemap.cs` 1개
+- **DoD**: Data asmdef 컴파일 통과 + `GradeRemap.TryParseNew("Rare")` → `Grade.Epic` 매핑 확인
+- **가드**: #01 에는 InternalsVisibleTo 불필요(public enum). Sp00 회귀 2건 재현 Zero
+- **커밋 단위**: 단독 커밋 (가드 #1 확인 직후)
+
+### 3.2 #02 — DropRateTableSO + 60행 Import (2.0h, 최대 태스크)
+
+- **출력**: `DropRateTableSO.cs` + `DropRateTableImporter.cs` + `DropRateTable.asset` + Addressables 엔트리 `Rewards/DropRateTable`
+- **DoD**: 60행 로그 `[Import] DropRateTable: 60 rows loaded`
+- **경로 상수**: `private const string TSV_REL_PATH = "../designs/transcendent_drop_table.tsv";`
+- **가드**: R-DR-01 최초 SO 신설 지점 (CS0579 위험 Medium) + R-DR-02 경로 drift (DialogBox 'TSV Not Found' 발생 시 즉시 STOP)
+- **자기검증**: 드롭률 합 = 1.000 ± 0.001 (10 그룹 × 6등급). 실패 시 **TSV 원본 문제** → game-designer 에스컬레이션 (코드 수정 금지)
+- **커밋 단위**: 3단 분할 권장 (SO 선 / Importer / Addressables 엔트리)
+
+### 3.3 #03 — MilestoneRewardCatalogSO + 22행 Import (1.5h)
+
+- **출력**: `MilestoneRewardCatalogSO.cs` + `MilestoneRewardImporter.cs` + `.asset` + 주소 `Rewards/MilestoneRewardCatalog`
+- **DoD**: 22행 로그 + `_milestoneFloors` HashSet 22 elements
+- **경로 상수**: `private const string TSV_REL_PATH = "../designs/transcendent_milestone_reward.tsv";`
+- **가드**: R-DR-01 두 번째 SO — **피로도 Medium → CP-M02 최우선 재체크**. `HashSet<int> _milestoneFloors` 는 `[NonSerialized]` 필드 OK
+- **주의**: #02 Importer 패턴 복제 권장. Addressables 주소 **`Rewards/MilestoneRewardCatalog`** 오타 금지 (드라이런 A1 TSV 점검 대상)
+
+### 3.4 #04 — AffixPoolSO 뼈대 (1.0h)
+
+- **출력**: `AffixPoolSO.cs` + `AffixPoolImporter.cs` + `.asset` + Addressables 엔트리
+- **DoD**: **뼈대만** — 30행 Import 성공 확인(필드 기본값 roll). W2 범위는 **완전 금지**
+- **경로 상수**: `private const string TSV_REL_PATH = "../designs/affix_pool.tsv";`
+- **가드**: R-DR-01 세 번째 SO — **3회 연속 Sp00 회귀 B 동일 패턴 ⚠**. 피로도 축적으로 CS0579 재현 확률 상향
+- **금지 사항 (W2 일탈)**:
+  - 어픽스 스택 로직 작성 금지 (Sp04 범위)
+  - BuildSummary 필드 추가 금지 (Sp02 W2 범위)
+  - `exclusive_onlyOne` / `additive_crossAxis` / `additive_hardcap` 분기 구현 금지 (Sp04 범위)
+
+### 3.5 #05 — Import ALL 메뉴 (0.5h)
+
+- **출력**: `RewardImportAll.cs` 1개 (`[MenuItem("GodBlade/Data/Import ALL")]`)
+- **DoD**: 메뉴 클릭 1회로 Sp00 Stage + #02 DropRate + #03 Milestone + #04 AffixPool 4 Importer 순차 실행 + 총 로그 확인
+- **가드**: R-DR-03 네임스페이스 — **`namespace GodBlade.EditorTools` 명시 선언 필수** (rootNamespace 자동 삽입 비신뢰). `using UnityEditor;` OK (Editor asmdef)
+- **커밋 단위**: #04 AffixPool 뼈대 커밋에 포함 (혹은 단독)
+
+---
+
+## 4. 회귀 가드 6건 체크박스 상세
+
+### 4.1 가드#1~#4 (CS0579 재발 방지, R-DR-01)
+
+각 SO 파일 저장 직후 매회 실행:
+
+```bash
+# Unity6/Assets/ 전체 grep
+grep -rn "\[assembly: InternalsVisibleTo" Unity6/Assets/
+# 기대: 1건 (TranscendentStageSO.cs:22 혹은 GodBlade.Data.Assembly.cs:N)
+# 2건 이상 → 즉시 STOP, 새로 추가된 InternalsVisibleTo 라인 삭제
+```
+
+**실패 시 대응**: 삭제 후 재컴파일. 회귀 원인 커밋 메시지에 `regression:CS0579` 태그로 표기.
+
+### 4.2 가드#2-경로 (TSV 경로 drift, R-DR-02)
+
+#02 Importer 첫 실행 시:
+
+- [ ] Unity 콘솔에 `[Import] DropRateTable: 60 rows loaded` 성공 로그
+- [ ] `EditorUtility.DisplayDialog("TSV Not Found")` 팝업 **발생 없음**
+- [ ] 팝업 발생 시 **즉시 STOP** → `TSV_REL_PATH` 재확인 (오타 / 상대경로 depth 착오)
+
+### 4.3 가드#5-네임스페이스 (rootNamespace drift, R-DR-03)
+
+#05 Import ALL 메뉴 저장 직후:
+
+```bash
+head -5 Unity6/Assets/Editor/Importers/*.cs | grep "^namespace"
+# 기대: Editor 측 Importer 3개 모두 'namespace GodBlade.EditorTools'
+# 'namespace GodBlade.Editor' 발견 시 수정 (rootNamespace 불일치)
+```
+
+---
+
+## 5. 커밋 단위 4건 메시지 템플릿
+
+```
+커밋#1: feat(sp01-w1): add Grade/MobKind/RewardType enums + GradeRemap static class
+- Data asmdef 에 public enum 3종 추가
+- GradeRemap.TryParseNew 원본 Grade → 신규 Grade 매핑 (Rare→Epic 포함)
+
+커밋#2: feat(sp01-w1): add DropRateTableSO + importer (60 rows)
+- Addressables 주소 'Rewards/DropRateTable' 등록
+- 드롭률 합 1.000 ± 0.001 자기검증 통과
+- CS0579 회귀 가드 grep 1회 확인
+
+커밋#3: feat(sp01-w1): add MilestoneRewardCatalogSO + importer (22 rows)
+- Addressables 주소 'Rewards/MilestoneRewardCatalog' 등록
+- HashSet<int> _milestoneFloors 22 elements 확인
+
+커밋#4: feat(sp01-w1): add AffixPoolSO skeleton + Import ALL menu
+- AffixPoolSO 뼈대 (W1 범위, 스택 로직 Sp04 이월)
+- GodBlade/Data/Import ALL 메뉴 1개 (Stage + DropRate + Milestone + AffixPool 순차)
+```
+
+---
+
+## 6. 실패 시 롤백 경로
+
+| 태스크 | 실패 시점 | 롤백 범위 |
+|--------|----------|----------|
+| #01 | GradeRemap 컴파일 실패 | 커밋#1 revert — 후속 태스크 전부 블로킹 |
+| #02 | DropRate Import 실패 | 커밋#2 분할 중 실패 지점만 revert (SO / Importer / Addressables 분리) |
+| #03 | Milestone Import 실패 | 커밋#3 단독 revert — #02/#01 영향 없음 |
+| #04 | AffixPool Import 실패 | 커밋#4 분할 revert. #05 Import ALL 은 #02/#03만으로 동작 유지 |
+| #05 | 메뉴 미작동 | 커밋#4 revert. 개별 Importer 4개는 정상 |
+
+**전면 중단 시**: PM(메인 세션)이 Sp01 드라이런 §10 롤백 지점 표 참조 후 PD 에스컬레이션.
+
+---
+
+## 7. W1 종료 체크 (2026-05-11 일 예정)
+
+W1 종료 시점 DoD:
+
+- [ ] 4 커밋 완료 (Git log에 `sp01-w1` 프리픽스 4건)
+- [ ] Import ALL 메뉴 1회 실행 시 로그 4건 (Stage 200행 + DropRate 60행 + Milestone 22행 + AffixPool 30행)
+- [ ] Unity 콘솔 에러 0건 / Warning Sp00 종료 시점과 동일
+- [ ] R-DR-01~03 회귀 가드 6건 전부 PASS
+- [ ] W2 범위 일탈 0건 (AffixPoolSO 스택 로직 미구현 확인 / BuildSummary 미수정 확인)
+- [ ] W1 실공수 실측 기록 (드라이런 밴드 6.5~9.0h 대비)
+
+---
+
+## 8. 메인 세션 오케스트레이터 행동 예약
+
+킥오프 09:00 시점에 Claude 메인 세션이 수행할 순서:
+
+1. PD 입력 "Sp01 W1 시작" 수신
+2. 본 문서 §1 D-1 체크 3건 PD에게 재확인 요청
+3. PASS 확인 후 본 문서 §2 TodoWrite 15건 블록을 TodoWrite 도구에 1회 호출로 등록
+4. code-lead 에이전트 발주: "#01 부터 순차 실행, 각 SO 저장 직후 §4 회귀 가드 6건 체크"
+5. 커밋 단위 4건 도달마다 PM(메인 세션)이 PD에게 진척 1줄 보고
+
+---
+
+**END OF PRELOAD** · 실행 후 본 문서는 `sprints/archive/` 이동 예약 (Sp01 W1 종료 시)
+6:["slug","sprint-01-w1-todowrite-preload","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sprint-01-w1-todowrite-preload","d"],{"children":["__PAGE__?{\"slug\":\"sprint-01-w1-todowrite-preload\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint-01-w1-todowrite-preload","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint 01 W1 TodoWrite 사전 구체화 (킥오프 즉시 복사용)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/sprint-01-w1-todowrite-preload.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,374"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint 01 W1 TodoWrite 사전 구체화 (킥오프 즉시 복사용) — 자료실"}],["$","meta","3",{"name":"description","content":"Sp01 킥오프 당일 09:00 작업 시작 시점에 TodoWrite 도구에 즉시 복붙 가능한 15건 리스트 + R-DR-01~03 인라인 가드. 드라이런에서 도출된 리스크 체크 항목을 태스크 사이에 체크박스로 삽입하여 \"태스크 완료 = 체크 완료\" 1:1 매핑."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

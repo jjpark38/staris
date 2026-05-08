@@ -1,0 +1,326 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T571f,# Sp02 W2 — DOTS 측정 트리거 + Blob 변환 후보 평가 명세서
+
+> 작성: 2026-05-02 (dots-platform / 류재현) · 근거: `designs/sprint-02-w2-prestige-tech-sketch.md` v1.0 APPROVED · `designs/sprint-01-w2-importer-design.md` v1.0 APPROVED · `sprints/phase-2-roadmap-2026-04-21.md` v2.0 APPROVED
+> **문서 상태**: **v1.0** (PD 옵션 A 승인 2026-05-02 → 즉시 작성)
+> **범위**: Sp02 W2 (2026-05-25 ~ 2026-05-31, 로드맵 W6) 동안 code-lead 정현우의 PR 5건 (W6-T01~T05) 에 대한 **측정 트리거 정량 기준** + **DOTS Blob 변환 후보 4건 평가** + **분업 경계 표**
+> **수치 경계**: 본 문서는 측정·진단·역할 분담만. 게임 밸런스 / SO 카탈로그 스키마 / 런타임 시그니처는 기존 APPROVED 설계 인용 외 신규 결정 0건 (code-lead / game-designer 영역).
+>
+> ---
+>
+> ## 0. 한 줄 맥락 (PD 30초)
+>
+> Sp02 W2 = 프레스티지 런타임 (struct + List + JSON + 6훅) 머지 주차. **본 명세는 "측정 우선, 변환 보수적" 입장**: T1~T4 정량 트리거 4축 + 4 변환 후보 평가 결과 = **Sp02 W2 시점 변환 후보 0건** (모두 < 100 엔트리, 단일 유저). 단 W6-T04 `BuildSummary 1Hz vs 매프레임` 은 핵심 게이트 (code-lead 사전 검토 1h 권장). 본격 DOTS 합류는 **Sp03 IdleTicker** 시점.
+
+---
+
+## §1. 측정 트리거 정량 기준 (4축 표)
+
+### §1.1 4축 정의
+
+| 축 | 지표 | 임계 | 측정 도구 | 판정 우선도 |
+|----|------|------|----------|------------|
+| **T1 호출 빈도** | 단일 메서드 호출 / frame | **> 10,000 / frame** (16.6ms 기준 = 600,000 calls/sec) | Profiler CPU Hierarchy `Self ms` + Calls 컬럼 | High |
+| **T2 GC alloc** | Mono allocation / sec | **> 1 KB / sec** (5초 평균) **또는** Gen0 GC > **5회 / min** | Profiler Memory Module `GC Allocated In Frame` | High |
+| **T3 FPS drop** | frame time 95-percentile | **> 16.6 ms** (60fps 기준) — Editor Standalone 동시 측정 | Profiler CPU `PlayerLoop` total + frame chart | Mid |
+| **T4 Heap fragmentation** | Mono heap 사용량 | **Reserved > 50 MB** **또는** Reserved/Used 비율 **> 30%** | Memory Profiler 패키지 `Mono Heap` 분석 | Low |
+
+### §1.2 판정 규칙 (조합)
+
+```
+판정 = High  : T1 충족 + T2 충족 (동시)
+판정 = Mid   : T3 단독 충족 (T1·T2 미충족)
+판정 = Low   : T4 단독 충족 (Sp03 이월 검토)
+판정 = None  : 모두 미충족 (변환 불필요, 현재 코드 유지)
+```
+
+- **High** = `dots-platform` 즉시 호출, 변환 PR 분기 (Sp02 W2 또는 Sp03 W1 합류)
+- **Mid** = code-lead 우선 알고리즘 / 캐싱으로 해결 시도. 1차 시도 실패 시 dots-platform 호출
+- **Low** = Sp03 IdleTicker 합류 시점에 함께 재측정. Sp02 W2 단독 변환 금지
+- **None** = 이번 PR 머지 OK, 다음 PR로 진행
+
+### §1.3 임계값 근거
+
+- **T1 = 10K / frame**: 단일 유저 / 60슬롯 / 60fps 기준. 60 × 60 = 3,600 calls/sec. 10K/frame = 600K calls/sec 는 **170배 마진**. 위반 시 무한루프 / 매프레임 전체 SO 스캔 의심.
+- **T2 = 1 KB/sec**: 모바일 디바이스 Mono heap 압박 + Gen0 GC 빈도 기준. 캐릭터 MVP 완료 시점 기준 idle 시 ~ 200 B/sec 측정 (참고치).
+- **T3 = 16.6 ms (95p)**: 60fps 약속. Mid 판정으로 두는 이유 = 단일 PR로 frame budget 위반은 알고리즘 문제일 가능성이 높음 (DOTS 변환 효과보다 큰 문제).
+- **T4 = Reserved 50 MB / 30%**: Sp02 시점 누적 메모리 가벼움 (캐릭터 MVP 4종 + SO 카탈로그 ~10MB 예상). Low 판정 = 메모리 단독 폭증은 라이브 빌드 직전 문제, Sp02 시점 우선순위 낮음.
+
+---
+
+## §2. 측정 도구 + Sp02 W2 워크플로우
+
+### §2.1 주 도구 = Unity Profiler (CPU / Memory / Rendering 3 모듈)
+
+- **CPU Module**: Hierarchy 뷰 + Timeline 뷰. T1 / T3 측정.
+  - Deep Profile **OFF** (overhead 5~10x). Standalone 빌드 측정 시 사전 OFF 확인.
+  - Editor 측정 결과는 모바일 실측 대비 **2~3배 비관적** 추정. Editor 통과 = 모바일 통과 가정 (안전 마진).
+- **Memory Module**: Simple 뷰 + Detailed 뷰. T2 / T4 측정.
+  - `GC Allocated In Frame` 컬럼 = T2 직접 지표.
+  - `Mono Heap` Reserved / Used = T4 직접 지표.
+- **Rendering Module**: Sp02 W2 범위 외 (UI 미구현, 렌더 콜 변동 없음). 측정 생략.
+
+### §2.2 보조 = Unity Memory Profiler 패키지
+
+- **패키지명**: `com.unity.memoryprofiler`
+- **현재 상태**: `Unity6/Packages/manifest.json` 미포함 추정 (확인 필요, Sp02 W2 D-2 이전 점검).
+- **추가 필요성**: T4 (heap fragmentation) 정밀 측정 시. **Sp02 W2 시점 0건 예상** → 추가 결정 보류.
+- **결정 보류 사유**: 패키지 추가 = code-lead 영역 (`Unity6/Packages/manifest.json` 수정). 본격 필요 시점 = Sp06+ 무한던전 1만 mob 검증 시. Sp02 W2 단계에서는 기본 Profiler Memory Module 로 충분.
+
+### §2.3 Frame Debugger = Sp02 범위 외
+
+- 렌더 분석 도구. UI / 셰이더 작업 (한지우 영역) 시 사용. Sp02 W2 = 데이터 / 런타임 PR 만이라 호출 0회 예상.
+
+### §2.4 워크플로우 4단계 (PR 머지 전 표준 절차)
+
+```
+Step 1. PR 머지 직전 (code-lead) 또는 직후 (dots-platform 사후 검증)
+Step 2. Unity Editor → Play Mode → Profiler 활성화 (Window > Analysis > Profiler)
+Step 3. 30초 실행 (idle 10초 + 스폰 / 입력 / Spend 호출 10초 + idle 10초)
+Step 4. CPU Hierarchy → Self ms 내림차순 → Top 5 메서드 캡처 (스크린샷 + 수치 기록)
+       Memory Module → GC Allocated In Frame 5초 평균 + Mono Heap Reserved 캡처
+       T1~T4 각 축 충족 여부 판정 (§1.2 규칙)
+       판정 = High / Mid → PR 코멘트에 측정값 + 판정 + 후속 조치 명시
+       판정 = None → PR 머지 OK
+```
+
+**Sp02 W2 측정 책임자**:
+- W6-T01 ~ W6-T03 (TsvReader / Importer / PlayerPrestigeState 신설): **code-lead** 자가 측정 (간단 PR).
+- W6-T04 (SummarizeChannel 호출 빈도): **code-lead** + **dots-platform 사전 검토 1h** (핵심 게이트, §3.2 참조).
+- W6-T05 (JSON 저장 + 이벤트 훅): **code-lead** 자가 측정.
+- 트리거 충족 PR 발견 시: **dots-platform 호출** (5단계, §5 참조).
+
+---
+
+## §3. 측정 시점 명세 (Sp02 W2 PR 분기)
+
+### §3.1 Sp02 W2 PR 5건 분기 표 (W6-T01 ~ W6-T05)
+
+| PR ID | 작업 | 신규 코드 영역 | 측정 트리거 우선 축 | code-lead 자가 측정 충분? | dots-platform 사전 검토? |
+|-------|------|---------------|-------------------|----------------------|---------------------|
+| **W6-T01** | `TsvReader.cs` 공통화 (Sp01 W2 DQ3 이월) | `Assets/Editor/Importers/Shared/TsvReader.cs` | T2 (Editor only, 30~60행 파싱 시 alloc) | ✅ 충분 | ❌ 불필요 (Editor 코드, 런타임 영향 0) |
+| **W6-T02** | `PrestigeItemImporter.cs` 신규 (TsvReader 첫 소비자) | `Assets/Editor/Importers/PrestigeItemImporter.cs` | T2 (Editor only) | ✅ 충분 | ❌ 불필요 |
+| **W6-T03** | `PlayerPrestigeState.cs` (struct + List) + `PrestigeSlot.cs` | `Assets/_Project/Scripts/Runtime/Prestige/` | T1 (Spend / RefundAll 호출 빈도) + T2 (List Add alloc) | ✅ 충분 | ⚠️ **권고**: 1h 사전 검토 — `_slots = new List<PrestigeSlot>(60)` capacity 미지정 시 List 내부 array 재할당 (T2 위반 가능) |
+| **W6-T04** | `PrestigeCalculator.SummarizeChannel` + `BuildSummary` | `Assets/_Project/Scripts/Runtime/Prestige/PrestigeCalculator.cs` | **T1 (매프레임 호출 위험) + T2 (struct 반환 boxing)** | ❌ **부족** | ✅ **필수** (§3.2 핵심 게이트, 사전 1h) |
+| **W6-T05** | `PrestigeSaveService` (JSON) + 이벤트 훅 6개 활성화 | `Assets/_Project/Scripts/Runtime/Prestige/PrestigeSaveService.cs` + `PrestigePpAccumulator.cs` | T2 (JsonUtility alloc, Save 시 string.Concat) | ✅ 충분 | ❌ 불필요 (1초 디바운스 + 게임 종료 flush 구조 = 호출 빈도 낮음) |
+
+### §3.2 핵심 게이트 = W6-T04 (BuildSummary 1Hz vs 매프레임 호출 차단)
+
+**리스크**:
+- `PrestigeCalculator.SummarizeChannel(slots, channel, catalog)` 는 60 슬롯 × 6 stat field 누적 = **순회 60회 + 곱셈 60회 / 호출**.
+- UI 갱신 코드가 매프레임 호출 시 = 60 × 60fps = **3,600 calls/sec** (T1 임계 60K / sec 의 6%, 단독으로는 안전).
+- 그러나 `BuildSummary` 가 `readonly struct` 반환 = stack 할당이지만, 호출자가 `var summary = ...` 로 복사 후 매프레임 비교 시 **struct copy overhead** + LINQ 사용 시 **enumerator boxing** 위험.
+
+**code-lead 사전 검토 1h 권장 사항** (dots-platform → code-lead 인수인계):
+1. `BuildSummary` 호출 트리거 = **이벤트 기반만 허용** (`OnSlotChanged` / `OnPpChanged` 발화 시만 재계산). Update() 내 매프레임 호출 **금지**.
+2. UI 레이어가 `BuildSummary` 결과를 **캐싱** (`_lastSummary` 필드). 이벤트 발화 전까지 캐시 사용.
+3. `SummarizeChannel` 내부 `slots.Where(s => s.channel == channel)` 같은 LINQ 사용 **금지** (enumerator alloc 매 호출 16~32 B). 명시적 `for` 루프.
+4. `BuildSummary` 필드는 Sp02 W1 game-designer 확정 stat key 집합 (예: AtkPct, CritRate, DropPct, ...) 만 포함. Sp03 Stat 시스템 확정 후 1차 동결 (Sp02 W2 시점 6 필드 추정).
+
+**측정 스크립트 (Sp02 W2 D-2, 2026-05-29 권장)**:
+```
+[전제] Editor Play Mode + 60 슬롯 데이터 시드
+[Action] 1초 동안 Spend 10회 호출 (이벤트 발화 10회 → SummarizeChannel 10회 호출)
+[기대] CPU Hierarchy → SummarizeChannel.Self ms < 0.1 ms × 10 calls = 1ms total
+       GC Allocated In Frame < 100 B / sec
+[위반 시] dots-platform 즉시 호출 → 캐싱 / 부분 갱신 알고리즘 / Blob 4지선다 (§5)
+```
+
+### §3.3 W6-T01 ~ W6-T05 측정 일정 (Sp02 W2 5/25 ~ 5/31)
+
+| 일자 | 작업 | 측정 |
+|-----|------|-----|
+| 5/25 (월) | W6-T01 PR 작성 + 머지 | code-lead 자가 측정 (5분) |
+| 5/26 (화) | W6-T02 PR 작성 + 머지 | code-lead 자가 측정 (5분) |
+| 5/27 (수) | W6-T03 PR 작성 (사전 1h dots-platform 검토 권고) | code-lead 자가 + dots-platform 사전 1h |
+| 5/28 (목) | W6-T03 PR 머지 + W6-T04 PR 작성 시작 | - |
+| 5/29 (금) | W6-T04 PR 머지 직전 측정 (§3.2 스크립트 실행) | **dots-platform 필수 측정 1h + 검토 1h** |
+| 5/30 (토) | W6-T05 PR 작성 + 머지 | code-lead 자가 측정 |
+| 5/31 (일) | Sp02 W2 회고 + Sp03 킥오프 D-1 | dots-platform Sp03 합류 사전 동기화 1h |
+
+---
+
+## §4. DOTS Blob 변환 후보 평가 (4건)
+
+### §4.1 후보 1: `DropRateTableSO` Dictionary 60엔트리
+
+- **위치**: `Assets/_Project/Scripts/Data/DropRateTableSO.cs` (Sp01 W2 머지)
+- **구조**: `Dictionary<DropRateKey, float>` 60 엔트리 (5 bucket × 2 mobKind × 6 grade)
+- **호출 빈도 추정**: `LootRoller.RollGrade(floor, mob, rng)` → `GetDropRate` 6회 (등급별) × 분당 몬스터 처치 수 ~ 30 = **180 calls/min ≈ 3 calls/sec**. T1 임계의 **0.0005%**.
+- **GC alloc**: 0 (`readonly struct DropRateKey` + `IEquatable<>` 구현 → boxing 없음)
+- **판정**: **Low → 유지** (None 판정)
+- **Sp02 W2 변환 결정**: ❌ 변환 불필요
+- **재측정 시점**: **Sp06+ 무한던전 1만 mob/frame 시뮬 시점** (이때 호출 빈도 1만 × 6 = 60K calls/frame = T1 임계 6배 초과 가능 → DOTS Blob 강력 후보)
+
+### §4.2 후보 2: `AffixPoolSO` List 6 엔트리 (Sp02 W2) → 36 엔트리 (Sp04)
+
+- **위치**: `Assets/_Project/Scripts/Data/AffixPoolSO.cs` (Sp01 W2 머지, Sp04 36행 확장)
+- **구조**: Sp02 W2 시점 = `List<AffixSkeletonRow>` 6 엔트리. Sp04 시점 = `List<AffixValueEntry>` 36 엔트리 추가 (35 어픽스 × ~1 분포)
+- **호출 빈도 추정 (Sp02 W2)**: 어픽스 시스템 Sp04 도입 전이라 **0 calls/sec** (코드 미실행)
+- **호출 빈도 추정 (Sp04)**: `AffixRoller.Roll(grade)` → 36 엔트리 중 grade 필터 + weighted pick → 분당 장비 드롭 ~ 10 = **10 calls/sec × 36 순회 = 360 lookups/sec**. T1 임계의 **0.06%**.
+- **판정 (Sp02 W2)**: **Low → 유지** (호출 0)
+- **판정 (Sp04 36행 시점)**: **재측정 필요**. 임계 미달 예상이지만 Sp04 머지 시 dots-platform 1회 측정 (30분).
+- **Sp02 W2 변환 결정**: ❌ 변환 불필요
+
+### §4.3 후보 3: `PrestigeItemCatalogSO` List 30 엔트리
+
+- **위치**: `Assets/_Project/Scripts/Data/PrestigeItemCatalogSO.cs` (Sp02 W2 신설, W6-T02 PR)
+- **구조**: `List<PrestigeItemRow>` 30 엔트리 + `Dictionary<ushort, int> _byItemId` 30 엔트리 (OnEnable lazy build)
+- **호출 빈도 추정**: `PrestigeCalculator.CalculateBonus(in PrestigeItemRow row, int level)` 호출 시 row lookup 1회. `BuildSummary` 내부 60 슬롯 순회 = **60 lookups / SummarizeChannel 호출**. SummarizeChannel = 이벤트 기반 ~ 10 calls/sec → **600 lookups/sec**. T1 임계의 **0.1%**.
+- **GC alloc**: 0 (Dictionary lookup, 모든 필드 value type)
+- **판정**: **Low → 유지** (None 판정)
+- **Sp02 W2 변환 결정**: ❌ 변환 불필요
+- **재측정 시점**: 변경 사유 없음 (30 엔트리 고정)
+
+### §4.4 후보 4: `PlayerPrestigeState._slots` List 60 (Sp02 W2 핵심)
+
+- **위치**: `Assets/_Project/Scripts/Runtime/Prestige/PlayerPrestigeState.cs` (Sp02 W2 신설, W6-T03 PR)
+- **구조**: `List<PrestigeSlot>` 최대 60 엔트리 (read-write hot path)
+- **호출 빈도 추정 (Sp02 W2)**: `Spend` ~ 분당 1회 (유저 입력 의존), `SummarizeChannel` 내부 순회 60회 × 10 calls/sec = 600 lookups/sec. **T1 임계의 0.1%**.
+- **호출 빈도 추정 (Sp06 Follower / 멀티 캐릭터 도입 시)**: 캐릭터 N명 × 60 슬롯 × 10 calls/sec = N × 600. N=10 시 6,000 lookups/sec, N=100 시 60,000 lookups/sec → **T1 임계 도달**.
+- **GC alloc 위험**:
+  - `_slots = new List<PrestigeSlot>()` capacity 미지정 시 List 내부 array 재할당 (4 → 8 → 16 → ...). 60까지 도달 시 6회 재할당 = **수십 KB alloc 1회성** (시작 시 한 번이라 T2 임계 영향 미미).
+  - **권고 (W6-T03 사전 검토 항목)**: `_slots = new List<PrestigeSlot>(60)` capacity 명시.
+- **판정 (Sp02 W2)**: **Mid 조건부 → 유지** (capacity 명시 권고 시 None)
+- **판정 (Sp06+ Follower / 멀티 캐릭터)**: **High 가능성** → DOTS `IComponentData` + `DynamicBuffer<PrestigePointSlot>` 전환 후보 1순위
+- **Sp02 W2 변환 결정**: ❌ 변환 불필요 (capacity 명시만)
+- **재측정 시점**: **Sp06 Follower 결정 시점** (Sp09 W1 재검토 분기, 로드맵 §1 참조). 멀티 캐릭터 도입 시점.
+
+### §4.5 결론: Sp02 W2 시점 변환 후보 = 0건
+
+| 후보 | Sp02 W2 판정 | 변환 결정 | 재측정 시점 |
+|------|-------------|----------|------------|
+| §4.1 DropRateTableSO 60 엔트리 | None (Low) | 유지 | Sp06+ 1만 mob 시뮬 |
+| §4.2 AffixPoolSO 6→36 엔트리 | None (Low) | 유지 | Sp04 36행 머지 시 |
+| §4.3 PrestigeItemCatalogSO 30 엔트리 | None (Low) | 유지 | (변경 사유 없음) |
+| §4.4 PlayerPrestigeState._slots 60 | None (Mid 조건부, capacity 권고) | 유지 | Sp06+ Follower / 멀티 캐릭터 |
+
+**Sp03 DOTS 사전 호환 = 이미 반영**:
+- `PrestigeSlot` = blittable struct (`byte` + `ushort` + `int`) → `IComponentData` 1:1 이식 (sketch §1.3).
+- `_slots` = `List<PrestigeSlot>` → `DynamicBuffer<PrestigeSlot>` 1:1 이식.
+- 변환 비용 추정 (Sp03+): **8~16h** (sketch §9.1 인용).
+
+---
+
+## §5. 호출 절차 (트리거 충족 시 5단계)
+
+### §5.1 Step 1 = code-lead 측정 보고
+
+- PR 코멘트에 다음 4종 첨부:
+  1. Profiler CPU Hierarchy 스크린샷 (Top 5 Self ms)
+  2. Profiler Memory `GC Allocated In Frame` 5초 평균 스크린샷
+  3. T1 ~ T4 각 축 수치 + 판정 (예: `T1 = 12,000 / frame ✅ High`)
+  4. 의심 메서드 / 호출 경로 (call graph)
+
+### §5.2 Step 2 = PD 결정 (dots-platform 호출 승인)
+
+- code-lead 측정 보고 → PR 머지 차단 + PD에게 에스컬레이션
+- PD 결정: dots-platform 호출 승인 / 보류 (다른 우선순위) / 알고리즘 시도 우선
+- 결정 SLA: **24h 이내** (Sp02 W2 압축 일정, 결정 지연 시 dots-platform 자체 판단으로 측정 재현 1h 진행 + PD 사후 보고)
+
+### §5.3 Step 3 = dots-platform 호출 (측정 재현 1~2h)
+
+- code-lead 환경 동기화 (브랜치 / Unity 버전 / 패키지 버전)
+- 동일 측정 재현 (§2.4 워크플로우 4단계)
+- 재현 실패 시 = 환경 차이 분석 → code-lead와 핸드오프
+- 재현 성공 시 = Step 4 진행
+
+### §5.4 Step 4 = 변환 의사결정 (4지선다)
+
+| 옵션 | 적용 조건 | 비용 | 효과 |
+|------|----------|------|------|
+| **(a) Blob 전환** | T1 ≫ 임계 + 데이터 read-only + 60 엔트리 초과 | 8~16h | 캐시 친화 + GC 0 |
+| **(b) 캐싱** | 이벤트 기반 갱신 가능 + 결과 재사용 빈도 높음 | 2~4h | 호출 빈도 90% 절감 |
+| **(c) 알고리즘** | 순회 / 정렬 / LINQ 남용 패턴 | 1~3h | O(N) → O(log N) 또는 enumerator 제거 |
+| **(d) no-op** | 측정 오류 / 환경 차이 / 임계 재산정 합의 | 0h | PR 머지 OK |
+
+**기본 선호 순서**: (d) → (c) → (b) → (a). DOTS 변환은 **마지막 수단**.
+
+### §5.5 Step 5 = PR 분리 + 머지 권한
+
+- DOTS 변환 PR 브랜치명: `feat/dots-blob-<asset>` (예: `feat/dots-blob-prestige-slots`)
+- **dots-platform 단독 머지 권한 X** — code-lead 리뷰 필수 + PM 일정 합의 (Sp02 W2 압축 일정에 끼울지 Sp03 W1 으로 미룰지)
+- 머지 후 sketch 문서 (`designs/sprint-02-w2-prestige-tech-sketch.md`) **갱신 의무** = dots-platform 책임. 메모리 항목 신규 등록 (`project_dots_blob_<asset>_decision.md`).
+
+---
+
+## §6. 분업 경계 (code-lead vs dots-platform 표)
+
+### §6.1 Sp02 W2 분업 표
+
+| 영역 | code-lead (정현우) | dots-platform (류재현) | 비고 |
+|------|-------------------|----------------------|------|
+| `Assets/Editor/Importers/Shared/TsvReader.cs` (W6-T01) | ✅ 작성 / 머지 | ❌ 손대지 않음 | Editor 코드, 런타임 영향 0 |
+| `Assets/Editor/Importers/PrestigeItemImporter.cs` (W6-T02) | ✅ 작성 / 머지 | ❌ 손대지 않음 | TsvReader 첫 소비자 |
+| `Assets/_Project/Scripts/Data/PrestigeItemCatalogSO.cs` | ✅ 작성 / 머지 | ❌ 손대지 않음 | SO 카탈로그, read-only |
+| `Assets/_Project/Scripts/Runtime/Prestige/PrestigeSlot.cs` (W6-T03) | ✅ 작성 / 머지 | ⚠️ 사전 1h 검토 (struct 필드 / blittable 보장 / capacity 권고) | DOTS 1:1 이식 친화 보장 |
+| `Assets/_Project/Scripts/Runtime/Prestige/PlayerPrestigeState.cs` (W6-T03) | ✅ 작성 / 머지 | ⚠️ 사전 1h 검토 (capacity 명시 권고) | _slots List(60) capacity |
+| `Assets/_Project/Scripts/Runtime/Prestige/PrestigeCalculator.cs` (W6-T04) | ✅ 작성 / 머지 | **✅ 사전 1h 검토 + 머지 직전 1h 측정 필수** | **핵심 게이트 (§3.2)** |
+| `Assets/_Project/Scripts/Runtime/Prestige/PrestigeSaveService.cs` (W6-T05) | ✅ 작성 / 머지 | ❌ 손대지 않음 | JSON 저장, 디바운스 구조로 호출 빈도 낮음 |
+| `Assets/_Project/Scripts/Runtime/Prestige/PrestigePpAccumulator.cs` (W6-T05) | ✅ 작성 / 머지 | ❌ 손대지 않음 | 이벤트 핸들러 6개 |
+| `Assets/_Project/Tests/Editor/Prestige*Tests.cs` (7건) | ✅ 작성 / 머지 | ❌ 손대지 않음 | code-lead 테스트 영역 |
+| `Unity6/Packages/manifest.json` (Memory Profiler 패키지 추가) | ✅ 결정 권한 | ⚠️ 추가 권고만 (Sp02 W2 시점 권고 0건) | 패키지 변경 = code-lead 영역 |
+
+### §6.2 침범 금지선 (dots-platform 자기 제약)
+
+1. **류재현은 Sp02 W2 메인 코드 PR 자체에 손대지 않음**. 모든 PR = code-lead 작성 / 머지.
+2. **검토 / 측정 / 권고만 제공**. 코드 직접 수정은 PD 명시 승인 필수.
+3. **Sp02 W2 시점 DOTS 변환 PR 0건 목표**. 측정 결과 None 판정이면 dots-platform 자체 변환 욕심 차단.
+4. **sketch 문서 (`sprint-02-w2-prestige-tech-sketch.md`) 직접 수정 금지** — code-lead 영역. 측정 결과는 본 명세서 (`sp02-w2-dots-measurement-spec.md`) 갱신 또는 PR 코멘트로만.
+5. **game-designer / graphics-lead / 마케팅 영역 의견 X** — 수치 / 시각 / BM 의견 0건.
+
+### §6.3 Sp03 IdleTicker DOTS 전환 = 류재현 본격 합류 시점
+
+- **합류 트리거**: Sp03 W1 킥오프 (2026-06-01).
+- **본격 합류 작업**:
+  - `IdleTicker` 시뮬 측정 (1만 유저 가상 시뮬레이션 시 호출 빈도 / GC alloc)
+  - `PrestigePpAccumulator.GrantIdleDrip` 핸들러 호출 빈도 측정 (sketch §6.3)
+  - DOTS 변환 결정 (Sp03 W1 D+5 이내, code-lead 호환성 검토 후)
+- **사전 동기화 (Sp02 W2 D+14 = 5/31)**: 1h. code-lead → dots-platform 인수인계. 다음 항목 전달:
+  - `PrestigeSlot` blittable 보장 여부 (W6-T03 머지 코드 기준)
+  - `_slots` capacity 명시 적용 여부
+  - `BuildSummary` 캐싱 적용 여부 (W6-T04 결과)
+  - Sp03 W1 PR 5건 예상 분기 (PM 발주 예정)
+
+---
+
+## §7. 분량 · 결정 추적
+
+- 본 문서: 약 6쪽 (마크다운 렌더 기준).
+- 섹션 6개 + 분량 메타 = 7개 섹션.
+- 측정 트리거 축: **4개** (T1~T4)
+- DOTS Blob 변환 후보 평가: **4건** (모두 Sp02 W2 시점 변환 0건 결정)
+- Sp02 W2 PR 분기: **5건** (W6-T01 ~ W6-T05)
+- 핵심 게이트: **1건** (W6-T04 BuildSummary, dots-platform 사전 1h + 측정 1h = 2h 예약)
+- 분업 표: **10건 영역** + 침범 금지선 **5건**
+- Sp03 합류 사전 동기화: **1h** (5/31)
+- 실구현 코드 줄 수: **0** (측정·진단·역할 분담만)
+- PD 결정 대기 열린 질문: **0건** (옵션 A 즉시 채택, 추가 질문 없음)
+
+---
+
+## §8. 부록 — 측정 결과 기록 양식 (Sp02 W2 D+14 회고용)
+
+```
+[PR ID] W6-T0X
+[측정 일시] 2026-05-XX HH:MM
+[측정자] code-lead / dots-platform
+[T1 호출 빈도] XXX / frame  → 판정: None / Mid / High
+[T2 GC alloc]  XXX B / sec  → 판정: None / Mid / High
+[T3 frame 95p] XX.X ms       → 판정: None / Mid / High
+[T4 Mono Heap] Reserved XX MB / Used XX MB → 판정: None / Mid / High
+[종합 판정] None / Mid / High
+[조치] 없음 / 캐싱 / 알고리즘 / Blob 전환 / 측정 재현
+[Sp03 합류 인수인계] (있을 경우 1줄)
+```
+
+---
+
+*(끝 — v1.0, 2026-05-02 dots-platform 작성, PD 옵션 A 승인 후 즉시 작성)*
+6:["slug","sp02-w2-dots-measurement-spec","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","sp02-w2-dots-measurement-spec","d"],{"children":["__PAGE__?{\"slug\":\"sp02-w2-dots-measurement-spec\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sp02-w2-dots-measurement-spec","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sp02 W2 — DOTS 측정 트리거 + Blob 변환 후보 평가 명세서"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/sp02-w2-dots-measurement-spec.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"3,237"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sp02 W2 — DOTS 측정 트리거 + Blob 변환 후보 평가 명세서 — 자료실"}],["$","meta","3",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

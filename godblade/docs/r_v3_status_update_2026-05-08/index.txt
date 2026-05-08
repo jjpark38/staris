@@ -1,0 +1,111 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T12e3,# R-V3 갱신 (2026-05-08 v2.0 IP 격상)
+
+> 작성: 2026-05-08 (PM 박세린, 자율 권한)
+> 직전: `sprints/r_v3_status_update_2026-05-05.md` (R-V3-1~5 + 후보 6~8)
+> 본 갱신: v2.0 IP 격상 → 신규 후보 R-V3-10·11 + R-V3-9 활성 유지
+
+---
+
+## §0 PD 30초 요약
+
+1. R-V3-9 (PM 일일 알림 누락) **활성 유지** + 회복 액션 #PM-04 진행 중
+2. R-V3-10 **신규** = 강시연 1화 프롤로그 ETA 0 (자체 평가 도착 전 = 윤서아 학습 페이스 모델 적용)
+3. R-V3-11 **신규** = 권당 화수 충돌 (10·25·55·250화) PD 답 미제로 시리즈 바이블 v1.1 적용 차단
+4. R-V3-1~5 + 후보 6~8 직전 5/5 상태 유지 (회복 마킹 보존)
+5. 종합 = v2.0 격변 직후 신규 리스크 2건 추가 / PD 답 4건 대기
+
+---
+
+## §1 R-V3 5건 + 후보 3건 직전 상태 (5/5 보존)
+
+| # | 리스크 | 5/5 상태 | 5/8 상태 | 변경 |
+|---|------|--------|---------|------|
+| R-V3-1 | Sp02~Sp05 PAUSE 4개월 → 정현우 Unity 모멘텀 손실 | Green | Green | = |
+| R-V3-2 | 윤서아 인수 14h 초과 시 Sp-W01 W2 1주 지연 | Yellow | Yellow | = |
+| R-V3-3 | 시나리오 진행 지연 (33화 작성 전제 미달) | Green | Green | = |
+| R-V3-4 | 웹게임 D+180 출시 = 33화 전제 | Yellow | Yellow | = |
+| R-V3-5 | 1000F+ 정지 = 코어 유저 이탈 | Yellow | Yellow | = |
+| R-V3-6 (후보) | PD 본문 페이스 슬립 | Yellow 잠재 | Yellow 잠재 | = |
+| R-V3-7 (후보) | chapter mv D+15 미처리 | Green | Green | = |
+| R-V3-8 (후보) | 류재현 비용 한도 초과 | Green | Green | = |
+| R-V3-9 | PM 일일 알림 누락 self-마킹 | self-Yellow | self-Yellow | = (회복 액션 #PM-04 진행 중) |
+
+---
+
+## §2 R-V3-10 신규 (강시연 1화 프롤로그 ETA 0)
+
+| 항목 | 값 |
+|------|---|
+| **상태** | Yellow |
+| **사유** | v2.0 IP 격상 → 강시연 자체 평가 도착 전 ETA 0. 윤서아 학습 페이스 모델 적용 (자율 페이스 가정 9~14h 가중치) |
+| **추정 ETA** | 2026-05-12 (D+4) ~ 2026-05-15 (D+7) (1주 2화 페이스 × v2.0 신규 1.5x 가중치 = 5.25일) |
+| **발동 트리거** | 5/15 (D+7) 자체 평가 미도착 시 박세린 비공개 핑 1회 (PD 1차 #4 권한 적용) |
+| **회복 액션** | 메인 세션 SendMessage 발주 (자체 평가 도착 후) → 박세린 일정 v1.4 §4 갱신 |
+| **에스컬레이션** | 5/18 (D+10) 자체 평가 미도착 시 PD 1줄 보고 |
+
+---
+
+## §3 R-V3-11 신규 (권당 화수 충돌 PD 답 미제)
+
+| 항목 | 값 |
+|------|---|
+| **상태** | Yellow |
+| **사유** | 10·25·55·250화 4 충돌 + 시리즈 바이블 v1.1 적용 차단 (메모리 `project_series_bible_v1_2026-05-05.md` 충돌 4건) + v2.0 9 시드 통합 정합 검증 차단 |
+| **PD 답 슬롯** | PD-1 (본 산출물 §6) |
+| **발동 트리거** | D+25 (5/29) PD 1권 入稿 직전 답 미제 시 자동 트리거 |
+| **회복 액션** | 본인 권장 = C3 D 옵션 (권/부/화 3층 매트릭스 = `sprints/volume_part_chapter_3layer_matrix.md` 그대로) |
+| **에스컬레이션** | 5/29 (D+25) 답 미제 시 PD 1줄 보고 + 강시연 1권 入稿 진행 차단 위험 |
+
+---
+
+## §4 R-V3-9 활성 유지 (PM 일일 알림 누락)
+
+직전 5/5 self-Yellow 마킹 그대로. 회복 액션 #PM-04 진행 중 (5/8~5/16 매일 1줄 self-내부).
+
+| 일자 | 상태 |
+|-----|----|
+| 5/5 | self-Yellow 마킹 |
+| 5/6 | (5/5 직후 누락 가능성, 검증 필요) |
+| 5/7 | (검증 필요) |
+| 5/8 | 본 갱신 = 회복 액션 진행 마킹 |
+| 5/9 | 5 Lead 인사 + FlatBuffer 3자 슬롯 알림 |
+| 5/10~5/16 | 매일 1줄 self-내부 |
+
+---
+
+## §5 신규 후보 R-V3-12 (마킹만, 발동 0)
+
+| # | 리스크 | 상태 | 발동 트리거 |
+|---|------|------|----------|
+| R-V3-12 (후보) | 7 파트장 v2.0 1차 발주 (5건 병렬) 동시 학습 곡선 → ETA 슬립 누적 | Green | 5/16 (D+8) 5 트랙 산출물 1건 이하 도착 시 발동 |
+
+> 5 트랙 = 윤서아·한지우·김민준·marketing-asia·marketing-global. 강시연 = R-V3-10 분리.
+
+---
+
+## §6 PD 답 대기 슬롯 통합 (4건)
+
+| # | 슬롯 | 마감 | R-V3 매핑 |
+|---|------|-----|---------|
+| PD-1 | 권/부/화 라벨 통합 | D+25 (5/29) | R-V3-11 |
+| PD-2 | v2.0 1화 프롤로그 폴더 | 강시연 도착 직전 | R-V3-10 의존 |
+| PD-3 | 1차 문피아·web/ 출시 D+? | 강시연 ETA 도착 후 | R-V3-10 의존 |
+| PD-4 | Sp-W01 W1-04 발췌 = 기반 vs v2.0 | D+0 5/10 직전 | (Sp-W01 분리, R-V3 영향 0) |
+
+---
+
+## §7 본인 자율 마킹
+
+- 본 산출물 = `sprints/r_v3_status_update_2026-05-08.md` (본 파일)
+- R-V3-10·11 신규 후보 박세린 자율 모니터링 슬롯 박힘
+- R-V3-12 후보 박세린 자율 모니터링 (발동 0)
+- PD 결정 필요 = 4건 (PD-1·2·3·4)
+- 메모리 변경 0 (R-V3 5건 source = `project_phase_2_3_roadmap_v3_0.md` 영구 보존)
+6:["slug","r_v3_status_update_2026-05-08","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","r_v3_status_update_2026-05-08","d"],{"children":["__PAGE__?{\"slug\":\"r_v3_status_update_2026-05-08\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","r_v3_status_update_2026-05-08","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"R-V3 갱신 (2026-05-08 v2.0 IP 격상)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/r_v3_status_update_2026-05-08.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"799"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"R-V3 갱신 (2026-05-08 v2.0 IP 격상) — 자료실"}],["$","meta","3",{"name":"description","content":"1. R-V3-9 (PM 일일 알림 누락) 활성 유지 + 회복 액션 #PM-04 진행 중"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

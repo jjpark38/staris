@@ -1,0 +1,294 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T6ceb,# Affix Pool Sp04 Supplement v1.3 — G-3 IP 정합 어픽스 6건 (PD 채택 정식 락 + 강시연 11~14화 검수 통합)
+
+> 작성: 2026-05-02 박세린 (game-designer)
+> version: **1.3**
+> confirmed: **2026-05-02 (v1.2 PD 일괄 채택 + 강시연 11~14화 검수 우려 3 / GDD 신규 1건 통합 적용 G-3.6 오방위의 도(道) Rare 신규 등록)**
+> 입력: PD 본문 (chapter_01·07·10·15) + 강시연 본문 (chapter_11·12·13·14) + 1권 PD 인용 + 시놉시스 v2.3 + `affix_pool_README.md` v1.0 APPROVED + 메모리 `project_sprint04_affix_pool.md` + 강시연 11~12화 검수 의견서 (`chapter_11_12_review.md`) + 강시연 13~14화 검수 의견서 (작업 5 산출물)
+> 목적: Sp04 어픽스 풀 30종 → 35종 → **36종 정식 락 (v1.3)**. 정합 깨짐 / 200F 영향 / 글로벌 명칭 정식 락 포함. v1.3 = 강시연 11화 청천 「오방위 정렬진」 + 13화 「오방위(五方位)의 도(道)」 단신 무공 IP 정합 G-3.6 신규 어픽스 등록.
+> 정책 정합: Mythic 재롤 50PP / Legendary 고정 Sp05+ / **36개 × 3+1 스택 정책 (정식 락)** / 200F **약 4.20배 (-0.2% 추가 정정)**
+
+---
+
+## v1.2 → v1.3 변경 핵심 (한 쪽)
+
+| # | 항목 | v1.2 (2026-05-02 강시연 회신 v1 반영) | v1.3 (2026-05-02 강시연 11~14화 검수 통합) | 사유 |
+|---|------|--------------------------|------------------------|------|
+| 1 | 어픽스 개수 정책 | 35종 × 3+1 스택 정식 락 (D-A.1) | **36종 × 3+1 스택 정식 락 (D-A.4 신규)** | 강시연 11·13화 본문 「오방위 정렬진」(11화 16·26·50·52행) + 「오방위(五方位)의 도(道)」(13화 64행) 청천 단신 무공 IP 정합. Defensive 카테고리 +1 |
+| 2 | 200F 영향 | 4.21배 (-1.2% v1.0 대비) | **약 4.20배 (-1.4% v1.0 대비, 추가 -0.2%)** | 36어픽스 평균 slot_weight = (35×96.4 + 70) / 36 = 95.7. 6건 추가 평균 75. Sp04 W1 W4 시뮬에서 정확치 확정 예정 |
+| 3 | Sp04 W1 선행 작업 | 3건 (5행 시뮬 / Mythic 재검증 / 메모리 갱신) | **4건 (3건 + 36행 시뮬)** | G-3.6 추가로 `affix_pool.tsv` 36행째 + `affix_stack_matrix.tsv` 10빌드 36어픽스 재시뮬 추가 |
+| 4 | 카테고리 분포 | Offensive 15 / Defensive 10 / Utility 10 = 35 | **Offensive 15 / Defensive 11 / Utility 10 = 36** | Defensive +1 (오방위의 도(道) Rare = 광역 디버프 저항 = Defensive 친화) |
+
+**v1.3 영향 범위**: G-3.6 1건 신규 등록만. v1.2 5건 (5cm 어긋남 / 작두 박자 / 60fps 풀스로틀 / 9,860원의 박자 / Veil of Dangun) 정책·수치·글로벌 명칭 변경 0%. 200F 영향 -0.2% 추가 (4.21 → 4.20).
+
+---
+
+## v1.1 → v1.2 변경 핵심 (유지, 1쪽)
+
+| # | 항목 | v1.1 (2026-05-02 PD 채택) | v1.2 (2026-05-02 강시연 회신 반영) | 사유 |
+|---|------|------------------------|------------------------|------|
+| 1 | D-A.3 EN 명칭 | `Crown of Dangun` (의역, 위엄 톤) | **`Veil of Dangun` (의역 갱신, 무속 베일 톤)** | 강시연 글로벌 자연스러움 평가 5건 중 1건 (Crown of Dangun) 부분 어색 평가. 건(巾) = "베/두건" 의미 + Crown = 왕관 톤 어긋남. 박세린 Q4 결정 = Veil 채택 (Headband 비채택) |
+
+**Veil 채택 4대 사유**:
+1. 강시연 평가 = "건(巾) = 베/두건" 이 의미 톤 → Crown 톤은 위엄 과다
+2. Headband = 캐주얼 운동복 톤 (글로벌 트레일러 노출 시 단군 톤 깨짐)
+3. **Veil = 베일·천 의미 + 동시에 "신성한 가림막·신화적 베일" 톤 (의식·무속 직관 보존)** — 한국 무속·단군 건국 신화 톤 = "왕관" 보다 "신성한 천/베일" 이 본맥
+4. 디아4 글로벌 어픽스 명명 톤 (`Veil of Banished Power` / `Veil of Lost Memory` 등) `Veil of` 패턴 다수 존재 + 김용 글로벌 무협 팬 톤 정합 (의천도룡기 백발마녀 = "Veil"·"Shroud" 영문 번역 다수)
+
+---
+
+## v1.0 → v1.1 변경 핵심 (유지, 1쪽)
+
+| # | 항목 | v1 (2026-05-02 초안) | v1.1 (2026-05-02 PD 채택) | 메모 |
+|---|------|------------------|------------------------|------|
+| 1 | 어픽스 개수 정책 | 30종 + 5건 추가 (Conditional Pass) | **35종 × 3+1 스택 정식 락** | D-A.1 채택 (현재 v1.3 = 36종 갱신) |
+| 2 | 200F 영향 | 4.26배 → 4.21배 (영향 -1.2%) | **4.21배 정식** (현재 v1.3 = 약 4.20배) | 35종 평균 slot_weight 96.4 / Epic 6슬롯 신규 출현 0.67슬롯 (기댓값) |
+| 3 | "9,860원의 박자" 글로벌 명칭 | 미결 (3안 검토 중) | **KR `9,860원의 박자` (액면 그대로) / EN `9,860 Won Cadence`** | D-A.2 채택. 한국 정서 보존 + 글로벌 무협 팬 호기심 유발 톤 |
+| 4 | "단군왕검의 건(巾)" 글로벌 명칭 | 미결 (3안 검토 중) | **KR `단군왕검의 건(巾)` (액면 그대로) / EN `Crown of Dangun`** → **v1.2 갱신: EN `Veil of Dangun`** | D-A.3 (v1.1) → D-A.3' (v1.2 강시연 회신 반영) |
+| 5 | Mythic B08~B09 폭주 | Sp04 W1 재시뮬 필요 (Conditional) | **Sp04 W1 선행 조건 정식 등록 (3건 → v1.3 4건)** | § 4 후속 작업 Pass → 정식 |
+| 6 | Sp04 W1 선행 3건 | (없음) | **(1) `affix_pool.tsv` 5행 + `affix_stack_matrix.tsv` 10빌드 재시뮬 / (2) Mythic B08~B09 폭주 재검증 / (3) 메모리 30 → 35 갱신** | Sp04 킥오프 시 game-designer 책임 (현재 v1.3 = 4건 갱신) |
+
+---
+
+## 1. 6건 풀 스펙
+
+### 1.1 5cm 어긋남 (5cm Misalignment)
+
+| 항목 | 내용 |
+|------|------|
+| **IP 출처** | `chapter_10.md:36` — "무휼의 왼쪽 손이 오른쪽 손보다 약 5cm 정도 위에 잡혀 있었다. 5cm의 균형 어긋남." |
+| **본맥** | 강원도 산골 거구의 H빔 잡는 자세. 균형이 0이 아니라 5cm 어긋나야 양손 무게 분산. 김용 곽정의 강룡십팔장 정합. |
+| **카테고리** | Offensive (Berserker 친화) |
+| **stat_key** | `MisalignedDmgPct` (신규) — 무기 균형 어긋남 시 데미지 % 증가 |
+| **등급별 수치 (tier_1 ~ tier_6)** | Common 0% / Magic 4-7% / Rare 6-11% / Epic 8-15% / Legendary 11-20% / Mythic 14-26% |
+| **트리거 조건** | berserker H빔·양손 무기 장착 시에만 발동 (`required_item_class=weapon` + `weapon_subclass=two_handed`) |
+| **stack_policy** | `additive_crossAxis` (Mythic 폭주 가드 OK) |
+| **prefix/suffix** | Suffix (파생 효과) |
+| **slot_weight** | 80 (평균보다 -20%, 신규 낯섦 가드) |
+| **글로벌 명칭** | KR `5cm 어긋남` / EN `5cm Misalignment` (직역) / JP `5cmのズレ` / CN `5cm偏差` / ES `Desvío de 5cm` |
+| **게임 내 연출** | 무기 모델이 본맥에서 약 5cm 위로 흔들림. 타격 시 보랏빛 잔영 + "어긋남" 데미지 텍스트 컬러 (디아4 yellow critical 톤) |
+
+### 1.2 작두 박자 (Jakdu Rhythm)
+
+| 항목 | 내용 |
+|------|------|
+| **IP 출처** | `chapter_07.md:28-32` — "작두 박자... 1981년 부산 오륙도의 그 작두 박자... 봉인의 본 맥... 균형이 아니라 들쭉날쭉." |
+| **본맥** | 정주 어머니 월자의 작두 박자. 49년 봉인의 본 맥. 슬레이어 빙의 = 월자 효도 프로토콜 정합. |
+| **카테고리** | Defensive (Slayer 친화 / 무속 톤) |
+| **stat_key** | `AreaCcImmunityPct` (신규) — 광역 디버프 (CC) 면역 % |
+| **등급별 수치** | Common 0% / Magic 5-10% / Rare 8-15% / Epic 12-22% / Legendary 17-30% / Mythic 22-38% |
+| **트리거 조건** | 항시 발동. 단 디버프 면역 하드캡 적용 (60% 상한) |
+| **stack_policy** | `additive_hardcap` (60% 상한 — 기존 damageReduction 60% 동일 가드 정합) |
+| **prefix/suffix** | Suffix |
+| **slot_weight** | 70 |
+| **글로벌 명칭** | KR `작두 박자` / EN `Jakdu Rhythm` (음차, 한국 무속 톤 보존) / JP `チャクトゥの拍` / CN `斫刀节拍` / ES `Ritmo del Jakdu` |
+| **게임 내 연출** | 디버프 적중 시 캐릭터 발 밑에서 작두 빛 광선 1프레임 (한국 무속 톤). 면역 적용 시 들쭉날쭉 박자 SE (위 한 박 / 아래 반 박). |
+
+### 1.3 60fps 풀스로틀 (60fps Full Throttle)
+
+| 항목 | 내용 |
+|------|------|
+| **IP 출처** | `chapter_01.md:50` 본문 + 1권 11화 PD 인용 "60fps 정상 속도" 농담 + chapter_15:0+ "예초기 vs 송풍기" 본문. |
+| **본맥** | 화산파 매화검수 24fps 다운컨버트 카운터. 정주 60fps 강제 풀스로틀 톤. |
+| **카테고리** | Utility (knight 친화) |
+| **stat_key** | `AttackSpeedSlowImmunityWithBonusPct` (신규 복합) — 공속 둔화 면역 + 공속 % 보너스 |
+| **등급별 수치 (공속 보너스)** | Common 0% / Magic 3-6% / Rare 5-9% / Epic 7-13% / Legendary 10-17% / Mythic 13-22% |
+| **트리거 조건** | 공속 둔화 디버프 면역 + 공속 % 보너스 동시 적용. 공속 하드캡 +100% 정합. |
+| **stack_policy** | `additive_hardcap` (공속 +100% 상한 — `affix_pool_README.md` §3.2 정합) |
+| **prefix/suffix** | Suffix |
+| **slot_weight** | 75 |
+| **글로벌 명칭** | KR `60fps 풀스로틀` / EN `60fps Full Throttle` (직역) / JP `60fpsフルスロットル` / CN `60fps全速` / ES `60fps a Tope` |
+| **게임 내 연출** | 공격 모션 잔영이 60fps 매끄럽게 (FPS 강조용 모션 블러 -50%). 적의 슬로우 디버프 적중 시 아이콘 옆 "60fps" 텍스트 1초. |
+
+### 1.4 ⭐ 9,860원의 박자 (9,860 Won Cadence) — D-A.2 정식 락
+
+| 항목 | 내용 |
+|------|------|
+| **IP 출처** | 1권 PD 본문 "9,860원" (2024 최저시급) + `chapter_10.md:20` "주공의 박자는 작두 박자라 어머니의 박자라 9,860원의 박자라 알았소." |
+| **본맥** | 정주의 노동자 박자 = 최저시급 박자. 1권 PD "내 밥그릇 + 내 관절 먼저" 정합. 디아4 야만 "Berserker's Fury" / 디아2 "Last Wish" 톤 — HP 낮을수록 데미지 폭증. |
+| **카테고리** | Offensive (knight 친화 — 단 berserker도 호환) |
+| **stat_key** | `LowHpDmgScalePct` (신규) — HP % 낮을수록 데미지 % 증가 (역비례) |
+| **등급별 수치 (HP 30% 이하 시 최대 보너스)** | Common 0% / Magic 6-10% / Rare 9-16% / Epic 13-23% / Legendary 18-32% / Mythic 24-42% |
+| **트리거 조건** | HP 70% 이하부터 선형 증가, HP 30% 이하부터 최대치 적용. 최저시급 = 인간이 살아남는 박자 = HP 30% 가 디아블로 기준 "위기 박자" 정합. |
+| **stack_policy** | `additive_crossAxis` (Mythic 폭주 가드 OK) |
+| **prefix/suffix** | Prefix (기본 스탯 증가형) |
+| **slot_weight** | 90 (평균 +12.5%, 디아블로 시그니처 어픽스라 출현 빈도 약간 높임) |
+| **글로벌 명칭 (D-A.2 정식 락)** | **KR `9,860원의 박자` (한국어 액면 그대로) / EN `9,860 Won Cadence` (직역, "Won" = 한국 통화 명시 + "Cadence" = 박자/리듬 강조)** / JP `9,860ウォンの拍` / CN `9,860韩元节拍` / ES `Cadencia de 9,860 Won` |
+| **글로벌 노출 정책** | 한국어는 액면 그대로 (한국 정서 + 2024 최저시급 컨텍스트 보존). 영문은 직역 — 글로벌 무협 팬 호기심 유발 톤 (한국 통화 단위 + 노동자 시그니처 = 디아블로 "Berserker's Fury" 글로벌 통용). 트레일러 자막에서 "9,860 Won = approx. $7 USD / Korean minimum wage 2024" 설명 자막 1초 노출 권장 (마케팅팀장 합류 시 검토). |
+| **게임 내 연출** | HP 30% 이하 진입 시 화면 가장자리에 동전 굴러가는 SE + "9,860" 숫자 1프레임. 데미지 텍스트 = 황금색 (디아4 critical 톤). |
+
+### 1.5 ⭐ 단군왕검의 건(巾) (Veil of Dangun) — D-A.3' 정식 락 (v1.2 갱신)
+
+| 항목 | 내용 |
+|------|------|
+| **IP 출처** | 홍대걸(=홍대홍, 본문 표기) 코스프레 — `chapter_15_draft.md` 본문 미명시 (단 본문 흐름상 홍대걸 단군왕검 코스프레 정합) + 시놉시스 v1 27화 "단군왕검의 후예" + v2.2 25화 "건(巾) 을 벗어 던진다" |
+| **본맥** | 홍대걸의 시그니처. 강호 정파의 "건(巾)" = 정체성 표지. 광역 시야 = 단군왕검의 천하 조망 톤. |
+| **카테고리** | Utility (전 클래스 호환 / 액세서리 슬롯) |
+| **stat_key** | `AreaVisionPickupRangePct` (신규 복합) — 광역 시야 (미니맵 표시 거리) + 아이템 획득 거리 |
+| **등급별 수치 (획득 거리 %)** | Common 0% / Magic 8-13% / Rare 12-19% / Epic 16-26% / Legendary 22-35% / Mythic 28-45% |
+| **트리거 조건** | 항시 발동. 액세서리 슬롯 (헤드/넥) 한정. 시야 + 획득 거리 동시 적용. |
+| **stack_policy** | `additive_crossAxis` (단 시야는 시각 효과 한정 = stat 곱 증가는 획득 거리만) |
+| **prefix/suffix** | Prefix |
+| **slot_weight** | 60 (Utility 평균보다 -25%, 액세서리 한정이라 등장 슬롯 좁음) |
+| **required_item_class** | `accessory:headband,necklace` (필터) |
+| **글로벌 명칭 (D-A.3' v1.2 정식 락, 강시연 회신 반영)** | **KR `단군왕검의 건(巾)` (한국어 액면 그대로, 한자 병기 유지) / EN `Veil of Dangun` (의역 — "Crown" 보다 "Veil" 로 무속 베일·신성한 가림막 톤. 건(巾) = 베/두건 의미 톤 정합 + 디아4 `Veil of` 어픽스 명명 패턴 정합 + 김용 글로벌 백발마녀 영문 번역 톤 정합)** / JP `檀君王倹のヴェール (タングン・ワンゴム)` / CN `檀君王俭之纱` / ES `Velo de Dangun` |
+| **글로벌 노출 정책** | 한국어는 액면 그대로 (한자 병기 = 한국 정서 + 동아시아 시청자 직관). 영문 = `Veil of Dangun` 의역 — "Veil" 톤이 단군왕검의 무속·건국 신화 신성성에 적합 (Crown 톤은 위엄 과다 / Headband 톤은 캐주얼). 글로벌 시즌 패스 Tier 90 노출 시 NPC 코덱스 1쪽 (단군왕검 건국 신화 1줄 설명: "Dangun, founder of the first Korean kingdom, 2333 BCE. The Veil represents his shamanic communion with heaven.") 동봉 권장. |
+| **게임 내 연출** | 헤드 슬롯 장착 시 단군왕검 코스프레 건(巾) 모델 (홍대걸 NPC 모델 재활용 가능). 미니맵 시야 원 확장 시 황금색 잔영 1프레임. |
+
+### 1.6 ⭐ 오방위의 도(道) (Way of Five Directions) — G-3.6 정식 락 (v1.3 신규)
+
+| 항목 | 내용 |
+|------|------|
+| **IP 출처** | `chapter_11.md:16, 26, 50, 52` — 청천 1단계 무공 「오방위 정렬진(整列陣)」 (5명 진형 = 4방위 + 중앙) + `chapter_13.md:64` — 청천 2단계 무공 「오방위(五方位)의 도(道)」 (단신 발동, 한 자루의 검이 5개의 잔상으로 5방위에 박힘) |
+| **본맥** | 무당파 청년 검수 청천의 본 본 결의 한 끝점. 4방위 (동서남북) + 중앙 = 5방위 도의 균형. 정주 일행 5인을 한 번에 도의 무게로 누르는 광역 디버프 진형. 정주 측 카운터 어픽스 = 광역 디버프 저항. |
+| **카테고리** | **Defensive (knight·slayer 호환)** |
+| **stat_key** | `AreaDebuffResistPct` (신규) — 광역 디버프 (CC + DoT + 슬로우 + 도의 무게 등) 저항 % |
+| **등급별 수치 (광역 디버프 저항 %)** | Common 0% / Magic 3-6% / **Rare 5-9%** (강시연 권고 +5% 정합) / Epic 7-13% / Legendary 10-17% / Mythic 13-22% |
+| **트리거 조건** | 항시 발동. 광역 디버프 (5인 동시 적용 디버프) 적중 시 저항 % 적용. 단 면역과 차별화 = "저항 = 디버프 효과 % 감소" / 작두 박자 ("면역") 와 보완 관계 |
+| **stack_policy** | `additive_hardcap` (50% 상한 — 광역 디버프 저항 100% 가드) |
+| **prefix/suffix** | Suffix |
+| **slot_weight** | 70 |
+| **required_item_class** | (전 슬롯 / 단 액세서리 헤드 슬롯에 +20% slot_weight 보너스 = 청천 = 무당파 도복 톤) |
+| **글로벌 명칭 (G-3.6 v1.3 정식 락, 박세린 결정)** | **KR `오방위의 도(道)` (한국어 액면 그대로, 한자 병기 유지) / EN `Way of Five Directions` (의역 — "Tao" 도교 글로벌 직관 보존 + "Way of" 디아4 어픽스 명명 패턴 정합)** / JP `五方位の道 (タオ)` / CN `五方位之道` / ES `Vía de Cinco Direcciones` |
+| **글로벌 노출 정책** | 한국어는 액면 그대로 (한자 병기 = 동아시아 시청자 직관). 영문 = `Way of Five Directions` 의역 — "Way of" 톤이 디아4 `Way of the Berserker` / `Way of the Lost` 등 어픽스 명명 패턴 정합 + Tao 도교 글로벌 직관 보존. 강시연 권고 후보 명칭 "Way of the Five Bearings" 도 검토했으나 "Bearings" = 항해·기계 부품 톤이 강해 도교 본맥에서 어긋남. **박세린 최종 결정 = `Way of Five Directions`** (Bearings 비채택). 글로벌 시즌 패스 Tier 60 노출 시 NPC 코덱스 1쪽 (도교 5방위 신화 1줄 설명: "The Five Directions (Five Phases) — East, West, South, North, Center — represent cosmic balance in Korean Daoist tradition. Cheongcheon, a Wudang disciple, manifests this Way as a single-blade five-shadow stance.") 동봉 권장. |
+| **게임 내 연출** | 디버프 적중 시 캐릭터 발 밑에 5방위 빛 진형 1프레임 (한국 무속 + 도교 톤). 5방위 = 동(青) / 서(白) / 남(赤) / 북(黑) / 중앙(黃) 5색 빛 짧게 깜빡. 저항 적용 시 "오방위" 텍스트 0.5초. |
+
+**박세린 최종 결정 (글로벌 명칭)**: `Way of Five Directions` 채택. **사유**:
+1. 강시연 권고 후보 1 = `Way of Five Directions` (직역, 도교 톤 보존 OK)
+2. 강시연 권고 후보 2 = `Way of the Five Bearings` (의역, "Bearings" = 항해·기계 부품 톤 강함 → 도교 본맥에서 어긋남)
+3. 디아4 패턴 = `Way of the Berserker` / `Way of the Lost Soul` 등 `Way of` 어픽스 명명 패턴 다수 존재
+4. 글로벌 무협 팬 직관 = "Five Directions" = 도교 5방위 (동서남북중앙) 직관적, "Bearings" 은 보다 추상적·기계적 → Direction 우위
+5. 한국 도교·무속 본맥 톤 보존 = "Way" + "Direction" 조합이 가장 깔끔
+
+**박세린 최종 결정 (효과 옵션)**: 강시연 단순 안 채택 = "광역 디버프 저항 +5%" (Rare). **사유**:
+1. 강시연 단순 안 = "광역 디버프 저항 +5%" — 단순·명료·디아4 어픽스 패턴 정합
+2. 강시연 권고 안 = "적 5방위 잔상 동시 디버프 적용 시 광역 데미지 -25% / 디버프 지속 +50%" — 효과 강력하나 트리거 조건 (5방위 잔상 동시) = 청천 보스전 한정 = 일반 무한던전 미적용 = 어픽스 슬롯 효율 저하
+3. 35어픽스 풀 정합 = `additive_hardcap` 7→8개 / 50% 상한 = 작두 박자 (60% 상한) 와 차별화 OK
+4. 200F 영향 최소화 = 단순 안 (광역 디버프 저항 +5%) = Mythic 13-22% = 평균 13% × 슬롯 가중치 70 = 200F 영향 -0.2%
+
+---
+
+## 2. 정합 검증 (정식 락, v1.3)
+
+### 2.1 어픽스 개수 정합 (36개 정식 락)
+
+| 검증 항목 | 결과 | 메모 |
+|---------|------|------|
+| **36개 × 3+1 스택 정책** | **정식 락 (D-A.4 신규)** | 메모리 `project_sprint04_affix_pool.md` 갱신 권고: "35 어픽스 × 3+1 스택" → **"36 어픽스 × 3+1 스택 (G-3.6 IP 정합 1건 추가 v1.3)"**. README §1.3 본문도 35→36 수정 필요 (Sp04 W1 후속 작업 추가). |
+| 카테고리 분포 | Offensive 13+2=15 / Defensive 9+1+1=11 / Utility 8+2=10 = **36 합계** | Defensive +1 (오방위의 도(道) = 광역 디버프 저항). v1.2 (35) → v1.3 (36) 으로 Defensive 카테고리 1건 추가 |
+| stack_policy 4종 (`additive_crossAxis` / `additive_hardcap` / `exclusive_onlyOne` / `additive`) | **정합 OK** | 6건 모두 기존 4종 stack_policy 내에서 분류 (3건 crossAxis + 3건 hardcap). 오방위의 도(道) = `additive_hardcap` 50% 상한 |
+| Mythic 재롤 50PP 정책 | **정합 OK** | 6건 모두 Mythic tier_6 수치 명시 / 재롤 PP 50 그대로 적용 가능 |
+| Legendary 고정 Sp05+ 정책 | **정합 OK** | 6건 모두 Legendary 고정 어픽스 후보가 아닌 일반 풀 어픽스 (랜덤 롤). Sp05+ 결정 시 "9,860원의 박자" 가 무기 Legendary 고정 후보로 강력 (디아4 야만 정합) — 별도 메모. |
+| Mythic 폭주 (B08~B09 overflow 2.5~3.0배) | **Sp04 W1 선행 재시뮬 정식 등록 (4건)** | 6건 추가 = 평균 슬롯 가중치 변동. 200F 4.26배 → 4.21배 → 약 4.20배 정식 (영향 -0.2% 추가). § 4 Sp04 W1 선행 4건 정식 락. |
+
+### 2.2 200F 약 4.20배 영향 추산 (정식 락, v1.3)
+
+기존 30개 어픽스 평균 slot_weight = 100 가정. 5건 추가 (v1.2) 시:
+
+```
+v1.2 = 35어픽스 평균 slot_weight = 96.4
+v1.3 = G-3.6 1건 추가 (slot_weight = 70)
+       36어픽스 평균 slot_weight = (35×96.4 + 70) / 36 = (3374 + 70) / 36 = 95.7
+
+영향 (v1.3 추가):
+- B04 표준 빌드 (Epic 6슬롯) 에서 G-3.6 출현 확률 = 70 / 36×95.7 = 2.03%
+- 즉 6슬롯 중 약 0.12슬롯이 G-3.6 (기댓값)
+- G-3.6 평균 % 보너스 (Rare Epic 평균) ≈ 7-13% (광역 디버프 저항 = 데미지 출력 미공헌)
+- Defensive 어픽스라 데미지 직접 영향 0%, 단 슬롯 점유로 Offensive 어픽스 슬롯 -0.12 = 데미지 -0.2% (간접)
+- B04 어픽스 1.83 → 약 1.82배 (-0.2%)
+- B04 프레스티지 × 어픽스 = 2.30 × 1.82 = 약 4.19~4.20배 (v1.2 4.21배 대비 -0.2%)
+- 200F 격파 타겟 38배 대비 = 1.65배 (v1.2 1.66배 대비 -0.01배)
+```
+
+**해석**: 200F 격파 약 4.20배 정식 (v1.0 대비 -1.4%). 타겟 1.7배 여유 → 1.65배 여유로 거의 변화 없음. **B08~B09 Mythic 폭주 재시뮬 = Sp04 W1 game-designer 선행 책임 정식 등록 (36어픽스 정합)**.
+
+### 2.3 IP 정합 영향 (v1.3)
+
+| 영역 | 영향 |
+|------|------|
+| **knight 시그니처 정합** | "9,860원의 박자" + "60fps 풀스로틀" 2건이 knight 빌드 강화. PD 1권 7화 "내 밥그릇 + 내 관절" 정합 OK. **+ 오방위의 도(道) = knight 광역 디버프 저항 보완 빌드 (v1.3)** |
+| **berserker 시그니처 정합** | "5cm 어긋남" 1건이 berserker H빔 빌드 시그니처. 무휼 강원도 사투리 정합 OK |
+| **slayer 시그니처 정합** | "작두 박자" 1건이 slayer 빙의 = 월자 효도 프로토콜 정합 OK. GDD slayer 노드 B 강화. **+ 오방위의 도(道) = slayer 광역 디버프 저항 보완 (v1.3, 작두 박자 면역과 보완 관계)** |
+| **archon 시그니처 정합** | 6건 중 archon 전용 없음. 시즌 3 해금 정합 (본 권 미사용) |
+| **demonhunter 시그니처 정합** | 6건 중 demonhunter 전용 없음. 시즌 4 해금 정합 (본 권 미사용) |
+| **Utility 액세서리 다양성** | "단군왕검의 건(巾)" 1건이 액세서리 슬롯 헤드/넥 한정 → 액세서리 빌드 다양성 +1. 글로벌 직관성 가드 (한국 신화 = 글로벌 노출 첫인상) — D-A.3' v1.2 `Veil of Dangun` 의역 채택으로 무속 베일 톤 확보 |
+| **Defensive 카테고리 다양성 (v1.3)** | "오방위의 도(道)" Defensive +1 = 광역 디버프 저항 (저항 vs 면역 = 디아4 패턴 정합) / 작두 박자 (면역) + 오방위의 도(道) (저항) 2건 보완 빌드 가능 |
+
+### 2.4 시즌 패스·로컬라이즈 영향 (D-A.2 / D-A.3' / G-3.6 정식 락)
+
+- **시즌 패스 보상** (시놉시스 v2.3 § 4.3 정합):
+  - 시즌 2 Tier 5 = PDA 스캐너 스킨
+  - 시즌 2 Tier 15 = 작두 박자 어픽스 Magic 1회 무료
+  - 시즌 2 Tier 30 = 5cm 어긋남 어픽스 Rare 1회 무료
+  - 시즌 2 Tier 50 = 60fps 풀스로틀 어픽스 Epic 1회 무료
+  - **시즌 2 Tier 60 (v1.3 신규) = 오방위의 도(道) 어픽스 Rare 1회 무료**
+  - 시즌 2 Tier 70 = 9,860원의 박자 어픽스 Legendary 1회 (시즌 한정)
+  - **시즌 2 Tier 75 (v1.3 신규) = slayer 유교 드래곤 시그니처 스킨 (W7 백발마녀 처치 보상)** — 어픽스 X (스킨), 단 시놉시스 v2.3 정합
+  - 시즌 2 Tier 90 = 단군왕검의 건(巾) (Veil of Dangun) 액세서리 스킨
+- **로컬라이즈 (Sp06+) 정식 락** (KR + EN):
+  - "5cm 어긋남" → KR `5cm 어긋남` / EN `5cm Misalignment` (직역)
+  - "작두 박자" → KR `작두 박자` / EN `Jakdu Rhythm` (음차)
+  - "60fps 풀스로틀" → KR `60fps 풀스로틀` / EN `60fps Full Throttle` (직역)
+  - "9,860원의 박자" → KR `9,860원의 박자` (액면 그대로) / EN `9,860 Won Cadence` (D-A.2)
+  - "단군왕검의 건(巾)" → KR `단군왕검의 건(巾)` (한자 병기) / EN `Veil of Dangun` (D-A.3' v1.2)
+  - **"오방위의 도(道)" → KR `오방위의 도(道)` (한자 병기) / EN `Way of Five Directions` (G-3.6 v1.3, 박세린 결정)**
+
+---
+
+## 3. 정합 검증 요약 (1줄, v1.3)
+
+**Pass (정식 락)** — 6건 추가 = **36어픽스 × 3+1 스택 정식 락 (D-A.1 → D-A.4 갱신)** / 정책 4종·등급 수치·200F **약 4.20배** 정합 OK (영향 -1.4% v1.0 대비 / -0.2% v1.2 대비) / 글로벌 명칭 6건 정식 락 (D-A.2 / D-A.3' v1.2 / **G-3.6 v1.3 Way of Five Directions**) / Sp04 W1 선행 4건 정식 등록.
+
+---
+
+## 4. Sp04 W1 선행 작업 정식 등록 (4건, Sp04 킥오프 시 game-designer 선행)
+
+1. **`affix_pool.tsv` 5행 + `affix_stack_matrix.tsv` 10빌드 재시뮬 (35어픽스)**
+   - 5행 추가 (v1.2 §1 5건 매핑, tier_1~tier_6 수치 + slot_weight + stack_policy + prefix/suffix + required_item_class)
+   - 10빌드 재시뮬 결과 = B04 어픽스 1.85 → 1.83 / B04 종합 4.26 → 4.21배 정합 검증
+2. **`affix_pool.tsv` 36행째 추가 + 36어픽스 재시뮬 (v1.3 신규)**
+   - G-3.6 오방위의 도(道) Rare 36행째 추가
+   - 10빌드 36어픽스 재시뮬 = B04 어픽스 1.83 → 약 1.82 / B04 종합 4.21 → 약 4.20배 정합 검증
+3. **Mythic B08~B09 폭주 재검증 (36어픽스)**
+   - 6건 추가가 B08·B09 Mythic 폭주 빌드 (overflow 2.5~3.0배) 에 미치는 영향 시뮬
+   - 평균 slot_weight 95.7 / Epic 6슬롯 신규 출현 0.79슬롯 (기댓값) → B08·B09 폭주 ±0.05~0.10배 추정 (단 가중치 70~90 평균 = 등장 빈도 평균보다 약간 낮음)
+4. **메모리 갱신 (3건)**
+   - `project_sprint04_affix_pool.md`: "30 → 35 → 36 어픽스 × 3+1 스택" 갱신 (작업 3 산출물)
+   - 200F 4.26배 → 4.21배 → 약 4.20배
+   - 글로벌 명칭 6건 정식 락 (KR + EN, **v1.3 G-3.6 Way of Five Directions 갱신**)
+
+추가 후속 (Sp04 W1 이후):
+5. `affix_pool_README.md` v1.2 갱신 (§1.3 "총 36개" / §3.2 stack_policy 카운트 갱신: additive_crossAxis 14→17 / additive_hardcap 7→9 → 7→9 (오방위의 도(道) hardcap 1건 추가 = 7→9→10))
+6. localization.csv (Sp06+) 한국어 → 4개국어 번역 풀 6행 예약 (D-A.2 / D-A.3' v1.2 Veil + G-3.6 v1.3 Way of Five Directions 정식 락 그대로)
+
+---
+
+## 5. PD 결정 + 강시연 회신 반영 (v1.3 정식 채택, 2026-05-02)
+
+### 5.1 v1.1 PD 결정 (유지)
+
+1. **D-A.1 35어픽스 정책 변경 = 정식 락** ✅ (v1.3 = D-A.4 36어픽스로 갱신)
+2. **D-A.2 "9,860원의 박자" = KR `9,860원의 박자` / EN `9,860 Won Cadence`** ✅
+3. **D-A.3 "단군왕검의 건(巾)" = KR `단군왕검의 건(巾)` / EN `Crown of Dangun`** → **v1.2 갱신 D-A.3' 으로 대체**
+
+### 5.2 v1.2 강시연 회신 반영 박세린 결정 (1건)
+
+4. **D-A.3' "단군왕검의 건(巾)" = KR `단군왕검의 건(巾)` / EN `Veil of Dangun`** ✅
+
+### 5.3 v1.3 강시연 11~14화 검수 통합 박세린 결정 (2건)
+
+5. **D-A.4 36어픽스 × 3+1 스택 정식 락** ✅ (v1.2 35어픽스 → v1.3 36어픽스, G-3.6 추가)
+6. **G-3.6 "오방위의 도(道)" = KR `오방위의 도(道)` / EN `Way of Five Directions` (Rare +5% 광역 디버프 저항, Defensive)** ✅
+   - **글로벌 명칭 결정**: 박세린 최종 결정 = `Way of Five Directions` (강시연 권고 `Way of the Five Bearings` 비채택, "Bearings" 도교 본맥 어긋남)
+   - **효과 옵션 결정**: 박세린 최종 결정 = 강시연 단순 안 채택 = "광역 디버프 저항 +5%" (Rare). 강시연 권고 안 ("적 5방위 잔상 동시 디버프 적용 시 광역 데미지 -25% / 디버프 지속 +50%") 비채택, 트리거 조건 너무 좁음 (청천 보스전 한정 = 일반 무한던전 미적용 = 어픽스 슬롯 효율 저하)
+
+---
+
+*(끝, v1.3 2026-05-02)*
+6:["slug","affix_pool_sp04_supplement_v1","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","affix_pool_sp04_supplement_v1","d"],{"children":["__PAGE__?{\"slug\":\"affix_pool_sp04_supplement_v1\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","affix_pool_sp04_supplement_v1","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Affix Pool Sp04 Supplement v1.3 — G-3 IP 정합 어픽스 6건 (PD 채택 정식 락 + 강시연 11~14화 검수 통합)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/affix_pool_sp04_supplement_v1.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"4,104"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Affix Pool Sp04 Supplement v1.3 — G-3 IP 정합 어픽스 6건 (PD 채택 정식 락 + 강시연 11~14화 검수 통합) — 자료실"}],["$","meta","3",{"name":"description","content":"v1.3 영향 범위: G-3.6 1건 신규 등록만. v1.2 5건 (5cm 어긋남 / 작두 박자 / 60fps 풀스로틀 / 9,860원의 박자 / Veil of Dangun) 정책·수치·글로벌 명칭 변경 0%. 200F 영향 -0.2% 추가 (4.21 → 4.20)."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

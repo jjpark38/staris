@@ -1,0 +1,8 @@
+User-Agent: *
+Allow: /novel
+Disallow: /
+Disallow: /docs
+Disallow: /tools
+Disallow: /api
+
+Sitemap: https://staris.cloud/sitemap.xml

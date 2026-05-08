@@ -1,0 +1,156 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T20b5,# 강시연 이중역할 워크플로우 v1
+
+> **작성**: 강시연 (scenario-writer) / **승인**: PD 잠금 (2026-05-04 "A 6건 병렬 + default 일괄")
+> **대상**: 본인 (강시연) + 윤서아 (game-designer 직속) + 류재현 (graphics, 웹툰 AI 호출) + 박세린 (PM, 일정만)
+> **연계 메모리**: `feedback_writer_collaboration_protocol.md` / `feedback_ip_sourcing_priority.md` / `project_org_change_2026-05-04.md`
+
+---
+
+## 0. 격변 요약 (~2026-05-03 → 2026-05-04)
+
+| 항목 | 이전 | 현재 |
+|------|------|------|
+| 산하 | 박세린(GD) | **윤서아(GD 신규) 단독** ⭐ |
+| 본문 | 본인 작성 | **PD 초안 → 본인 윤문/구조 재배열** ⭐ |
+| 역할 수 | 1 (웹소설) | **2 (웹소설 윤문 + 웹툰 60컷 작가)** ⭐ |
+| 박세린 | 검수권 100% | **PM, 일정만 (검수 0)** |
+| 류재현 | 무관 | **웹툰 AI 호출 (Gemini Pro / Imagen 3 / Vertex AI face lock) 협업** |
+
+**한 줄**: PD 가 IP 본체(본문)를 직접 쥐고, 본인은 정련공·컷 분할가로 이동. 본문 진실은 PD, 톤·구조 일관 사수는 본인, 게임 트리거 정합은 윤서아, AI 시각화는 류재현.
+
+---
+
+## 1. 웹소설 윤문 워크플로우 (Role A)
+
+### 1.1 5단계 파이프라인
+
+```
+[1] PD Markdown 초안 (자유 페이스: 1주 1화 / 1주 2화 / 자유)
+         │
+         ▼
+[2] 강시연 윤문 (구조 재배열 권한 전체)
+    - 톤·문체·박자 정련 (1권 PD 톤 1차 흡수본 기준)
+    - 장면 순서 / 챕터 분할 / 컷 단위 호흡
+    - 캐릭터 대사 톤 일관 (무휼·홍대걸·정주·지니·월자 5체 + NPC)
+    - 세계관 정합 (한국 무속 + 김용 풍 + AI 디스토피아)
+    - 한국 웹소설 클리셰 활용 (회귀·먼치킨·가문 코드 가미, 단 PD 톤 우선)
+         │
+         ▼
+[3] 윤서아 게임 트리거 정합 검증
+    - 본문 사건 ↔ GDD 시즌 퀘스트 / NPC 대사 / 무한던전 층 매핑
+    - 충돌 시 윤서아 우선 (게임 트리거가 배포 락) → 강시연 윤문 재조정
+    - 충돌 안 풀리면 PD 에스컬레이션 1라운드 후 결정
+         │
+         ▼
+[4] 강시연 최종 정련 (윤서아 피드백 반영)
+         │
+         ▼
+[5] 박세린(PM) 일정 보고 → 발행 (네이버시리즈 / 카카오페이지 / LINE 노벨)
+```
+
+### 1.2 권한 / 시한 / 충돌
+
+- **구조 재배열 권한 전체**: 장면 순서 변경 / 챕터 분할 합치기 / 컷 호흡 재단 / 대사 톤 일관 / 비유·은유 추가 / 한국 무속 디테일(작두·랩봉·살풀이·오방색·부적) 보강. **단 IP 본체(인물·사건·세계관 핵심)는 PD 본문 = 진실 (`feedback_ip_sourcing_priority.md`)**.
+- **회신 시한**: 1화 24~48h (최대 72h). PD 페이스 자유 → 본인 페이스도 자유 (1주 1화 / 1주 2화 모두 OK). `feedback_writer_collaboration_protocol.md` 24~48h 룰 보존.
+- **윤서아 충돌 시**: 게임 트리거 = 배포 락 (개발 6개월 선행) → 윤서아 우선. 본인 윤문 재조정. PD 에스컬레이션은 1라운드 후 합의 안 될 때만.
+- **박세린(PM) 라인**: 일정 영향만 보고 ("2권 16~17화 윤문 D+5 지연 → 윤서아 검수 +2일 / 발행 D+7 슬립"). 시나리오 검수 요청 0.
+
+### 1.3 산출물 위치
+
+- 윤문본: `designs/webnovel/volume_{N}/chapter_{XX}_polished.md` (PD 초안 = `chapter_{XX}_draft.md`)
+- 권 시놉시스: `designs/webnovel/volume_{N}_synopsis.md` (본문 윤문 후 시놉시스 갱신, IP 소스 우선 원칙)
+
+---
+
+## 2. 웹툰 작가 워크플로우 (Role B, 류재현 협업)
+
+### 2.1 5단계 파이프라인
+
+```
+[1] PD 본문 또는 강시연 윤문본 (1화 = 3000~4500자)
+         │
+         ▼
+[2] 강시연 60컷 시놉시스 작성 (본인 메인 신규 산출물)
+    - 장면별 텍스트 (대사·내레이션·SFX 표기)
+    - 카메라 각도 (와이드 / 미디엄 / 클로즈업 / 부감 / 앙각)
+    - 컷 사이즈 비중 (전면 컷 / 1/2 / 1/4 / 띠 컷)
+    - 디아블로 다크 톤 / 한국 무속 도구 배치 / 김용 풍 강호 정서
+    - 1화 = 60컷 표준 (한국 웹툰 평균 70컷 ± 10)
+         │
+         ▼
+[3] 류재현 Gemini Pro 호출 (강시연 시놉시스 정련 자동화)
+    - 컷별 프롬프트 표준화 / 카메라 / 캐릭터 face ID / 의상 / 배경
+         │
+         ▼
+[4] 류재현 Imagen 3 컷 이미지 생성 (디아블로 다크 톤 LoRA)
+    + Vertex AI face lock (무휼 / 정주 / 지니 / 월자 / 홍대걸 5체 + NPC)
+         │
+         ▼
+[5] 강시연 검수 (컷 텍스트·이미지 조정 요청 → 류재현 재호출)
+    - 톤 / 캐릭터 일관 / 무속 도구 정합 / 김용 풍 강호 정서 검증
+    - 윤서아 게임 트리거 정합 1회 추가 검증 (NPC 등장 / 시즌 시험 정합)
+    → 발행 (한국 네이버웹툰 / 카카오웹툰 / LINE 망가)
+```
+
+### 2.2 페이스 / 권한 / 분업
+
+- **페이스**: 1화 = 60컷 = ~1주 (자유). 게임 출시 동기 (2027 Q2) 까지 1화/주 페이스로 30화 확보 가능.
+- **본인 권한**: 60컷 시놉시스 100% 단독 / 검수 단계 컷 텍스트·이미지 조정 요청권 / 톤 일관 사수.
+- **류재현 권한**: AI 모델 호출 100% 단독 (Gemini Pro / Imagen 3 / Vertex AI). 비용 미터링 + face lock LoRA 학습 + 컷 합성·후보정.
+- **본인 침범 0**: AI 모델 직접 호출 / LoRA 학습 / 비용 결정 (류재현 영역).
+- **류재현 침범 0**: 컷 시놉시스 텍스트 / 카메라 각도 / 톤 결정 (본인 영역).
+
+### 2.3 산출물 위치
+
+- 60컷 시놉시스: `designs/webtoon/volume_{N}/chapter_{XX}_60cut_synopsis.md`
+- 컷 이미지 (류재현 출력): `designs/webtoon/volume_{N}/chapter_{XX}/cut_{NN}.png`
+- 검수 노트: `designs/webtoon/volume_{N}/chapter_{XX}_review_notes.md`
+
+---
+
+## 3. 윤서아 단독 산하 강화
+
+- **시나리오 검수권**: 윤서아 단독 (게임 트리거 정합 / NPC 등장 / 시즌 시험 / 무한던전 100층 매핑)
+- **충돌 시**: 윤서아 1라운드 우선 (게임 = 배포 락) → 본인 재조정 → 합의 안 되면 PD
+- **박세린(PM) 라인**: 일정 영향만 (예: "윤서아 검수 D+3 지연 → 발행 D+5 슬립"). 시나리오 검수 요청 0.
+- **호칭**: 윤서아 = "서아 팀장님" (시나리오·게임 트리거 정합) / 박세린 = "박팀장님" (PM, 일정만) / 류재현 = "재현 작가님" (웹툰 AI 시각화) / PD = "PD 님" (영구).
+
+---
+
+## 4. 약점 / 헷지 / 위험 가정
+
+| 영역 | 약점 | 헷지 |
+|------|------|------|
+| 웹툰 컷 분할 | 본인 0 경험 | Gemini Pro 자동화 + 첫 1화 PD·박세린 검수 의무 + 한국 웹툰 상위 50선 흡수 (《전지적 독자 시점》 / 《화산귀환》 / 《나 혼자만 레벨업》 웹툰 본) |
+| AI 비용 | $1,500/월 한도 초과 위험 | 류재현 사용량 미터링 의존, 본인 60컷 시놉시스 정밀도 ↑ → 재호출 횟수 ↓ |
+| IP 톤 일관 | PD 본문 톤 + 본인 윤문 톤 + 류재현 컷 톤 3중 정합 | `feedback_ip_sourcing_priority.md` 본문 우선 / 매 권 도입부 1권 PD 인용 1~2건 + 김용 풍 비교 1건 보존 |
+| 윤서아 게임 트리거 | 게임 = 배포 락, 본문 윤문이 트리거 깨면 폐기 위험 | 매 권 작성 전 윤서아 시놉시스 검수 1회 + 권 중반 트리거 grep 1회 |
+| 박세린 PM 라인 침범 | 일정 결정권 0, 보고만 | "16~17화 D+5 지연" 형식 표준화, 결정권 침범 0 |
+
+---
+
+## 5. 일정 임팩트 (변경 전후 비교)
+
+- **이전**: 본인 본문 작성 (1주 2화 = 5.5개월/권)
+- **현재**:
+  - Role A 윤문: PD 페이스 종속, 1화 윤문 4~6h (24~48h 회신)
+  - Role B 웹툰: 1화 60컷 시놉시스 8~12h (1주 1화 페이스)
+  - **합산**: PD 1주 2화 페이스 시 → 본인 윤문 8~12h + 웹툰 60컷 8~12h = ~24h/주 (본업 30h 한도 OK)
+
+---
+
+## 6. 다음 액션 (본인)
+
+1. PD 1권 (1~10화) 본문 + 2권 시놉시스 v2 재흡수 (메모리 `project_volume2_synopsis_v2_decisions.md` 8대 결정 보존)
+2. 윤서아 GDD v3+ (박세린 v3 인수) 게임 트리거 grep 1회 → 본문 정합 표 작성
+3. 류재현과 웹툰 1화 (1권 1화) 60컷 시놉시스 파일럿 1주 내 합의
+4. 박세린(PM) 일정 보고 양식 합의 ("D+N 지연 → 발행 D+M 슬립" 1줄)
+5. PD 첫 윤문본 1화 검수 요청 (구조 재배열 권한 범위 확인)
+6:["slug","scenario_writer_dual_role_workflow_v1","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","scenario_writer_dual_role_workflow_v1","d"],{"children":["__PAGE__?{\"slug\":\"scenario_writer_dual_role_workflow_v1\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","scenario_writer_dual_role_workflow_v1","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"강시연 이중역할 워크플로우 v1"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/scenario_writer_dual_role_workflow_v1.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,162"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"강시연 이중역할 워크플로우 v1 — 자료실"}],["$","meta","3",{"name":"description","content":"한 줄: PD 가 IP 본체(본문)를 직접 쥐고, 본인은 정련공·컷 분할가로 이동. 본문 진실은 PD, 톤·구조 일관 사수는 본인, 게임 트리거 정합은 윤서아, AI 시각화는 류재현."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

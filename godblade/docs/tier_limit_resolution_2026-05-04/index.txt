@@ -1,0 +1,110 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T156b,# Tier 14 한계 충돌 해결안 (2026-05-04)
+
+> 작성: 박세린(PM) · 결정: PD
+> 충돌: 박세린 안전권 14 vs 김민준 +2 (D+45 Supabase 백엔드 + D+90 UGC 모더레이터) = **15 (+1 초과)**
+> source: `project_v3_0_redesign_decisions.md` + `project_org_change_2026-05-04.md` Tier 13→15 권장 + 본 PM 페르소나 §철학.1 "일정은 현실"
+
+---
+
+## 0. 현 Tier 구조 (2026-05-04 기준)
+
+| Tier | 인원 | agent |
+|------|------|-------|
+| Tier 1 Director | 1 | PD |
+| Tier 2 Lead | 5 | game-designer(윤서아) / code-lead(정현우) / web-lead(김민준) / web-game-lead(차도윤) / project-manager(박세린) |
+| Tier 3 Specialist | 5 | dots-platform(류재현) / graphics-lead(한지우) / scenario-writer(강시연) / web-game-engine(임재훈) / web-game-balance(한가영) |
+| Tier 4 Marketing | 2 | marketing-asia(윤소정) / marketing-global(Justin) |
+| **현재 합계** | **13** | |
+
+**박세린 안전권 한계**: 14 (메인 세션 오케스트레이터 부담 + 1인 PD 가용 10~15h/주 + 5단계 프로토콜 검수 부담 종합).
+
+**김민준 D+45/D+90 추가 요청**: +2 (Supabase 백엔드 specialist + UGC 모더레이터) → **15 (+1 초과)**.
+
+---
+
+## 1. 충돌 정의
+
+- 13 (현) + 2 (김민준 요청) = **15** > **14 (박세린 안전권)** = 1 초과
+- 16 시 메인 세션 오케스트레이터 검수 부담 +30~40% 추정 (박세린 페르소나 §철학.1 데이터 부재, 추측 헷지)
+- D+45 Supabase 백엔드 = 5/18 (Sp-W01 킥오프) + 45일 = **2026-07-02** 채용 시점
+- D+90 UGC 모더레이터 = 5/18 + 90일 = **2026-08-16** 채용 시점
+
+---
+
+## 2. 옵션 3건
+
+### A안 ★ (박세린 권장 default) — D+90 UGC 모더레이터 D+120 연기
+
+| 항목 | 내용 |
+|------|------|
+| 채택 | D+45 Supabase 백엔드 = 채용 (Tier 14 도달) / D+90 UGC 모더레이터 = **D+120 (2026-09-15)** 연기 |
+| Tier 한계 | **14 유지** (안전권) |
+| 일정 영향 | UGC 5차 출시 (D+150 = 2026-10-15) 직후 인력 투입 → UGC 운영 30일 1인 PD 직접 부담 |
+| 위험 | UGC 운영 1인 부담 30일 (D+150 ~ D+180 웹게임 출시 직전) — PD 가용 10~15h/주 추가 압박 |
+| 헷지 | UGC 모더레이션 자동 룰 (욕설 필터 + spoiler_level v1 활용) D+150 사전 도입 → 1인 부담 완화 |
+
+### B안 — Tier 한계 14 → 16 갱신
+
+| 항목 | 내용 |
+|------|------|
+| 채택 | D+45 + D+90 모두 채용 (Tier 15) + 향후 1명 여유 |
+| Tier 한계 | **16 갱신** (박세린 안전권 +2) |
+| 일정 영향 | 영향 0 (모든 채용 일정 보존) |
+| 위험 | 메인 세션 오케스트레이터 검수 부담 추정 +30~40% (실측 0건, 가정) — 5단계 프로토콜 누락 가능성 |
+| 헷지 | 16 도달 후 D+30 (2026-09-15) PM 첫 부담 측정 보고 → PD 재검토 |
+
+### C안 — 류재현(dots-platform) AI 모델링 흡수 가능성 재검토
+
+| 항목 | 내용 |
+|------|------|
+| 채택 | D+45 Supabase 백엔드 = 채용 / D+90 UGC 모더레이터 = **류재현이 AI 자동 모더레이션 흡수** 가능성 검토 |
+| Tier 한계 | **14 유지** (UGC 모더 1명 절감) |
+| 일정 영향 | 류재현 (Phase 3+ Sp06+ 활동) Sp08 (2026-08-17 ~ 08-31) 첫 발주 부담 +5~8h |
+| 위험 | 류재현 페르소나 = DOTS ECS / 모바일 광고 SDK 영역. UGC AI 모더레이션은 **영역 침범** — 페르소나 재정의 필요 |
+| 헷지 | 류재현 페르소나 재정의는 PD + 박세린 + 류재현 3자 1h 미팅 (D+45 = 7/2 직전 6/25 권장) |
+
+---
+
+## 3. 박세린 권장 default (★ A안)
+
+**A안 채택 권장 사유**:
+1. **Tier 14 안전권 사수** — 박세린 페르소나 §철학.1 "일정은 현실" 원칙 + 메인 세션 부담 추정 +30% 회피
+2. **UGC 자동 룰 헷지 가능** — spoiler_level v1 (`devlog_v2_spoiler_level_spec.md` 박세린 김민준 협업분) 활용 + 욕설 필터 D+150 사전 도입
+3. **류재현 페르소나 침범 회피** — C안 위험 (DOTS specialist → UGC 모더 영역 침범) 큼
+4. **1인 PD 30일 부담 헷지 가능** — D+150 자동 룰 + 박세린(PM) 일일 알림 1쪽
+
+**위험 가정 2건**:
+- A1: UGC 자동 룰 효율 가정 (실측 0). 욕설 필터 + spoiler_level high = 박세린 + 강시연 + PD 3자 검수 라인 재활용 가정.
+- A2: PD 30일 1인 부담 = 5h/주 가정 (10~15h/주 가용 중). 본업 가중 시 D+170 긴급 채용 가능성.
+
+---
+
+## 4. PD 결정 항목
+
+| 항목 | 박세린 권장 | PD 답변 |
+|------|------------|---------|
+| 옵션 채택 | A안 ★ | (PD 답변 대기) |
+| Tier 한계 | 14 유지 | (PD 답변 대기) |
+| D+90 UGC 모더 → D+120 연기 동의 | Y | (PD 답변 대기) |
+| UGC 자동 룰 D+150 사전 도입 | Y | (PD 답변 대기) |
+| 박세린(PM) 일일 알림 1쪽 (D+150 ~ D+180) | Y | (PD 답변 대기) |
+
+---
+
+## 5. 메모리 신설 권장
+
+- 신규 메모리: **`project_tier_limit_2026-05-04.md`**
+- 내용: 본 문서 결정 일괄 잠금 + A안 채택 + 위험 가정 2건 + UGC 자동 룰 헷지 + D+150/D+180 일정
+- MEMORY.md 인덱스 1줄: `[Tier 한계 14 사수 (A안 D+120 연기)](project_tier_limit_2026-05-04.md) — 김민준 +2 충돌 해결 / UGC 모더 D+90→D+120 / Tier 14 유지 / UGC 자동 룰 헷지 + spoiler_level 활용 (2026-05-04 PD 결정 대기)`
+
+---
+
+**미팅 종료 시**: PD 답변 5건 잠금 → 박세린(PM) 메모리 신설 + 김민준 D+45/D+120 채용 발주 일정 갱신 + Sp-W01 W1 (5/18) 박세린 1쪽 보고에 본 결정 첫 항목으로 인용.
+6:["slug","tier_limit_resolution_2026-05-04","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","tier_limit_resolution_2026-05-04","d"],{"children":["__PAGE__?{\"slug\":\"tier_limit_resolution_2026-05-04\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","tier_limit_resolution_2026-05-04","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Tier 14 한계 충돌 해결안 (2026-05-04)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/tier_limit_resolution_2026-05-04.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"845"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Tier 14 한계 충돌 해결안 (2026-05-04) — 자료실"}],["$","meta","3",{"name":"description","content":"박세린 안전권 한계: 14 (메인 세션 오케스트레이터 부담 + 1인 PD 가용 10~15h/주 + 5단계 프로토콜 검수 부담 종합)."}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null

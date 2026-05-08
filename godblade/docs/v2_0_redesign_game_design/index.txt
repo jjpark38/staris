@@ -1,0 +1,148 @@
+2:I[2972,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],""]
+3:I[5907,["972","static/chunks/972-a43daa52d1969175.js","231","static/chunks/231-7921e91c4d76e3d5.js","121","static/chunks/app/docs/%5Bslug%5D/page-63b57c832cb519e6.js"],"MarkdownViewer"]
+5:I[4707,[],""]
+7:I[6423,[],""]
+4:T330f,# GodBlade v2.0 재설계 — 게임 디자인 측 1쪽 (박세린)
+
+> 작성: 2026-05-04 박세린(game-designer) / 발주: PD "A 동시 진행 + 권장 default 일괄 채택"
+> 입력: 메모리 38건 (특히 `project_game_direction_idle_rpg.md` / `project_volume2_synopsis_v2_decisions.md` v2.4 / `project_phase_2_3_roadmap_v2_decisions.md` / `project_sprint01_w1_results.md` / `project_web_lead_d_plus_5_complete_2026-05-09.md`) + 1권 본문 18화 (chapter_00~17) + 2권 본문 22화 정본
+> 정합 원칙: **본문 = IP 본체** (`feedback_ip_sourcing_priority`)
+
+---
+
+## TL;DR (3줄)
+
+- v1.2 6단계 로드맵 (Unity 24~30M 단일 출시) → **v2.0 = "웹게임 D+90 선출 + Unity 후속"** 격변. 강시연 1권 18화 = 시나리오 모드 1F~50F 트리거 본맥, `data_transcendent_stage` 200F 4.21배 (메모리 `project_sprint01_w1_results.md`) = 무한 모드 baseline 보존.
+- 권장 default 5건: **#1 = C 하이브리드 (웹 = 1권 18화 시나리오 + 200F 무한, Unity = 본판 + 글로벌 출시)** / **#4 = 본문 발췌 + 게임 보강** / **#5 = 200F~1000F 신규 (단, 200F 4.21배 baseline 보존)** / **#6 = 입문 무료 + 본판 유료 + 시즌 패스 (수직 결합)** / **#7 = D+180 MVP**.
+- 게임 디자인 측 팀 필요성 = **소(1인) 박세린 단독 유지**. 시나리오 트리거 / 무한 곡선 / 강시연 통합 = 박세린 기존 워크플로 (Sp01~05) 연장으로 흡수 가능. 신규 채용 ↔ web-game-lead/구현 측 (별도 분업).
+
+---
+
+## 1. 큰 결정 5건 default 매트릭스 (PD 명시 답변 없이 잠금)
+
+| # | 결정 | 옵션 | 권장 default ★ | 근거 (메모리/file:line) |
+|---|------|------|--------------|----------------------|
+| **#1** | 출시 전략 | A 적극 (Unity→웹 전환) / B 신중 (Unity 우선) / C 하이브리드 (웹 = 프롤로그) | **★ C 하이브리드** = 웹게임 = 1권 18화 시나리오 + 200F 무한 / Unity = 2권+ 본판 + 글로벌 출시 | `project_phase_2_3_roadmap_v2_decisions.md` Phase 2 MVP 2026-07-13 마일스톤 보존 + `project_volume2_synopsis_v2_decisions.md` v2.4 D-2.3 곤륜산 = 2권 클라 → 1권 = 웹 / 2권+ = Unity 자연 분리 |
+| **#4** | 시나리오 출처 | 강시연 1권 본문 / 게임 전용 신규 / 본문 발췌 + 게임 보강 | **★ 본문 발췌 + 게임 보강** = chapter_00~17 18화 본문 1차 인용 + 게임 전용 트리거 대사 보강 (시즌 시험 3종 / 11대 노동 무기 / 4인 1수 패밀리) | `feedback_ip_sourcing_priority` 본문 우선 + `project_volume2_synopsis_v2_decisions.md` v2.1 D-1 본문이 IP 본체 정합. 게임 전용 신규는 본문 톤 손상 위험 |
+| **#5** | 무한 모드 밸런스 | 200F baseline 유지 / 200F~1000F 신규 / 1000F+ 절차 생성 | **★ 200F~1000F 신규** (단 200F 4.21배 = `project_sprint01_w1_results.md` baseline 보존, 201F~ 신규 곡선) | 200F = MVP 검증 임계 (4.255 / 0.12% 편차 PASS). 1000F+ 절차 생성은 Sp06+ 차별화 레버 5대 결정 (`project_sp06_plus_lever_decisions.md`) 와 충돌 (속성/저항 수치 시트 선행) → 1000F 정지 권장 |
+| **#6** | 수익 모델 | 무료 / 광고 / 시즌 패스 / 입문 무료 + 본판 유료 | **★ 입문 무료 + 본판 유료 + 시즌 패스** (3중 결합) | 웹게임 = 1권 18화 무료 (입문 / 페이스북·X 공유 트리거) / Unity = 본판 유료 ($14.99 추정) + 시즌 패스 (`project_sprint05_season_research.md` 60일 / Tier 60·70·75·90 매핑 v2.4). 광고는 IdleCap 광고 캡 (`project_idle_cap_combination_sp03_pending.md` Sp03 W1 결정) 전용 |
+| **#7** | 타임라인 MVP | D+90 / D+180 / D+270 | **★ D+180** (2026-11-04 웹게임 MVP / 2027-04 Unity Phase 4 진입) | D+90 = Sp01~03 W1 (5/4~6/15) 만으로는 시나리오 트리거 200~400건 + 강시연 본문 통합 불가능. D+270 = 모멘텀 손실 (web-lead D+5 1차 출시 직후 6개월 공백). D+180 = Sp01~05 (5/4~7/13 = D+70) 종료 + 웹 통합 전용 D+71~180 (4개월) 조합 |
+
+---
+
+## 2. 시나리오 모드 v1 흐름 (1F~50F)
+
+**구조**: F = floor (층). 시나리오 트리거 = "층 진입 전" + "층 종료 후" 2점. 1F~17F = 1권 18화 직접 매핑 (chapter_00~17). 18F~50F = 2권 본문 흡수 (chapter_18~50, 33화).
+
+### 매핑 표 (1F~17F = 1권 18화 정본)
+
+| F | 챕터 | 트리거 진입 전 | 트리거 종료 후 | 시즌 시험 | 무기 |
+|---|------|--------------|--------------|----------|------|
+| 1F | chapter_00 (프롤) | 1981 부산 오륙도 / 모친 월자 작두 봉인 | "엇박자라도 괘안타" 유언 (chapter_00.md:58~60) | 시즌 1 (노동의 박자) 도입 | (없음 / 컷신) |
+| 2F | chapter_01 | 2030 옥탑방 / 한진 41 야간 알바 / 글리치 진입 | 부친 수경 유언 회상 | 시즌 1 본맥 | 1: 공업용 랩봉 |
+| 3F | chapter_02 | 도비 = 신수 만령의 방주 등짝 스매싱 | 지니 = 월자 빙의 아바타 (NPC) 도입 | 시즌 2 (박자/봉인) 도입 | 1 |
+| 4~10F | chapter_03~09 | 이방원 / 무휼 / 홍대홍 / 도비 4인 1수 패밀리 결성 | 8화 이방원 의리 시험 / 10화 홍대홍 합류 + 달고나 탄생 | 시즌 3 (의리/충심) 도입 | 2: 달고나 |
+| 11F | chapter_11 | 화산파 (의천도룡기 톤) | 첫 김용 5문파 디버깅 시작 | 시즌 1 W1 | 3: 2행정 예초기 |
+| 12F | chapter_12 | 아미파 (천룡팔부 톤) | | 시즌 1 W2 | 4: 2행정 송풍기 |
+| 13F | chapter_13 | 소림사 (사조영웅전 톤) | | 시즌 1 W3 | 5: 18V 그라인더 |
+| 14F | chapter_14 | 무당파 (의천도룡기 톤) | 14화 비단 5단 키 (D-2.13) | 시즌 2 W6 빌드업 | (랩봉 재사용) |
+| 15F | chapter_15 | 개방 (천룡팔부 톤) | | 시즌 1 W4 | 6: 무선 PDA 스캐너 (정주 시그니처) |
+| 16F | chapter_16 | 곤륜파 장문인 / 천겁 뇌전 | 산업용 멀티탭 + H빔 피뢰침 차단 | 시즌 1 W5 | 7: 산업용 4구 멀티탭 |
+| 17F | chapter_17 | 제우스 메인프레임 데이터 센터 | **8인치 니퍼 광케이블 절단 = 1부 클라** / 제우스 잔재 조선 서버 도주 | 시즌 1 W7 (시즌 1 종결) | 8: 8인치 니퍼 |
+
+### 18F~50F (2권 본문 33화)
+
+`project_volume2_synopsis_v2_decisions.md` v2.4 매핑 그대로 사용. 무당파 9화 / 개방 6화 / 소림사 7화 / 곤륜파 19화 (29~48화). 50F = 곤륜산 정상 종료 = 2권 클라.
+
+**트리거 총량**: 1F~50F × 2점 (전/후) = **100 트리거**. 단 4~10F 패밀리 결성 7화 = 7×2 = 14 + 보스전 컷신 5건 추가 = **약 120 트리거**. 강시연 본문 인용 + 게임 전용 보강 (시즌 시험 라벨 / 어픽스 트리거 / 다음 층 힌트) 50/50.
+
+**51F~ 무한 모드 진입**: 시나리오 OFF / 1000F+ 영원 사냥. 50F 종료 시 PD 본문 2권 50화 클라 컷신 + "무한 모드 해금" 토스트.
+
+---
+
+## 3. 무한 모드 밸런스 곡선 (51F → 1000F → ∞)
+
+### baseline (메모리 잠금)
+
+- **200F = 4.255배** (`project_sprint01_w1_results.md` W1-04 PASS 0.12% 편차) = 절대 baseline. v2.0에서 변경 0건.
+- **공식**: `DPS_F = baseline × prestige(2.30x) × affix_epic_6슬롯(1.85x)` = 200F에서 4.255 검증 완료.
+
+### v2.0 신규 곡선 (51F~1000F)
+
+| 구간 | DPS 배율 (vs 1F baseline) | 드롭 등급 비율 | 설계 근거 |
+|------|------------------------|---------------|---------|
+| 51F~100F | 1.0 → 2.0 (선형) | Common 80% / Magic 18% / Rare 2% | 1권 시나리오 종료 직후, 진입 장벽 낮게 |
+| 100F~200F | 2.0 → 4.255 | Common 60% / Magic 30% / Rare 9% / Epic 1% | 200F = 메모리 baseline 정합 |
+| 200F~500F | 4.255 → 12.0 (지수 ×1.005/F) | Magic 50% / Rare 35% / Epic 13% / Mythic 2% | Epic 슬롯 풀 활성화 / Mythic 폭주 (Sp04 v1.1 메모리) |
+| 500F~1000F | 12.0 → 40.0 | Rare 40% / Epic 40% / Mythic 18% / Legendary 2% | Sp06+ MythicEssence 소비처 + Legendary Power Sp06+ 도입 정합 |
+| 1000F+ | 정지 권장 (절차 생성 미도입) | — | Sp09 분기 결정 (`project_sp06_plus_lever_decisions.md`) 종료 후 v3.0 발주 |
+
+### 무한 곡선 설계 원칙 (Sp06+ 박세린 Sp별도 발주 영역)
+
+- **속성 4종 + 저항 4종** (Sp07 신규): 500F+ 구간에서 속성 매칭 보너스 / 페널티 ×1.3 / ×0.7
+- **드롭 로그**: 무한 모드 = `project_sprint03_idle_research.md` 5대 결정 정합 (드롭 로그만 / 자동 PP / 층 고정)
+- **시즌 패스 연동**: 무한 모드 100F 단위 마일스톤 = 시즌 패스 Tier 보상 (`project_volume2_synopsis_v2_decisions.md` v2.4 Tier 60/70/75/90)
+
+---
+
+## 4. 수익 모델 결합 (#6 default 상세)
+
+| 채널 | 가격 | 진입 시점 | 비고 |
+|------|------|---------|------|
+| **웹게임 (입문)** | 무료 | 1F 즉시 | 강시연 1권 18화 시나리오 종료까지 무료. SNS 공유 트리거 (정주 시그니처 명대사 17화 "랜선이 뽑혀도") |
+| **Unity 본판** | $14.99 (한국 19,800원) | 51F 무한 모드 진입 전 | 51F~1000F 무한 + 2권 33화 시나리오 + 멀티 캐릭터 (knight/slayer/berserker/archon/demonhunter) |
+| **시즌 패스** | $9.99 (한국 12,800원) / 60일 | Unity 본판 구입 후 | Tier 60 (오방위의 도(道) Rare 무료) / Tier 70 (9,860원의 박자 Legendary 영구 보유 = D-2.15) / Tier 75 (slayer 유교 드래곤 스킨) / Tier 90 (Veil of Dangun) |
+| **광고 (IdleCap 결합)** | 무료 (광고 시청) | 51F+ | `project_idle_cap_combination_sp03_pending.md` Sp03 W1 첫 결정 슬롯 정합 (광고 캡 48h 결합 c 안 유예) |
+
+**ARPU 모니터링 트리거**: 시즌 패스 conversion 30% 이하 시 D-2.15 (Tier 70 영구 보유) 정책 자동 재검토 (메모리 v2.4 명시).
+
+---
+
+## 5. 게임 디자인 측 팀 필요성 (소/중/대)
+
+### 권장: **소 (1인 박세린 단독 유지)**
+
+**근거**:
+
+| 영역 | 박세린 단독 가능? | 근거 |
+|------|----------------|------|
+| 시나리오 트리거 120건 (1F~50F) | YES | `project_volume2_synopsis_v2_decisions.md` v2.4 매핑 표 그대로 흡수. 화당 ~30분 = 50화 × 30분 = 25h (Sp별도 발주 5건 분할) |
+| 무한 곡선 51F~1000F 신규 | YES | Sp06~09 (`project_phase_2_3_roadmap_v2_decisions.md` 9주 / 2026-07-20~09-14) 영역. 신규 발주 0 |
+| 강시연 본문 통합 (10화 = 100,000자+) | YES | `feedback_writer_collaboration_protocol.md` 1주 2화 / 24~48h 회신 protocol 그대로 |
+| 강시연 신규 챕터 (chapter_18~50) | NO (강시연 단독) | 박세린 = 검수 라인. 작성 X |
+| 게임 측 트리거 구현 (Unity / 웹) | NO (구현 측 영역) | code-lead / web-game-lead 영역 (Tier 2 Lead 신규 채용 권장) |
+
+**중(2~3) 또는 대(4~5) 채용 시 박세린 권장 비권장 사유**:
+- 박세린 분업 부담 = 현재 GDD + 5 sprint 동시 ≠ 게임 디자인 신규 인력 필요. **구현 측 인력 부담** (web-game-lead + 가능하면 unity-game-lead).
+- 메모리 `project_web_lead_recruitment.md` 패턴 (web-lead 김민준 1인 채용으로 D+5에 24 산출물 / -88% 효율) 재현 권장.
+- 시나리오 트리거 / 밸런스 / 수치 = 박세린 1인이 가장 빠름 (분업 시 정합성 손상 위험 = `project_milestone_bonus_pct_pp_only_lock.md` 단일 곱 경로 잠금 정합 사상).
+
+**결론**: **게임 디자인 측 = 박세린 단독 / 신규 채용 = 구현 측 (web-game-lead 1인 = 김민준 산하 흡수 또는 별도 신설)**.
+
+---
+
+## 6. 박세린 v1.2 → v2.0 갱신 권고 (영향 범위 1줄)
+
+- **`project_phase_2_3_roadmap_v2_decisions.md` v3.0 발주 권고** = Phase 2 MVP (2026-07-13) → 웹게임 D+180 (2026-11-04) 마일스톤 신규 추가. Phase 3 확장 (2026-09-14) 종료 후 D+180까지 7주 = 웹 통합 전용 스프린트 Sp10~12 신설.
+
+---
+
+## 7. 확실하지 않은 가정 1~2건 (PD 검토 없이 잠기므로 위험 헷지)
+
+1. **#7 D+180 = 웹게임 MVP가 강시연 chapter_18~50 33화 작성 완료를 전제** = 강시연 1주 2화 protocol 시 33화 / 2 = 17주 ≈ 4개월. **risk**: 강시연 회신 24~48h 초과 시 D+180 슬립. **헷지**: 50F를 1차 MVP 임계로 낮추되, 본문 50화 부재 시 25F (1권 17화 + 8화 보강)으로 자동 다운그레이드. PD 별도 결정 없으면 박세린 단독 판정.
+2. **#5 1000F 정지 권장 = Sp09 분기 (Follower / 속성 / 수호자 택1) 결정 전 절차 생성 미도입**. **risk**: 글로벌 모바일 RPG 무한 모드 1000F 한계 = 디아블로 4 Torment 4 진입 어려움 패턴 = 코어 유저 이탈 가능. **헷지**: 1000F 도달 = 시즌 패스 Tier 100 (영원의 증표) 보상 + 시즌 리셋 시 1F 재시작 (`project_sprint05_season_research.md` 7대 결정 시즌 50% retain 정합).
+
+---
+
+## 부록: 박세린 분업 점검 (구현자 침범 0건)
+
+- 수치 결정 침범 0 (200F 4.255 baseline 보존 / Calculator 시그니처 12열 불변)
+- GDD 변동 0 (시즌 시험 3종 / 11대 노동 무기 / 4인 1수 패밀리 v2.4 락 그대로)
+- 200F 이후 1000F+ 곡선 신규 설계 = Sp06~09 박세린 영역 별도 발주 (v3.0 로드맵 진입 시)
+- 강시연 본문 검수 = `feedback_writer_collaboration_protocol.md` 표준 protocol 유지
+
+— 박세린 (game-designer) / 2026-05-04 / v1.0 default 일괄 잠금 적용
+6:["slug","v2_0_redesign_game_design","d"]
+0:["C3HARxK-K5t63zmrlRleb",[[["",{"children":["docs",{"children":[["slug","v2_0_redesign_game_design","d"],{"children":["__PAGE__?{\"slug\":\"v2_0_redesign_game_design\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","v2_0_redesign_game_design","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"designs"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"GodBlade v2.0 재설계 — 게임 디자인 측 1쪽 (박세린)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"designs/v2_0_redesign_game_design.md"}]]}],["$","$L3",null,{"body":"$4"}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"1,915"}]," · category:"," ",["$","b",null,{"children":"designs"}]]}]]}],[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/5eacd01f773eed7f.css","precedence":"next","crossOrigin":"$undefined"}]]],null],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$6","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/f3223636d5dd4d90.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L5",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L8",null]]]]
+8:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"GodBlade v2.0 재설계 — 게임 디자인 측 1쪽 (박세린) — 자료실"}],["$","meta","3",{"name":"description","content":"- v1.2 6단계 로드맵 (Unity 24~30M 단일 출시) → v2.0 = \"웹게임 D+90 선출 + Unity 후속\" 격변. 강시연 1권 18화 = 시나리오 모드 1F~50F 트리거 본맥, data_transcendent_stage 200F 4.21배 (메모리 project_sp"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null
