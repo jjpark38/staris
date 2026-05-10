@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="description" content="GodBlade — 무당파 검귀의 윤회. 1F~50F 프롤로그 (시나리오 모드)." />
+    <meta property="og:title" content="GodBlade — 1F~50F 시나리오" />
+    <meta property="og:description" content="강시연 무당산 비전. 1분 데모." />
+    <meta property="og:type" content="website" />
+    <title>GodBlade — Scenario Teaser</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #0a0a0a;
+        color: #e5e5e5;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      #game-root {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          radial-gradient(
+            circle at 50% 40%,
+            rgba(120, 20, 20, 0.18) 0%,
+            transparent 60%
+          ),
+          #0a0a0a;
+      }
+      #boot-fallback {
+        color: #8b1a1a;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      #boot-fallback::after {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        margin-left: 8px;
+        background: #8b1a1a;
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.2;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="/godblade/play/scenario/teaser/assets/index-BXhV5Ilm.js"></script>
+    <link rel="modulepreload" crossorigin href="/godblade/play/scenario/teaser/assets/phaser-hEifp-43.js">
+    <link rel="modulepreload" crossorigin href="/godblade/play/scenario/teaser/assets/rex-B5vtl8YX.js">
+  </head>
+  <body>
+    <div id="game-root">
+      <div id="boot-fallback">awakening blade</div>
+    </div>
+  </body>
+</html>
