@@ -1,0 +1,185 @@
+2:I[2972,["972","static/chunks/972-9aa3f83dfcadd7f8.js","121","static/chunks/app/docs/%5Bslug%5D/page-684d86dd91d78e87.js"],""]
+4:I[4707,[],""]
+6:I[6423,[],""]
+3:T76cb,<h1 class="mb-4 mt-6 border-b border-border pb-2 text-[22px] font-bold text-gold">Sprint D-day — 5/18~5/22 5일 파이프라인 (GodBlade 권1 출시)</h1>
+<blockquote class="my-3 rounded border-l-2 border-gold bg-bg-2 px-4 py-2 text-text-1"><strong class="font-semibold text-text-0">PD 잠금 (2026-05-17 &quot;all go&quot; + &quot;go&quot;)</strong>: Q1~Q4 default 패키지 + 즉시 진행 <strong class="font-semibold text-text-0">PM 박세린 대행</strong>: 메인 세션 (hit limit 6:50pm 리셋 정합) <strong class="font-semibold text-text-0">5/22 D-day</strong>: 권1 1~5화 무료 공개 + 5 채널 동시 push <strong class="font-semibold text-text-0">위치</strong>: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">sprints/sprint_d_day_2026-05-22.md</code></blockquote>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§0 5일 일정표 (D-4 → D-day)</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">일자</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">KST 09:00</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">KST 12:00</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">KST 15:00</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">KST 18:00</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">KST 21:00</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">5/18 D-4</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">윤소정 카피 v2.0 한국 자율 갱신</td><td class="border border-border px-3 py-2 text-left text-text-0">강시연 권2 chapter_02 +사이다 1회</td><td class="border border-border px-3 py-2 text-left text-text-0">-</td><td class="border border-border px-3 py-2 text-left text-text-0">한지우 9 캐릭터 잔여 4체 진행</td><td class="border border-border px-3 py-2 text-left text-text-0">박세린 PM 5/19 일정 추적</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">5/19 D-3</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">Justin 카피 v2.0 글로벌 자율 갱신</td><td class="border border-border px-3 py-2 text-left text-text-0">윤소정 디스코드/카페 push 준비</td><td class="border border-border px-3 py-2 text-left text-text-0">-</td><td class="border border-border px-3 py-2 text-left text-text-0">한지우 9 캐릭터 추가</td><td class="border border-border px-3 py-2 text-left text-text-0">-</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">5/20 D-2</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">윤소정 픽코마 등록 자료 자율</td><td class="border border-border px-3 py-2 text-left text-text-0">Justin Reddit r/MUD draft</td><td class="border border-border px-3 py-2 text-left text-text-0">차도윤 MUD 50 rooms baseline 시작</td><td class="border border-border px-3 py-2 text-left text-text-0">김민준 폰트 토글 (2h)</td><td class="border border-border px-3 py-2 text-left text-text-0">-</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">5/21 D-1</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">윤소정 한국 SEO 최종 검수</td><td class="border border-border px-3 py-2 text-left text-text-0">Justin Reddit draft 검수</td><td class="border border-border px-3 py-2 text-left text-text-0">강시연 권2 +1화 (사이다 정합)</td><td class="border border-border px-3 py-2 text-left text-text-0">김민준 자동 다음 (1h)</td><td class="border border-border px-3 py-2 text-left text-text-0">전 사원 최종 검수</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0"><strong class="font-semibold text-text-0">5/22 D-day</strong></td><td class="border border-border px-3 py-2 text-left text-text-0">09:00 한국 push (문피아 + 디스코드)</td><td class="border border-border px-3 py-2 text-left text-text-0">12:00 글로벌 push (Reddit r/MUD 1줄)</td><td class="border border-border px-3 py-2 text-left text-text-0">15:00 Naver 카페 + 게이머 커뮤니티</td><td class="border border-border px-3 py-2 text-left text-text-0">18:00 트위터 한국 + Twitter 글로벌</td><td class="border border-border px-3 py-2 text-left text-text-0">21:00 디스코드 라이브 회고</td></tr></tbody></table></div>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§1 윤소정 (한국 마케팅) — 자율 진행</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/18 카피 v2.0 한국 자율 갱신</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1">산출물: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/marketing/copy_v2_carbon_2026-05-17.md</code> §1 (이미 작성 완료)</li><li class="mb-1">추가 검토: 다음 4건 자율 검수</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />hook 한 줄 짧기 (현재 24자, 목표 18자 이하?)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />키워드 SEO 검수 (Naver 검색량 기반)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />R-15 등급 명시 (한국 게임위 / 픽코마 정합)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />박정주 PD 작가 필명 정합 (문피아 등록명)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/19 디스코드/카페 push 준비</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">채널: 한국 디스코드 (인디 게임 / 한국 웹소설 / 김용 풍 무협 등)</li><li class="mb-1">Naver 카페 (게임 / 웹소설 / 무협 / 디아블로 한국 팬덤)</li><li class="mb-1">자료 패키지:</li><li class="mb-1">1줄 hook + 3줄 설명 + URL 4건 (staris.cloud / 문피아 / GitHub / Discord)</li><li class="mb-1">표지 PNG 1매 (한지우 권1 표지 v1.0)</li><li class="mb-1">본문 발췌 5줄 (chapter_01 1단 강시연 v1.1)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/20 픽코마 일본 등록 자료 (D+30~D+60 슬롯)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">카피 일본판 (이미 §1.C 일본판 작성 완료)</li><li class="mb-1">픽코마 등록 form 사전 준비</li><li class="mb-1">작품명: 「GodBlade — 神刃」</li><li class="mb-1">일본판 hook: 「50代の倒産したゲーム開発者、檀君73代孫として復活する」</li><li class="mb-1">등급: R-15 (PD 25 시드 잠금 정합)</li><li class="mb-1">권1 25화 일본어 번역 일정: D+60 슬롯 (윤소정 자율 외주 또는 AI 번역 PoC)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/21 한국 SEO 최종 검수</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">검색 키워드 검증 (Naver 트렌드):</li><li class="mb-1">&quot;50대 주인공 웹소설&quot; (블루오션 검증)</li><li class="mb-1">&quot;디아블로 한국 웹소설&quot; (장르 매핑)</li><li class="mb-1">&quot;단군 신화 웹소설&quot; (한국 무속 정합)</li><li class="mb-1">&quot;박정주 PD&quot; (자전적 작가 필명)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/22 09:00 한국 push (D-day)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">문피아 권1 1~5화 무료 게시</li><li class="mb-1">staris.cloud/godblade/novel/v2_0/1/ 메인 노출</li><li class="mb-1">한국 디스코드 5채널 동시 push</li><li class="mb-1">Naver 카페 3채널 (게임 + 웹소설 + 무협)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§2 Justin Park (글로벌 마케팅) — 자율 진행</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/19 카피 v2.0 글로벌 자율 갱신</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1">산출물: <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">designs/marketing/copy_v2_carbon_2026-05-17.md</code> §2 (이미 작성 완료)</li><li class="mb-1">추가 검토:</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />hook 한 줄 짧기 (현재 영어 60자, 목표 50자)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />SEO 영어 키워드 검수 (Google Trends 영어권)</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />r/MUD / r/gamedev 커뮤니티 룰 검수</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />Twitter character limit 280자 정합</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/20 Reddit r/MUD draft (1줄 + 본격 post)</h3>
+<h4 class="mb-2 mt-4 text-[14px] font-semibold text-text-0">r/MUD 1줄 push (5/22 D-day)</h4>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>[NEW] GodBlade — Korean 1994 Magic Continent style MUD revival + autobiographical web novel (1st source integration). Free play: https://staris.cloud/godblade/play/scenario/teaser/</code></pre>
+<h4 class="mb-2 mt-4 text-[14px] font-semibold text-text-0">r/MUD 본격 post (D+7 5/29)</h4>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>Title: GodBlade — Authentic 1994 Korean MUD revival (Phaser 3 / TypeScript) + transmedia web novel IP
+
+Hey r/MUD,
+
+I&#39;m a 50-year-old Korean indie game dev (Park Jeong-ju) who just released a MUD-style game integrated with my autobiographical web novel.
+
+**The 1994 Maritel &quot;Magic Continent&quot; homage:**
+- 3-panel UI (left character / right log / bottom menu)
+- ASCII enemy art (24 enemies)
+- Turn-based [1] Attack [2] Magic [3] Defend [4] Flee [5] Item
+- HP/MP text bars (█/░)
+- #00ff41 BBS green log flow
+- Adlib-style Web Audio BGM
+- 4 equipment slots
+
+**Beyond classic MUD:**
+- Volume 1 web novel directly quoted in every room/NPC/battle (90%+ source text)
+- 24 cinematic cuts + 24 turn-based battles (TeaserScene → MudScene transition)
+- AUTO mode (auto-hunt + auto-equip + auto-sell)
+- Skill mastery (100 uses → tier 2 unlock, Chunsangbi tradition)
+- 6-tier titles (Lv-based, Korean mythology lore)
+- Drop: rare martial arts manuals (`use book_whirlwind_v2`)
+
+**Tech:** Next.js 14 (web novel) + Phaser 3.80 (game) + TypeScript + pnpm workspaces
+
+**Free play (no signup):** https://staris.cloud/godblade/play/scenario/teaser/
+
+Would love feedback from the MUD community. Particularly interested in:
+- Authenticity score (1994 Maritel/Korea MUD comparison)
+- Web novel + MUD integration UX
+- Korean 4-genre fusion (Diablo + Shamanism + Wuxia + AI Dystopia)
+
+Cheers,
+Park Jeong-ju (50yo, 30 years indie game dev, Korean Wave gen)</code></pre>
+<h4 class="mb-2 mt-4 text-[14px] font-semibold text-text-0">r/gamedev (D+7 5/29) — 본격 dev post</h4>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>Title: [Postmortem] 50-year-old Korean indie dev&#39;s autobiographical web novel + integrated MUD game (Phaser 3 / 6 weeks)
+
+Stack:
+- Next.js 14 (web novel: staris.cloud/godblade/novel/)
+- Phaser 3.80 (MUD game: staris.cloud/godblade/play/)
+- TypeScript 5.6 strict
+- pnpm workspaces (monorepo)
+- staris.cloud static hosting (GitHub Pages)
+- 1 dev (me) + AI agent team (Claude Code, 12 personas)
+
+What worked:
+- Web novel = 1st source. Every game asset references novel chapters.
+- HMR live: I write a chapter → game updates in 0.2s.
+- AI agent team: I make decisions, agents implement specific specialties (game designer / web lead / graphics / scenario / marketing / etc.)
+- MUD homage (1994 Korean Magic Continent) gave instant authentic feel.
+
+What&#39;s next:
+- Volume 2 (currently 64% done, 1 chapter / 2-3 days)
+- Korean (Pikkoma D+30), Global (Royal Road D+30)
+- MUD 50-room expansion (Phase 4, 2027-04+)
+- Unity client (Phase 5, mobile)
+
+Free play: https://staris.cloud/godblade/play/scenario/teaser/
+GitHub: https://github.com/jjpark38/staris (web platform)
+
+Happy to answer indie dev / Korean web novel / AI agent team questions.</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/20 추가: Reddit r/Korean (~500K) crosspost (D+14)</h3>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code>Title: [GodBlade] 50대 부도난 게임 개발자의 자전적 웹소설 + MUD 게임 (한국 무속/단군/디아블로/AI 디스토피아 4중 융합)
+
+Hey r/Korean,
+
+I&#39;m Park Jeong-ju (박정주), 50yo Korean indie game dev. Just released GodBlade — autobiographical web novel + MUD game.
+
+Korean web novel market has 0% 50-year-old protagonists. I aimed for the gap.
+
+- Volume 1 free: https://staris.cloud/godblade/novel/v2_0/1/
+- Game free: https://staris.cloud/godblade/play/scenario/teaser/
+
+한국어 OK if you prefer.</code></pre>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/22 12:00 글로벌 push (D-day)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">r/MUD 1줄 push</li><li class="mb-1">Twitter / X 단발 push (3 트윗 thread)</li><li class="mb-1">Tweet 1: 1줄 hook + 핵심 URL</li><li class="mb-1">Tweet 2: Tech stack + free play</li><li class="mb-1">Tweet 3: PD 자전 + Korean indie dev appeal</li><li class="mb-1">Discord (영어 인디 / Diablo 커뮤니티)</li><li class="mb-1">Mastodon (fediverse indie dev)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/22 D-day + Royal Road D+30 (6/15) baseline</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Royal Road <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">https://www.royalroad.com/profile/...</code> (Justin 등록 필요)</li><li class="mb-1">Synopsis draft (1500자):</li></ul>
+<pre class="my-4 overflow-x-auto rounded border border-border bg-bg-1 p-4 text-[13px]"><code># GodBlade: The Bankrupt Game Dev&#39;s Awakening
+
+Park Jeong-ju, 50 years old, 160cm, divorced, broke.
+
+After 30 years of running an indie game studio in Seoul, Korea, a single A4 bankruptcy notice ended everything. The company logo &quot;Staris Inc.&quot; is now a memory. Bank cards declined. Phone disconnected. Apartment lease expiring.
+
+In the early morning of February 1981 — wait, no — early morning of February 2026, Park drags himself to Coupang Distribution Center #41 in Incheon. Day labor. Lifting palettes.
+
+Then Dobby — his 3.8 kg Pon-and-White Chihuahua, 45 years of co-habitation — sends a telepathic message.
+
+&quot;You. Bankrupt Park. You are the 73rd descendant of Dangun Wanggeom — the founder-king of ancient Korea. The Hongik-Ingan protocol (洪益人間, &#39;broadly benefit humanity&#39;) is now active in you. Bring it forth, fool.&quot;
+
+Dark goblins materialize from Hongdae alleys. K-DANCE beats summon them. Park&#39;s industrial-grade plastic wrap rod — a tool from Coupang — becomes &quot;Whirlwind Wrap&quot; martial art.
+
+His ex-girlfriend Jini (LA Hollywood blonde, tinted sunglasses) appears in the misty forest. But it&#39;s not her — it&#39;s his late mother Wolja&#39;s spirit, possessing Jini&#39;s body for 45 years.
+
+&quot;Marrrr! You absolute fool of a son! Mom&#39;s here!&quot;
+
+Volume 1 follows Park&#39;s transformation from bankrupt indie dev to Dangun&#39;s 73rd descendant. Volumes 2-10 chase the Heuksang Merchant Guild, the LangGraph AI simulation, the Hollywood deepfake factories, and finally — Zeus, the transcendental AI threatening to reboot human reality itself.
+
+Genre fusion: Korean shamanism + Wuxia martial arts + Diablo dark fantasy + AI dystopia. 4-tier fusion unique to GodBlade.
+
+10 volumes. 250 chapters. Marvel-style Phase structure.
+
+Also playable as: integrated MUD game (1990s Korean Maritel &quot;Magic Continent&quot; homage) at staris.cloud/godblade/play/. Play = read. Read = play.
+
+Author: Park Jeong-ju, 50yo Korean indie game dev. 30 years industry. First autobiographical work. Korean Wave generation (DEUS 1993, BBS culture, IBM mechanical keyboards).
+
+Free to read. Free to play. Updates 3x/week.</code></pre>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§3 강시연 (시나리오) — 자율 진행</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/18 권2 chapter_02 사이다 +1회/3화 (PD Q2 GO)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">강시연 자율 영역 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">feedback_scenario_writer_autonomy.md</code> 정합)</li><li class="mb-1">권2 현재 16/25화 = 9화 잔여 → 사이다 시퀀스 3회 추가 필요</li><li class="mb-1">강시연 1주 3화 페이스 = 권2 완성 5/24+ → 5/22 D-day 영향 0 (chapter_01만 100% 인용)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/19~5/21 권2 +3화 = 19/25</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">박세린 (메인 세션) = 일정 추적만, 본문 영역 침범 0 (<code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">feedback_pd_pasted_chapter_no_overwrite.md</code> 정합)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§4 김민준 (웹 / <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/novel/</code>) — 자율 진행</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/20 폰트 토글 (2h)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">web/ <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">/novel/[v]/[c]</code> 페이지에 폰트 크기 토글 UI 추가 (S/M/L)</li><li class="mb-1">localStorage <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">godblade_novel_font_size</code> v1 (S=14px / M=16px / L=18px)</li><li class="mb-1">한국 시장 톱 10 UX 정합</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/21 자동 다음 (1h)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">페이지 하단 &quot;다음 화 →&quot; 버튼 + 키보드 → 단축키</li><li class="mb-1">5초 후 자동 다음 옵션 (autoplay toggle)</li><li class="mb-1">localStorage <code class="rounded bg-bg-3 px-1.5 py-0.5 font-mono text-[12px] text-gold-light">godblade_novel_autoplay</code> v1</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">D+45 (6/2) 댓글 시스템 (PD Q3 GO)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">Supabase Backend 1차 신설</li><li class="mb-1">무료 댓글 + 좋아요 + spoiler_level 필터 (PD 25 시드 R-15 정합)</li><li class="mb-1">김민준 자율 ~10h (6/2~6/5 분산)</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§5 차도윤 (웹게임) — 자율 진행</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/20 MUD 50 rooms 확장 baseline (Sp-W02 사전 준비)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">현재 24 rooms (chapter_01 9단 + chapter_02 5단 + chapter_03 5단)</li><li class="mb-1">50 rooms 확장 target:</li><li class="mb-1">chapter_01 25화 = 25 rooms (현재 9 → +16)</li><li class="mb-1">chapter_02 25화 = 25 rooms (현재 5 → +20)</li><li class="mb-1">총 50 rooms (chapter_03+ 는 Phase 4 본격)</li><li class="mb-1">5/20 baseline = chapter_01 +16 rooms 본문 인용 작업 시작 (강시연 v1.1 source)</li><li class="mb-1">진행 페이스: Sp-W02 (6/1~6/14) 본격 완성</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§6 한지우 (그래픽) — 자율 진행</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">5/18 9 캐릭터 잔여 4체 (홍대홍 / 무휼 / 이방원 / 수경)</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">한지우 자율 영역 (페르소나 v3.1 PD 거부 일관 정합)</li><li class="mb-1">5/19~5/21 분산</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">D+45 (6/2) 4차 웹툰 저작툴 + Imagen 3 시드</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">류재현 PoC 사전 학습 10주 분산 ~10h 중 (5/9~7/20)</li><li class="mb-1">한지우 표지 + 캐릭터 시드 자료 D+30 (6/15) 슬롯</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§7 박세린 PM 종합 (5/22 D-day 최종 검수)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">D-1 (5/21) 21:00 전 사원 최종 검수</h3>
+<ul class="mb-3 ml-1 text-text-0"><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />윤소정 한국 카피 v2.0 + 한국 push 자료 packaging</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />Justin 글로벌 카피 v2.0 + Reddit/Twitter/Discord draft</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />강시연 권2 19/25화 진행도 검증</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />김민준 폰트 토글 + 자동 다음 LIVE 확인</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />차도윤 MUD baseline (이번 sprint는 영향 0) 확인</li><li class="mb-1 list-none text-text-0"><input type="checkbox" disabled class="mr-2 align-middle accent-gold" />한지우 9 캐릭터 잔여 4체 진행도</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">D-day (5/22) 09:00 push 일정</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">09:00 KST: 문피아 + staris.cloud + 디스코드 한국 (윤소정)</li><li class="mb-1">12:00 KST: r/MUD 1줄 + Twitter 글로벌 (Justin)</li><li class="mb-1">15:00 KST: Naver 카페 + 게이머 커뮤니티 (윤소정)</li><li class="mb-1">18:00 KST: 트위터 한국 + Twitter 글로벌 thread (윤소정 + Justin)</li><li class="mb-1">21:00 KST: 디스코드 라이브 회고 (박세린 PM 진행 + PD 인사)</li></ul>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">D+1 (5/23) 09:00 첫 KPI 측정</h3>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">staris.cloud PV / 문피아 조회수 / Reddit upvote / Twitter engagement</li><li class="mb-1">박세린 보고서 작성 → PD</li></ul>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§8 KPI 목표 (D+7 / D+30)</h2>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">한국 (윤소정)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">KPI</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">D+7 (5/29)</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">D+30 (6/22)</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">staris.cloud 권1 PV</td><td class="border border-border px-3 py-2 text-left text-text-0">500</td><td class="border border-border px-3 py-2 text-left text-text-0">5,000</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">문피아 권1 조회수</td><td class="border border-border px-3 py-2 text-left text-text-0">1,000</td><td class="border border-border px-3 py-2 text-left text-text-0">10,000</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">디스코드 신규 가입</td><td class="border border-border px-3 py-2 text-left text-text-0">50</td><td class="border border-border px-3 py-2 text-left text-text-0">500</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Naver 카페 push 반응</td><td class="border border-border px-3 py-2 text-left text-text-0">100 댓글</td><td class="border border-border px-3 py-2 text-left text-text-0">1,000 댓글</td></tr></tbody></table></div>
+<h3 class="mb-2 mt-5 text-[15px] font-semibold text-text-0">글로벌 (Justin)</h3>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">KPI</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">D+7 (5/29)</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">D+30 (6/22)</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">staris.cloud (글로벌) PV</td><td class="border border-border px-3 py-2 text-left text-text-0">100</td><td class="border border-border px-3 py-2 text-left text-text-0">1,000</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">r/MUD upvote</td><td class="border border-border px-3 py-2 text-left text-text-0">50</td><td class="border border-border px-3 py-2 text-left text-text-0">200</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">r/gamedev upvote</td><td class="border border-border px-3 py-2 text-left text-text-0">100</td><td class="border border-border px-3 py-2 text-left text-text-0">500</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Twitter follower</td><td class="border border-border px-3 py-2 text-left text-text-0">20</td><td class="border border-border px-3 py-2 text-left text-text-0">200</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Royal Road follower (D+30 등록 후)</td><td class="border border-border px-3 py-2 text-left text-text-0">-</td><td class="border border-border px-3 py-2 text-left text-text-0">100~500</td></tr></tbody></table></div>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§9 산출물 정합</h2>
+<div class="my-4 overflow-x-auto"><table class="w-full border-collapse text-[13px]"><thead><tr><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">항목</th><th class="border border-border bg-bg-2 px-3 py-2 text-left font-semibold text-gold-light">상태</th></tr></thead><tbody><tr><td class="border border-border px-3 py-2 text-left text-text-0">5일 일정표</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ §0</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">윤소정 한국 자율 4 액션</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ §1</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">Justin 글로벌 자율 5 액션 + Reddit/Twitter/Royal Road draft</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ §2</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">강시연 권2 사이다 +1회/3화 (자율 통보)</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ §3</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">김민준 폰트 토글 + 자동 다음 + 댓글 D+45</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ §4</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">차도윤 MUD 50 rooms baseline</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ §5</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">한지우 9 캐릭터 잔여 4체 + D+45 웹툰</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ §6</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">박세린 PM 종합 + D-day 일정 + D+1 KPI</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ §7</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">KPI 목표 D+7 / D+30</td><td class="border border-border px-3 py-2 text-left text-text-0">✅ §8</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">5/22 D-day 영향</td><td class="border border-border px-3 py-2 text-left text-text-0">0 (사전 준비만)</td></tr><tr><td class="border border-border px-3 py-2 text-left text-text-0">AI 비용</td><td class="border border-border px-3 py-2 text-left text-text-0">메인 세션 직접 ~30분 (Sonnet 정책 정합)</td></tr></tbody></table></div>
+<hr class="my-6 border-border" />
+<h2 class="mb-3 mt-6 text-[18px] font-semibold text-gold-light">§10 다음 PD 액션</h2>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">default = 액션 없음</strong>. 5 트랙 자율 진행.</p>
+<p class="mb-3 text-text-0"><strong class="font-semibold text-text-0">PD 직접 결정 슬롯 (선택적)</strong>:</p>
+<ul class="mb-3 ml-5 list-disc text-text-0"><li class="mb-1">PD가 5/22 D-day 라이브 push 시간 변경 (현재 09:00 KST default)</li><li class="mb-1">PD가 hook 카피 수정 (윤소정 한국 v2.0 / Justin 글로벌 v2.0)</li><li class="mb-1">PD가 추가 채널 (Twitch / YouTube / TikTok 등) 명시</li></ul>
+<p class="mb-3 text-text-0">답 없으면 5/22 09:00 자동 push.</p>5:["slug","sprint_d_day_2026-05-22","d"]
+0:["mkiowhxpFX-auNQY9jv2M",[[["",{"children":["docs",{"children":[["slug","sprint_d_day_2026-05-22","d"],{"children":["__PAGE__?{\"slug\":\"sprint_d_day_2026-05-22\"}",{}]}]}]},"$undefined","$undefined",true],["",{"children":["docs",{"children":[["slug","sprint_d_day_2026-05-22","d"],{"children":["__PAGE__",{},[["$L1",["$","main",null,{"className":"mx-auto max-w-[960px] px-6 py-7 pb-20","children":[["$","header",null,{"className":"mb-6 border-b border-border pb-4","children":[["$","div",null,{"className":"mb-3 flex flex-wrap items-center gap-2 text-[12px]","children":[["$","$L2",null,{"href":"/docs","className":"text-gold-light hover:text-gold","children":"← 자료실"}],["$","span",null,{"className":"text-text-2","children":"/"}],["$","span",null,{"className":"text-text-1","children":"sprints"}],["$","span",null,{"className":"ml-2 rounded-sm px-2 py-0.5 text-[10px] font-bold bg-status-green text-bg-0","children":"LOW"}],false]}],["$","h1",null,{"className":"text-[24px] font-bold text-gold","children":"Sprint D-day — 5/18~5/22 5일 파이프라인 (GodBlade 권1 출시)"}],["$","p",null,{"className":"mt-2 font-mono text-[11px] text-text-2","children":"sprints/sprint_d_day_2026-05-22.md"}]]}],["$","article",null,{"className":"prose-godblade max-w-none text-[14px] leading-[1.7] text-text-0","dangerouslySetInnerHTML":{"__html":"$3"}}],["$","footer",null,{"className":"mt-8 border-t border-border pt-4 text-[12px] text-text-2","children":["spoiler_level: ",["$","b",null,{"children":"low"}]," · word_count:"," ",["$","span",null,{"className":"font-mono text-text-1","children":"2,276"}]," · category:"," ",["$","b",null,{"children":"sprints"}]]}]]}],null],null],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children","$5","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[null,["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/godblade/_next/static/css/13bf3e7f073aa9cc.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","className":"dark","children":[["$","head",null,{"children":["$","link",null,{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"}]}],["$","body",null,{"className":"min-h-screen bg-bg-0 text-text-0","children":["$","$L4",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L6",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}]]}]],null],null],["$L7",null]]]]
+7:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Sprint D-day — 5/18~5/22 5일 파이프라인 (GodBlade 권1 출시) — 자료실"}],["$","meta","3",{"name":"description","content":"- 산출물: designs/marketing/copy_v2_carbon_2026-05-17.md §1 (이미 작성 완료)"}],["$","meta","4",{"name":"robots","content":"noindex, nofollow"}]]
+1:null
