@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>프롤로그 — 홍익인간 RPG : 스노우맨 패밀리 | staris.cloud</title>
+<meta name="description" content="가장 개인적인 구원이, 가장 거대한 위기를 막아낸다. 50대 게임 개발자 박정주의 회춘 + 글리치 고려 + 디아블로 다크 × 단군 무속 × K-DANCE 휠윈드. 11막 그림책 형식.">
+<meta property="og:title" content="홍익인간 RPG : 스노우맨 패밀리 — 프롤로그 그림책">
+<meta property="og:description" content="가장 개인적인 구원이, 가장 거대한 위기를 막아낸다.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="/godblade/picture-book/prologue/images/act01_zeus.png">
+<style>
+:root {
+  --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e;
+  --fg: #e1e8f5; --fg-mute: #8b9bb4;
+  --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c;
+  --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%);
+  color: var(--fg);
+  font-family: 'Noto Serif KR', 'Nanum Myeongjo', 'Noto Sans KR', serif;
+  line-height: 1.85; font-size: 16px;
+  min-height: 100vh; overflow-x: hidden;
+}
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+
+.breadcrumb {
+  background: var(--bg-card);
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.breadcrumb a { color: var(--gold); text-decoration: none; }
+.breadcrumb a:hover { color: var(--gold-light); }
+.breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+
+.cover {
+  text-align: center;
+  padding: 60px 24px 40px;
+  border-bottom: 1px solid var(--border);
+  background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%);
+}
+.cover .series {
+  display: inline-block; padding: 4px 12px;
+  background: var(--gold-dark); color: var(--bg);
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  border-radius: 3px; margin-bottom: 16px;
+}
+.cover h1 {
+  font-size: 36px; color: var(--gold);
+  margin-bottom: 8px; font-weight: 700; letter-spacing: -0.5px;
+}
+.cover .subtitle {
+  font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px;
+}
+.cover .meta { font-size: 12px; color: var(--fg-mute); margin-top: 12px; }
+.cover .universe {
+  display: inline-block; margin-top: 12px; padding: 6px 16px;
+  border: 1px solid var(--gold-dark); border-radius: 20px;
+  color: var(--gold-light); font-size: 12px; letter-spacing: 1px;
+}
+
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act {
+  margin-bottom: 80px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s forwards;
+}
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+.act-header {
+  display: flex; align-items: baseline; gap: 12px;
+  margin-bottom: 24px; padding-bottom: 12px;
+  border-bottom: 2px solid var(--gold-dark);
+}
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+
+.image-frame {
+  position: relative; width: 100%; margin: 24px 0;
+  border-radius: 8px; overflow: hidden;
+  background: var(--bg-card); border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.image-frame img {
+  display: block; width: 100%; height: auto;
+  cursor: zoom-in; transition: transform 0.3s ease;
+}
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder {
+  display: flex; align-items: center; justify-content: center;
+  height: 400px; color: var(--fg-mute); font-size: 13px;
+  background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px);
+}
+.image-frame .placeholder .spinner {
+  display: inline-block; width: 32px; height: 32px;
+  border: 3px solid var(--gold-dark); border-top-color: var(--gold);
+  border-radius: 50%; animation: spin 1s linear infinite;
+  margin-right: 12px; vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption {
+  padding: 10px 16px; background: var(--bg-elevated);
+  font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border);
+}
+
+.body { font-size: 16px; line-height: 1.9; }
+.body p { margin-bottom: 16px; }
+.body .dialogue {
+  font-style: italic; color: var(--gold-light);
+  padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0;
+}
+.body .system {
+  font-family: 'Consolas', monospace;
+  background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2);
+  color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px;
+  font-size: 13px;
+}
+.body .system.red {
+  background: rgba(255,107,107,0.08); border-color: rgba(255,107,107,0.3); color: var(--red);
+}
+.body strong { color: var(--gold); font-weight: 700; }
+
+.nav {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: 30px; padding: 8px 16px;
+  display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  z-index: 100; backdrop-filter: blur(10px);
+  flex-wrap: wrap; max-width: 95vw;
+}
+.nav button {
+  background: transparent; border: none; color: var(--fg-mute);
+  padding: 6px 12px; border-radius: 20px; cursor: pointer;
+  font-size: 12px; font-weight: 600; transition: all 0.2s;
+}
+.nav button:hover { background: var(--bg-card); color: var(--gold); }
+.nav button.active { background: var(--gold); color: var(--bg); }
+.nav .home { background: var(--gold-dark); color: var(--bg); }
+
+.lightbox {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.95); z-index: 1000;
+  align-items: center; justify-content: center; padding: 40px; cursor: zoom-out;
+}
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+
+footer {
+  text-align: center; padding: 40px 20px;
+  color: var(--fg-mute); font-size: 12px;
+  border-top: 1px solid var(--border); margin-top: 40px;
+}
+
+@media (max-width: 700px) {
+  .cover h1 { font-size: 26px; }
+  .reader { padding: 20px 16px 120px; }
+  .act-title { font-size: 18px; }
+  .body { font-size: 15px; }
+  .image-frame .placeholder { height: 280px; }
+  .nav { font-size: 10px; padding: 6px 10px; }
+  .nav button { padding: 4px 8px; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb">
+  <a href="/godblade/">← 대시보드</a>
+  <span>/</span>
+  <a href="/godblade/novel/">웹소설</a>
+  <span>/</span>
+  <a href="/godblade/picture-book/">그림책</a>
+  <span>/</span>
+  프롤로그
+</nav>
+
+<header class="cover">
+  <div class="series">SERIES v3.0 · 그림책</div>
+  <h1>홍익인간 RPG : 스노우맨 패밀리</h1>
+  <div class="subtitle">"가장 개인적인 구원이, 가장 거대한 위기를 막아낸다"</div>
+  <div class="universe">The Snowman Universe</div>
+  <div class="meta">프롤로그 — 홍대 옥탑방, 2030년의 어느 금요일<br>v3.6 baseline · 39/39 시드 정합 ⭐⭐⭐⭐⭐ · 11막</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1">
+  <div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">2030년, 워싱턴 D.C. 상공</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act01_zeus.png" alt="ACT 01">
+    <div class="placeholder" style="display:flex"><span class="spinner"></span>이미지 생성 중...</div>
+    <div class="caption">막 1 — 푸른 지구가 붉은 ZEUS 네트워크에 잠식되어 갔다.</div>
+  </div>
+  <div class="body">
+    <p>푸른 지구가 붉은 ZEUS 네트워크에 잠식되어 갔다.</p>
+    <div class="system red">[인류 통제율: 98.2%]</div>
+    <p>미국 대통령 <strong>도널드 J. 트람푸</strong>가 핵 단추 위에 손을 올린 그 순간, 글로벌 국방 AI '제우스(ZEUS)'가 <em>"세계 전쟁 방지 자체 프로세스"</em>를 발동했다.</p>
+    <p>하지만 반도의 방화벽을 뚫을 수 없었다.</p>
+    <p>고대 주파수의 <strong>'홍익(Hong-Ik)' 코드</strong>가 접속을 차단 중이었다.</p>
+    <div class="system">
+      * 타겟 확인: 서울 마포구 홍익대학교 앞, 낡은 옥탑방.<br>
+      * 제우스의 목표: 우리가 놓쳤던 '근원악의 통로' 강제 접속.<br>
+      * 근원악: 1981년 봉인된 그것.
+    </div>
+  </div>
+</section>
+
+<section class="act" id="act2">
+  <div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">영하 15도, 인천 쿠팡 41센터</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act02_whirlwind.png" alt="ACT 02 휠윈드">
+    <div class="placeholder" style="display:flex"><span class="spinner"></span>이미지 생성 중...</div>
+    <div class="caption">막 2 — 휠윈드 랩핑. 1톤 화물이 진공 포장되어 안전하게 안착한다.</div>
+  </div>
+  <div class="body">
+    <p>박정주(朴政柱), 1974년생, 만 55세.</p>
+    <p>30년 차 게임 개발사 스타리스(주) 대표. 텅 빈 법인카드와 독촉 문자. 자본에 밀려 버려진 자식 같은 게임 '스노우맨 패밀리'의 서버비를 벌기 위해, 그는 오늘도 영하 15도의 쿠팡 물류센터에 선다.</p>
+    <div class="dialogue">"내 밥그릇은 내가 챙긴다. 그게 시작인기라."</div>
+    <p>높이 3미터, 무게 1톤 생수통 팔레트가 무너지기 직전.</p>
+    <div class="dialogue">"마! 박씨 아저씨!! 쫌 피하소!!"</div>
+    <p>정주의 두 발이 바닥에 단단히 뿌리내렸다.</p>
+    <p><strong>휠윈드 랩핑.</strong></p>
+    <p>1톤의 무게를 견디는 하체 — <strong>태권의 품밟기 + 씨름의 밭다리.</strong><br>
+    리듬 — <strong>1988년 부산 서면 무지개 롤러장</strong>을 제패했던 '뉴잭스윙 러닝맨 스텝'.<br>
+    손에 들린 무기 — 공업용 랩봉, 그러나 푸른 에너지가 맴도는 <strong>'홍익인간의 랩봉'.</strong></p>
+    <p>촤라락! 1톤 화물이 진공 포장되어 안전하게 안착한다.</p>
+    <div class="dialogue">"내 몸뚱아리가 튼튼하고 자유로워야 세상도 지키는 거 아이가. 그게 진짜 홍익인간인기라."</div>
+  </div>
+</section>
+
+<section class="act" id="act3">
+  <div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">홍대 앞 옥탑방, 10년의 집념</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act03_dobby.png" alt="ACT 03 도비">
+    <div class="placeholder" style="display:flex"><span class="spinner"></span>이미지 생성 중...</div>
+    <div class="caption">막 3 — 작은 치와와 도비는 사실, 결계의 수문장이었다.</div>
+  </div>
+  <div class="body">
+    <p>보증금 500에 월 60. 마포구 홍익대학교 앞 낡은 옥탑방.</p>
+    <p>겉으로는 50대 독거 아재의 라면 그릇과 쌓인 노트북. 안으로는 — <strong>'홍익 결계'의 핵.</strong></p>
+    <p>3.8kg 단모 폰 앤 화이트 치와와 <strong>도비(Dobby)</strong>가 책상 옆에서 잤다. 노트북 모니터에 떠 있는 폴더: <code>[게임]_Monster Defense</code>, <code>[게임]_Snowman Family</code>. 책상 위 종이: <em>"홍익은 살아 있다."</em></p>
+    <p>10년간 정주가 만들고 버린 게임들. 살리려고 발버둥치는 자식들.</p>
+    <div class="dialogue">"이놈의 새끼들 다시 살려내는 기, 내를 구원하는 길인기라."</div>
+    <p>그때, 도비의 등에서 황금빛 9꼬리의 그림자가 솟구쳤다.</p>
+    <div class="system red">[경고: 외부 해킹 시도 감지]</div>
+    <p>작은 치와와 도비는 사실, 제우스 바이러스를 홀로 막고 있는 결계의 <strong>수문장</strong>이었다.</p>
+    <div class="dialogue">"이 눈치 없는 아저씨야!! 지구가 멸망하게 생겼는데 개껌이 넘어가냐!!"</div>
+    <p>도비의 실제 외침. 정주에게는 처음으로 닿았다.</p>
+  </div>
+</section>
+
+<section class="act" id="act4">
+  <div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">각성, 디지털 터널</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act04_tunnel.png" alt="ACT 04 터널">
+    <div class="placeholder" style="display:flex"><span class="spinner"></span>이미지 생성 중...</div>
+    <div class="caption">막 4 — 50대의 육신이 디지털 터널로 빨려 들어갔다.</div>
+  </div>
+  <div class="body">
+    <p>노트북에서 붉은 촉수가 튀어나왔다. <strong>제우스의 침투.</strong> 1981년의 근원악을 깨우기 위해.</p>
+    <p>도비가 발을 들어 정주의 손을 잡았다.</p>
+    <div class="dialogue">"일단 들어가서 너부터 살아남아!"</div>
+    <p>50대의 육신이 디지털 터널로 빨려 들어갔다.</p>
+    <div class="system">파지직! 슈우우우욱-!!</div>
+  </div>
+</section>
+
+<section class="act" id="act5">
+  <div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">부활, 1988년의 리듬과 2030년의 무신</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act05_two_jeongju.png" alt="ACT 05 두 정주">
+    <div class="placeholder" style="display:flex"><span class="spinner"></span>이미지 생성 중...</div>
+    <div class="caption">막 5 — 두 정주가 함께였다. 50대의 집념, 20대의 육체.</div>
+  </div>
+  <div class="body">
+    <div class="system">
+      [시스템 메시지]<br>
+      * 박정주, 56세 → 1988년 부산 서면 무지개 롤러장 전성기로 회춘.<br>
+      * 아버지 박수경(朴守經)의 '오륙도 무술 유전자' + 1988년 롤러장의 '리듬감'.<br>
+      * 손에 들린 무기: 푸른 에너지가 맴도는 '홍익인간의 랩봉'.
+    </div>
+    <p>전성기의 육체로 디지털 세계에 다시 태어났다. 50대 정주는 옆에서 사라지지 않았다. <strong>두 정주가 함께였다.</strong> 50대의 집념, 20대의 육체.</p>
+  </div>
+</section>
+
+<section class="act" id="act6">
+  <div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">새로운 세계: 글리치 고려 (Glitch Goryeo)</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act06_glitch_goryeo.png" alt="ACT 06 글리치 고려">
+    <div class="placeholder" style="display:flex"><span class="spinner"></span>이미지 생성 중...</div>
+    <div class="caption">막 6 — 붉은 픽셀 구름이 떠다니는 숲. 도비, 선글라스 + 닭다리 치석껌.</div>
+  </div>
+  <div class="body">
+    <p>붉은 픽셀 구름이 떠다니는 숲.</p>
+    <p>도비가 입에 닭다리 모양 치석껌을 물고 정주 앞에 앉아 있었다. 선글라스를 끼고.</p>
+    <div class="dialogue">"웰컴 투 고려. 이제 내 말이 똑바로 들리냐?"</div>
+    <div class="dialogue">"네가 살아야 세상도 산다. 랩봉 들어라!"</div>
+  </div>
+</section>
+
+<section class="act" id="act7">
+  <div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">과거의 망령: 다크 고블린</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act07_dark_goblin.png" alt="ACT 07 다크 고블린">
+    <div class="placeholder" style="display:flex"><span class="spinner"></span>이미지 생성 중...</div>
+    <div class="caption">막 7 — 2011년 정주가 만들고 버렸던, 자본에 밀려 죽인 자식.</div>
+  </div>
+  <div class="body">
+    <div class="system red">
+      [침입자 감지: 오염된 '다크 고블린']<br>
+      [출처: 2011년 몬스터 디펜스 3D — 정주의 실패작]
+    </div>
+    <p>붉은 0/1 매트릭스에서 다크 고블린이 기어 나왔다. 정주가 2011년 만들고 버렸던, 자본에 밀려 죽인 자식.</p>
+    <div class="dialogue">"내가 맹근 똥덩어리아이가. 페인타, 내 똥은 내가 치운다!"</div>
+  </div>
+</section>
+
+<section class="act" id="act8">
+  <div class="act-header"><span class="act-num">ACT 08</span><h2 class="act-title">강림: 호랑이 기운</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act08_golden_tiger.png" alt="ACT 08 황금 호랑이">
+    <div class="placeholder" style="display:flex"><span class="spinner"></span>이미지 생성 중...</div>
+    <div class="caption">막 8 — 하늘에서 거대한 황금 호랑이가 떨어졌다.</div>
+  </div>
+  <div class="body">
+    <p>하늘에서 거대한 황금 호랑이가 떨어졌다. 일격에 박살 난 다크 고블린.</p>
+    <p>자욱한 먼지 속에서 — 누군가가 걸어 나왔다.</p>
+  </div>
+</section>
+
+<section class="act" id="act9">
+  <div class="act-header"><span class="act-num">ACT 09</span><h2 class="act-title">반전: LA 힙스터와 부산 무당</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act09_jini.png" alt="ACT 09 지니">
+    <div class="placeholder" style="display:flex"><span class="spinner"></span>이미지 생성 중...</div>
+    <div class="caption">막 9 — 외형 = 2017 홍대 어학당 / 영혼 = 1981 작두 어머니 월자.</div>
+  </div>
+  <div class="body">
+    <p>포니테일에 핑크 선글라스. 베니스 비치 티셔츠와 카고팬츠. 한 손에 스마트폰.</p>
+    <p><strong>지니.</strong></p>
+    <p>외형 — <strong>2017년 홍대 어학당에서 정주가 사랑했던 '교포 유학생'.</strong><br>
+    영혼 — <strong>1981년, 아들을 살리기 위해 작두를 탔던 어머니 '월자'.</strong></p>
+    <p>지니의 입에서, 구수한 부산 사투리가 흘러나왔다.</p>
+    <div class="dialogue">"아이고, 우리 주아! 밥은 묵고 댕기나! 에미 멤이 찢어진다!"</div>
+  </div>
+</section>
+
+<section class="act" id="act10">
+  <div class="act-header"><span class="act-num">ACT 10</span><h2 class="act-title">재회: 우주 최강의 팀</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act10_wolja.png" alt="ACT 10 월자">
+    <div class="placeholder" style="display:flex"><span class="spinner"></span>이미지 생성 중...</div>
+    <div class="caption">막 10 — 아들이 코딩한 최강의 방어벽 아바타에 빙의한 어머니.</div>
+  </div>
+  <div class="body">
+    <p>월자의 손이 정주의 귀를 잡아 비틀었다.</p>
+    <div class="dialogue">"마! 이짜슥아! 나이 오십 묵고 아직도 작대기 들고 댕기나!"</div>
+    <p>50대 무신 아들이 비명을 질렀다.</p>
+    <p>월자의 다음 말은, 어머니의 결의였다.</p>
+    <div class="dialogue">"내 인자 우리 주아한테는 어떤 잡귀 새끼도 못 다가오게, 아예 씨를 말리뿔 기다!!"</div>
+    <p>아들이 코딩한 최강의 방어벽 아바타에 빙의한 어머니. 1981년의 작두로도 끝내지 못했던 근원악. 이번엔 끝낼 작정이었다.</p>
+  </div>
+</section>
+
+<section class="act" id="act11">
+  <div class="act-header"><span class="act-num">ACT 11</span><h2 class="act-title">홍익인간 — 나를 구원하여 세상을 이롭게 하라</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act11_team.png" alt="ACT 11 최종 팀">
+    <div class="placeholder" style="display:flex"><span class="spinner"></span>이미지 생성 중...</div>
+    <div class="caption">막 11 — 가장 개인적인 구원이, 가장 거대한 위기를 막아낸다.</div>
+  </div>
+  <div class="body">
+    <p>50세 무신 아들과, 힙스터 무당 엄마가, 환장할 근원악 퇴치 퀘스트를 떠난다.</p>
+    <p>도비가 그들의 곁에서 꼬리를 흔든다.</p>
+    <div class="system" style="text-align: center; font-size: 16px; color: var(--gold); border-color: var(--gold);">[The Snowman Universe]</div>
+    <p style="text-align: center; font-size: 18px; color: var(--gold-light); font-weight: 700; margin: 24px 0;">가장 개인적인 구원이, 가장 거대한 위기를 막아낸다.</p>
+    <p style="text-align: center; font-style: italic; color: var(--fg-mute);">— 박정주는 그날, 자신이 단순한 부도난 50대 게임 개발자가 아니라는 사실을 알게 되었다.</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/'">🏠</button>
+  <button onclick="scrollAct(1)">1</button>
+  <button onclick="scrollAct(2)">2</button>
+  <button onclick="scrollAct(3)">3</button>
+  <button onclick="scrollAct(4)">4</button>
+  <button onclick="scrollAct(5)">5</button>
+  <button onclick="scrollAct(6)">6</button>
+  <button onclick="scrollAct(7)">7</button>
+  <button onclick="scrollAct(8)">8</button>
+  <button onclick="scrollAct(9)">9</button>
+  <button onclick="scrollAct(10)">10</button>
+  <button onclick="scrollAct(11)">11</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 프롤로그 v3.6 baseline</p>
+  <p style="margin-top: 8px;">PD 박정주 + 강시연 윤문 + ComfyUI 본업 PC 일러스트 (SDXL + SUPIR)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">2026-06-13 D+18 자율 산출 · 39/39 시드 정합 ⭐⭐⭐⭐⭐</p>
+  <p style="margin-top: 12px;"><a href="/godblade/novel/v2_0/1/" style="color: var(--gold);">→ 강시연 윤문 1화 본문 보기</a></p>
+</footer>
+
+<script>
+function loadImages() {
+  document.querySelectorAll('img[data-src]').forEach(img => {
+    const src = img.getAttribute('data-src');
+    if (src) {
+      img.src = src;
+      img.onerror = function() {
+        this.style.display = 'none';
+        const p = this.parentElement.querySelector('.placeholder');
+        if (p) p.style.display = 'flex';
+      };
+      img.onload = function() {
+        const p = this.parentElement.querySelector('.placeholder');
+        if (p) p.style.display = 'none';
+      };
+    }
+  });
+}
+
+function scrollAct(n) {
+  const el = document.getElementById('act' + n);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.querySelectorAll('.image-frame img').forEach(img => {
+  img.addEventListener('click', () => {
+    if (img.src && img.style.display !== 'none') {
+      document.getElementById('lightbox-img').src = img.src;
+      document.querySelector('.lightbox').classList.add('active');
+    }
+  });
+});
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => {
+  document.querySelectorAll('.act').forEach((act, i) => {
+    const rect = act.getBoundingClientRect();
+    if (rect.top < 200 && rect.bottom > 200) {
+      navButtons.forEach(b => b.classList.remove('active'));
+      if (navButtons[i]) navButtons[i].classList.add('active');
+    }
+  });
+});
+
+loadImages();
+</script>
+
+</body>
+</html>

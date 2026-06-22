@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>그림책 — 홍익인간 RPG : 스노우맨 패밀리 | staris.cloud</title>
+<style>
+:root {
+  --bg: #0a0e14; --bg-card: #131822; --fg: #e1e8f5; --fg-mute: #8b9bb4;
+  --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --border: #2a3447;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%);
+  color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif;
+  line-height: 1.7; min-height: 100vh;
+}
+.breadcrumb {
+  background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px;
+}
+.breadcrumb a { color: var(--gold); text-decoration: none; }
+.breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 80px 24px 40px; border-bottom: 1px solid var(--border); }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.chapters { max-width: 900px; margin: 40px auto; padding: 0 24px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.chapter-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 20px; transition: all 0.3s; text-decoration: none; color: inherit;
+}
+.chapter-card:hover { border-color: var(--gold); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(240,198,116,0.15); }
+.chapter-card .num { font-size: 11px; color: var(--gold); font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; }
+.chapter-card h3 { font-size: 18px; color: var(--fg); margin-bottom: 8px; }
+.chapter-card p { font-size: 13px; color: var(--fg-mute); }
+.chapter-card .status {
+  display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px;
+  background: var(--gold); color: var(--bg); font-weight: 700; margin-top: 12px;
+}
+.coming { opacity: 0.5; cursor: not-allowed; }
+.coming .status { background: var(--fg-mute); color: var(--bg); }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb">
+  <a href="/godblade/">← 대시보드</a>
+  <span>/</span>
+  그림책
+</nav>
+
+<header class="cover">
+  <h1>그림책 — 홍익인간 RPG : 스노우맨 패밀리</h1>
+  <div class="subtitle">"가장 개인적인 구원이, 가장 거대한 위기를 막아낸다"</div>
+</header>
+
+<main class="chapters">
+
+<a href="/godblade/picture-book/prologue/" class="chapter-card">
+  <div class="num">PROLOGUE · 11 ACTS</div>
+  <h3>프롤로그 — 홍대 옥탑방, 2030년의 어느 금요일</h3>
+  <p>50대 게임 개발자 박정주의 회춘 + 글리치 고려 + 도비 신수 + 지니/월자 빙의</p>
+  <span class="status">LIVE</span>
+</a>
+
+<div class="chapter-card coming">
+  <div class="num">CHAPTER 1</div>
+  <h3>1화 — 스타리스 마지막 밤</h3>
+  <p>강시연 윤문 2,871자 / staris.cloud /novel/v2_0/1/ 본문 LIVE</p>
+  <span class="status">본문 LIVE · 그림책 준비</span>
+</div>
+
+<div class="chapter-card coming">
+  <div class="num">CHAPTER 2~</div>
+  <h3>이어지는 화</h3>
+  <p>강시연 윤문 + 한지우 일러스트 + ComfyUI 자동 생성 진행</p>
+  <span class="status">준비 중</span>
+</div>
+
+</main>
+
+<footer>
+  <p>그림책 = PD 9 시드 (웹소설 + 웹툰 결합) 정합</p>
+  <p style="margin-top: 4px; opacity: 0.6;">2026-06-13 D+18 자율 산출</p>
+</footer>
+
+</body>
+</html>
