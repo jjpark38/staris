@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2화 — 24fps의 함정 (그림책) | staris.cloud</title>
+<meta name="description" content="2권 2화 매화검수 사형의 후속 추격. 24fps 강제 다운컨버트. 슬레이어 월자 빙의 메즈 면역 활약. 김용 활사인묘 합공 함정.">
+<style>
+:root { --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e; --fg: #e1e8f5; --fg-mute: #8b9bb4; --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%); color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; line-height: 1.85; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+.breadcrumb { background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breadcrumb a { color: var(--gold); text-decoration: none; }
+.breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 60px 24px 40px; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%); }
+.cover .series { display: inline-block; padding: 4px 12px; background: var(--gold-dark); color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 16px; }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; font-weight: 700; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.cover .meta { font-size: 12px; color: var(--fg-mute); }
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act { margin-bottom: 80px; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.act-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dark); }
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+.image-frame { position: relative; width: 100%; margin: 24px 0; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.image-frame img { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 0.3s ease; }
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder { display: flex; align-items: center; justify-content: center; height: 400px; color: var(--fg-mute); font-size: 13px; background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px); }
+.image-frame .placeholder .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--gold-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 12px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption { padding: 10px 16px; background: var(--bg-elevated); font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border); }
+.body { font-size: 16px; line-height: 1.9; }
+.body p { margin-bottom: 16px; }
+.body .dialogue { font-style: italic; color: var(--gold-light); padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0; }
+.body .system { font-family: 'Consolas', monospace; background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2); color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px; font-size: 13px; }
+.body strong { color: var(--gold); font-weight: 700; }
+.nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 30px; padding: 8px 16px; display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(10px); flex-wrap: wrap; max-width: 95vw; }
+.nav button { background: transparent; border: none; color: var(--fg-mute); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+.nav button:hover { background: var(--bg-card); color: var(--gold); }
+.nav button.active { background: var(--gold); color: var(--bg); }
+.nav .home { background: var(--gold-dark); color: var(--bg); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+@media (max-width: 700px) { .cover h1 { font-size: 24px; } .reader { padding: 20px 16px 120px; } .act-title { font-size: 18px; } .body { font-size: 15px; } .image-frame .placeholder { height: 280px; } }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb">
+  <a href="/godblade/">← 대시보드</a>
+  <span>/</span>
+  <a href="/godblade/picture-book/">그림책</a>
+  <span>/</span>
+  2화
+</nav>
+
+<header class="cover">
+  <div class="series">권2 · CHAPTER 2 · 8 ACTS</div>
+  <h1>24fps의 함정</h1>
+  <div class="subtitle">"매화검수 사형의 후속 추격, 활사인묘 합공 함정"</div>
+  <div class="meta">PD 본문 5/6 · 김용 신조협려 인용 · 다섯 매화검수 매복 vs 정주 일행</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1">
+  <div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">매복</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act1_ambush.png" alt="ACT 01"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 1 — 산길은 굽이를 한 번 돌면 또 다른 굽이를 만들었다.</div>
+  </div>
+  <div class="body">
+    <p>매화검수의 사형이 후퇴한 것은 1화의 일이었다. 사형이 후퇴한 자리에 — 외곽 검수 다섯 명이 매복해 있었다.</p>
+    <div class="dialogue">"형님요. 다섯 명 됨니더."</div>
+    <p>무휼이 H빔을 어깨에서 내렸다. 매복은 산길 양쪽 바위 뒤에 두 명, 위쪽 절벽에 한 명, 굽이 너머에 두 명. 김용 선생의 신조협려에서 <strong>활사인묘(活死人墓)</strong>의 합공 함정과 같은 구조였다.</p>
+    <div class="dialogue">"슬레이어, 빙의 들어가." "이미 들어갔어, 정주."</div>
+    <p>슬레이어가 말했다. 월자가 작두를 양손으로 잡고 있었다. 헐리웃 금발 위로 검은 그림자가 한 번 어른거렸다.</p>
+  </div>
+</section>
+
+<section class="act" id="act2">
+  <div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">매화 꽃잎 다섯 방향</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act2_plum.png" alt="ACT 02"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 2 — 다섯 매화 꽃잎이 동시에 떨어졌다. 시야가 24fps로 떨어졌다.</div>
+  </div>
+  <div class="body">
+    <div class="dialogue">"이 새끼들이 다섯 방향에서 한 번에 친다고? 아주 그냥 — "</div>
+    <p>월자가 욕설을 한 번 더 하기 전에, 다섯 매화 꽃잎이 동시에 떨어졌다.</p>
+    <p>화면이 — 즉 일행의 시야가 — <strong>24fps로 떨어졌다.</strong> 정주는 그 순간을 알았다. 1권 1화에서 한진 41 컨베이어 벨트의 박자가 한 번 어긋났을 때의 그 감각. 시간이 두 배로 늘어진다. 그리고 정주의 무릎이 한 번 시큰거린다.</p>
+  </div>
+</section>
+
+<section class="act" id="act3">
+  <div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">무신화 (武神化)</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act3_musinhwa.png" alt="ACT 03"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 3 — 정주의 50대 몸이 20대로 변환되었다. 무릎의 시큰함이 12초 동안 사라졌다.</div>
+  </div>
+  <div class="body">
+    <div class="dialogue">"내 관절이 먼저고 그 다음이 24fps다." 정주가 외쳤다. "무신화."</div>
+    <p>12초. 모든 능력치 +50%. 박세린 GDD knight 시그니처 3. 정주의 50대 몸이 20대로 변환되었다. 어깨에 걸친 예초기가 한 번 흔들렸다. 무릎의 시큰함이 12초 동안 사라졌다.</p>
+    <div class="dialogue">"형, 형님요. 무신화 켰음니더!" 무휼이 외쳤다.</div>
+  </div>
+</section>
+
+<section class="act" id="act4">
+  <div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">부적 투척</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act4_buyek.png" alt="ACT 04"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 4 — 부적이 그의 입에 달라붙었다. 검결을 외울 수 없었다.</div>
+  </div>
+  <div class="body">
+    <p>월자가 빙의 직후 5초간 메즈 면역. 슬레이어가 작두를 한 번 휘두르며 외쳤다.</p>
+    <div class="dialogue">"부적 투척!"</div>
+    <p>박세린 GDD slayer 시그니처 3. 12m 원거리 투척, 명중 시 4초 침묵. 슬레이어의 손에서 노란 부적이 한 장 날아갔다. 위쪽 절벽의 검수가 그 부적을 정통으로 맞았다. 부적이 그의 입에 달라붙었다.</p>
+    <p>그는 다음 매화 꽃잎을 띄우려 했지만 — 입이 봉해져서 검결을 외울 수 없었다. <strong>위쪽 절벽 1명 무력화.</strong></p>
+  </div>
+</section>
+
+<section class="act" id="act5">
+  <div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">이방원의 활 — 코드 디버거</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act5_bangwon.png" alt="ACT 05"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 5 — 활시위를 당기는 코드가 매화 꽃잎의 24fps에 침투했다.</div>
+  </div>
+  <div class="body">
+    <div class="dialogue">"이방원, 너는 뒷쪽 굽이 둘 봐라." "네." 이방원의 목소리는 침착했다. 의심 많은 호랑이의 침착함.</div>
+    <p>이방원의 무기는 활이었다. 정확히는 — 조선 초기의 <strong>단궁(短弓)</strong>. 그러나 그 활은 보통 활이 아니었다. 활시위를 당길 때마다 — 한 줄의 데이터 코드가 흘러나왔다. 활은 무기였지만, 동시에 <strong>코드 디버거</strong>였다.</p>
+    <p>이방원이 활시위를 당겼다. 굽이 너머 두 검수의 위치 좌표가 활시위에 코드로 흘렀다. 그리고 — 활을 쏘지 않았다. 활시위만 당긴 채로, 그 코드가 매화 꽃잎의 24fps 데이터에 침투했다.</p>
+    <p>매화 꽃잎이 — <strong>60fps로 돌아왔다.</strong></p>
+    <div class="dialogue">"제 무공은 호위입니다, 주공. 주공의 박자를 먼저 60fps로 돌리는 것이 제 일입니다."</div>
+  </div>
+</section>
+
+<section class="act" id="act6">
+  <div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">무휼의 회전 베기</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act6_muhul.png" alt="ACT 06"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 6 — H빔 60kg이 원심력으로 어깨에 실렸다. 양쪽 바위 두 검수가 산길 아래로.</div>
+  </div>
+  <div class="body">
+    <div class="dialogue">"형님요. 양쪽 바위 두 명은 제가 정리함니더." "회전 베기 갈려?" "네."</div>
+    <p>박세린 GDD berserker 시그니처 2. 5m 광역 채널링, 격노 1/초 소모. 무휼의 H빔이 양손에서 한 번 회전했다. <strong>디아블로 4의 야만용사가 돌리는 회전 베기.</strong></p>
+    <p>회전 반경 5m. 양쪽 바위까지의 거리 = 4.5m. 정확히 닿았다. 바위 뒤의 두 검수가 동시에 — H빔의 측면을 정통으로 맞고 — 산길 아래로 굴러떨어졌다.</p>
+  </div>
+</section>
+
+<section class="act" id="act7">
+  <div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">홍대걸의 달고나 한 조각</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act7_dalgona.png" alt="ACT 07"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 7 — 달고나 조각이 그의 코에 정통으로 맞았다. 그는 재채기를 했다.</div>
+  </div>
+  <div class="body">
+    <div class="dialogue">"홍대걸 형님. 달고나 한 방 갈려 주싀쇼."</div>
+    <div class="dialogue">"어이쿠 무휼이 형님요. 달고나 폭렬은 9화 클라이맥스용임니다요. 여기서 갈겨 불면 39화 클라이맥스가 시시해짐니다."</div>
+    <p>홍대걸이 단군왕검 코스프레의 건(巾)을 살짝 들어 올렸다. 손에는 — 평범한 달고나 한 조각. 폭렬이 아닌, 그냥 — 깨물어 먹는 달고나.</p>
+    <p>홍대걸이 그것을 위쪽 절벽 검수를 향해 던졌다. 검수는 부적이 입에 봉해져 있어서 입을 벌릴 수 없었다. 달고나 조각이 그의 코에 정통으로 맞았다. 코의 통증으로 인해 그가 — 한 번 재채기를 했다 — 그 재채기로 인해 부적이 떨어졌다 — 부적이 떨어진 다음 순간 검수는 — <strong>절벽에서 균형을 잃고 떨어졌다.</strong></p>
+    <p>다섯 명 무력화 완료.</p>
+  </div>
+</section>
+
+<section class="act" id="act8">
+  <div class="act-header"><span class="act-num">ACT 08</span><h2 class="act-title">어머니의 한 마디</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act8_mother.png" alt="ACT 08"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 8 — 50대 몸이 다시 돌아왔다. 그 시큰함보다 어머니의 한 마디가 더 사무쳤다.</div>
+  </div>
+  <div class="body">
+    <p>정주는 무신화 12초가 끝나기 전에 한 번 어깨를 풀었다. 슬레이어 — 빙의가 절반쯤 풀린 상태 — 가 작두를 거두며 한국말로 한 마디 했다.</p>
+    <div class="dialogue">"우리 아들. 이번 화도 힘 안 들었네."</div>
+    <p>월자의 잔잔한 한 마디였다. 정주는 그 말을 듣고 한 번 멈춰 섰다. 50대 몸이 다시 돌아왔다. 무릎이 다시 시큰거렸다. 그러나 그 시큰함보다 — <strong>어머니의 그 한 마디가 더 사무쳤다.</strong></p>
+    <div class="dialogue">"...어머니." "가자, 우리 아들. 개성 가자."</div>
+    <p>월자의 빙의가 풀렸다. 슬레이어의 헐리웃 금발이 산바람에 한 번 흔들렸다. 지니가 영어 발음 섞인 한국어로 말했다.</p>
+    <div class="dialogue">"Mom said let's go. Let's go, Jeongju." "...야. 너 영어 좀 줄여라. 강호에서 영어 쓰면 무당파 어른들이 또 도(道) 어쩌고 하실 거다." "OK. 한국어 only."</div>
+    <p style="text-align: center; color: var(--fg-mute); font-style: italic; margin-top: 24px;">산길은 굽이를 또 한 번 돌았다. 개성까지 이틀 남았다.</p>
+    <p style="text-align: center; margin-top: 24px;">(2권 2화 끝)</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/picture-book/'">📚</button>
+  <button onclick="scrollAct(1)">1</button>
+  <button onclick="scrollAct(2)">2</button>
+  <button onclick="scrollAct(3)">3</button>
+  <button onclick="scrollAct(4)">4</button>
+  <button onclick="scrollAct(5)">5</button>
+  <button onclick="scrollAct(6)">6</button>
+  <button onclick="scrollAct(7)">7</button>
+  <button onclick="scrollAct(8)">8</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 2권 2화 그림책 v1.0</p>
+  <p style="margin-top: 8px;">PD 본문 5/6 + ComfyUI 본업 PC 일러스트 8컷 (SDXL Studio Ghibli)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">2026-06-24 D+29 자율 산출 · 김용 신조협려 활사인묘 인용</p>
+</footer>
+
+<script>
+function loadImages() {
+  document.querySelectorAll('img[data-src]').forEach(img => {
+    const src = img.getAttribute('data-src');
+    if (src) {
+      img.src = src;
+      img.onerror = function() { this.style.display = 'none'; const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'flex'; };
+      img.onload = function() { const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'none'; };
+    }
+  });
+}
+function scrollAct(n) { const el = document.getElementById('act' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+document.querySelectorAll('.image-frame img').forEach(img => {
+  img.addEventListener('click', () => {
+    if (img.src && img.style.display !== 'none') {
+      document.getElementById('lightbox-img').src = img.src;
+      document.querySelector('.lightbox').classList.add('active');
+    }
+  });
+});
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => {
+  document.querySelectorAll('.act').forEach((act, i) => {
+    const rect = act.getBoundingClientRect();
+    if (rect.top < 200 && rect.bottom > 200) {
+      navButtons.forEach(b => b.classList.remove('active'));
+      if (navButtons[i]) navButtons[i].classList.add('active');
+    }
+  });
+});
+loadImages();
+</script>
+
+</body>
+</html>
