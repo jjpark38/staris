@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3화 — 개성 외곽 객잔 (그림책) | staris.cloud</title>
+<meta name="description" content="2권 3화. 일행 개성 외곽 객잔 「반월」 도착. 김용 풍 객잔 + 한국 사극 + 글리치 네온. 무당파 사절 첫 등장 예고.">
+<style>
+:root { --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e; --fg: #e1e8f5; --fg-mute: #8b9bb4; --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%); color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; line-height: 1.85; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+.breadcrumb { background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breadcrumb a { color: var(--gold); text-decoration: none; }
+.breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 60px 24px 40px; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%); }
+.cover .series { display: inline-block; padding: 4px 12px; background: var(--gold-dark); color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 16px; }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; font-weight: 700; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.cover .meta { font-size: 12px; color: var(--fg-mute); }
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act { margin-bottom: 80px; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.act-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dark); }
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+.image-frame { position: relative; width: 100%; margin: 24px 0; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.image-frame img { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 0.3s ease; }
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder { display: flex; align-items: center; justify-content: center; height: 400px; color: var(--fg-mute); font-size: 13px; background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px); }
+.image-frame .placeholder .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--gold-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 12px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption { padding: 10px 16px; background: var(--bg-elevated); font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border); }
+.body { font-size: 16px; line-height: 1.9; }
+.body p { margin-bottom: 16px; }
+.body .dialogue { font-style: italic; color: var(--gold-light); padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0; }
+.body .system { font-family: 'Consolas', monospace; background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2); color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px; font-size: 13px; }
+.body strong { color: var(--gold); font-weight: 700; }
+.nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 30px; padding: 8px 16px; display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(10px); flex-wrap: wrap; max-width: 95vw; }
+.nav button { background: transparent; border: none; color: var(--fg-mute); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+.nav button:hover { background: var(--bg-card); color: var(--gold); }
+.nav button.active { background: var(--gold); color: var(--bg); }
+.nav .home { background: var(--gold-dark); color: var(--bg); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+@media (max-width: 700px) { .cover h1 { font-size: 24px; } .reader { padding: 20px 16px 120px; } .act-title { font-size: 18px; } .body { font-size: 15px; } .image-frame .placeholder { height: 280px; } }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb">
+  <a href="/godblade/">← 대시보드</a>
+  <span>/</span>
+  <a href="/godblade/picture-book/">그림책</a>
+  <span>/</span>
+  3화
+</nav>
+
+<header class="cover">
+  <div class="series">권2 · CHAPTER 3 · 7 ACTS</div>
+  <h1>개성 외곽 객잔</h1>
+  <div class="subtitle">"객잔 「반월」에서 무당파 사절의 첫 등장 예고"</div>
+  <div class="meta">PD 본문 5/6 · 김용 사조영웅전 + 소오강호 인용 · 강호 정보책 객잔 주인</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1">
+  <div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">객잔 「반월」</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act1_banwol.png" alt="ACT 01"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 1 — 흙벽돌 + 짚 지붕 + 평상 + 1990년대식 네온 간판 글리치.</div>
+  </div>
+  <div class="body">
+    <p>산길 사흘이 지나고, 일행은 개성 외곽의 객잔에 도착했다.</p>
+    <p>객잔의 이름은 <strong>「반월(半月)」</strong>이었다. 김용 선생의 사조영웅전에서 곽정과 황용이 처음 만난 객잔의 그 분위기였다. 흙벽돌 + 짚 지붕 + 마당의 평상 + 평상 위의 막걸리 항아리. 그러나 객잔의 한 구석에는 — 지붕 처마 아래에 — 1990년대식 네온 간판이 한 줄 걸려 있었다. <strong>"막걸리 한 사발 → ₩2,000".</strong> 글리치였다.</p>
+    <div class="dialogue">"이 동네는 글리치가 일관성이 없네." 정주가 중얼거렸다.</div>
+    <div class="dialogue">"형님요. 어디는 키오스크 있고 어디는 네온 간판 있고요. 우리 게임 만든 사람이 일관성을 안 잡았능 거 같음니더."</div>
+    <p>무휼의 강원도 사투리는 정주의 마음을 한 번 찔렀다.</p>
+    <div class="dialogue">"...야 무휼아. 그 게임 만든 사람이 — 여기 있는 사람 아니냐?"</div>
+    <p>1권 1화의 메타 농담을 정주는 본 권에서도 잊지 않았다.</p>
+  </div>
+</section>
+
+<section class="act" id="act2">
+  <div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">평상의 균형</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act2_pyeongsang.png" alt="ACT 02"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 2 — H빔과 작두가 평상의 양쪽을 똑같이 기울여서, 평상은 균형을 이루었다.</div>
+  </div>
+  <div class="body">
+    <p>객잔 마당의 평상에 일행이 앉았다. 무휼이 H빔을 평상 옆에 세웠다 — 평상의 한쪽이 H빔의 무게로 살짝 기울었다. 슬레이어가 작두를 평상의 다른 쪽에 세웠다 — 평상의 그쪽도 살짝 기울었다.</p>
+    <p><strong>평상은 양쪽으로 기울어진 채로 균형을 이루었다.</strong></p>
+    <div class="dialogue">"막걸리 한 사발씩 돌리지." 정주가 말했다.</div>
+  </div>
+</section>
+
+<section class="act" id="act3">
+  <div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">막걸리 다섯 사발</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act3_makgeolli.png" alt="ACT 03"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 3 — 이방원의 잔에는 청주가, 나머지에는 막걸리가.</div>
+  </div>
+  <div class="body">
+    <p>객잔 주인이 막걸리 항아리에서 한 사발씩 떠 왔다. 다섯 사발. 그리고 — 이방원의 잔에는 막걸리 대신 — <strong>청주</strong>가 들어 있었다.</p>
+    <div class="dialogue">"왜 너만 청주냐?" 정주가 한 번 의문을 표했다.</div>
+    <div class="dialogue">"제가 청주를 청한 것이 아닙니다, 주공. 객잔 주인이 제 옷차림을 보고 — 청주를 더 어울린다 판단한 듯합니다."</div>
+    <div class="dialogue">"...야 객잔 주인 양반. 이 친구도 막걸리 줘. 우리 일행은 다 막걸리 마시는 사람들이야."</div>
+    <p>객잔 주인은 청주 잔을 다시 가져갔다. 막걸리 한 사발을 새로 떠서 이방원 앞에 내려놓았다.</p>
+  </div>
+</section>
+
+<section class="act" id="act4">
+  <div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">이방원의 첫 막걸리</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act4_bangwon_sip.png" alt="ACT 04"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 4 — 의심 많은 호랑이의 표정이 잠깐 — 인간의 표정이 되었다.</div>
+  </div>
+  <div class="body">
+    <p>이방원은 그 잔을 한 번 보고, 정주를 한 번 보고, 그리고 — 한 모금 마셨다. 그의 표정이 한 번 어그러졌다. <strong>의심 많은 호랑이의 표정이 잠깐 — 인간의 표정이 되었다.</strong></p>
+    <div class="dialogue">"...탁합니다."</div>
+    <div class="dialogue">"맞아. 그게 막걸리야."</div>
+    <div class="dialogue">"...주공께서는 이걸 매일 드십니까?" "매일은 아니지. 한 잔 정도지." "...왜 드십니까?"</div>
+    <div class="dialogue">"노동자의 생명수니까." 정주가 말했다. PD 1권 4화의 그 한 줄이었다. "이거 한 사발 마시면 1시간 동안 +20% 스킬 / 스트레스 0. 박세린 GDD knight 노드 C 의 막걸리 광역 버프 효과지."</div>
+    <div class="dialogue">"...박세린이 누구입니까." "기획팀장." "기획... 팀장이 무엇입니까." "이 친구야. 그건 4차원 메타 농담이야. 너는 모르는 게 좋다."</div>
+    <p>이방원은 잠시 침묵했다. 그리고 막걸리를 한 모금 더 마셨다. 두 번째 모금에서는 표정이 덜 어그러졌다. 의심 많은 호랑이가 — 막걸리에 대해서는 — 의심을 거두기 시작한 순간이었다.</p>
+  </div>
+</section>
+
+<section class="act" id="act5">
+  <div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">객잔 주인 — 강호의 정보책</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act5_owner.png" alt="ACT 05"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 5 — 김용 풍 객잔 주인의 흔한 톤. 단순한 주인이 아니라 — 강호의 정보책.</div>
+  </div>
+  <div class="body">
+    <p>객잔 주인이 평상 옆을 다시 지나갔다. 그가 정주를 한 번 깊게 쳐다보았다.</p>
+    <div class="dialogue">"...객잔에 손님이 한 분 더 와 계십니다." "...누구." "무당파 사절."</div>
+    <p>객잔 주인의 눈빛이 한 번 깊어졌다. <strong>김용 풍 객잔 주인의 흔한 톤. 객잔 주인은 단순한 주인이 아니라 — 강호의 정보책.</strong></p>
+    <div class="dialogue">"...무당파 사절이 우리 보러 왔어?"</div>
+    <div class="dialogue">"손님께서 오시기 전부터 — 사흘 전부터 — 객잔의 별실에 머물고 있었습니다. 손님을 기다린다고 하셨습니다."</div>
+    <p>정주는 잠시 침묵했다. 사흘 전 — 일행이 벽란도에서 산길로 출발한 시점. 즉 무당파는 — 매화검수의 사형이 산길에서 매복하기 전부터 — 정주가 개성으로 올 것을 알고 있었다.</p>
+    <p>김용 선생의 강호 묘사로 옮기면 — <strong>"무림에는 발 없는 말이 천 리를 간다"</strong>의 정확한 응용. 그러나 본 작품의 세계관에서 그 "발 없는 말"은 — 글리치였다.</p>
+  </div>
+</section>
+
+<section class="act" id="act6">
+  <div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">별실 1번 앞</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act6_byeolsil.png" alt="ACT 06"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 6 — 별실 1번 = 무당파 사절 / 별실 2번 = ? (글리치 LED)</div>
+  </div>
+  <div class="body">
+    <div class="dialogue">"형님요. 같이 감니까?" "아니. 내 혼자 간다. ...무당파는 도(道)를 따르는 친구들이야. 내가 무당파 친구를 만나러 갈 때 무휼이 형이랑 같이 가면 — H빔의 무게로 도(道)가 한 번 흔들릴 거다."</div>
+    <div class="dialogue">"이방원, 너는 같이 가." "네, 주공."</div>
+    <div class="dialogue">"슬레이어, 무휼, 홍대걸은 마당에서 막걸리 마시고 있어. 한 시간 안에 안 나오면 — 내가 무당파한테 잡힌 거니까 — 들어와도 된다."</div>
+    <p>정주와 이방원은 객잔 안쪽으로 걸어 들어갔다. 안쪽은 어둑했다. 흙벽 위에 — 또 한 줄의 글리치가 있었다. 작은 LED 디스플레이.</p>
+    <div class="system">별실 1번 → 무당파 사절 / 별실 2번 → ?</div>
+    <p>별실 2번은 아직 등록되지 않은 상태였다.</p>
+    <div class="dialogue">"...별실 2번에는 누가 있을까요, 주공." "몰라. 일단 1번부터 만나 보자."</div>
+    <p>정주는 별실 1번의 문 앞에 섰다. 문 위의 발(簾)이 한 번 흔들렸다. 안쪽에서 — 한국 사극 풍의 깊은 목소리가 — 들려 왔다.</p>
+    <div class="dialogue">"들어오시지요."</div>
+    <p>정주가 발을 한 번 들어 올렸다. <strong>무당파의 첫 만남</strong>이었다.</p>
+  </div>
+</section>
+
+<section class="act" id="act7">
+  <div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">도비, 인천 옥탑방</h2></div>
+  <div class="image-frame">
+    <img data-src="./images/act7_dobby.png" alt="ACT 07"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div>
+    <div class="caption">막 7 — 키보드 위에서 발바닥이 어딘가의 신호를 받고 있었다.</div>
+  </div>
+  <div class="body">
+    <p>도비 신수는 인천 옥탑방에서 — 키보드 위에서 — 한 번 발바닥을 펼쳤다 다시 접었다. 잠은 깊었다. 그러나 발바닥은 — <strong>어딘가의 신호를</strong> — 한 번씩 받고 있었다.</p>
+    <p style="text-align: center; color: var(--fg-mute); font-style: italic; margin-top: 24px;">(2권 3화 끝)</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/picture-book/'">📚</button>
+  <button onclick="scrollAct(1)">1</button>
+  <button onclick="scrollAct(2)">2</button>
+  <button onclick="scrollAct(3)">3</button>
+  <button onclick="scrollAct(4)">4</button>
+  <button onclick="scrollAct(5)">5</button>
+  <button onclick="scrollAct(6)">6</button>
+  <button onclick="scrollAct(7)">7</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 2권 3화 그림책 v1.0</p>
+  <p style="margin-top: 8px;">PD 본문 5/6 + ComfyUI 본업 PC 일러스트 7컷 (SDXL Studio Ghibli)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">D+30 자율 산출 · 김용 사조영웅전 + 소오강호 객잔 인용</p>
+</footer>
+
+<script>
+function loadImages() {
+  document.querySelectorAll('img[data-src]').forEach(img => {
+    const src = img.getAttribute('data-src');
+    if (src) {
+      img.src = src;
+      img.onerror = function() { this.style.display = 'none'; const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'flex'; };
+      img.onload = function() { const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'none'; };
+    }
+  });
+}
+function scrollAct(n) { const el = document.getElementById('act' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+document.querySelectorAll('.image-frame img').forEach(img => {
+  img.addEventListener('click', () => {
+    if (img.src && img.style.display !== 'none') {
+      document.getElementById('lightbox-img').src = img.src;
+      document.querySelector('.lightbox').classList.add('active');
+    }
+  });
+});
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => {
+  document.querySelectorAll('.act').forEach((act, i) => {
+    const rect = act.getBoundingClientRect();
+    if (rect.top < 200 && rect.bottom > 200) {
+      navButtons.forEach(b => b.classList.remove('active'));
+      if (navButtons[i]) navButtons[i].classList.add('active');
+    }
+  });
+});
+loadImages();
+</script>
+
+</body>
+</html>
