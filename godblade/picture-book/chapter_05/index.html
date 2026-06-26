@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5화 — 개성 입성 (그림책) | staris.cloud</title>
+<meta name="description" content="2권 5화. 일행 개성 정식 입성. 글리치 폭발 + 신단수 + 홍대걸 단군왕검 후예 정식 인증.">
+<style>
+:root { --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e; --fg: #e1e8f5; --fg-mute: #8b9bb4; --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%); color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; line-height: 1.85; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+.breadcrumb { background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breadcrumb a { color: var(--gold); text-decoration: none; } .breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 60px 24px 40px; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%); }
+.cover .series { display: inline-block; padding: 4px 12px; background: var(--gold-dark); color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 16px; }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; font-weight: 700; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.cover .meta { font-size: 12px; color: var(--fg-mute); }
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act { margin-bottom: 80px; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.act-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dark); }
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+.image-frame { position: relative; width: 100%; margin: 24px 0; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.image-frame img { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 0.3s ease; }
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder { display: flex; align-items: center; justify-content: center; height: 400px; color: var(--fg-mute); font-size: 13px; background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px); }
+.image-frame .placeholder .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--gold-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 12px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption { padding: 10px 16px; background: var(--bg-elevated); font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border); }
+.body { font-size: 16px; line-height: 1.9; } .body p { margin-bottom: 16px; }
+.body .dialogue { font-style: italic; color: var(--gold-light); padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0; }
+.body .system { font-family: 'Consolas', monospace; background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2); color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px; font-size: 13px; }
+.body strong { color: var(--gold); font-weight: 700; }
+.nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 30px; padding: 8px 16px; display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(10px); flex-wrap: wrap; max-width: 95vw; }
+.nav button { background: transparent; border: none; color: var(--fg-mute); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+.nav button:hover { background: var(--bg-card); color: var(--gold); } .nav button.active { background: var(--gold); color: var(--bg); } .nav .home { background: var(--gold-dark); color: var(--bg); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+.lightbox.active { display: flex; } .lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+@media (max-width: 700px) { .cover h1 { font-size: 24px; } .reader { padding: 20px 16px 120px; } .act-title { font-size: 18px; } .body { font-size: 15px; } .image-frame .placeholder { height: 280px; } }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb"><a href="/godblade/">← 대시보드</a><span>/</span><a href="/godblade/picture-book/">그림책</a><span>/</span>5화</nav>
+
+<header class="cover">
+  <div class="series">권2 · CHAPTER 5 · 7 ACTS</div>
+  <h1>개성 입성</h1>
+  <div class="subtitle">"글리치 폭발 + 신단수 + 홍대걸 정식 인증"</div>
+  <div class="meta">PD 본문 5/6 · 김용 사조영웅전 임안 시장 인용 · 도비 신수 본 권 첫 개입</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1">
+  <div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">개성 성문</h2></div>
+  <div class="image-frame"><img data-src="./images/act1_gate.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 1 — 고려 석조 + 1990 시장 입구 + AI 디스토피아 네온.</div></div>
+  <div class="body">
+    <p>객잔 「반월」에서 사흘을 더 머물고, 일행은 개성에 정식으로 입성했다.</p>
+    <p>개성의 성문은 — 고려식 석조 + 1990년대 한국 시장 입구 + AI 디스토피아의 네온 LED 가 — 한 번에 — 결합되어 있었다.</p>
+    <div class="system">「개성에 오신 것을 환영합니다 / Welcome to Gaeseong / 환영광림 / WELCOME」</div>
+    <p>네 줄. 한국어 + 영어 + 한자 + 영어 대문자. 이것은 정주가 2011년에 만든 게임 코드의 다국어 분기 처리가 — <strong>글리치로 인해 — 네 가지를 모두 — 동시에 — 노출한 결과</strong>였다.</p>
+    <div class="dialogue">"...야 무휼아. 이 글리치 누가 만든 건지 알아?" "...형님이 만들었능 거 아님니까?" "맞아."</div>
+  </div>
+</section>
+
+<section class="act" id="act2">
+  <div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">키오스크 아주머니</h2></div>
+  <div class="image-frame"><img data-src="./images/act2_kiosk.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 2 — 한복 + 키오스크 + 카카오페이. 1392년 손님도, 2030년 손님도 다 받습니다.</div></div>
+  <div class="body">
+    <p>키오스크 한 대가 시장의 한 노점에 박혀 있었다. 노점 주인은 50대 한국 여성. 그녀가 — 한복을 입고 — 키오스크 옆에 서 있었다.</p>
+    <div class="dialogue">"...아주머니. 이 키오스크는 뭘 파는 거예요." "막걸리 한 사발. 한 사발에 — 2,000원." "...QR 코드도 받아요?" "네. 카카오페이 / 네이버페이 / 토스 / 삼성페이 — 다 됨니다."</div>
+    <div class="dialogue">"...아주머니. 이게 1392년 개성 시장이라는 사실은 — 알고 계세요?" "네. 그래서 키오스크가 신문물이지요. 우리 가게 손님은 — 1392년 손님 — 도 — 2030년 손님 — 도 — 다 받습니다."</div>
+    <p>김용 풍 강호의 한국 사극 + AI 디스토피아 융합의 본맥이었다. <strong>글리치는 — 글리치가 아니라 — 시장의 — 정상 영업 — 이었다.</strong></p>
+  </div>
+</section>
+
+<section class="act" id="act3">
+  <div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">개성 시장 — 임안의 본맥</h2></div>
+  <div class="image-frame"><img data-src="./images/act3_market.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 3 — 막걸리 / 수박 / 연 / 부적 / 활 / 검 — 그리고 — 키오스크.</div></div>
+  <div class="body">
+    <p>개성 성문 안쪽 — 시장 — 의 풍경은 — 김용 선생의 사조영웅전에 등장하는 <strong>임안(臨安) 시장</strong>의 본맥과 정확히 같았다. 좌우 양쪽으로 노점. 노점 사이로 사람들이 흐른다.</p>
+    <p>노점 위에는 — 막걸리 / 수박 / 연 / 부적 / 활 / 검 — 그리고 — <strong>키오스크</strong> — 가 동시에 진열되어 있었다.</p>
+    <p>정주는 막걸리를 한 모금 — 마셨다. 박세린 GDD knight 노드 C 의 막걸리 광역 버프가 — 4m 광역 HP +20% / 5초 — 발동했다. 일행 다섯 명의 HP가 한 번 — 황금빛으로 — 차올랐다.</p>
+  </div>
+</section>
+
+<section class="act" id="act4">
+  <div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">무휼의 H빔 QR 결제</h2></div>
+  <div class="image-frame"><img data-src="./images/act4_muhul_qr.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 4 — H빔의 표면이 — QR 스캔 패널로 — 잠깐 — 변환되었다.</div></div>
+  <div class="body">
+    <div class="dialogue">"형님요. 저도 한 사발 마실 수 있슴니까?" "마셔라. 1392년 개성 시장의 막걸리는 — 너 이전에 — 너 이후에도 — 못 마실 거다."</div>
+    <p>무휼이 키오스크에서 한 사발을 결제했다. 카카오페이로. QR 코드를 H빔에 한 번 비추면서 — <strong>H빔의 표면이 — QR 스캔 패널로 — 잠깐 — 변환되었다</strong> — 결제 완료 알림이 떴다.</p>
+    <p>글리치가 또 한 번 발동했다. 이번에는 정주도 한숨을 쉬지 않았다. <strong>시장에서는 — 글리치가 정상이니까.</strong></p>
+  </div>
+</section>
+
+<section class="act" id="act5">
+  <div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">신단수 (神檀樹) — 1만 살</h2></div>
+  <div class="image-frame"><img data-src="./images/act5_shindansu.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 5 — 단군왕검 시대의 신단수의 변형판. 1만 살.</div></div>
+  <div class="body">
+    <p>일행은 시장의 한가운데를 — 한 번 — 천천히 — 걸었다. 시장의 중심에는 — 광장 — 이 있었다. 광장의 한가운데에는 — 키오스크가 아니라 — <strong>한 그루의 — 큰 나무</strong> — 가 있었다. 단군왕검 시대의 — <strong>신단수(神檀樹)</strong> — 의 변형판이었다.</p>
+    <div class="dialogue">"...형님요. 이 나무 — 제 사부님 나무임니다요. 우리 단군왕검 형님이 — 5,000년 전에 — 이 나무 — 심으셨고요. 그 후 — 5,000년 동안 — 우리 후예들이 — 이 나무 — 지켰능 거지요. 합쳐서 — 1만 년임니더."</div>
+  </div>
+</section>
+
+<section class="act" id="act6">
+  <div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">홍대걸 — 단군왕검 후예 정식 인증</h2></div>
+  <div class="image-frame"><img data-src="./images/act6_kneel.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 6 — 단군왕검의 후예가 5,000년 만에 무릎을 꿇는 자세.</div></div>
+  <div class="body">
+    <p>홍대걸의 단군왕검 톤이 — 본 화에서 처음으로 — 진지해졌다. 그는 그 나무 앞에서 — 단군왕검 코스프레의 건(巾)을 — 한 번 — 벗었다. 머리가 드러났다. 새카만 머리. <strong>50대 노동자의 머리가 아니라 — 30대 청년의 — 머리.</strong></p>
+    <div class="dialogue">"...홍대걸. 너 30대였어?" "네 형님요. 단군왕검 코스프레가 — 너무 잘 어울려서 — 사람들이 — 50대로 — 봅니더만, 저는 — 32세임니더."</div>
+    <p>홍대걸은 그 나무 앞에 — 한 번 — 무릎을 꿇었다. 그리고 — 양손을 — 흙 위에 — 댔다. 한국 무속의 정통 — 어머니께 인사하는 자세 — 였다. <strong>단군왕검의 후예가 — 단군왕검의 나무 앞에 — 5,000년 만에 — 무릎을 꿇는</strong> — 그 — 자세 — 였다.</p>
+    <p>나무가 한 번 — 흔들렸다. 흔들렸다는 것은 — 바람이 분 것이 아니었다. 나무 자체가 — 한 번 — 데이터 갱신 — 되었다.</p>
+  </div>
+</section>
+
+<section class="act" id="act7">
+  <div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">도비 — 본 권의 첫 짖음</h2></div>
+  <div class="image-frame"><img data-src="./images/act7_dobby_bark.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 7 — 3.8kg의 치와와의 작은 짖음이 만령(萬靈)의 방주의 신호로 전달되었다.</div></div>
+  <div class="body">
+    <p>도비 신수가 — 인천 옥탑방에서 — 한 번 — 잠을 — 깼다.</p>
+    <p>도비 신수는 — 옥탑방 키보드 위에서 — 발바닥을 — 두 번 — 펼쳤다. 그리고 — 한 번 — 짖었다. <strong>3.8kg의 치와와의 작은 짖음</strong>이었지만 — 그 짖음이 — <strong>만령(萬靈)의 방주</strong> — 의 신호로 — 전달되었다. 신호는 — 옥탑방 키보드 — 에서 — 개성 시장의 — 신단수 — 까지 — 한 번 — 흘렀다.</p>
+    <p>신단수가 — 황금빛으로 — 한 번 — 빛났다. 홍대걸의 머리 위 — 30대 청년의 머리 위 — 에 — 황금빛 — 한 줄이 — 떨어졌다. 그것은 — <strong>단군왕검의 — 인증</strong> — 이었다.</p>
+    <div class="dialogue">"...형님요. 감사함니더. 저 — 인증 받았임니더. 이제 39화 클라이맥스에서 — 메가 달고나 폭렬진 — 갈겨도 됨니더."</div>
+    <div class="dialogue">"...39화 또 나오네 그 단어."</div>
+    <p>도비 신수는 — 옥탑방 키보드 위에서 — 한 번 — 더 — 짖었다. 그리고 — 다시 — 잠들었다. <strong>본 권의 첫 개입은 — 짖음 한 번 — 이었다. 결정적 개입은 — 39화 — 까지 — 아껴 두기로 — 했다.</strong></p>
+    <p style="text-align: center; color: var(--fg-mute); font-style: italic; margin-top: 24px;">(2권 5화 끝)</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/picture-book/'">📚</button>
+  <button onclick="scrollAct(1)">1</button> <button onclick="scrollAct(2)">2</button> <button onclick="scrollAct(3)">3</button> <button onclick="scrollAct(4)">4</button> <button onclick="scrollAct(5)">5</button> <button onclick="scrollAct(6)">6</button> <button onclick="scrollAct(7)">7</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 2권 5화 그림책 v1.0</p>
+  <p style="margin-top: 8px;">PD 본문 5/6 + ComfyUI 본업 PC 일러스트 7컷 (SDXL Studio Ghibli)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">D+31 자율 산출 · 김용 사조영웅전 임안 시장 인용 · 도비 본 권 첫 개입</p>
+</footer>
+
+<script>
+function loadImages() { document.querySelectorAll('img[data-src]').forEach(img => { const src = img.getAttribute('data-src'); if (src) { img.src = src; img.onerror = function() { this.style.display = 'none'; const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'flex'; }; img.onload = function() { const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'none'; }; } }); }
+function scrollAct(n) { const el = document.getElementById('act' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+document.querySelectorAll('.image-frame img').forEach(img => { img.addEventListener('click', () => { if (img.src && img.style.display !== 'none') { document.getElementById('lightbox-img').src = img.src; document.querySelector('.lightbox').classList.add('active'); } }); });
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => { document.querySelectorAll('.act').forEach((act, i) => { const rect = act.getBoundingClientRect(); if (rect.top < 200 && rect.bottom > 200) { navButtons.forEach(b => b.classList.remove('active')); if (navButtons[i]) navButtons[i].classList.add('active'); } }); });
+loadImages();
+</script>
+
+</body>
+</html>
