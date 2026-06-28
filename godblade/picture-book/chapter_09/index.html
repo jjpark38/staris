@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9화 — 이방원의 변증 (그림책) | staris.cloud</title>
+<meta name="description" content="2권 9화. 이방원 변증. 노동의 박자가 천하를 구할 수 있습니다. 9,860원의 主. 주공 호칭 정식 정착.">
+<style>
+:root { --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e; --fg: #e1e8f5; --fg-mute: #8b9bb4; --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%); color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; line-height: 1.85; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+.breadcrumb { background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breadcrumb a { color: var(--gold); text-decoration: none; } .breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 60px 24px 40px; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%); }
+.cover .series { display: inline-block; padding: 4px 12px; background: var(--gold-dark); color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 16px; }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; font-weight: 700; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.cover .meta { font-size: 12px; color: var(--fg-mute); }
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act { margin-bottom: 80px; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.act-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dark); }
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+.image-frame { position: relative; width: 100%; margin: 24px 0; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.image-frame img { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 0.3s ease; }
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder { display: flex; align-items: center; justify-content: center; height: 400px; color: var(--fg-mute); font-size: 13px; background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px); }
+.image-frame .placeholder .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--gold-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 12px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption { padding: 10px 16px; background: var(--bg-elevated); font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border); }
+.body { font-size: 16px; line-height: 1.9; } .body p { margin-bottom: 16px; }
+.body .dialogue { font-style: italic; color: var(--gold-light); padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0; }
+.body .system { font-family: 'Consolas', monospace; background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2); color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px; font-size: 13px; }
+.body strong { color: var(--gold); font-weight: 700; }
+.nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 30px; padding: 8px 16px; display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(10px); flex-wrap: wrap; max-width: 95vw; }
+.nav button { background: transparent; border: none; color: var(--fg-mute); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+.nav button:hover { background: var(--bg-card); color: var(--gold); } .nav button.active { background: var(--gold); color: var(--bg); } .nav .home { background: var(--gold-dark); color: var(--bg); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+.lightbox.active { display: flex; } .lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+@media (max-width: 700px) { .cover h1 { font-size: 24px; } .reader { padding: 20px 16px 120px; } .act-title { font-size: 18px; } .body { font-size: 15px; } .image-frame .placeholder { height: 280px; } }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb"><a href="/godblade/">← 대시보드</a><span>/</span><a href="/godblade/picture-book/">그림책</a><span>/</span>9화</nav>
+
+<header class="cover">
+  <div class="series">권2 · CHAPTER 9 · 8 ACTS</div>
+  <h1>이방원의 변증</h1>
+  <div class="subtitle">"노동의 박자도 천하를 구할 수 있습니다 — 9,860원의 主"</div>
+  <div class="meta">PD 본문 5/6 · 김용 의천도룡기 광명정 변호 본맥 · 주공 호칭 정식 정착</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1"><div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">무명의 묵화 — 작두</h2></div>
+  <div class="image-frame"><img data-src="./images/act1_painting.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 1 — 작두 위에 한 명의 무당. 어머니이기도 하고 주공이기도 하오.</div></div>
+  <div class="body">
+    <p>무당파 객점의 안쪽 — 본 본 별실. 한지 위에는 — 묵화(墨畫)가 — 한 장 — 그려져 있었다. 작두 위에 — 한 명의 — 무당이 — 서 있었다.</p>
+    <div class="dialogue">"...우리 어머니예요?" "...주공의 어머니이기도 하고 — 주공이기도 하오. 작두 위에 — 한 명의 — 무당이 — 서 있다는 것은 — <strong>어머니의 — 봉인 — 과 — 주공의 — 봉인 — 이 — 한 줄에 — 이어져 있다는 — 의미</strong>요."</div>
+  </div>
+</section>
+
+<section class="act" id="act2"><div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">광명정 자리 배치</h2></div>
+  <div class="image-frame"><img data-src="./images/act2_seats.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 2 — 장무기가 어머니를 변호한 광명정 대회의 자리 배치.</div></div>
+  <div class="body">
+    <p>김용 풍 의천도룡기의 — 광명정 대회의 — 자리 배치가 — 본 화의 — 별실 — 자리 — 배치 — 였다. 장무기가 — 명교의 — 본 사부 — 와 — 정파의 — 본 본 사부 — 사이에 — 앉아 — 자기 어머니를 — 변호하는 — 그 — 본맥의 — 변형판.</p>
+    <div class="dialogue">"...이방원도 — 데리고 오시오. 이방원이 — 주공의 — <strong>변증</strong>을 — 들려야 하오."</div>
+  </div>
+</section>
+
+<section class="act" id="act3"><div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">그대는 주공을 무엇으로 부르오</h2></div>
+  <div class="image-frame"><img data-src="./images/act3_bangwon.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 3 — 의심 많은 호랑이의 표정이 인간의 표정으로 바뀌었다.</div></div>
+  <div class="body">
+    <div class="dialogue">"...이방원. 그대는 — 주공을 — 무엇으로 — 부르오?" "...주공이라 — 부릅니다." "...왜 — 주공이라 — 부르오?"</div>
+    <p>이방원이 — 한 번 — 침묵했다. 의심 많은 호랑이의 — 표정이 — 한 번 — 인간의 — 표정으로 — 바뀌었다.</p>
+  </div>
+</section>
+
+<section class="act" id="act4"><div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">변증 첫 줄 — 노동의 박자</h2></div>
+  <div class="image-frame"><img data-src="./images/act4_thesis.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 4 — 이 자의 박자는 — 균형이 — 아니라 — 노동입니다.</div></div>
+  <div class="body">
+    <div class="dialogue">"...이 자는 — 도(道)를 — 따르지 — 않습니다. 이 자의 박자는 — 균형이 — 아닙니다. 이 자의 박자는 — 들쭉날쭉입니다. 무당파의 본 본 사부께서는 — 균형의 박자를 — 따르시지만 — 이 자는 — 균형의 박자를 — 따르지 — 않습니다. <strong>이 자의 박자는 — 노동의 박자입니다.</strong>"</div>
+  </div>
+</section>
+
+<section class="act" id="act5"><div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">13년 컨베이어의 박자</h2></div>
+  <div class="image-frame"><img data-src="./images/act5_conveyor.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 5 — 한진 41 컨베이어 벨트 위에서 — 13년 — 동안 — 무너지지 — 않은 — 박자.</div></div>
+  <div class="body">
+    <div class="dialogue">"...노동의 박자는 — 한 박자가 — 들쭉날쭉이라서 — 박자가 — 무너지지 — 않습니다. 무너질 — 박자가 — 처음부터 — 없습니다. 균형의 박자는 — 한 번 — 무너지면 — 다시 — 잡기 어렵지만 — 노동의 박자는 — 들쭉날쭉으로 — 흔들리면서도 — 박자가 — 안 — 깨집니다. 한진 41 컨베이어 벨트 위에서 — 13년 — 동안 — 무너지지 — 않은 — 박자입니다. <strong>균형의 박자가 13년을 — 무너지지 — 않을 수 있겠습니까?</strong>"</div>
+    <div class="dialogue">"...할 수 — 없을 — 것이오."</div>
+  </div>
+</section>
+
+<section class="act" id="act6"><div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">9,860원의 主 — 봉인의 主 ⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act6_lord.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 6 — 도(道)의 主가 — 아니라 — 노동의 — 主. 9,860원의 — 主. 봉인의 — 主.</div></div>
+  <div class="body">
+    <div class="dialogue">"...그래서 — 이 자의 박자가 — 천하를 — 구할 수 있습니다. 이 자의 노동의 박자가 — 49년 — 한계의 — 봉인을 — 9,860원의 — 박자로 — 무한 봉인으로 — 확장합니다. 그래서 — 저는 — 이 자를 — 주공이라 — 부릅니다. <strong>도(道)의 主가 — 아니라 — 노동의 — 主. 9,860원의 — 主. 봉인의 — 主.</strong>"</div>
+  </div>
+</section>
+
+<section class="act" id="act7"><div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">무명의 의문 — 의심 많은 호랑이</h2></div>
+  <div class="image-frame"><img data-src="./images/act7_doubt.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 7 — 의심이 — 깊으면 — 깊을수록 — 신뢰는 — 견고합니다.</div></div>
+  <div class="body">
+    <div class="dialogue">"...그대는 — 의심 많은 호랑이로 — 알려져 있소. 위소보 + 강희제 + 영호충의 — 변형판이오. 그런 — 의심 많은 — 호랑이가 — 어찌 — 50대 노동자를 — 주공이라 — 부르고 — 변호하오?"</div>
+    <div class="dialogue">"...의심이 — 깊으면 — 깊을수록 — 신뢰는 — 견고합니다. 저는 — 사흘 동안 — 주공을 — 의심했습니다. 1권 7화 무력 시험 — 1권 9화 지략 시험 — 본 권의 — 작두 박자 시험. 세 번 — 의심했고 — 세 번 — 통과했습니다. <strong>의심을 — 통과한 — 신뢰가 — 통과하지 않은 — 신뢰보다 — 깊습니다.</strong>"</div>
+  </div>
+</section>
+
+<section class="act" id="act8"><div class="act-header"><span class="act-num">ACT 08</span><h2 class="act-title">충심 시험 예고 — 39화 메가 달고나</h2></div>
+  <div class="image-frame"><img data-src="./images/act8_loyalty.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 8 — 본 권의 — 이방원의 — "주공" — 호칭은 — 본 권에서 처음으로 — 정식 호칭으로 — 자리 잡았다.</div></div>
+  <div class="body">
+    <div class="dialogue">"...그대의 — 충심 — 시험이오. 본 권의 — 마지막 — 또는 — 다음 권 — 에 — 그대의 — 충심 시험이 — 있을 것이오."</div>
+    <div class="dialogue">"...본 권 — 마지막에 — 답하겠습니다. 이성계 — 봉인이 — 풀린 — 직후 — 저의 — 충심이 — 어디로 — 향할지 — 본 권 — 마지막 화에서 — 답이 — 나옵니다."</div>
+    <p>김용 풍 강호의 — 사부-제자 관계의 — 본맥에서 — 한 줄 — 위 — 의 — 단계. 1화에서 첫 시도. 본 화에서 — <strong>정식 — 정착.</strong></p>
+    <div class="dialogue">"...주공. 괜찮으셨습니까. 제 변증이 — 너무 — 깊었습니까?" "...깊었어. 근데 — 좋았다." "...감사합니다, 주공."</div>
+    <div class="dialogue">"...주공. 39화의 — 메가 달고나 폭렬진은 — 무당파도 — 지원하오. 청천이 — 동행하고 — 「태극검결」 비급도 — 빌려드린 채로 — 39화 까지 — 가지고 가시오. 39화 — 후 — 돌려주시면 — 되오." "...알았어요."</div>
+    <p style="text-align: center; color: var(--fg-mute); font-style: italic; margin-top: 24px;">(2권 9화 끝)</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/picture-book/'">📚</button>
+  <button onclick="scrollAct(1)">1</button> <button onclick="scrollAct(2)">2</button> <button onclick="scrollAct(3)">3</button> <button onclick="scrollAct(4)">4</button> <button onclick="scrollAct(5)">5</button> <button onclick="scrollAct(6)">6</button> <button onclick="scrollAct(7)">7</button> <button onclick="scrollAct(8)">8</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 2권 9화 그림책 v1.0</p>
+  <p style="margin-top: 8px;">PD 본문 5/6 + ComfyUI 본업 PC 일러스트 8컷 (SDXL Studio Ghibli)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">D+33 자율 산출 · 김용 의천도룡기 광명정 변호 본맥 · 주공 호칭 정식 정착</p>
+</footer>
+
+<script>
+function loadImages() { document.querySelectorAll('img[data-src]').forEach(img => { const src = img.getAttribute('data-src'); if (src) { img.src = src; img.onerror = function() { this.style.display = 'none'; const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'flex'; }; img.onload = function() { const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'none'; }; } }); }
+function scrollAct(n) { const el = document.getElementById('act' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+document.querySelectorAll('.image-frame img').forEach(img => { img.addEventListener('click', () => { if (img.src && img.style.display !== 'none') { document.getElementById('lightbox-img').src = img.src; document.querySelector('.lightbox').classList.add('active'); } }); });
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => { document.querySelectorAll('.act').forEach((act, i) => { const rect = act.getBoundingClientRect(); if (rect.top < 200 && rect.bottom > 200) { navButtons.forEach(b => b.classList.remove('active')); if (navButtons[i]) navButtons[i].classList.add('active'); } }); });
+loadImages();
+</script>
+
+</body>
+</html>
