@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6화 — 무당산의 그림자 (그림책) | staris.cloud</title>
+<meta name="description" content="2권 6화. 무당파 본 사부 도성 + 4명 청년 검수 사절단. 작두 박자 공개. 태극검 4방위 진형. 7화 절벽.">
+<style>
+:root { --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e; --fg: #e1e8f5; --fg-mute: #8b9bb4; --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%); color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; line-height: 1.85; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+.breadcrumb { background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breadcrumb a { color: var(--gold); text-decoration: none; } .breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 60px 24px 40px; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%); }
+.cover .series { display: inline-block; padding: 4px 12px; background: var(--gold-dark); color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 16px; }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; font-weight: 700; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.cover .meta { font-size: 12px; color: var(--fg-mute); }
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act { margin-bottom: 80px; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.act-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dark); }
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+.image-frame { position: relative; width: 100%; margin: 24px 0; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.image-frame img { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 0.3s ease; }
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder { display: flex; align-items: center; justify-content: center; height: 400px; color: var(--fg-mute); font-size: 13px; background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px); }
+.image-frame .placeholder .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--gold-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 12px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption { padding: 10px 16px; background: var(--bg-elevated); font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border); }
+.body { font-size: 16px; line-height: 1.9; } .body p { margin-bottom: 16px; }
+.body .dialogue { font-style: italic; color: var(--gold-light); padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0; }
+.body .system { font-family: 'Consolas', monospace; background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2); color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px; font-size: 13px; }
+.body strong { color: var(--gold); font-weight: 700; }
+.nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 30px; padding: 8px 16px; display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(10px); flex-wrap: wrap; max-width: 95vw; }
+.nav button { background: transparent; border: none; color: var(--fg-mute); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+.nav button:hover { background: var(--bg-card); color: var(--gold); } .nav button.active { background: var(--gold); color: var(--bg); } .nav .home { background: var(--gold-dark); color: var(--bg); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+.lightbox.active { display: flex; } .lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+@media (max-width: 700px) { .cover h1 { font-size: 24px; } .reader { padding: 20px 16px 120px; } .act-title { font-size: 18px; } .body { font-size: 15px; } .image-frame .placeholder { height: 280px; } }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb"><a href="/godblade/">← 대시보드</a><span>/</span><a href="/godblade/picture-book/">그림책</a><span>/</span>6화</nav>
+
+<header class="cover">
+  <div class="series">권2 · CHAPTER 6 · 8 ACTS</div>
+  <h1>무당산의 그림자</h1>
+  <div class="subtitle">"무당파 본 사부 도성 + 태극검 4방위 진형"</div>
+  <div class="meta">PD 본문 5/6 · 김용 의천도룡기 무당파 vs 명교 본맥 · 작두 박자 공개</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1">
+  <div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">사절단 5인 도착</h2></div>
+  <div class="image-frame"><img data-src="./images/act1_envoy.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 1 — 본 사부 도성 + 4명 청년 검수.</div></div>
+  <div class="body">
+    <p>신단수에서 단군왕검 인증을 받은 다음 날, 무당파의 본 사절단이 개성에 도착했다.</p>
+    <p>사절단은 다섯 명이었다. 김용 선생의 의천도룡기에서 — 무당파의 — 본 사부 + 4대 제자의 본맥이었다. 본 사부는 60대 후반. 흰 수염 + 흰 도복 + 검집은 등에 가로로. 본 사부의 이름은 — <strong>무당의 도성(道誠)</strong> — 이었다.</p>
+  </div>
+</section>
+
+<section class="act" id="act2">
+  <div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">도성 vs 정주 — 포권의 예</h2></div>
+  <div class="image-frame"><img data-src="./images/act2_doseong.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 2 — 50대 노동자의 손이 — 이번에는 — 떨리지 않았다.</div></div>
+  <div class="body">
+    <div class="dialogue">"정주 님 — 도성이라 하오. 무당파 본 사부."</div>
+    <p>도성이 — 시장의 한가운데 — 신단수 앞 — 광장에서 — 정주에게 포권의 예를 올렸다. 김용 풍 무당파의 본 사부가 — <strong>대등한 예를 — 정주에게 올렸다는 것은 — 정주를 — 강호의 — 한 격 — 으로 — 인정했다는 의미</strong>였다.</p>
+    <p>정주도 — 한 번 — 포권의 예를 — 올렸다. 50대 노동자의 손이 — 이번에는 — 떨리지 않았다.</p>
+    <div class="dialogue">"...뭐 일이세요."</div>
+  </div>
+</section>
+
+<section class="act" id="act3">
+  <div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">천하의 도를 어지럽힌다</h2></div>
+  <div class="image-frame"><img data-src="./images/act3_irregular.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 3 — 들쭉날쭉 박자가 — 천하에 — 퍼지면 — 천하의 모든 사람이 — 자기 박자를 — 잃소.</div></div>
+  <div class="body">
+    <div class="dialogue">"무당파에서는 — 정주 님의 박자가 — 천하의 도(道)를 — 어지럽힐 수 있다 — 판단했소."</div>
+    <div class="dialogue">"정주 님의 박자는 — 들쭉날쭉이오. 이 박자가 — 천하에 — 퍼지면 — 천하의 모든 사람이 — 자기 박자를 — 잃소. 그래서 — 무당파는 — 정주 님의 박자를 — 멈추거나 — 균형으로 — 정렬하거나 — 둘 중 하나를 — 해야 — 하오."</div>
+    <p>김용 풍 의천도룡기에서 무당파가 명교를 멸하려 했던 본맥이 — 본 화에서 — 정확히 — 변형되어 — 등장했다. 무당파 = 정파의 본 맥. 정주 = 명교의 — 변형판.</p>
+  </div>
+</section>
+
+<section class="act" id="act4">
+  <div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">월자의 작두 박자 — 1981년 부산</h2></div>
+  <div class="image-frame"><img data-src="./images/act4_wolja_jakdoo.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 4 — 작두 위에서 — 균형을 — 잡으려 하면 — 발이 — 베인다.</div></div>
+  <div class="body">
+    <div class="dialogue">"...아니. 둘 다 안 돼. 내 박자는 내가 만든 거야. 50대 노동자가 13년 동안 컨베이어 벨트 위에서 익힌 박자야. 이 박자를 — 멈추는 거 — 또는 — 정렬하는 거 — 둘 다 — 안 돼." "...왜 안 되시오." "내 어머니의 박자거든."</div>
+    <div class="dialogue">"1981년 부산 오륙도의 작두무당 월자(月慈). 내 어머니. ...내 어머니의 박자가 — 작두 박자야. 작두 박자는 — 균형이 아니라 — 들쭉날쭉이야. 작두 칼이 — 한 번 — 위로 — 올라가고 — 한 번 — 아래로 — 떨어질 때 — 그 박자가 — 들쭉날쭉이거든. <strong>균형 박자로는 — 작두를 — 못 — 탄다. 작두 위에서 — 균형을 — 잡으려 하면 — 발이 — 베인다.</strong>"</div>
+  </div>
+</section>
+
+<section class="act" id="act5">
+  <div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">도성 — 첫 판단 수정</h2></div>
+  <div class="image-frame"><img data-src="./images/act5_doseong_revise.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 5 — 의천도룡기의 장삼봉이 — 장무기를 — 한 번 — 수정한 것과 — 같은 본맥.</div></div>
+  <div class="body">
+    <p>도성이 — 그 말을 — 듣고 — 잠시 — 침묵했다.</p>
+    <div class="dialogue">"...주공의 박자가 — 작두 박자라면 — 무당파의 — 첫 판단 — 은 — 수정되어야 — 하오. 작두 박자는 — 작두 위에서만 — 살아남기 위한 — 박자요."</div>
+    <p>김용 풍 무당파의 본 사부가 — 자기 첫 판단 — 을 — 수정하는 — 그 — 본맥. 의천도룡기의 장삼봉이 — 장무기를 — 처음에 — 명교 후예로 — 보았다가 — 한 번 — 수정한 것과 — 같은 — 본 맥.</p>
+  </div>
+</section>
+
+<section class="act" id="act6">
+  <div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">태극검 4방위 진형</h2></div>
+  <div class="image-frame"><img data-src="./images/act6_taiji.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 6 — 4방위 균형 진형 — 정주 님의 박자를 — 강제로 — 균형으로 — 정렬.</div></div>
+  <div class="body">
+    <div class="dialogue">"...무당파는 — 한 번 — 더 — 논의가 — 필요할 듯하오. 그러나 — 한 가지 — 시험은 — 본 화에서 — 직접 — 보고자 — 하오."</div>
+    <div class="dialogue">"태극검 — 진형."</div>
+    <p>4명의 청년 검수가 — 정주를 — 둘러쌌다. 동서남북. 그리고 — 동시에 — 검을 — 뽑았다. 4개의 검이 — 한 번에 — 뽑혔지만 — 4개 검이 — 정확히 — 같은 박자로 — 뽑혔다. <strong>김용 풍 무당파 태극검의 본 진형 — 4방위 균형 — 의 본맥.</strong></p>
+    <div class="dialogue">"정주 님이 — 이 진형을 — 박자가 안 깨진 채로 — 통과하시면 — 무당파는 — 정주 님을 — 강호의 — 한 격 — 으로 — 정식 — 인정하겠소. 그러나 — 박자가 깨지시면 — 검을 — 뽑겠소."</div>
+  </div>
+</section>
+
+<section class="act" id="act7">
+  <div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">이방원 — 동쪽 전략</h2></div>
+  <div class="image-frame"><img data-src="./images/act7_bangwon.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 7 — 동쪽이 — 시장의 — 입구. 사람의 흐름이 — 진형의 — 균형을 — 흔든다.</div></div>
+  <div class="body">
+    <div class="dialogue">"...주공. 이 진형은 — 4방위 균형이라 — 한쪽으로만 — 깨면 — 됩니다." "어느 쪽?" "<strong>동쪽.</strong> 동쪽이 — 시장의 — 입구입니다. 사람이 — 가장 — 많이 — 흐르는 — 방향. 사람의 흐름이 — 진형의 — 균형을 — 한 번 — 흔듭니다."</div>
+    <div class="dialogue">"...야 너 머리 잘 돌아가네." "네. 주공. 1권 9화에서 — 지략 시험을 — 통과한 자료입니다."</div>
+    <p>정주가 — 자기 무릎을 — 한 번 — 두드렸다. 무신화는 — 켜지 않았다. 무신화를 켜면 — 도성이 — 즉시 — 검을 — 뽑을 것이었다. <strong>본 화의 시험은 — 무신화 없이 — 통과해야 — 하는 — 시험.</strong></p>
+  </div>
+</section>
+
+<section class="act" id="act8">
+  <div class="act-header"><span class="act-num">ACT 08</span><h2 class="act-title">동쪽 한 걸음 — 7화로</h2></div>
+  <div class="image-frame"><img data-src="./images/act8_eastward.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 8 — 정주는 — 동쪽 — 시장 입구 — 방향으로 — 한 걸음 — 갔다.</div></div>
+  <div class="body">
+    <p>태극검 진형이 — 작동했다. 4방위에서 — 4개 검이 — 정주를 향해 — 박자를 — 한 번 — 보냈다. 이 박자가 정주의 — 들쭉날쭉 박자를 — 강제로 — 균형으로 — 정렬한다.</p>
+    <p>정주는 — 동쪽 — 시장 입구 — 방향으로 — 한 걸음 — 갔다.</p>
+    <p style="text-align: center; color: var(--fg-mute); font-style: italic; margin-top: 24px;">(2권 6화 끝 — 7화에서 진형 통과 본 합)</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/picture-book/'">📚</button>
+  <button onclick="scrollAct(1)">1</button> <button onclick="scrollAct(2)">2</button> <button onclick="scrollAct(3)">3</button> <button onclick="scrollAct(4)">4</button> <button onclick="scrollAct(5)">5</button> <button onclick="scrollAct(6)">6</button> <button onclick="scrollAct(7)">7</button> <button onclick="scrollAct(8)">8</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 2권 6화 그림책 v1.0</p>
+  <p style="margin-top: 8px;">PD 본문 5/6 + ComfyUI 본업 PC 일러스트 8컷 (SDXL Studio Ghibli)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">D+33 자율 산출 · 김용 의천도룡기 무당파 vs 명교 본맥 인용</p>
+</footer>
+
+<script>
+function loadImages() { document.querySelectorAll('img[data-src]').forEach(img => { const src = img.getAttribute('data-src'); if (src) { img.src = src; img.onerror = function() { this.style.display = 'none'; const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'flex'; }; img.onload = function() { const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'none'; }; } }); }
+function scrollAct(n) { const el = document.getElementById('act' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+document.querySelectorAll('.image-frame img').forEach(img => { img.addEventListener('click', () => { if (img.src && img.style.display !== 'none') { document.getElementById('lightbox-img').src = img.src; document.querySelector('.lightbox').classList.add('active'); } }); });
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => { document.querySelectorAll('.act').forEach((act, i) => { const rect = act.getBoundingClientRect(); if (rect.top < 200 && rect.bottom > 200) { navButtons.forEach(b => b.classList.remove('active')); if (navButtons[i]) navButtons[i].classList.add('active'); } }); });
+loadImages();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7화 — 태극검의 균형 (그림책) | staris.cloud</title>
+<meta name="description" content="2권 7화. 정주 vs 무당파 태극검 진형. 작두 박자 vs 균형. 슬레이어 살풀이 황금빛 폭발. 도성 태극검결 비급 전수.">
+<style>
+:root { --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e; --fg: #e1e8f5; --fg-mute: #8b9bb4; --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%); color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; line-height: 1.85; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+.breadcrumb { background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breadcrumb a { color: var(--gold); text-decoration: none; } .breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 60px 24px 40px; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%); }
+.cover .series { display: inline-block; padding: 4px 12px; background: var(--gold-dark); color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 16px; }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; font-weight: 700; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.cover .meta { font-size: 12px; color: var(--fg-mute); }
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act { margin-bottom: 80px; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.act-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dark); }
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+.image-frame { position: relative; width: 100%; margin: 24px 0; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.image-frame img { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 0.3s ease; }
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder { display: flex; align-items: center; justify-content: center; height: 400px; color: var(--fg-mute); font-size: 13px; background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px); }
+.image-frame .placeholder .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--gold-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 12px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption { padding: 10px 16px; background: var(--bg-elevated); font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border); }
+.body { font-size: 16px; line-height: 1.9; } .body p { margin-bottom: 16px; }
+.body .dialogue { font-style: italic; color: var(--gold-light); padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0; }
+.body .system { font-family: 'Consolas', monospace; background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2); color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px; font-size: 13px; }
+.body strong { color: var(--gold); font-weight: 700; }
+.nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 30px; padding: 8px 16px; display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(10px); flex-wrap: wrap; max-width: 95vw; }
+.nav button { background: transparent; border: none; color: var(--fg-mute); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+.nav button:hover { background: var(--bg-card); color: var(--gold); } .nav button.active { background: var(--gold); color: var(--bg); } .nav .home { background: var(--gold-dark); color: var(--bg); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+.lightbox.active { display: flex; } .lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+@media (max-width: 700px) { .cover h1 { font-size: 24px; } .reader { padding: 20px 16px 120px; } .act-title { font-size: 18px; } .body { font-size: 15px; } .image-frame .placeholder { height: 280px; } }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb"><a href="/godblade/">← 대시보드</a><span>/</span><a href="/godblade/picture-book/">그림책</a><span>/</span>7화</nav>
+
+<header class="cover">
+  <div class="series">권2 · CHAPTER 7 · 8 ACTS</div>
+  <h1>태극검의 균형</h1>
+  <div class="subtitle">"작두 박자 vs 균형. 무당파 첫 패배 + 태극검결 전수"</div>
+  <div class="meta">PD 본문 5/6 · 김용 의천도룡기 태극검 vs 건곤대나이 본맥 변형판</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1"><div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">태극검 4박자 강제 정렬</h2></div>
+  <div class="image-frame"><img data-src="./images/act1_align.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 1 — 무릎의 시큰함이 — 한 번 — 사라졌다. 정주가 — 정주가 — 아니게 — 된다.</div></div>
+  <div class="body">
+    <p>4개의 검이 4개의 박자를 동시에 보냈는데 그 4개 박자가 — 정확히 — 같은 박자였다. 정주의 들쭉날쭉 박자가 — 그 4박자에 — 강제로 — 끌려갔다.</p>
+    <p>정주의 무릎이 — 한 번 — 균형 — 으로 — 정렬되었다. 이것은 50대 노동자의 무릎에는 — 견딜 수 없는 — 충격이었다. 무릎의 시큰함이 — 한 번 — 사라졌다. 시큰함이 사라진 것은 — 좋은 일 — 같지만 — 정주에게는 — 아니었다. <strong>무릎의 시큰함은 — 정주의 박자의 — 본 맥 — 이었다.</strong></p>
+    <div class="dialogue">"...야 이 친구들 박자 거 — 너무 — 빡세네."</div>
+    <p>그러나 그 말의 박자조차 — 한 번 — 균형으로 — 정렬되었다. "...야" "이" "친" "구" "들" 모든 글자가 — 정확히 — 같은 시간 간격으로 — 떨어졌다. 이것은 정주의 톤 — 이 — 아니었다.</p>
+  </div>
+</section>
+
+<section class="act" id="act2"><div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">이방원도 정렬</h2></div>
+  <div class="image-frame"><img data-src="./images/act2_bangwon.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 2 — 이방원의 박자도 — 한 번 — 균형으로 — 정렬되어 있었다.</div></div>
+  <div class="body">
+    <div class="dialogue">"...주공의 박자가 — 사라졌습니다." "...알아." "...어떻게 — 회복하시겠습니까." "...작두 박자."</div>
+  </div>
+</section>
+
+<section class="act" id="act3"><div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">월자의 작두 봉인 — 1981 부산</h2></div>
+  <div class="image-frame"><img data-src="./images/act3_seal.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 3 — 위로 — 한 박. 아래로 — 반 박. 위로 — 한 박 반. 아래로 — 반 박.</div></div>
+  <div class="body">
+    <p>정주가 — 자기 어머니의 작두 박자를 — 떠올렸다. 1981년 부산 오륙도의 — 그 — 작두 박자. 정주가 7살 때 — 어머니가 — 그 박자로 — <strong>봉인을 — 만들었다.</strong> 그 봉인이 — 49년 — 한계까지 — 지켜졌다.</p>
+    <p>위로 — 한 박. 아래로 — 반 박. 위로 — 한 박 반. 아래로 — 반 박. <strong>균형이 아니라 — 들쭉날쭉.</strong></p>
+  </div>
+</section>
+
+<section class="act" id="act4"><div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">봉인 &gt; 균형</h2></div>
+  <div class="image-frame"><img data-src="./images/act4_seal_balance.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 4 — 봉인이 — 균형보다 — 한 단계 — 위.</div></div>
+  <div class="body">
+    <p>49년 전에 — 어머니가 — 봉인을 — 만들 때 — 작두 박자가 — 한 번 — 우주에 — 새겨졌다. 그 박자는 — 무당파의 태극검 4박자보다 — 한 단계 — 위 — 의 — 박자였다.</p>
+    <p>김용 풍으로 옮기면 — <strong>"장삼봉의 태극권은 — 우주의 균형을 — 잡지만 — 어머니의 작두 박자는 — 우주의 — 봉인을 — 만든다."</strong> 봉인이 — 균형보다 — 한 단계 — 위.</p>
+    <p>정주의 박자가 — 한 번 — 들쭉날쭉으로 — 돌아왔다. 태극검 진형의 4박자가 — 한 번 — 흔들렸다.</p>
+  </div>
+</section>
+
+<section class="act" id="act5"><div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">슬레이어 살풀이 — 황금빛 폭발</h2></div>
+  <div class="image-frame"><img data-src="./images/act5_salpuri.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 5 — 살풀이! 황금빛 폭발이 — 정주의 작두 박자를 — 더 — 강하게 — 만들었다.</div></div>
+  <div class="body">
+    <div class="dialogue">"...슬레이어. 빙의 토글. 살풀이 버프 갈겨." "OK."</div>
+    <p>슬레이어가 — 작두를 — 한 번 — 흔들었다. 빙의 직후 — 5초간 — 메즈 면역. 월자가 — 빙의 직후 — 작두를 — 머리 위로 — 들어 — 올렸다.</p>
+    <div class="dialogue">"살풀이!"</div>
+    <p>박세린 GDD slayer 노드 A 1단계 — "황금빛 폭발 — 3m 광역 — +20% 데미지." 그러나 본 화에서는 — 데미지 버프가 아니라 — <strong>박자 회복 — 으로 — 작동</strong>했다. 슬레이어 = 살풀이 무당. 살풀이 = 한국 무속의 — 박자 회복 — 의식.</p>
+  </div>
+</section>
+
+<section class="act" id="act6"><div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">태극검 진형 정지 — 무당파 첫 패배</h2></div>
+  <div class="image-frame"><img data-src="./images/act6_halted.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 6 — 4개 검이 — 동시에 — 박자를 — 잃었다. 무당파 태극검의 첫 패배.</div></div>
+  <div class="body">
+    <p>태극검 진형의 4박자가 — 한 번 — 정지 — 되었다. 4개 검이 — 동시에 — 같은 박자로 — 검결을 — 외우다 — 한 번 — 박자를 — 잃었다.</p>
+    <p>이것은 무당파 태극검의 — <strong>첫 — 패배</strong> — 였다. 김용 풍 의천도룡기의 — 태극검이 — 명교의 건곤대나이에 — 한 번 — 밀렸던 — 그 — 본맥의 변형판.</p>
+  </div>
+</section>
+
+<section class="act" id="act7"><div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">도성 — 두 번째 판단 수정</h2></div>
+  <div class="image-frame"><img data-src="./images/act7_doseong2.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 7 — 강호의 — 한 어머니의 — 아들 — 이오. 그 격으로 — 무당파는 — 정주 님을 — 인정하오.</div></div>
+  <div class="body">
+    <div class="dialogue">"...주공의 박자는 — 작두 박자였군. 정주 님의 박자는 — 천하의 도(道)를 — 어지럽히는 — 박자 — 가 — 아니라 — 봉인을 — 지키는 — 박자 — 였소."</div>
+    <div class="dialogue">"...주공의 어머니의 — 작두 — 봉인을 — 무당파에서도 — 한 번 — 직접 — 보고자 하오. 39화의 — 경복궁 — 잠입 — 작전 — 에 — 무당파의 — 사절 — 1인 — 동행 — 부탁드리오."</div>
+    <div class="dialogue">"...주공의 — 어머니의 — 봉인을 — 무당파도 — 지키고 싶소. 정주 님은 — 강호의 — 한 격 — 이 아니라 — <strong>강호의 — 한 어머니의 — 아들</strong> — 이오. 그 격으로 — 무당파는 — 정주 님을 — 인정하오."</div>
+  </div>
+</section>
+
+<section class="act" id="act8"><div class="act-header"><span class="act-num">ACT 08</span><h2 class="act-title">「태극검결」 비급 전수</h2></div>
+  <div class="image-frame"><img data-src="./images/act8_bigup.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 8 — 책의 무게는 — 가벼웠다. 그러나 그 안의 박자는 — 무당파 — 5,000년의 — 박자.</div></div>
+  <div class="body">
+    <div class="dialogue">"...태극검 — 비급. 정주 님이 — 작두 박자에 — 태극검의 — 한 — 합 — 을 — 더하시면 — 39화 — 메가 달고나 폭렬진의 — 박자가 — 한 단계 — 더 — 깊어질 것이오."</div>
+    <p>도성이 — 자기 도복 안에서 — 한 권의 — 책을 — 꺼냈다. 한지로 만든 책. 표지에는 — <strong>「태극검결(太極劍訣)」</strong> 이라 — 한자로 — 적혀 있었다.</p>
+    <p>정주가 그 책을 — 받았다. 책의 무게는 — 가벼웠다. 그러나 그 안의 박자는 — 무당파 — 5,000년의 — 박자.</p>
+    <div class="dialogue">"...고맙다."</div>
+    <p style="text-align: center; color: var(--fg-mute); font-style: italic; margin-top: 24px;">(2권 7화 끝)</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/picture-book/'">📚</button>
+  <button onclick="scrollAct(1)">1</button> <button onclick="scrollAct(2)">2</button> <button onclick="scrollAct(3)">3</button> <button onclick="scrollAct(4)">4</button> <button onclick="scrollAct(5)">5</button> <button onclick="scrollAct(6)">6</button> <button onclick="scrollAct(7)">7</button> <button onclick="scrollAct(8)">8</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 2권 7화 그림책 v1.0</p>
+  <p style="margin-top: 8px;">PD 본문 5/6 + ComfyUI 본업 PC 일러스트 8컷 (SDXL Studio Ghibli)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">D+33 자율 산출 · 김용 의천도룡기 태극검 vs 건곤대나이 본맥 변형판</p>
+</footer>
+
+<script>
+function loadImages() { document.querySelectorAll('img[data-src]').forEach(img => { const src = img.getAttribute('data-src'); if (src) { img.src = src; img.onerror = function() { this.style.display = 'none'; const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'flex'; }; img.onload = function() { const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'none'; }; } }); }
+function scrollAct(n) { const el = document.getElementById('act' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+document.querySelectorAll('.image-frame img').forEach(img => { img.addEventListener('click', () => { if (img.src && img.style.display !== 'none') { document.getElementById('lightbox-img').src = img.src; document.querySelector('.lightbox').classList.add('active'); } }); });
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => { document.querySelectorAll('.act').forEach((act, i) => { const rect = act.getBoundingClientRect(); if (rect.top < 200 && rect.bottom > 200) { navButtons.forEach(b => b.classList.remove('active')); if (navButtons[i]) navButtons[i].classList.add('active'); } }); });
+loadImages();
+</script>
+
+</body>
+</html>
