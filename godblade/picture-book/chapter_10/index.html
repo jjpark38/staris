@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10화 — 무휼의 한 방 (그림책) | staris.cloud</title>
+<meta name="description" content="2권 10화. 무휼 vs 청천. H빔 5cm 어긋남 = 김용 곽정 본맥. 균형이래야 결국 한 방에 깨지능 거임니더.">
+<style>
+:root { --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e; --fg: #e1e8f5; --fg-mute: #8b9bb4; --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%); color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; line-height: 1.85; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+.breadcrumb { background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breadcrumb a { color: var(--gold); text-decoration: none; } .breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 60px 24px 40px; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%); }
+.cover .series { display: inline-block; padding: 4px 12px; background: var(--gold-dark); color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 16px; }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; font-weight: 700; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.cover .meta { font-size: 12px; color: var(--fg-mute); }
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act { margin-bottom: 80px; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.act-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dark); }
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+.image-frame { position: relative; width: 100%; margin: 24px 0; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.image-frame img { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 0.3s ease; }
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder { display: flex; align-items: center; justify-content: center; height: 400px; color: var(--fg-mute); font-size: 13px; background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px); }
+.image-frame .placeholder .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--gold-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 12px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption { padding: 10px 16px; background: var(--bg-elevated); font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border); }
+.body { font-size: 16px; line-height: 1.9; } .body p { margin-bottom: 16px; }
+.body .dialogue { font-style: italic; color: var(--gold-light); padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0; }
+.body .system { font-family: 'Consolas', monospace; background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2); color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px; font-size: 13px; }
+.body strong { color: var(--gold); font-weight: 700; }
+.nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 30px; padding: 8px 16px; display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(10px); flex-wrap: wrap; max-width: 95vw; }
+.nav button { background: transparent; border: none; color: var(--fg-mute); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+.nav button:hover { background: var(--bg-card); color: var(--gold); } .nav button.active { background: var(--gold); color: var(--bg); } .nav .home { background: var(--gold-dark); color: var(--bg); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+.lightbox.active { display: flex; } .lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+@media (max-width: 700px) { .cover h1 { font-size: 24px; } .reader { padding: 20px 16px 120px; } .act-title { font-size: 18px; } .body { font-size: 15px; } .image-frame .placeholder { height: 280px; } }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb"><a href="/godblade/">← 대시보드</a><span>/</span><a href="/godblade/picture-book/">그림책</a><span>/</span>10화</nav>
+
+<header class="cover">
+  <div class="series">권2 · CHAPTER 10 · 8 ACTS</div>
+  <h1>무휼의 한 방</h1>
+  <div class="subtitle">"균형이래야 결국 한 방에 깨지능 거임니더"</div>
+  <div class="meta">PD 본문 5/6 · 김용 사조영웅전 곽정 강룡십팔장 본맥 · 강원도 5cm 어긋남 본맥</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1"><div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">청천 다섯 번째 등장</h2></div>
+  <div class="image-frame"><img data-src="./images/act1_cheongcheon.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 1 — 무휼의 박자가 — 무엇인지 — 무당파에서 — 모르오.</div></div>
+  <div class="body">
+    <div class="dialogue">"...무휼이라는 자의 — 무공을 — 한 번 — 보고자 — 하오. ...39화 — 메가 달고나 폭렬진의 — 한 — 핵심 — 인 — 무휼의 박자를 — 한 번 — 보고자 — 하오."</div>
+  </div>
+</section>
+
+<section class="act" id="act2"><div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">190cm 거구 — 곽정의 본맥</h2></div>
+  <div class="image-frame"><img data-src="./images/act2_muhul.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 2 — 매화나무가 — 무휼의 어깨보다 — 30cm 정도 — 작았다.</div></div>
+  <div class="body">
+    <p>무휼이 H빔을 — 어깨에 — 걸친 채로 — 마당의 한가운데로 — 한 번 — 걸어 나왔다. 190cm의 거구가 — 마당의 — 매화나무 옆에 — 섰다. 매화나무가 — 무휼의 어깨보다 — 30cm 정도 — 작았다.</p>
+    <p>김용 풍 사조영웅전의 — <strong>곽정</strong> — 의 — 거구의 — 본맥의 — 정확한 응용.</p>
+  </div>
+</section>
+
+<section class="act" id="act3"><div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">H빔 5cm 어긋남</h2></div>
+  <div class="image-frame"><img data-src="./images/act3_5cm.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 3 — 무휼의 왼쪽 손이 — 오른쪽 손보다 — 약 5cm 정도 — 위 — 에 — 잡혀 — 있었다.</div></div>
+  <div class="body">
+    <p>무휼이 — H빔을 — 양손으로 — 잡았다. 60kg의 H빔이 — 무휼의 양손에서 — 균형을 — 잡았다. 그러나 — 균형이 — 정확히 — 잡힌 것이 — 아니었다. <strong>무휼의 왼쪽 손이 — 오른쪽 손보다 — 약 5cm 정도 — 위 — 에 — 잡혀 — 있었다.</strong></p>
+    <div class="dialogue">"...무휼이라는 자의 — H빔 — 잡는 — 자세가 — 균형이 — 어긋났소."</div>
+    <div class="dialogue">"...아 그래요? 저는 — 그냥 — 잡는 거 같으면 — 잡능 거고요. 균형이라는 거 — 잘 — 모름니더."</div>
+  </div>
+</section>
+
+<section class="act" id="act4"><div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">첫 합 — 강제 정렬</h2></div>
+  <div class="image-frame"><img data-src="./images/act4_clash.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 4 — 5cm 어긋남이 — 0cm로 — 강제 — 정렬.</div></div>
+  <div class="body">
+    <p>청천의 검 끝이 — 무휼의 H빔 — 옆구리에 — 한 번 — 닿았다. 닿는 순간 — 무휼의 H빔의 — 균형이 — 한 번 — 정렬되었다. 5cm 어긋남이 — 0cm로 — 강제 — 정렬. 그러나 — 무휼은 — H빔이 정렬되었다는 — 사실을 — 알아차리지 — 못했다.</p>
+  </div>
+</section>
+
+<section class="act" id="act5"><div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">두 번째 합 — 다시 5cm 어긋남</h2></div>
+  <div class="image-frame"><img data-src="./images/act5_second.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 5 — 무휼의 H빔은 — 균형을 정렬해도 — 다음 합에서 — 다시 — 어긋나오.</div></div>
+  <div class="body">
+    <p>휘두름의 — 두 번째 — 합 — 에서 — H빔이 — 다시 — 5cm 어긋났다. 청천의 — 표정이 — 한 번 — 흔들렸다.</p>
+    <div class="dialogue">"...무휼의 H빔은 — 균형을 — 정렬해도 — 다음 — 합에서 — 다시 — 어긋나오. ...왜 그렇소?"</div>
+  </div>
+</section>
+
+<section class="act" id="act6"><div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">강원도 사투리의 위력 ⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act6_dialect.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 6 — 균형이래야 — 결국 — 한 방에 — 깨지능 거임니더.</div></div>
+  <div class="body">
+    <div class="dialogue">"...강원도 사투리 때문이지요. 강원도 — 깊은 산골 — 에서 — 자란 — 저 — 같은 거구는 — 균형을 — 잡지 — 않슴니더. 균형 잡으면 — H빔이 — 무거워서 — 어깨가 — 빠짐니더. 5cm 어긋나야 — H빔의 — 무게 — 가 — 양손에 — 분산됨니더."</div>
+    <div class="dialogue">"<strong>균형이래야 — 결국 — 한 방에 — 깨지능 거임니더.</strong> 5cm 어긋난 — H빔이 — 한 방에 — 안 깨짐니더. 김용 형님 책에서도 — 곽정 형님이 — 강룡십팔장 — 갈길 때 — 양손이 — 정확히 — 균형 잡힌 게 아니라 — 한 손이 — 한 손보다 — 약간 — 위 — 였능 거 같음니더."</div>
+    <div class="dialogue">"...자네는 — 김용을 — 읽었나?" "...어 그게요. 이방원 형님이 어제 변증할 때 — 「태극검결」 비급의 — 부록에 — 김용 인용 있다고 그러시더라구요. 곽정 형님이 — 저랑 — 비슷하게 — 강원도 — 같은 — 산골 — 출신이라서요. 친근하더라구요."</div>
+  </div>
+</section>
+
+<section class="act" id="act7"><div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">김용 캐릭터 매핑 — 일행 5인</h2></div>
+  <div class="image-frame"><img data-src="./images/act7_mapping.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 7 — 김용 선생은 — 너 한 명 위해서 — 곽정 캐릭터 — 만든 거 같다.</div></div>
+  <div class="body">
+    <p>마당에는 — 정주 / 무휼 / 슬레이어 / 홍대걸 / 이방원 — 다섯 명이 — 남았다.</p>
+    <div class="dialogue">"...야 무휼아. 김용 선생은 — 너 한 명 위해서 — <strong>곽정</strong> 캐릭터 — 만든 거 같다."</div>
+    <div class="dialogue">"...형님요. 무휼이 형님 — 곽정이라면 — 저는 — 김용 책에서 — 어떤 캐릭터임니까?" "...너는 — <strong>홍칠공</strong>이지. 개방의 — 본 본 어른."</div>
+    <div class="dialogue">"...정주. 나는 — 김용 책에서 — 어떤 캐릭터?" "...너는 — <strong>황약사의 부인 + 황용</strong> — 의 — 변형판이지. 어머니 — 빙의 + 영어 — 섞임 = 글로벌 변형판."</div>
+    <div class="dialogue">"...주공. 저는 — 어떤 캐릭터입니까." "...너는 — <strong>위소보 + 강희제 + 영호충</strong> — 변형판이라고 — 무명이 어제 — 그러더라." "...삼중 변형이네요." "...네가 의심 많은 호랑이라서 — 한 캐릭터로 — 못 — 매핑되는 거다. 그만큼 — 깊다."</div>
+  </div>
+</section>
+
+<section class="act" id="act8"><div class="act-header"><span class="act-num">ACT 08</span><h2 class="act-title">막걸리 광역 버프 + 11화 예고</h2></div>
+  <div class="image-frame"><img data-src="./images/act8_buff.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 8 — 일행 다섯 명의 HP가 — 한 번 — 황금빛으로 — 차올랐다.</div></div>
+  <div class="body">
+    <p>매화나무 아래에서 — 정주가 — 한 번 — 막걸리 한 사발을 — 마셨다. 박세린 GDD knight 노드 C 의 — 막걸리 광역 버프가 — 발동했다. 그러나 본 화에서는 — 데미지 버프가 아니라 — <strong>일행의 — HP 회복</strong> — 으로 — 작동했다. 일행 다섯 명의 — HP가 — 한 번 — 황금빛으로 — 차올랐다.</p>
+    <p>10화의 — 무당파 본 본 마무리 — 였다. 다음 화 (11화) 부터 — <strong>슬레이어의 — 유교 드래곤</strong> — 이 — 본격 — 발동한다. 무당파 청년 검수 4명이 — 강제 폴더 인사 — 디버프에 — 걸리는 — 챕터.</p>
+    <p style="text-align: center; color: var(--fg-mute); font-style: italic; margin-top: 24px;">(2권 10화 끝)</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/picture-book/'">📚</button>
+  <button onclick="scrollAct(1)">1</button> <button onclick="scrollAct(2)">2</button> <button onclick="scrollAct(3)">3</button> <button onclick="scrollAct(4)">4</button> <button onclick="scrollAct(5)">5</button> <button onclick="scrollAct(6)">6</button> <button onclick="scrollAct(7)">7</button> <button onclick="scrollAct(8)">8</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 2권 10화 그림책 v1.0</p>
+  <p style="margin-top: 8px;">PD 본문 5/6 + ComfyUI 본업 PC 일러스트 8컷 (SDXL Studio Ghibli)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">D+36 자율 산출 · 김용 사조영웅전 곽정 강룡십팔장 본맥 인용 · 강원도 사투리의 위력</p>
+</footer>
+
+<script>
+function loadImages() { document.querySelectorAll('img[data-src]').forEach(img => { const src = img.getAttribute('data-src'); if (src) { img.src = src; img.onerror = function() { this.style.display = 'none'; const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'flex'; }; img.onload = function() { const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'none'; }; } }); }
+function scrollAct(n) { const el = document.getElementById('act' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+document.querySelectorAll('.image-frame img').forEach(img => { img.addEventListener('click', () => { if (img.src && img.style.display !== 'none') { document.getElementById('lightbox-img').src = img.src; document.querySelector('.lightbox').classList.add('active'); } }); });
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => { document.querySelectorAll('.act').forEach((act, i) => { const rect = act.getBoundingClientRect(); if (rect.top < 200 && rect.bottom > 200) { navButtons.forEach(b => b.classList.remove('active')); if (navButtons[i]) navButtons[i].classList.add('active'); } }); });
+loadImages();
+</script>
+
+</body>
+</html>
