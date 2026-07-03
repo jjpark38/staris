@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12화 — 무당파 후퇴 + 개성 시장 글리치 (그림책) | staris.cloud</title>
+<meta name="description" content="2권 12화 통합화. 무명 사부 직접 후퇴 선언 + 개성 시장 1990년대 PC방 2중 충돌 글리치 + 5cm 어긋남으로 풀림 + 평원 거지 떼 예고.">
+<style>
+:root { --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e; --fg: #e1e8f5; --fg-mute: #8b9bb4; --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%); color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; line-height: 1.85; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+.breadcrumb { background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breadcrumb a { color: var(--gold); text-decoration: none; } .breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 60px 24px 40px; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%); }
+.cover .series { display: inline-block; padding: 4px 12px; background: var(--gold-dark); color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 16px; }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; font-weight: 700; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.cover .meta { font-size: 12px; color: var(--fg-mute); }
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act { margin-bottom: 80px; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.act-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dark); }
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+.image-frame { position: relative; width: 100%; margin: 24px 0; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.image-frame img { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 0.3s ease; }
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder { display: flex; align-items: center; justify-content: center; height: 400px; color: var(--fg-mute); font-size: 13px; background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px); }
+.image-frame .placeholder .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--gold-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 12px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption { padding: 10px 16px; background: var(--bg-elevated); font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border); }
+.body { font-size: 16px; line-height: 1.9; } .body p { margin-bottom: 16px; }
+.body .dialogue { font-style: italic; color: var(--gold-light); padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0; }
+.body .system { font-family: 'Consolas', monospace; background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2); color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px; font-size: 13px; }
+.body strong { color: var(--gold); font-weight: 700; }
+.nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 30px; padding: 8px 16px; display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(10px); flex-wrap: wrap; max-width: 95vw; }
+.nav button { background: transparent; border: none; color: var(--fg-mute); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+.nav button:hover { background: var(--bg-card); color: var(--gold); } .nav button.active { background: var(--gold); color: var(--bg); } .nav .home { background: var(--gold-dark); color: var(--bg); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+.lightbox.active { display: flex; } .lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+@media (max-width: 700px) { .cover h1 { font-size: 24px; } .reader { padding: 20px 16px 120px; } .act-title { font-size: 18px; } .body { font-size: 15px; } .image-frame .placeholder { height: 280px; } }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb"><a href="/godblade/">← 대시보드</a><span>/</span><a href="/godblade/picture-book/">그림책</a><span>/</span>12화</nav>
+
+<header class="cover">
+  <div class="series">권2 · CHAPTER 12 · 8 ACTS · 통합화</div>
+  <h1>무당파 후퇴 + 개성 시장 글리치</h1>
+  <div class="subtitle">"1990년대 PC방 + 고려 말 시장 = 2중 충돌 글리치"</div>
+  <div class="meta">v1 12화 + 13화 통합 · PD 본문 5/2 · ~4,400자 · 무명 직접 후퇴 + 시장 글리치 + 평원 거지 예고</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1"><div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">무명 사부 직접 등장 — 빈손</h2></div>
+  <div class="image-frame"><img data-src="./images/act1_mumyeong.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 1 — 도복은 짙은 회색. 손에는 검도 비급도 없었다. 빈손.</div></div>
+  <div class="body">
+    <p>객점 안채의 문이 한 번 열렸다. 무당파 본 본 사부 — 무명이 — 한 번 마당에 나왔다. 도복은 — 짙은 — 회색. 머리는 — 백발. 손에는 — 검도 — 비급도 — 들고 있지 않았다. <strong>빈손. 무당파 본 본 사부의 — 빈손 — 그것이 — 그의 — 무공의 — 본 본 맥.</strong></p>
+    <div class="dialogue">"...주공. 본 화는 합으로 풀지 않겠소."</div>
+  </div>
+</section>
+
+<section class="act" id="act2"><div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">후퇴 선언 — 49화 곤륜산 정상</h2></div>
+  <div class="image-frame"><img data-src="./images/act2_retreat.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 2 — 다음 합은 본 권의 49화에서. 곤륜산 정상에서.</div></div>
+  <div class="body">
+    <div class="dialogue">"...무당파의 두 번째 시험은 본 사부의 본 본 그림자가 한 번 평상의 빈 자리에 앉아 있었던 사실을 주공이 한 번에 인지하신 그 시점에서 이미 무당파의 본 본 패배였소."</div>
+    <div class="dialogue">"...무당파는 본 화로 객점에서 한 번 후퇴하겠소. 다음 합은 <strong>본 권의 49화에서. 곤륜산 정상에서.</strong> 본 사부가 직접 청천을 — 정주 님께 — 한 번 — 보내겠소."</div>
+    <div class="dialogue">"...49화? 너도 메타 농담 하냐." "...무당파는 천하의 모든 박자를 안다오. 49화의 박자도 안다오."</div>
+  </div>
+</section>
+
+<section class="act" id="act3"><div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">배웅인가 추격인가</h2></div>
+  <div class="image-frame"><img data-src="./images/act3_procession.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 3 — 배웅과 추격은 본 본 맥이 같소.</div></div>
+  <div class="body">
+    <div class="dialogue">"...주공. 무당파는 정주 일행을 객점 밖까지 한 번 배웅할 것이오. 객점 밖 — 큰길 — 끝 — 까지." "...야 이 친구. 배웅이 아니지. 추격이지." "...배웅과 추격은 본 본 맥이 같소."</div>
+    <p>정주가 일행 다섯 명을 한 번 둘러봤다. 무휼은 H빔을 어깨에 걸치고. 슬레이어는 작두를 양손에 잡고. 홍대걸은 단군왕검의 건을 매만지고. 이방원은 부러진 목검을 허리춤에 꽂고.</p>
+    <p>큰길이 — 곧 — 개성 시장으로 — 이어졌다.</p>
+  </div>
+</section>
+
+<section class="act" id="act4"><div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">2중 충돌 글리치 ⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act4_double.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 4 — 한 겹 고려 말 1392년 개성 시장. 또 한 겹 1990년대 부산 광복동 PC방.</div></div>
+  <div class="body">
+    <p>정주 일행이 시장 입구에 들어선 순간 — 시야가 한 번 흔들렸다. 시장의 풍경 자체가 한 번에 <strong>두 겹으로</strong> 보였다.</p>
+    <p>한 겹 — <strong>고려 말 1392년의 개성 시장.</strong> 좌판에 널린 비단 / 도자기 / 한지 / 담배 / 절인 청어 / 누룩.</p>
+    <p>또 한 겹 — <strong>1990년대 부산 광복동의 어느 PC방.</strong> 모니터 / 키보드 / CRT / 흡연 부스 / 짜장면 그릇 / 컵라면 김.</p>
+    <div class="dialogue">"...글리치다. 1990년대 PC방 텍스처가 고려 말 시장 텍스처에 한 번 겹쳤어. 제우스 본체가 본 권 15화 평원 디도스 직전에 한 번 텍스처 풀을 흔들어 놓은 거지."</div>
+  </div>
+</section>
+
+<section class="act" id="act5"><div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">PC방 게임 텍스처 — 1990년대 향수 ⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act5_pcbang.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 5 — 스타크래프트 / 디아블로 1 / 리니지 / 바람의 나라.</div></div>
+  <div class="body">
+    <p>PC방의 텍스처가 한 번 더 깊어졌다. 모니터의 화면이 한 번 켜졌다. 1990년대 <strong>「스타크래프트」의 로딩 화면</strong>이 한 번 깜빡였다. 옆 모니터에서는 <strong>「디아블로 1」의 트리스트럼 마을 BGM</strong>이 한 번 흘러나왔다. 그 옆은 <strong>「리니지」의 인첸트 실패 시스템 메시지</strong>. 그 옆은 <strong>「바람의 나라」의 부여 마을</strong>.</p>
+    <div class="dialogue">"...형님요. 저 모니터에 떠 있는 거 — 저 — 익숙함니더." "...강원도 PC방에서 한 번 본 적 있냐?" "...어. 강원도 정선 — 깊은 산골 — PC방에서 — 1996년 즈음에 — 한 번 — 디아블로 1 — 엔딩 — 까지 — 깠지요."</div>
+  </div>
+</section>
+
+<section class="act" id="act6"><div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">비단 진열대 5cm 어긋남</h2></div>
+  <div class="image-frame"><img data-src="./images/act6_silk.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 6 — 비단이 다섯 단. 한 단이 5cm 어긋났슴니더.</div></div>
+  <div class="body">
+    <p>좌판 끝에서 한 무더기의 비단 진열대가 한 번 보였다. 비단이 다섯 단으로 정렬되어 있었다. 그러나 그 다섯 단의 한 단이 한 번 <strong>5cm 정도 어긋나</strong> 있었다.</p>
+    <div class="dialogue">"...형님요. 저 비단 진열대요. 한 단이 — 5cm — 어긋났슴니더." "...너 — 그것도 보이냐." "...곽정 형님 책 어제 한 번 읽고 나니까 — 5cm 어긋남이 — 한 번에 — 잘 — 보임니더."</div>
+    <p>시장 주인이 한 번 — 비단 진열대의 한 단을 — 5cm 정도 — 다시 — 정렬했다. 정렬된 순간 — 비단 진열대 옆에 — 깜빡이던 — <strong>PC방 모니터가 — 한 번 — 사라졌다.</strong></p>
+    <div class="dialogue">"...무휼의 5cm 어긋남이 — 본 권 — 본 본 맥의 — 한 박자라는 — 사실은 — 저도 — 처음 — 들었습니다."</div>
+  </div>
+</section>
+
+<section class="act" id="act7"><div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">글리치 풀림 — 60fps 회복</h2></div>
+  <div class="image-frame"><img data-src="./images/act7_dispelled.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 7 — 60fps의 정상 속도로 돌아왔다.</div></div>
+  <div class="body">
+    <p>비단 진열대의 정렬 후 — 시장 전체의 글리치가 — 한 번에 — 풀리기 시작했다. PC방 모니터들이 — 한 번에 — 사라졌다. 키보드들이 — 한 번에 — 사라졌다. 컵라면 냄새가 — 한 번에 — 사라졌다.</p>
+    <p>시장이 — 다시 — 한 겹으로 — 돌아왔다. 고려 말 1392년의 개성 시장. <strong>60fps의 정상 속도로 — 한 번 — 돌아왔다.</strong></p>
+    <p>무명 사부의 그림자가 — 한 번 — 일행의 등 뒤에서 — 멀어졌다. 청천을 비롯한 5명의 청년 검수가 — 한 번 — 시장 입구에서 — 멈췄다. <strong>무당파의 배웅 — 인지 — 추격 — 인지 — 의 행렬이 — 한 번 — 시장 입구에서 — 한 번 — 끝났다.</strong></p>
+  </div>
+</section>
+
+<section class="act" id="act8"><div class="act-header"><span class="act-num">ACT 08</span><h2 class="act-title">평원 거지 떼의 그림자 — 13화 예고</h2></div>
+  <div class="image-frame"><img data-src="./images/act8_beggar.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 8 — 누더기를 걸친 거지 떼의 그림자가 새까맣게 깔려 있었다.</div></div>
+  <div class="body">
+    <p>도비 신수는 — 인천 옥탑방에서 — 한 번 — 더 — 잠을 — 자고 있었다. 본 권 36화 — 곤륜산 중턱의 — 1990년대 PC방 + 고려 말 + 곤륜산 풍경 — 의 — <strong>3중 충돌 글리치</strong>부터 — 도비 신수의 — 한쪽 발바닥이 — 한 번 — 키보드의 — 한 키 — 위에 — 가볍게 — 얹힐 것이었다. <strong>본 권 49화의 sudo</strong>를 위한 — 사전 — 호흡.</p>
+    <p>시장 끝에서 — 평원이 — 한 번 — 보였다. 평원 끝에서 — 누더기를 걸친 — <strong>거지 떼의 — 그림자</strong>가 — 한 번 — 새까맣게 — 깔려 있었다.</p>
+    <div class="dialogue">"...야 이 친구들. 다음 일이 — 한 번 — 빨리 — 오네. 평원이다."</div>
+    <p style="text-align: center; color: var(--fg-mute); font-style: italic; margin-top: 24px;">(2권 12화 끝)</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/picture-book/'">📚</button>
+  <button onclick="scrollAct(1)">1</button> <button onclick="scrollAct(2)">2</button> <button onclick="scrollAct(3)">3</button> <button onclick="scrollAct(4)">4</button> <button onclick="scrollAct(5)">5</button> <button onclick="scrollAct(6)">6</button> <button onclick="scrollAct(7)">7</button> <button onclick="scrollAct(8)">8</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 2권 12화 통합 그림책 v1.0</p>
+  <p style="margin-top: 8px;">PD 본문 5/2 (v1 12+13 통합화 ~4,400자) + ComfyUI 본업 PC 일러스트 8컷 (SDXL Studio Ghibli)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">D+36 자율 산출 · 무명 직접 후퇴 + 1990 PC방 텍스처 2중 충돌 + 49화 sudo 예고</p>
+</footer>
+
+<script>
+function loadImages() { document.querySelectorAll('img[data-src]').forEach(img => { const src = img.getAttribute('data-src'); if (src) { img.src = src; img.onerror = function() { this.style.display = 'none'; const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'flex'; }; img.onload = function() { const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'none'; }; } }); }
+function scrollAct(n) { const el = document.getElementById('act' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+document.querySelectorAll('.image-frame img').forEach(img => { img.addEventListener('click', () => { if (img.src && img.style.display !== 'none') { document.getElementById('lightbox-img').src = img.src; document.querySelector('.lightbox').classList.add('active'); } }); });
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => { document.querySelectorAll('.act').forEach((act, i) => { const rect = act.getBoundingClientRect(); if (rect.top < 200 && rect.bottom > 200) { navButtons.forEach(b => b.classList.remove('active')); if (navButtons[i]) navButtons[i].classList.add('active'); } }); });
+loadImages();
+</script>
+
+</body>
+</html>
