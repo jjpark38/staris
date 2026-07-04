@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>14화 — 무당파 대전 종료 + 생명주 비단 (그림책) | staris.cloud</title>
+<meta name="description" content="2권 14화. 무당파 본진 50여 명 도열 + 생명주 비단(생명주 緋緞) 전수 + 5cm 어긋난 한 단 = 결계 키 + 홍대걸 의식 인장 + 평원 진입.">
+<style>
+:root { --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e; --fg: #e1e8f5; --fg-mute: #8b9bb4; --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%); color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; line-height: 1.85; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+.breadcrumb { background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breadcrumb a { color: var(--gold); text-decoration: none; } .breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 60px 24px 40px; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%); }
+.cover .series { display: inline-block; padding: 4px 12px; background: var(--gold-dark); color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 16px; }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; font-weight: 700; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.cover .meta { font-size: 12px; color: var(--fg-mute); }
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act { margin-bottom: 80px; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.act-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dark); }
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+.image-frame { position: relative; width: 100%; margin: 24px 0; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.image-frame img { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 0.3s ease; }
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder { display: flex; align-items: center; justify-content: center; height: 400px; color: var(--fg-mute); font-size: 13px; background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px); }
+.image-frame .placeholder .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--gold-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 12px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption { padding: 10px 16px; background: var(--bg-elevated); font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border); }
+.body { font-size: 16px; line-height: 1.9; } .body p { margin-bottom: 16px; }
+.body .dialogue { font-style: italic; color: var(--gold-light); padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0; }
+.body .system { font-family: 'Consolas', monospace; background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2); color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px; font-size: 13px; }
+.body strong { color: var(--gold); font-weight: 700; }
+.nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 30px; padding: 8px 16px; display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(10px); flex-wrap: wrap; max-width: 95vw; }
+.nav button { background: transparent; border: none; color: var(--fg-mute); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+.nav button:hover { background: var(--bg-card); color: var(--gold); } .nav button.active { background: var(--gold); color: var(--bg); } .nav .home { background: var(--gold-dark); color: var(--bg); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+.lightbox.active { display: flex; } .lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+@media (max-width: 700px) { .cover h1 { font-size: 24px; } .reader { padding: 20px 16px 120px; } .act-title { font-size: 18px; } .body { font-size: 15px; } .image-frame .placeholder { height: 280px; } }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb"><a href="/godblade/">← 대시보드</a><span>/</span><a href="/godblade/picture-book/">그림책</a><span>/</span>14화</nav>
+
+<header class="cover">
+  <div class="series">권2 · CHAPTER 14 · 8 ACTS · 무당파 대전 종료</div>
+  <h1>무당파 대전 종료 + 생명주 비단</h1>
+  <div class="subtitle">"이거 — 한 번 — 무거움니더만 — 따땃함니더."</div>
+  <div class="meta">PD 본문 5/2 · ~4,100자 · 무당파 본진 50여 명 도열 + 생명주 비단(5단) + 38화 결계 키 예고</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1"><div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">저녁 노을 — 잘린 매화나무 다섯 그루</h2></div>
+  <div class="image-frame"><img data-src="./images/act1_sunset.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 1 — 노을 빛이 잘린 꼭대기에 꽃 한 송이씩을 다시 그려 주는 듯했다.</div></div>
+  <div class="body">
+    <p>13화의 청천이 안개 속으로 사라진 그날 저녁. 객점 마당의 평상에 정주가 한 번 더 앉았다. 막걸리 사발이 한 번 비고 두 번 비고 세 번 비었다. 무릎의 시큰함이 한 번 잦아졌다 — 본 박자가 정상.</p>
+    <p>평원의 노을이 한 번 객점 마당의 매화나무 다섯 그루의 잘린 꼭대기 위로 한 번 내려앉았다. 매화꽃은 11화의 무휼 회전 베기로 한 번 다 떨어진 다음이었지만, 본 화의 노을 빛이 한 번 그 잘린 꼭대기에 <strong>꽃 한 송이씩을 다시 그려 주는 듯했다.</strong></p>
+  </div>
+</section>
+
+<section class="act" id="act2"><div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">무당파 본진 50여 명 도열 ⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act2_50wudang.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 2 — 무명 + 도성 + 청천 + 4 청년 검수 + 무당파 본진 50여 명.</div></div>
+  <div class="body">
+    <p>객점 안채의 문이 한 번 열렸다. <strong>무당파 본 본 사부 — 무명.</strong> 그 옆에 — <strong>도성.</strong> 그 뒤에 — <strong>청천.</strong> 청천의 손에는 — 13화 부러진 검 한 자루가 한 번 그대로 두 손에 받쳐져 있었다. 청천의 뒤에 — 4명의 청년 검수. 그 뒤에 — <strong>무당파 본진의 검수 50여 명.</strong></p>
+    <div class="dialogue">"...무당파 본 본 결의 — 마지막 — 의식을 — 한 번 — 청하오." "...의식?" "...무당파의 — 본 본 — 패배의 — 의식. 그리고 — 무당파의 — 본 본 — 결을 — 한 번 — 정주 일행에게 — 한 번 — 넘기는 — 의식."</div>
+  </div>
+</section>
+
+<section class="act" id="act3"><div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">50여 명 동시 포권의 예</h2></div>
+  <div class="image-frame"><img data-src="./images/act3_bow.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 3 — 50여 명의 무당파 본진도 한 번에 포권의 예를 올렸다.</div></div>
+  <div class="body">
+    <p>무명이 한 번 깊게 포권의 예를 올렸다. 도성도 한 번 따라 했다. 청천도 한 번 따라 했다. 4명의 청년 검수도 한 번 따라 했다. <strong>50여 명의 무당파 본진도 한 번에 포권의 예를 올렸다.</strong> 객점 마당의 노을 빛이 한 번 그 모든 도복의 짙은 회색 위로 한 번 <strong>황금빛으로 내려앉았다.</strong></p>
+    <div class="dialogue">"...무당파의 — 본 본 — 결의 — 한 — 끝점이 — 청천의 — 검에서 — 한 번 — 부러졌소. 본 — 부러짐을 — 한 번 — 인정하는 — 의식. 그리고 — 무당파의 — 본 본 — 비급 — 한 권의 — 본 본 — 결을 — 한 번 — 정주 일행에게 — 한 번 — 넘기는 — 의식. 본 비급은 — 무당파의 — 본 본 — 비단 — 한 묶음에 — 한 번 — 새겨져 — 있소."</div>
+  </div>
+</section>
+
+<section class="act" id="act4"><div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">생명주 비단(生命珠 緋緞) 전수 ⭐⭐⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act4_silk.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 4 — 1392년 무당산 정상에서 짠 비단. 다섯 단.</div></div>
+  <div class="body">
+    <p>도성의 두 손에 한 묶음의 비단이 한 번 받쳐져 있었다. 비단은 다섯 단으로 한 번 정렬되어 있었다. 색은 — <strong>짙은 — 녹색.</strong> 본 비단의 본 본 결이 한 번 평원의 노을 빛에 한 번 깊게 빛났다.</p>
+    <div class="dialogue">"...본 비단의 — 본 본 — 이름은 — <strong>생명주 비단(生命珠 緋緞).</strong> 무당파 본 본 사부 — 무명의 — 본 본 — 어머니 — 가 — 한 번 — 1392년 — 본 — 봄에 — 무당산 — 정상에서 — 한 번 — 짠 — 비단. 다섯 단. 한 단마다 — 무당파의 — 본 본 — 결의 — 한 — 박자가 — 한 번 — 새겨져 — 있소."</div>
+    <div class="dialogue">"...주공. 본 비단은 — 무당파의 — 본 본 — 보물 — 입니다. 무당파에서 — 한 번 — 정주 일행에게 — 본 비단을 — 넘긴다는 것은 — 무당파의 — 본 본 — 결을 — 한 번 — 통째로 — 정주 일행에게 — 한 번 — 위탁한다는 — 의미 — 입니다."</div>
+  </div>
+</section>
+
+<section class="act" id="act5"><div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">5cm 어긋난 한 단 = 결계의 키</h2></div>
+  <div class="image-frame"><img data-src="./images/act5_5cmkey.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 5 — 어긋난 그 한 단이 본 비단의 본 본 키.</div></div>
+  <div class="body">
+    <div class="dialogue">"...주공. 비단의 — 한 단마다 — 박자가 — 한 번 — 다릅니다." "...어. 그러네. 첫 단은 한 박. 둘째 단은 반 박. 셋째 단은 한 박 반. 넷째 단은 반 박. 다섯째 단은 한 박. <strong>무당파 본 본 결의 — 4박 + 1박 — 의 — 톤.</strong>"</div>
+    <div class="dialogue">"...형님요. 비단 다섯 단요. 한 단이 — 5cm — 어긋났슴니더." "...어. <strong>어긋난 그 한 단이 — 본 — 비단의 — 본 본 — 키 — 다.</strong>"</div>
+    <p>30년 차 게임 개발자의 — 눈에 한 번에 — 그 — 5cm 어긋난 — 한 단의 — 본 본 결이 한 번 보였다. 본 비단 다섯 단이 — 본 권 — <strong>38화 — 어디선가 — 한 번 — 결계의 — 본 본 — 키로 — 한 번 — 활용될</strong> 사실.</p>
+  </div>
+</section>
+
+<section class="act" id="act6"><div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">홍대걸 박자 강타 — 50여 명 의식 인장</h2></div>
+  <div class="image-frame"><img data-src="./images/act6_strike.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 6 — 50여 명의 무당파 본진 등 가운데에 한 번에 황금빛 손바닥 자국.</div></div>
+  <div class="body">
+    <div class="dialogue">"...본 의식의 — 마지막 — 한 단계는 — 정주 일행의 — 본 본 — 박자가 — 무당파 본진 — 50여 명에게 — 한 번 — 새겨지는 — 단계 — 이오. 한 번 — 박자 강타를 — 한 번 — 청하오."</div>
+    <div class="dialogue">"...홍대걸. 무당파 본진 — 50여 명 — 등 가운데를 — 한 번 — 박자에 — 맞춰서 — 한 번 — 갈겨라. 의식 종결 톤으로." "...네 형님요."</div>
+    <p>홍대걸이 한 번 박세린 GDD knight 노드 B 1단계 — 박자 강타 — <strong>의식 톤</strong> — 한 번 — 갈겼다. 50여 명의 — 무당파 — 본진 — 등 가운데에 한 번에 — 황금빛 — 손바닥 자국이 한 번 박혔다. 11화의 — 5명에게 박힌 — 자국과는 한 번 다른 톤. <strong>본 화의 자국은 한 번 의식의 — 인장.</strong></p>
+  </div>
+</section>
+
+<section class="act" id="act7"><div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">H빔에 비단 두름 — "따땃함니더" ⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act7_hbeam_silk.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 7 — 60kg의 H빔에 5단의 짙은 녹색 비단이 한 번 둘려 있었다.</div></div>
+  <div class="body">
+    <div class="dialogue">"...무휼아. 본 비단 — H빔에 — 한 번 — 둘러라. 다섯 단. 한 단씩 — 한 번씩."</div>
+    <p>정주가 한 번 비단 다섯 단을 한 번 무휼의 H빔에 한 번 한 단씩 한 번씩 둘러 줬다. <strong>5cm 어긋난 한 단은 한 번 가운데에.</strong> 한 박씩 — 반 박씩 — 한 박 반씩 — 반 박씩 — 한 박씩. 4박 + 1박. 무당파의 — 본 본 — 결.</p>
+    <div class="dialogue">"...형님요. <strong>이거 — 한 번 — 무거움니더만 — 따땃함니더.</strong> 강원도 정선 — 광부 — 아버지의 — 작업복 — 어깨 위에 — 한 번 — 얹힌 — 그 — 무게 — 와 — 톤이 — 한 번 — 비슷함니더. H빔의 — 차가움이 — 한 번 — 따땃해짐니더."</div>
+    <p>60kg의 H빔에 5단의 — 짙은 녹색 — 비단이 한 번 둘려 있었다. 거구의 — 어깨가 한 번 더 — 한 단계 — 따뜻해 보였다.</p>
+  </div>
+</section>
+
+<section class="act" id="act8"><div class="act-header"><span class="act-num">ACT 08</span><h2 class="act-title">평원 진입 — 거지 떼 그림자</h2></div>
+  <div class="image-frame"><img data-src="./images/act8_beggar.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 8 — 평원 끝에서 누더기를 걸친 거지 떼의 그림자가 새까맣게 깔려 있었다.</div></div>
+  <div class="body">
+    <p>다섯 명이 한 번에 일어섰다. 객점 마당을 한 번 나섰다. 평원의 노을이 한 번 그들의 등 뒤로 한 번 깊게 깔렸다. <strong>산을 한 번 내려갔다.</strong></p>
+    <p>산 아래로 — 평원이 — 한 번 — 펼쳐졌다. 평원 끝에서 — 누더기를 걸친 — <strong>거지 떼의 — 그림자</strong>가 — 한 번 — 새까맣게 — 깔려 — 있었다.</p>
+    <p>본 비단 다섯 단이 한 번 무휼의 H빔의 어깨 위에서 한 번 짙은 녹색으로 빛났다. 본 비단의 본 본 결이 본 권의 — 한 — 후속 — 결계의 — 한 — 키로 — 한 번 — 활용될 — 그 — 시점이 — 본 권의 — <strong>38화 — 곤륜산 — 중턱의 — 한 — 폭설 — 어디선가 — 한 번 — 도착할 — 결.</strong></p>
+    <div class="dialogue">"...야 이 친구들. 다음 일이 한 번 빨리 오네. <strong>평원이다. 거지 떼다.</strong>"</div>
+    <p style="text-align: center; color: var(--fg-mute); font-style: italic; margin-top: 24px;">(2권 14화 끝)</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/picture-book/'">📚</button>
+  <button onclick="scrollAct(1)">1</button> <button onclick="scrollAct(2)">2</button> <button onclick="scrollAct(3)">3</button> <button onclick="scrollAct(4)">4</button> <button onclick="scrollAct(5)">5</button> <button onclick="scrollAct(6)">6</button> <button onclick="scrollAct(7)">7</button> <button onclick="scrollAct(8)">8</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 2권 14화 그림책 v1.0</p>
+  <p style="margin-top: 8px;">PD 본문 5/2 (~4,100자) + ComfyUI 본업 PC 일러스트 8컷 (SDXL Studio Ghibli)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">D+39 자율 산출 · 무당파 대전 종료 + 생명주 비단 = 시즌 2 보스템 + 무휼 광부 아버지 클로징</p>
+</footer>
+
+<script>
+function loadImages() { document.querySelectorAll('img[data-src]').forEach(img => { const src = img.getAttribute('data-src'); if (src) { img.src = src; img.onerror = function() { this.style.display = 'none'; const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'flex'; }; img.onload = function() { const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'none'; }; } }); }
+function scrollAct(n) { const el = document.getElementById('act' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+document.querySelectorAll('.image-frame img').forEach(img => { img.addEventListener('click', () => { if (img.src && img.style.display !== 'none') { document.getElementById('lightbox-img').src = img.src; document.querySelector('.lightbox').classList.add('active'); } }); });
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => { document.querySelectorAll('.act').forEach((act, i) => { const rect = act.getBoundingClientRect(); if (rect.top < 200 && rect.bottom > 200) { navButtons.forEach(b => b.classList.remove('active')); if (navButtons[i]) navButtons[i].classList.add('active'); } }); });
+loadImages();
+</script>
+
+</body>
+</html>
