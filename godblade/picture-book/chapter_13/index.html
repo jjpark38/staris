@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>13화 — 청천의 마지막 시험 (그림책) | staris.cloud</title>
+<meta name="description" content="2권 13화. 청천 단신 시험 + 오방위의 도 + 슬레이어 풀빌드(월자+유교드래곤) + 검 부러짐 + 정주 거절 + 49화 곤륜산 정상 예고.">
+<style>
+:root { --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e; --fg: #e1e8f5; --fg-mute: #8b9bb4; --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%); color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; line-height: 1.85; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+.breadcrumb { background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breadcrumb a { color: var(--gold); text-decoration: none; } .breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 60px 24px 40px; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%); }
+.cover .series { display: inline-block; padding: 4px 12px; background: var(--gold-dark); color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 16px; }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; font-weight: 700; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.cover .meta { font-size: 12px; color: var(--fg-mute); }
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act { margin-bottom: 80px; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.act-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dark); }
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+.image-frame { position: relative; width: 100%; margin: 24px 0; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.image-frame img { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 0.3s ease; }
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder { display: flex; align-items: center; justify-content: center; height: 400px; color: var(--fg-mute); font-size: 13px; background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px); }
+.image-frame .placeholder .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--gold-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 12px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption { padding: 10px 16px; background: var(--bg-elevated); font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border); }
+.body { font-size: 16px; line-height: 1.9; } .body p { margin-bottom: 16px; }
+.body .dialogue { font-style: italic; color: var(--gold-light); padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0; }
+.body .system { font-family: 'Consolas', monospace; background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2); color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px; font-size: 13px; }
+.body strong { color: var(--gold); font-weight: 700; }
+.nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 30px; padding: 8px 16px; display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(10px); flex-wrap: wrap; max-width: 95vw; }
+.nav button { background: transparent; border: none; color: var(--fg-mute); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+.nav button:hover { background: var(--bg-card); color: var(--gold); } .nav button.active { background: var(--gold); color: var(--bg); } .nav .home { background: var(--gold-dark); color: var(--bg); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+.lightbox.active { display: flex; } .lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+@media (max-width: 700px) { .cover h1 { font-size: 24px; } .reader { padding: 20px 16px 120px; } .act-title { font-size: 18px; } .body { font-size: 15px; } .image-frame .placeholder { height: 280px; } }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb"><a href="/godblade/">← 대시보드</a><span>/</span><a href="/godblade/picture-book/">그림책</a><span>/</span>13화</nav>
+
+<header class="cover">
+  <div class="series">권2 · CHAPTER 13 · 8 ACTS</div>
+  <h1>청천의 마지막 시험</h1>
+  <div class="subtitle">"내 밥그릇과 내 관절이 먼저고 그 다음이 세상이다."</div>
+  <div class="meta">PD 본문 5/2 · ~4,350자 · 청천 단신 시험 + 오방위의 도 + 슬레이어 풀빌드 + 검 부러짐 + 정주 거절</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1"><div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">청천 단신 등장 — 황금색 실</h2></div>
+  <div class="image-frame"><img data-src="./images/act1_solo.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 1 — 손잡이의 흑색 실 위에 황금색 실 한 줄이 감겨 있었다.</div></div>
+  <div class="body">
+    <p>청천 — 한 명. 등 뒤에 — 4명의 — 청년 검수도 — 무당파 본 본 사부 — 무명도 — 없었다. <strong>단신.</strong></p>
+    <p>검집은 — 등에 — 한 번 — 멘 — 채. 검의 — 손잡이가 — 어제와는 — 한 번 — 달랐다. 어제 11화의 — 손잡이는 — 짙은 — 흑색 — 실. 본 화의 — 손잡이는 — 어제 — 그 — 흑색 — 실의 — 위에 — 한 번 — 더 — <strong>황금색 — 실이 — 한 줄 — 감겨</strong> — 있었다.</p>
+    <div class="dialogue">"...주공께 — 무당파 본 본 사부 — 무명의 — 마지막 — 청을 — 전하오."</div>
+  </div>
+</section>
+
+<section class="act" id="act2"><div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">마지막 청 — 검 부러짐 예고</h2></div>
+  <div class="image-frame"><img data-src="./images/act2_request.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 2 — 검이 부러져야 다음 검이 옆에 선다.</div></div>
+  <div class="body">
+    <div class="dialogue">"...무명 사부의 — 마지막 청은 — 청천 한 명의 — 검을 — 한 번 — 보아 달라는 — 청이오. 단신. 일행 — 없이. 무당파의 — 본 본 — 결의 — 한 — 끝점."</div>
+    <div class="dialogue">"...49화의 — 청천의 — 검은 — 본 화의 — 청천의 — 검과 — 한 번 — 다른 검이오. 본 화에서 — 청천의 — 검 — 한 자루가 — 한 번 — 정주 일행에게 — 부러진 — 다음에야 — 49화의 — 청천의 — 검이 — 한 번 — 정주 님 옆에 — 설 — 자격이 — 있소."</div>
+    <div class="dialogue">"...검이 — 부러져야 — 다음 검이 — 옆에 선다고?" "...무당파의 — 본 본 결이오."</div>
+  </div>
+</section>
+
+<section class="act" id="act3"><div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">오방위의 도(道) — 단신 발동 ⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act3_solo_formation.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 3 — 한 자루의 검이 5개의 잔상으로 5방위에 박혔다.</div></div>
+  <div class="body">
+    <div class="dialogue">"...오방위의 도(道). 진(進)."</div>
+    <p>청천의 — 검이 — 한 번 — 5방위로 — 한 번에 — 갈렸다. <strong>한 자루의 검이 — 5개의 — 잔상으로 — 한 번에 — 객점 마당의 — 동서남북중앙 — 5방위에 — 한 번에 — 박혔다.</strong> 5개의 — 검 끝에서 — 5줄기의 — 푸른 — 검기가 — 한 번에 — 솟아올랐다.</p>
+    <p>11화의 — 5명 진형은 — 5개의 검 끝이 — 한 점에서 — 한 줄기의 — 검기를 — 만들었다. 본 화는 — 한 자루의 검이 — 5개의 잔상으로 — 5방위에 — 박힌 채 — 5줄기의 — 검기가 — 한 점에서 — 만났다. <strong>한 단계 위.</strong></p>
+  </div>
+</section>
+
+<section class="act" id="act4"><div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">어머니의 박자가 가라앉음</h2></div>
+  <div class="image-frame"><img data-src="./images/act4_sinking.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 4 — 9,860원의 박자가 본 화에서는 한 번 깊게 가라앉아 있었다.</div></div>
+  <div class="body">
+    <p>정주가 — 한 번 — 무릎의 시큰함을 — 한 번에 — 느꼈다. 9,860원의 박자가 — 본 화에서는 — 한 번 — 깊게 — 가라앉아 — 있었다. 작두 박자도 — 한 번 — 가라앉아 — 있었다. <strong>어머니의 박자도 — 가라앉아 — 있었다.</strong></p>
+    <div class="dialogue">"...야 이 친구. 무명 사부 후예의 — 검 — 한 자루가 — 5방위 — 한꺼번에 — 발동되는 — 그 — 톤은 — 어머니의 — 작두 박자보다 — 한 번 — 깊다."</div>
+  </div>
+</section>
+
+<section class="act" id="act5"><div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">슬레이어 풀빌드 — 월자 + 유교 드래곤 ⭐⭐⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act5_dual.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 5 — 유교 드래곤이 어머니의 작두 옆에 한 번 무릎 꿇음.</div></div>
+  <div class="body">
+    <div class="dialogue">"...슬레이어. 빙의 토글. 풀로 갈겨. 11화는 — 살풀이 + 유교 드래곤이었지. 본 화는 — 그 위에 — 어머니 — 월자 — 직접 빙의 — 한 번 — 더 — 갈겨라. 풀빌드."</div>
+    <p>슬레이어의 — 헐리웃 금발 위로 — 검은 그림자가 — 한 번 — 솟았다. 그 그림자에서 — 11화의 — <strong>유교 드래곤</strong>이 — 한 번 — 다시 — 솟아올랐다 — 머리 4개. 뿔 8개. 비늘 황금. 눈 다섯. 본 화에서는 — 그 위에 — 한 번 — 더 — 한 사람의 — 그림자가 — 한 번 — 어른거렸다. 작두를 — 양손에 — 든 — 한 — 무당의 — 그림자.</p>
+    <p><strong>월자.</strong></p>
+    <p>유교 드래곤이 — 한 번 — 4개의 머리를 — 월자의 — 작두 옆에 — 한 번에 — 굽혔다. 8개의 뿔이 — 한 번 — 황금빛으로 — 바닥에 — 닿았다.</p>
+  </div>
+</section>
+
+<section class="act" id="act6"><div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">무휼 5cm 어긋남 — 회전 베기</h2></div>
+  <div class="image-frame"><img data-src="./images/act6_whirlwind.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 6 — 5방위에 박힌 5개의 잔상의 본 자세가 5cm 어긋났다.</div></div>
+  <div class="body">
+    <p>작두 박자가 — 한 번 — 평원의 — 새벽 안개를 — 한 번에 — 갈랐다. 위로 — 한 박. 아래로 — 반 박. 위로 — 한 박 반. 아래로 — 반 박. 균형이 아니라 — 들쭉날쭉.</p>
+    <p>청천의 — 검 한 자루의 — 5개의 잔상이 — 한 번 — 흔들렸다. 5방위에 — 박힌 — 5개의 — 잔상의 — 본 자세가 — 한 번 — <strong>5cm 정도 — 한꺼번에 — 어긋났다.</strong></p>
+    <div class="dialogue">"...형님요. 저 — 청천의 — 잔상요. 5방위 — 동시에 — 5cm — 어긋남니더." "...회전 베기 한 번 갈겨라. 5개의 — 잔상의 — 5cm 어긋난 — 그 — 자리를 — 한 번에 — 갈겨."</div>
+  </div>
+</section>
+
+<section class="act" id="act7"><div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">검 부러짐 — 무당파 본 본 결의 끝점</h2></div>
+  <div class="image-frame"><img data-src="./images/act7_broken.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 7 — 황금색 실 한 줄이 끊어졌다. 검이 두 동강으로 부러졌다.</div></div>
+  <div class="body">
+    <p>홍대걸이 — 박자 강타 — 한 번 — 갈겼다. 청천의 — 본 손잡이의 — 황금색 — 실 — 한 줄에 — 황금빛 — 손바닥 자국이 — 박혔다.</p>
+    <p>청천의 — 검 한 자루가 — 한 번 — 흔들렸다. 5방위의 — 5개의 잔상이 — 한 번에 — 한 점으로 — 모였다. 그 한 점이 — 청천의 — 손잡이. <strong>황금색 — 실 — 한 줄이 — 한 번 — 끊어졌다. 그리고 — 검이 — 한 번 — 두 동강으로 — 부러졌다.</strong></p>
+    <div class="dialogue">"...무당파의 — 본 본 — 결의 — 한 — 끝점이 — 한 번 — 부러졌소."</div>
+    <p>청천의 — 목소리가 — 한 번 — 흔들렸다. 그러나 — 그 흔들림은 — 한 번 — <strong>깊은 — 안도의 — 톤</strong> — 이었다.</p>
+  </div>
+</section>
+
+<section class="act" id="act8"><div class="act-header"><span class="act-num">ACT 08</span><h2 class="act-title">정주 거절 — "우리는 4명도 많아"</h2></div>
+  <div class="image-frame"><img data-src="./images/act8_rejected.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 8 — 49화 곤륜산 정상에서 한 번 우리 옆에 설 자격이 새겨졌어.</div></div>
+  <div class="body">
+    <div class="dialogue">"...본 부러진 검은 — 무당파의 — 본 본 — 결의 — 한 — 끝점. 청천이 — 한 번 — 무당파를 — 떠나 — 정주 일행의 — 한 — 끝자리에 — 합류하기를 — 청하오."</div>
+    <div class="dialogue">"...야 이 친구. <strong>우리는 — 4명도 — 많아.</strong>"</div>
+    <div class="dialogue">"...주공의 — 결이 — 그러하시오?" "...어. 1권 7화에서 — 한 번 — 말한 적이 — 있어. <strong>내 밥그릇과 — 내 관절이 — 먼저고 — 그 다음이 — 세상이다.</strong> 한 명이 — 더 — 늘면 — 본 — 박자의 — 한 — 끝점이 — 한 번 — 어긋나."</div>
+    <div class="dialogue">"...본 부러진 검은 — 어떻게 — 합니까." "...네가 — 49화에 — 한 번 — 가져 와. <strong>곤륜산 — 정상에서 — 한 번 — 우리 옆에 — 설 — 자격이 — 본 부러진 검에 — 한 번 — 새겨졌어.</strong> 본 화에서는 — 한 번 — 안 받아."</div>
+    <p>청천이 — 한 번 — 안개 속으로 — 걸어 들어갔다. 등 뒤의 — 안개 너머로 — 한 — 그림자가 — 한 번 — 비쳤다 — <strong>무명 사부의 — 그림자.</strong> 한 번도 — 비치지 — 않았던 — 그림자가 — 본 화의 — 마지막에 — 한 번 — 짧게 — 비쳤다. 그리고 — 한 번 — 사라졌다.</p>
+    <p style="text-align: center; color: var(--fg-mute); font-style: italic; margin-top: 24px;">(2권 13화 끝)</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/picture-book/'">📚</button>
+  <button onclick="scrollAct(1)">1</button> <button onclick="scrollAct(2)">2</button> <button onclick="scrollAct(3)">3</button> <button onclick="scrollAct(4)">4</button> <button onclick="scrollAct(5)">5</button> <button onclick="scrollAct(6)">6</button> <button onclick="scrollAct(7)">7</button> <button onclick="scrollAct(8)">8</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 2권 13화 그림책 v1.0</p>
+  <p style="margin-top: 8px;">PD 본문 5/2 (~4,350자) + ComfyUI 본업 PC 일러스트 8컷 (SDXL Studio Ghibli)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">D+39 자율 산출 · 오방위의 도 + 슬레이어 풀빌드 (월자+유교드래곤) + 정주 명대사 인용</p>
+</footer>
+
+<script>
+function loadImages() { document.querySelectorAll('img[data-src]').forEach(img => { const src = img.getAttribute('data-src'); if (src) { img.src = src; img.onerror = function() { this.style.display = 'none'; const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'flex'; }; img.onload = function() { const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'none'; }; } }); }
+function scrollAct(n) { const el = document.getElementById('act' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+document.querySelectorAll('.image-frame img').forEach(img => { img.addEventListener('click', () => { if (img.src && img.style.display !== 'none') { document.getElementById('lightbox-img').src = img.src; document.querySelector('.lightbox').classList.add('active'); } }); });
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => { document.querySelectorAll('.act').forEach((act, i) => { const rect = act.getBoundingClientRect(); if (rect.top < 200 && rect.bottom > 200) { navButtons.forEach(b => b.classList.remove('active')); if (navButtons[i]) navButtons[i].classList.add('active'); } }); });
+loadImages();
+</script>
+
+</body>
+</html>
