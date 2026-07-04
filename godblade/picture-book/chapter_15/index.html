@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>15화 초안 — 개방 DDoS + PDA 스캐너 (그림책) | staris.cloud</title>
+<meta name="description" content="2권 15화 초안. 평원 거지 떼 DDoS + 정주 쿠팡 PDA 스캐너 바코드 반품 + 개방 방주 특대형 반품 + 곤륜산 도약.">
+<style>
+:root { --bg: #0a0e14; --bg-card: #131822; --bg-elevated: #1a212e; --fg: #e1e8f5; --fg-mute: #8b9bb4; --gold: #f0c674; --gold-light: #ffd98e; --gold-dark: #b88a3c; --cyan: #5cd6ff; --red: #ff6b6b; --border: #2a3447; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: linear-gradient(180deg, #0a0e14 0%, #0d1220 100%); color: var(--fg); font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif; line-height: 1.85; font-size: 16px; min-height: 100vh; overflow-x: hidden; }
+.breadcrumb { background: var(--bg-card); padding: 12px 24px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breadcrumb a { color: var(--gold); text-decoration: none; } .breadcrumb span { color: var(--fg-mute); margin: 0 8px; }
+.cover { text-align: center; padding: 60px 24px 40px; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at top, rgba(240,198,116,0.08), transparent 70%); }
+.cover .series { display: inline-block; padding: 4px 12px; background: var(--gold-dark); color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: 2px; border-radius: 3px; margin-bottom: 16px; }
+.cover h1 { font-size: 32px; color: var(--gold); margin-bottom: 8px; font-weight: 700; }
+.cover .subtitle { font-size: 14px; color: var(--fg-mute); font-style: italic; margin-bottom: 24px; }
+.cover .meta { font-size: 12px; color: var(--fg-mute); }
+.reader { max-width: 800px; margin: 0 auto; padding: 40px 24px 100px; }
+.act { margin-bottom: 80px; opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s forwards; }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+.act-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--gold-dark); }
+.act-num { font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: 2px; font-family: 'Inter', sans-serif; }
+.act-title { font-size: 22px; color: var(--fg); font-weight: 700; }
+.image-frame { position: relative; width: 100%; margin: 24px 0; border-radius: 8px; overflow: hidden; background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.image-frame img { display: block; width: 100%; height: auto; cursor: zoom-in; transition: transform 0.3s ease; }
+.image-frame img:hover { transform: scale(1.02); }
+.image-frame .placeholder { display: flex; align-items: center; justify-content: center; height: 400px; color: var(--fg-mute); font-size: 13px; background: repeating-linear-gradient(45deg, var(--bg-card), var(--bg-card) 10px, var(--bg-elevated) 10px, var(--bg-elevated) 20px); }
+.image-frame .placeholder .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--gold-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 12px; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.image-frame .caption { padding: 10px 16px; background: var(--bg-elevated); font-size: 12px; color: var(--fg-mute); border-top: 1px solid var(--border); }
+.body { font-size: 16px; line-height: 1.9; } .body p { margin-bottom: 16px; }
+.body .dialogue { font-style: italic; color: var(--gold-light); padding-left: 16px; border-left: 3px solid var(--gold-dark); margin: 16px 0; }
+.body .system { font-family: 'Consolas', monospace; background: rgba(92,214,255,0.08); border: 1px solid rgba(92,214,255,0.2); color: var(--cyan); padding: 8px 14px; margin: 8px 0; border-radius: 4px; font-size: 13px; }
+.body strong { color: var(--gold); font-weight: 700; }
+.nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 30px; padding: 8px 16px; display: flex; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(10px); flex-wrap: wrap; max-width: 95vw; }
+.nav button { background: transparent; border: none; color: var(--fg-mute); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+.nav button:hover { background: var(--bg-card); color: var(--gold); } .nav button.active { background: var(--gold); color: var(--bg); } .nav .home { background: var(--gold-dark); color: var(--bg); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 40px; cursor: zoom-out; }
+.lightbox.active { display: flex; } .lightbox img { max-width: 95vw; max-height: 95vh; border-radius: 4px; }
+footer { text-align: center; padding: 40px 20px; color: var(--fg-mute); font-size: 12px; border-top: 1px solid var(--border); margin-top: 40px; }
+@media (max-width: 700px) { .cover h1 { font-size: 24px; } .reader { padding: 20px 16px 120px; } .act-title { font-size: 18px; } .body { font-size: 15px; } .image-frame .placeholder { height: 280px; } }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb"><a href="/godblade/">← 대시보드</a><span>/</span><a href="/godblade/picture-book/">그림책</a><span>/</span>15화 초안</nav>
+
+<header class="cover">
+  <div class="series">권2 · CHAPTER 15 초안 · 8 ACTS · 개방 편</div>
+  <h1>개방의 DDoS 공격 + PDA 스캐너</h1>
+  <div class="subtitle">"자, 야간 하차조 분류 작업 들어간다!! 반품! 반품! 폐기!"</div>
+  <div class="meta">PD 초안 5/2 · ~2,400자 · 평원 개방 편 개막 + 쿠팡 PDA 스캐너 획득 + 곤륜산 도약</div>
+</header>
+
+<main class="reader">
+
+<section class="act" id="act1"><div class="act-header"><span class="act-num">ACT 01</span><h2 class="act-title">거지 떼 — 새까맣게 뒤덮인 평원 ⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act1_horde.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 1 — 무림 최대의 정보 문파, 개방(丐幫)의 NPC들. 수만.</div></div>
+  <div class="body">
+    <p>무당파의 대전에서 전리품인 생명주 비단을 잔뜩 챙겨 산을 내려온 스노우맨 패밀리. 그들이 다음 에러 구역인 평원에 당도했을 때, 눈앞에는 그야말로 발 디딜 틈조차 없는 기괴한 광경이 펼쳐져 있었다.</p>
+    <div class="dialogue">"한 푼 줍쇼... 한 푼 줍쇼... 적선 좀 하십쇼..."</div>
+    <p>끝이 보이지 않는 광활한 평원 전체가, 누더기를 걸치고 깨진 바가지를 든 거지 떼로 새까맣게 뒤덮여 있었다. 천하에서 가장 쪽수가 많다는 무림 최대의 정보 문파, <strong>개방(丐幫)</strong>의 NPC들이었다.</p>
+    <div class="dialogue">"오메, 저게 다 뭣이당가요! 거지들이 아주 개미 떼처럼 바글바글하당께요!"</div>
+  </div>
+</section>
+
+<section class="act" id="act2"><div class="act-header"><span class="act-num">ACT 02</span><h2 class="act-title">DDoS 마비 — 몸이 늪에 빠졌다</h2></div>
+  <div class="image-frame"><img data-src="./images/act2_paralysis.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 2 — 이번엔 몸이 늪에 빠진 것처럼 무거워졌다.</div></div>
+  <div class="body">
+    <p>수만 명의 개방도들이 일제히 똑같은 대사를 반복하며 패밀리를 향해 좀비처럼 밀어닥치기 시작했다.</p>
+    <p>그 순간, 또다시 시야가 뚝뚝 끊기며 이명 현상이 발생했다. 무당파 때의 프레임 드랍과는 달랐다. 이번엔 아예 귓가에 윙윙거리는 기계음이 들리며 <strong>몸이 늪에 빠진 것처럼 무거워졌다.</strong></p>
+    <div class="dialogue">"크윽... 형님! 또 몸이 굳어가오! 적들이 너무 많아 숨이 막힐 지경이오!"</div>
+  </div>
+</section>
+
+<section class="act" id="act3"><div class="act-header"><span class="act-num">ACT 03</span><h2 class="act-title">정주의 진단 — DDoS 공격</h2></div>
+  <div class="image-frame"><img data-src="./images/act3_diagnosis.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 3 — 서버에 쓰레기 데이터(Garbage Request)를 초당 수만 개씩 쏟아부어서.</div></div>
+  <div class="body">
+    <div class="dialogue">"하아... 징글징글하네, 진짜."</div>
+    <p>정주가 혀를 끌째 차며 주머니에 손을 찔러넣었다. 30년 차 게임 개발자의 눈에 저 거지 떼의 정체는 너무나도 명확했다.</p>
+    <div class="dialogue">"저건 그냥 머릿수로 밀어붙이는 게 아니야. 서버에 <strong>쓰레기 데이터(Garbage Request)를 초당 수만 개씩 쏟아부어서 시스템 메모리(RAM)를 꽉 채워버리는 전형적인 '디도스(DDoS) 공격'</strong>이라고. 트래픽 과부하를 일으켜서 우리 계정을 아예 튕겨내 버리려는 수작이지."</div>
+    <div class="dialogue">"예초기로 갈아버리기엔 쪽수가 너무 많아. 저렇게 쏟아지는 대량의 트래픽(물량)은 물리적인 힘이 아니라, 시스템의 '분류(Sorting)' 로직으로 처리해야 제맛이지."</div>
+  </div>
+</section>
+
+<section class="act" id="act4"><div class="act-header"><span class="act-num">ACT 04</span><h2 class="act-title">쿠팡 물류센터용 무선 PDA 스캐너 ⭐⭐⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act4_pda.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 4 — 쿠팡 물류센터 야간 하차장에서 밤마다 그의 손과 혼연일체가 되었던.</div></div>
+  <div class="body">
+    <p>정주가 인벤토리 창을 열더니, 쿠팡 물류센터 야간 하차장에서 밤마다 그의 손과 혼연일체가 되었던 익숙한 장비를 꺼내 들었다.</p>
+    <p>두툼한 고무 범퍼가 씌워져 있고 바코드 스캐닝 레이저가 뿜어져 나오는, <strong>'물류센터용 무선 PDA 스캐너'</strong>였다.</p>
+  </div>
+</section>
+
+<section class="act" id="act5"><div class="act-header"><span class="act-num">ACT 05</span><h2 class="act-title">뉴잭스윙 스텝 + PDA 스캐너 ⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act5_dance.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 5 — 1993년 듀스의 전설적인 뉴잭스윙 스텝 + 택견 품밟기.</div></div>
+  <div class="body">
+    <div class="dialogue">"떡대야! 도련님! 앞으로 나서지 말고, 놈들을 한 줄로 길게 유인해! 컨베이어 벨트에 물건 태우듯이 일렬로 세우라고!"</div>
+    <p>무휼과 이방원이 좌우로 돌며 거지 떼들의 어그로(Aggro)를 끌어, 그들이 좁은 길목으로 일렬종대로 몰려오도록 유도했다.</p>
+    <p>정주가 낡은 짚신을 고쳐 신고, <strong>1993년 듀스(Deux)의 전설적인 뉴잭스윙 스텝</strong>을 가볍게 밟기 시작했다. 발끝에서 타오르는 택견의 품밟기가 PDA 스캐너의 붉은 레이저와 완벽한 조화를 이루었다.</p>
+    <div class="dialogue">"자, 야간 하차조 분류 작업 들어간다!! <strong>반품! 반품! 폐기! 반품!!</strong>"</div>
+  </div>
+</section>
+
+<section class="act" id="act6"><div class="act-header"><span class="act-num">ACT 06</span><h2 class="act-title">휴지통 강제 라우팅 — 반품 처리</h2></div>
+  <div class="image-frame"><img data-src="./images/act6_recycle.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 6 — 도착지를 메인 서버가 아니라 시스템 휴지통으로 강제 라우팅.</div></div>
+  <div class="body">
+    <div class="system">띡-! 삐빅-! 띡-!</div>
+    <p>정주의 손이 보이지 않는 속도로 움직였다. 거지들이 내미는 바가지나 이마빡에 숨겨진 <strong>패킷(Packet) 바코드</strong>에 PDA의 붉은 레이저가 닿는 순간, 맑고 경쾌한 전자음과 함께 거지 NPC들의 데이터가 허공에서 폴리곤으로 부서지며 사라져버렸다.</p>
+    <div class="dialogue">"저 깡통들 바코드를 스캔해서, 도착지(Destination)를 메인 서버가 아니라 시스템 <strong>'휴지통(Recycle Bin)'으로 강제 라우팅(Routing)</strong>해버리는 중이거든! 이게 바로 하차장의 바코드 찍기 짬바이브다!"</div>
+    <p>1초에 3개씩 바코드를 찍어내며 쉴 새 없이 밀려오는 디도스 트래픽(거지 떼)을 모조리 휴지통으로 반품(삭제) 처리해 버리는 <strong>50대 하청 노동자의 신들린 스캐닝 액션!</strong></p>
+  </div>
+</section>
+
+<section class="act" id="act7"><div class="act-header"><span class="act-num">ACT 07</span><h2 class="act-title">개방 방주 — 특대형 반품</h2></div>
+  <div class="image-frame"><img data-src="./images/act7_boss.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 7 — 녹색 독기가 서린 거대한 타구봉(打狗棒).</div></div>
+  <div class="body">
+    <div class="dialogue">"크아아아!! 내 귀여운 방도들을 감히!!"</div>
+    <p>수만 명의 거지 떼가 순식간에 삭제되자, 평원 끝에서 <strong>집채만 한 거대한 누더기를 걸친 개방의 방주(Boss)</strong>가 분노하며 땅을 박차고 솟구쳐 올랐다. 그의 손에는 <strong>녹색 독기가 서린 거대한 타구봉(打狗棒)</strong>이 들려 있었다.</p>
+    <div class="dialogue">"어딜, 넌 부피가 크니까 <strong>특대형 반품</strong>이다!"</div>
+    <p>정주가 도약하는 방주의 품속으로 택견의 덧걸이를 걸어 파고들더니, 방주의 턱 밑 정중앙에 PDA 스캐너를 밀착시키고 방아쇠를 당겼다.</p>
+    <div class="system">띠리리링-!! (반품 처리 완료)</div>
+    <p>무림 최대 문파의 우두머리조차 시스템의 절대적인 '반품 바코드' 앞에서는 무력했다. 방주의 거대한 몸집이 파란색 에러 코드를 뿜어내더니, 그대로 압축되어 시스템 휴지통 속으로 <strong>영구 삭제</strong>되어 버렸다.</p>
+  </div>
+</section>
+
+<section class="act" id="act8"><div class="act-header"><span class="act-num">ACT 08</span><h2 class="act-title">곤륜산으로 — 제우스의 본체 ⭐</h2></div>
+  <div class="image-frame"><img data-src="./images/act8_konryun.png"><div class="placeholder" style="display:flex"><span class="spinner"></span>생성 중...</div><div class="caption">막 8 — 제우스의 본체가 숨어있을 곤륜산(崑崙山).</div></div>
+  <div class="body">
+    <div class="dialogue">"휴, 오늘 입고 물량 장난 아니네. 바코드 건 배터리 다 닳을 뻔했다."</div>
+    <p>정주가 뻐근한 어깨를 돌리며 PDA 스캐너를 허리춤에 꽂아 넣었다.</p>
+    <p>비단 방석 위에서 내내 웅크리고 자고 있던 폰 앤 화이트 치와와 <strong>도비</strong>가, 시끄러운 소음이 잦아들자 그제야 고개를 들고 <strong>"하암~"</strong> 하품을 하며 정주의 발밑으로 다가왔다.</p>
+    <p>압도적인 머릿수를 자랑하던 개방의 디도스(DDoS) 공격은, 택견의 리듬을 탄 물류센터의 신속 정확한 바코드 분류 시스템 앞에 흔적도 없이 반품 처리되었다.</p>
+    <p>스노우맨 패밀리는 이제 강호 무림 서버의 마지막 종착지, <strong>제우스의 본체가 숨어있을 '곤륜산(崑崙山)'</strong>을 향해 발걸음을 재촉했다.</p>
+    <p style="text-align: center; color: var(--fg-mute); font-style: italic; margin-top: 24px;">(2권 15화 초안 끝)</p>
+  </div>
+</section>
+
+</main>
+
+<div class="nav">
+  <button class="home" onclick="location.href='/godblade/picture-book/'">📚</button>
+  <button onclick="scrollAct(1)">1</button> <button onclick="scrollAct(2)">2</button> <button onclick="scrollAct(3)">3</button> <button onclick="scrollAct(4)">4</button> <button onclick="scrollAct(5)">5</button> <button onclick="scrollAct(6)">6</button> <button onclick="scrollAct(7)">7</button> <button onclick="scrollAct(8)">8</button>
+</div>
+
+<div class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" alt=""></div>
+
+<footer>
+  <p><strong>홍익인간 RPG : 스노우맨 패밀리</strong> — 2권 15화 초안 그림책 v1.0</p>
+  <p style="margin-top: 8px;">PD 초안 5/2 (~2,400자) + ComfyUI 본업 PC 일러스트 8컷 (SDXL Studio Ghibli)</p>
+  <p style="margin-top: 4px; opacity: 0.6;">D+39 자율 산출 · 개방 편 개막 + 쿠팡 PDA 스캐너 = 시그니처 무기 + 곤륜산 최종 도약 예고</p>
+</footer>
+
+<script>
+function loadImages() { document.querySelectorAll('img[data-src]').forEach(img => { const src = img.getAttribute('data-src'); if (src) { img.src = src; img.onerror = function() { this.style.display = 'none'; const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'flex'; }; img.onload = function() { const p = this.parentElement.querySelector('.placeholder'); if (p) p.style.display = 'none'; }; } }); }
+function scrollAct(n) { const el = document.getElementById('act' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+document.querySelectorAll('.image-frame img').forEach(img => { img.addEventListener('click', () => { if (img.src && img.style.display !== 'none') { document.getElementById('lightbox-img').src = img.src; document.querySelector('.lightbox').classList.add('active'); } }); });
+function closeLightbox() { document.querySelector('.lightbox').classList.remove('active'); }
+const navButtons = document.querySelectorAll('.nav button:not(.home)');
+window.addEventListener('scroll', () => { document.querySelectorAll('.act').forEach((act, i) => { const rect = act.getBoundingClientRect(); if (rect.top < 200 && rect.bottom > 200) { navButtons.forEach(b => b.classList.remove('active')); if (navButtons[i]) navButtons[i].classList.add('active'); } }); });
+loadImages();
+</script>
+
+</body>
+</html>
